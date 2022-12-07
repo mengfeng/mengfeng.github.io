@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>从0到1搭建自己的脚手架react |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-从0到1搭建自己的脚手架react"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  从0到1搭建自己的脚手架react
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/" class="article-date">
+  <time datetime="2022-11-08T09:16:45.000Z" itemprop="datePublished">2022-11-08</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/">从0到1搭建自己的脚手架react</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">20 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="从0到1搭建自己的脚手架react"><a href="#从0到1搭建自己的脚手架react" class="headerlink" title="从0到1搭建自己的脚手架react"></a>从0到1搭建自己的脚手架react</h1><h3 id="1-初始化项目"><a href="#1-初始化项目" class="headerlink" title="1.初始化项目"></a>1.初始化项目</h3><pre><code class="ini">npm init -y
+</code></pre>
+<p>执行初始化命令之后，会出现package.json文件</p>
+<h3 id="2-建立项目目录（基础项目目录）"><a href="#2-建立项目目录（基础项目目录）" class="headerlink" title="2.建立项目目录（基础项目目录）"></a>2.建立项目目录（基础项目目录）</h3><p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108085707668.png"></p>
+<h3 id="3-下载依赖"><a href="#3-下载依赖" class="headerlink" title="3.下载依赖"></a>3.下载依赖</h3><p>react</p>
+<pre><code class="ini">npm i react react-dom 
+</code></pre>
+<p>下载babel。babel是javascript编辑器，作用如下：</p>
+<ol>
+<li>负责把ES6、ES7等高版本js编译成低版本js，供浏览器运行。</li>
+<li>负责把react语法（jsx）编译成js。</li>
+</ol>
+<pre><code class="ini"> npm i @babel/core @babel/cli @babel/preset-env @babel/preset-react --save-dev
+</code></pre>
+<p>集成webpack。webpack是一个现代JavaScript应用程序的静态模块打包器，现代前端应用很多都是用webpack打包。webpack-dev-server用来搭建一个本地服务，可以热加载前端项目</p>
+<pre><code class="ini">npm i webpack webpack-dev-server webpack-cli --save-dev
+</code></pre>
+<p>webpack集成babel还需要babel-loader，加载html文件还需要插件html-webpack-plugin：</p>
+<pre><code class="ini">npm i babel-loader html-webpack-plugin --save-dev
+</code></pre>
+<h3 id="4-编辑index-html、App-js、index-js"><a href="#4-编辑index-html、App-js、index-js" class="headerlink" title="4.编辑index.html、App.js、index.js"></a>4.编辑index.html、App.js、index.js</h3><pre><code class="html">//index.html
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;root&quot;&gt;root&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<pre><code class="javascript">//App.js
+import React from &quot;react&quot;;
+class App extends React.PureComponent&#123;
+    render()&#123;
+        return (
+            &lt;div&gt;
+                App
+            &lt;/div&gt;
+          );
+    &#125;
+&#125;
+
+export default App
+</code></pre>
+<pre><code class="javascript">//index.js
+import React from &#39;react&#39;;
+import &#123; createRoot &#125; from &#39;react-dom/client&#39;;
+import App from &#39;./App&#39;;
+
+const root = createRoot(document.getElementById(&#39;root&#39;))
+root.render(&lt;App /&gt;)
+</code></pre>
+<h3 id="5-在根目录下添加-babelrc文件、webpack-config-js文件"><a href="#5-在根目录下添加-babelrc文件、webpack-config-js文件" class="headerlink" title="5.在根目录下添加.babelrc文件、webpack.config.js文件"></a>5.在根目录下添加.babelrc文件、webpack.config.js文件</h3><p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108093539451.png"></p>
+<h3 id="6-配置-babelrc、webpack-config-js"><a href="#6-配置-babelrc、webpack-config-js" class="headerlink" title="6.配置.babelrc、webpack.config.js"></a>6.配置.babelrc、webpack.config.js</h3><pre><code class="javascript">//.babelrc
+&#123;
+    &quot;presets&quot;: [&quot;@babel/preset-env&quot;,&quot;@babel/preset-react&quot;]
+&#125;
+</code></pre>
+<pre><code class="javascript">//webpack.config.js
+const path = require(&#39;path&#39;);
+const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
+
+module.exports = &#123;
+    //webpack入口文件，webpack从这里开始构建依赖图
+    entry:&#123;
+        main:&#39;./src/index.js&#39;
+    &#125;,
+    //输出文件 ./dist/bundle.js
+    output:&#123;
+        path: path.resolve(__dirname,&#39;dist&#39;),
+        filename:&#39;bundle.js&#39;
+    &#125;,
+    //webpack只能处理js和json文件，加载别的文件需要loader
+    module:&#123;
+        rules:[
+            &#123;
+                test:/.m?js/,
+                use:&#39;babel-loader&#39;,
+                exclude:/node_modules/
+            &#125;
+        ]
+    &#125;,
+    //webpack加载html文件需要html-webpack-plugin插件处理。
+    //启动webpack-dev-server的时候，会把打包好的js文件，css文件，html文件放在内存里
+    plugins:[
+        new HtmlWebpackPlugin(&#123;
+            template:&#39;./public/index.html&#39;
+        &#125;)
+    ],
+    mode:&#39;development&#39;
+
+&#125;
+</code></pre>
+<h3 id="7-当我们配置好上面的项目了，现在我们就可以运行了"><a href="#7-当我们配置好上面的项目了，现在我们就可以运行了" class="headerlink" title="7.当我们配置好上面的项目了，现在我们就可以运行了"></a>7.当我们配置好上面的项目了，现在我们就可以运行了</h3><p>现在我们还得配置一个小细节package,json</p>
+<pre><code class="javascript">&#123;
+  &quot;name&quot;: &quot;react-app-start&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: &#123;
+    //--mode=development为开发环境，速度较快，上线可以配置为生产环境，会压缩，优化代码
+    //--watch为监听代码变化，只要代码变化，会重新编译
+    //build是生产环境的打包
+    &quot;serve&quot;: &quot;webpack --mode=development --watch&quot;,
+    &quot;build&quot;: &quot;webpack --mode=production&quot;
+  &#125;,
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;dependencies&quot;: &#123;
+    &quot;react&quot;: &quot;^18.2.0&quot;,
+    &quot;react-dom&quot;: &quot;^18.2.0&quot;,
+    &quot;webpack&quot;: &quot;^5.74.0&quot;
+  &#125;,
+  &quot;devDependencies&quot;: &#123;
+    &quot;@babel/cli&quot;: &quot;^7.19.3&quot;,
+    &quot;@babel/core&quot;: &quot;^7.20.2&quot;,
+    &quot;@babel/preset-env&quot;: &quot;^7.20.2&quot;,
+    &quot;@babel/preset-react&quot;: &quot;^7.18.6&quot;,
+    &quot;babel-loader&quot;: &quot;^9.1.0&quot;,
+    &quot;html-webpack-plugin&quot;: &quot;^5.5.0&quot;,
+    &quot;webpack-cli&quot;: &quot;^4.10.0&quot;
+  &#125;
+&#125;
+</code></pre>
+<p>这时候就可以执行命令了</p>
+<pre><code class="ini">npm run serve
+</code></pre>
+<p>打包执行命令</p>
+<pre><code class="ini">npm run build
+</code></pre>
+<h3 id="8-如果没有报错的话，你就会看见下面的页面"><a href="#8-如果没有报错的话，你就会看见下面的页面" class="headerlink" title="8.如果没有报错的话，你就会看见下面的页面"></a>8.如果没有报错的话，你就会看见下面的页面</h3><p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108100300240.png"></p>
+<h3 id="9-至此webpack简易版配置已经完成。接下来配置热加载功能，下载webpack-dev-server："><a href="#9-至此webpack简易版配置已经完成。接下来配置热加载功能，下载webpack-dev-server：" class="headerlink" title="9.至此webpack简易版配置已经完成。接下来配置热加载功能，下载webpack-dev-server："></a>9.至此webpack简易版配置已经完成。接下来配置热加载功能，下载webpack-dev-server：</h3><pre><code class="ini">npm i webpack-dev-server --save-dev
+</code></pre>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108100733217.png"></p>
+<p>执行命令：</p>
+<pre><code class="ini">npm run start
+</code></pre>
+<p>项目在3000端口启动，启动后会自动打开浏览器窗口。热加载配置完成，文件修改保存后浏览器直接展示出来。</p>
+<p>到此react项目简化版搭建完成。后续继续集成其他工具库即可。</p>
+<h3 id="10-react使用ts"><a href="#10-react使用ts" class="headerlink" title="10.react使用ts"></a>10.react使用ts</h3><p>ts对比js最大的特点就是多了类型检查。推荐前端语言使用ts。接下来介绍在webpack中配置ts。</p>
+<p>安装typescript、ts-loader。typescript是ts编辑器，把ts代码编译成js，ts-loader是让webpack识别.ts&#x2F;.tsx文件，调用编译器编译，</p>
+<pre><code class="ini">npm i typescript ts-loader --save-dev
+</code></pre>
+<p>添加ts配置文件,在根目录下添加tsconfig.json：</p>
+<pre><code class="ini">//tsconfig.json
+&#123;
+    &quot;compilerOptions&quot;: &#123;
+        &quot;target&quot;: &quot;es5&quot;,
+        &quot;lib&quot;:[&quot;es6&quot;,&quot;dom&quot;],
+        &quot;module&quot;: &quot;esnext&quot;,
+        &quot;moduleResolution&quot;: &quot;node&quot;,
+        &quot;jsx&quot;:&quot;react&quot;,
+        &quot;sourceMap&quot;: true,
+        &quot;strict&quot;: true,
+        &quot;importHelpers&quot;: true,
+        &quot;skipLibCheck&quot;: true,
+        &quot;allowJs&quot;: true,
+        &quot;allowSyntheticDefaultImports&quot;: true
+    &#125;
+&#125;
+</code></pre>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108101701100.png"></p>
+<p>修改webpack配置</p>
+<pre><code class="javascript">const path = require(&#39;path&#39;);
+const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
+
+module.exports = &#123;
+    //webpack入口文件，webpack从这里开始构建依赖图
+    entry:&#123;
+        main:&#39;./src/index.tsx&#39;
+    &#125;,
+    //输出文件 ./dist/bundle.js
+    output:&#123;
+        path: path.resolve(__dirname,&#39;dist&#39;),
+        filename:&#39;bundle.js&#39;
+    &#125;,
+    //webpack只能处理js和json文件，加载别的文件需要loader
+    module:&#123;
+        rules:[
+            &#123;
+                test:/.m?js|tsx$/,
+                use:&#39;ts-loader&#39;,
+                exclude:/node_modules/
+            &#125;
+        ]
+    &#125;,
+    //增加扩展选项，让webpack可以识别.ts/tsx文件
+    resolve:&#123;
+        extensions:[&#39;.ts&#39;,&#39;.tsx&#39;,&#39;.js&#39;]
+    &#125;,
+    plugins:[
+        new HtmlWebpackPlugin(&#123;
+            template:&#39;./public/index.html&#39;
+        &#125;)
+    ],
+    mode:&#39;development&#39;
+
+&#125;
+</code></pre>
+<p>目前可能会报错</p>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108110219148.png"></p>
+<p>根据提示，我们缺一些依赖</p>
+<pre><code class="ini">npm i --save-dev @types/react
+npm i --save-dev @types/react-dom
+</code></pre>
+<p>这个时候我们还会遇到一个问题</p>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108111925911.png"></p>
+<p>那么这个问题的原因是缺null类型检测</p>
+<p>其他人回答说应该添加null检查，但Typescript也有一个非null断言，当您通过添加！运算符添加到语句末尾：</p>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108112118833.png"></p>
+<p>这个时候我们react使用ts的问题就解决了</p>
+<p>启动项目，运行成功，ts集成成功了</p>
+<h3 id="11-react集成路由"><a href="#11-react集成路由" class="headerlink" title="11.react集成路由"></a>11.react集成路由</h3><p>安装路由库</p>
+<pre><code class="ini">npm install react-router-dom@6
+</code></pre>
+<p>创建项目目录</p>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108143446498.png"></p>
+<p>编辑About.tsx、Home.tsx、index.tsx、App.tsx</p>
+<pre><code class="tsx">//About.tsx
+import React from &quot;react&quot;;
+import &#123; Link &#125; from &quot;react-router-dom&quot;;
+
+class About extends React.PureComponent&#123;
+    render()&#123;
+        return (
+            &lt;div&gt;
+                this is about&lt;br/&gt;
+                &lt;Link to=&#123;&#39;/home&#39;&#125;&gt;to home&lt;/Link&gt;
+            &lt;/div&gt;
+        )
+    &#125;
+&#125;
+
+export default About;
+</code></pre>
+<pre><code class="tsx">//Home.tsx
+import React from &quot;react&quot;;
+import &#123; Link &#125; from &quot;react-router-dom&quot;;
+
+class Home extends React.PureComponent&#123;
+    render()&#123;
+        return (
+            &lt;div&gt;
+                this is home&lt;br/&gt;
+                &lt;Link to=&#123;&#39;/about&#39;&#125;&gt;to about&lt;/Link&gt;
+            &lt;/div&gt;
+        )
+    &#125;
+&#125;
+
+export default Home;
+</code></pre>
+<pre><code class="tsx">//App.tsx
+import React from &quot;react&quot;;
+import &#123; Routes,Route &#125; from &quot;react-router-dom&quot;;
+import About from &quot;./compents/About&quot;;
+import Home from &quot;./compents/Home&quot;;
+
+class App extends React.PureComponent&#123;
+    render()&#123;
+        return (
+            &lt;div&gt;
+                &lt;Routes&gt;
+                    &lt;Route path=&quot;/&quot; element=&#123;&lt;Home /&gt;&#125;&gt;&lt;/Route&gt;
+                    &lt;Route path=&quot;/home&quot; element=&#123;&lt;Home /&gt;&#125;&gt;&lt;/Route&gt;
+                    &lt;Route path=&quot;/about&quot; element=&#123;&lt;About /&gt;&#125;&gt;&lt;/Route&gt;
+                &lt;/Routes&gt;
+            &lt;/div&gt;
+          );
+    &#125;
+&#125;
+
+export default App
+</code></pre>
+<pre><code class="tsx">//index.tsx
+import React from &#39;react&#39;;
+import &#123; createRoot &#125; from &#39;react-dom/client&#39;;
+import App from &#39;./App&#39;;
+import &#123; BrowserRouter &#125; from &#39;react-router-dom&#39;;
+
+const root = createRoot(document.getElementById(&#39;root&#39;)!)
+root.render(
+    &lt;BrowserRouter&gt;
+        &lt;App /&gt;
+    &lt;/BrowserRouter&gt;
+)
+</code></pre>
+<p>react路由搭建成功</p>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108143901241.png"></p>
+<h3 id="12-react使用redux"><a href="#12-react使用redux" class="headerlink" title="12.react使用redux"></a>12.react使用redux</h3><p>对于大型项目来说，数据管理工具也是必不可少的。我们简单介绍redux、react-redux的使用。这里使用的是@reduxjs&#x2F;toolkit库，相比redux库使用方法有很大区别，想用redux库的请自行查看redux文档。</p>
+<p>下载依赖</p>
+<pre><code class="ini">npm i @reduxjs/toolkit react-redux
+</code></pre>
+<p>创建项目目录</p>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108151822086.png"></p>
+<p>编辑store.ts、countSlice.ts、counter.tsx、index.tsx、App.tsx</p>
+<pre><code class="tsx">//store.ts
+import &#123; configureStore &#125; from &quot;@reduxjs/toolkit&quot;;
+import counterReducer from &#39;./countSlice&#39;;
+
+export default configureStore(&#123;
+    reducer:&#123;
+        counter:counterReducer
+    &#125;
+&#125;)
+</code></pre>
+<pre><code class="tsx">//countSlice.ts
+import &#123; createSlice &#125; from &quot;@reduxjs/toolkit&quot;;
+
+export const counterSlice = createSlice(&#123;
+    name:&#39;counter&#39;,
+    initialState:&#123;
+        value:0
+    &#125;,
+    reducers:&#123;
+        increment:(state) =&gt; &#123;
+            state.value += 1
+        &#125;,
+        decrement:(state) =&gt;&#123;
+            state.value -= 1
+        &#125;,
+        incrementByAmount:(state,action) =&gt; &#123;
+            state.value += action.payload
+        &#125;
+    &#125;
+&#125;)
+
+export const &#123; increment,decrement,incrementByAmount &#125; = counterSlice.actions
+export default counterSlice.reducer
+</code></pre>
+<pre><code class="tsx">//index.tsx
+import React from &#39;react&#39;;
+import &#123; createRoot &#125; from &#39;react-dom/client&#39;;
+import App from &#39;./App&#39;;
+import &#123; BrowserRouter &#125; from &#39;react-router-dom&#39;;
+import store  from &#39;./store/store&#39;;
+import &#123; Provider &#125; from &#39;react-redux&#39;;
+
+const root = createRoot(document.getElementById(&#39;root&#39;)!)
+root.render(
+    &lt;BrowserRouter&gt;
+    &lt;Provider store=&#123;store&#125;&gt;
+        &lt;App /&gt;
+    &lt;/Provider&gt;  
+    &lt;/BrowserRouter&gt;
+)
+</code></pre>
+<pre><code class="tsx">//counter.tsx
+import React from &quot;react&quot;;
+import &#123; useSelector,useDispatch &#125; from &quot;react-redux&quot;;
+import &#123; decrement,increment &#125; from &quot;../store/countSlice&quot;;
+
+function Counter()&#123;
+    const count = useSelector((state:any) =&gt; state.counter.value)
+    const dispatch = useDispatch()
+    
+    return (
+        &lt;div&gt;
+            &lt;div&gt;
+                &lt;button 
+                aria-label=&quot;Increment value&quot;
+                onClick=&#123;() =&gt; dispatch(increment())&#125;
+                &gt;
+                    increment
+                &lt;/button&gt;
+                &lt;span&gt;&#123;count&#125;&lt;/span&gt;
+                &lt;button
+                aria-label=&quot;Decrement value&quot;
+                onClick=&#123;() =&gt; dispatch(decrement())&#125;
+                &gt;
+                    Decrement
+                &lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    )
+&#125;
+
+export default Counter;
+</code></pre>
+<pre><code class="tsx">//App.tsx
+import React from &quot;react&quot;;
+import &#123; Routes,Route &#125; from &quot;react-router-dom&quot;;
+import About from &quot;./compents/About&quot;;
+import Home from &quot;./compents/Home&quot;;
+import Counter from &quot;./compents/Counter&quot;;
+
+class App extends React.PureComponent&#123;
+    render()&#123;
+        return (
+            &lt;div&gt;
+                &lt;Routes&gt;
+                    &lt;Route path=&quot;/&quot; element=&#123;&lt;Home /&gt;&#125;&gt;&lt;/Route&gt;
+                    &lt;Route path=&quot;/home&quot; element=&#123;&lt;Home /&gt;&#125;&gt;&lt;/Route&gt;
+                    &lt;Route path=&quot;/about&quot; element=&#123;&lt;About /&gt;&#125;&gt;&lt;/Route&gt;
+                    &lt;Route path=&quot;/counter&quot; element=&#123;&lt;Counter /&gt;&#125;&gt;&lt;/Route&gt;
+                &lt;/Routes&gt;
+            &lt;/div&gt;
+          );
+    &#125;
+&#125;
+
+export default App
+</code></pre>
+<p>当我执行命令进入counter组件点击功能按钮就发现redux使用成功了</p>
+<pre><code class="ini">npm run start
+</code></pre>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108152335825.png"></p>
+<h3 id="13-集成UI库"><a href="#13-集成UI库" class="headerlink" title="13.集成UI库"></a>13.集成UI库</h3><p>这里使用的是antd第三方库</p>
+<p>安装ui库</p>
+<pre><code class="ini">npm i antd
+</code></pre>
+<p>使用antd还需要引用其样式文件，因此还需要下载css-loader、style-loader。</p>
+<pre><code class="ini">npm i style-loader css-loader -D
+</code></pre>
+<p>修改webpack配置</p>
+<pre><code class="javascript">const path = require(&#39;path&#39;);
+const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
+
+module.exports = &#123;
+    //webpack入口文件，webpack从这里开始构建依赖图
+    entry:&#123;
+        main:&#39;./src/index.tsx&#39;
+    &#125;,
+    //输出文件 ./dist/bundle.js
+    output:&#123;
+        path: path.resolve(__dirname,&#39;dist&#39;),
+        filename:&#39;bundle.js&#39;
+    &#125;,
+    //webpack只能处理js和json文件，加载别的文件需要loader
+    module:&#123;
+        rules:[
+            &#123;
+                test:/.j|tsx$/,
+                use:&#39;ts-loader&#39;,
+                exclude:/node_modules/
+            &#125;,
+            &#123;
+                test:/.css$/,
+                use:[&#39;style-loader&#39;,&#39;css-loader&#39;]
+            &#125;
+        ]
+    &#125;,
+    //增加扩展选项，让webpack可以识别.ts/tsx文件
+    resolve:&#123;
+        extensions:[&#39;.ts&#39;,&#39;.tsx&#39;,&#39;.js&#39;]
+    &#125;,
+    plugins:[
+        new HtmlWebpackPlugin(&#123;
+            template:&#39;./public/index.html&#39;
+        &#125;)
+    ],
+    mode:&#39;development&#39;
+&#125;
+</code></pre>
+<p>使用antd的话直接引入使用就可以了</p>
+<pre><code class="tsx">//Home.tsx
+import React from &quot;react&quot;;
+import &#123; Link &#125; from &quot;react-router-dom&quot;;
+import &#123; Button &#125; from &quot;antd&quot;;
+
+class Home extends React.PureComponent&#123;
+    render()&#123;
+        return (
+            &lt;div&gt;
+                this is home&lt;br/&gt;
+                &lt;Link to=&#123;&#39;/about&#39;&#125;&gt;
+                    &lt;Button type=&#123;&#39;primary&#39;&#125;&gt;to about&lt;/Button&gt;
+                &lt;/Link&gt;
+                &lt;Link to=&#123;&#39;/counter&#39;&#125;&gt;
+                    &lt;Button type=&#123;&#39;primary&#39;&#125;&gt;to counter&lt;/Button&gt; 
+                &lt;/Link&gt;
+            &lt;/div&gt;
+        )
+    &#125;
+&#125;
+
+export default Home;
+</code></pre>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108153155300.png"></p>
+<h3 id="14-跨域问题"><a href="#14-跨域问题" class="headerlink" title="14.跨域问题"></a>14.跨域问题</h3><p>修改webpack.config.js使用proxy</p>
+<pre><code class="javascript">const path = require(&#39;path&#39;);
+const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
+
+module.exports = &#123;
+    //webpack入口文件，webpack从这里开始构建依赖图
+    entry:&#123;
+        main:&#39;./src/index.tsx&#39;
+    &#125;,
+    //输出文件 ./dist/bundle.js
+    output:&#123;
+        path: path.resolve(__dirname,&#39;dist&#39;),
+        filename:&#39;bundle.js&#39;
+    &#125;,
+    //webpack只能处理js和json文件，加载别的文件需要loader
+    module:&#123;
+        rules:[
+            &#123;
+                test:/.j|tsx$/,
+                use:&#39;ts-loader&#39;,
+                exclude:/node_modules/
+            &#125;,
+            &#123;
+                test:/.css$/,
+                use:[&#39;style-loader&#39;,&#39;css-loader&#39;]
+            &#125;
+        ]
+    &#125;,
+    //增加扩展选项，让webpack可以识别.ts/tsx文件
+    resolve:&#123;
+        extensions:[&#39;.ts&#39;,&#39;.tsx&#39;,&#39;.js&#39;]
+    &#125;,
+    plugins:[
+        new HtmlWebpackPlugin(&#123;
+            template:&#39;./public/index.html&#39;
+        &#125;)
+    ],
+    mode:&#39;development&#39;,
+    devServer:&#123;
+        proxy:&#123;
+            &#39;/api&#39;:&#39;http://localhost:8080&#39;,
+        &#125;,
+        client:&#123;
+            progress:true
+        &#125;
+    &#125;
+
+&#125;
+</code></pre>
+<p>配置后，前端请求就会被代理到8080端口，解决跨域问题</p>
+<p>15.集成ESLint和prettier</p>
+<p>安装ESLint</p>
+<pre><code class="ini">//本地安装
+npm install eslint --save-dev
+//全局安装
+npm install -g eslint
+</code></pre>
+<p>运行eslint –init，选择工程使用了react，自动生成.eslintrc.js文件</p>
+<pre><code class="ini">eslint --init
+</code></pre>
+<p>安装prettier</p>
+<pre><code class="ini">//本地
+npm i -D --save-exact prettier
+//全局
+npm i --global prettier
+</code></pre>
+<p>安装eslint-config-prettier插件（禁用 eslint 风格校验)</p>
+<pre><code class="ini">npm i -D eslint-config-prettier
+</code></pre>
+<p>安装eslint-plugin-prettier插件（使eslint采用prettier的风格校验）</p>
+<pre><code class="ini">npm i -D eslint-plugin-prettier
+</code></pre>
+<p>配置eslintrc.js文件</p>
+<pre><code class="javascript">// eslint-disable-next-line no-undef
+module.exports = &#123;
+    &quot;env&quot;: &#123;
+        &quot;browser&quot;: true,
+        &quot;es2021&quot;: true,
+        &quot;jest&quot;:true
+    &#125;,
+    &quot;extends&quot;: [
+        &quot;eslint:recommended&quot;,
+        &quot;plugin:react/recommended&quot;,
+        &quot;plugin:@typescript-eslint/recommended&quot;
+    ],
+    &quot;overrides&quot;: [
+    ],
+    &quot;parser&quot;: &quot;@typescript-eslint/parser&quot;,
+    &quot;parserOptions&quot;: &#123;
+        &quot;ecmaVersion&quot;: &quot;latest&quot;
+    &#125;,
+    &quot;plugins&quot;: [
+        &quot;react&quot;,
+        &quot;@typescript-eslint&quot;
+    ],
+    &quot;rules&quot;: &#123;
+    &quot;no-cond-assign&quot;: 2,
+    &quot;no-console&quot;: [
+      &quot;error&quot;, &#123;
+        &quot;allow&quot;: [&quot;log&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;info&quot;]
+      &#125;
+    ],
+    // 禁止 function 定义中出现重名参数
+    &quot;no-dupe-args&quot;: 2,
+    // 禁止对象字面量中出现重复的 key
+    &quot;no-dupe-keys&quot;: 2,
+    // 禁止重复的 case 标签
+    &quot;no-duplicate-case&quot;: 2,
+    // 禁止对 catch 子句的参数重新赋值
+    &quot;no-ex-assign&quot;: 2,
+    // 禁止不必要的布尔转换
+    &quot;no-extra-boolean-cast&quot;: 2,
+    // 禁止不必要的括号 //(a * b) + c;//报错
+    &quot;no-extra-parens&quot;: 0,
+    // 禁止 catch 子句的参数与外层作用域中的变量同名
+    &quot;no-catch-shadow&quot;: 0,
+    // 不允许标签与变量同名
+    &quot;no-label-var&quot;: 2,
+    // 禁用特定的全局变量
+    &quot;no-restricted-globals&quot;: 2,
+    // 禁止覆盖受限制的标识符
+    &quot;no-shadow-restricted-names&quot;: 2,
+    // 禁止将变量初始化为 undefined
+    
+    // 强制使用一致的换行风格
+    &quot;linebreak-style&quot;: [2, &quot;unix&quot;],
+    //在JSX中强制布尔属性符号
+    &quot;react/jsx-boolean-value&quot;: 2,
+    //在JSX中验证右括号位置
+    // &quot;react/jsx-closing-bracket-location&quot;: 1,
+    //在JSX属性和表达式中加强或禁止大括号内的空格。
+    &quot;react/jsx-curly-spacing&quot;: [2, &#123;
+      &quot;when&quot;: &quot;never&quot;,
+      &quot;children&quot;: true
+    &#125;],
+    //在数组或迭代器中验证JSX具有key属性
+    &quot;react/jsx-key&quot;: 2,
+    // 限制JSX中单行上的props的最大数量
+    &quot;react/jsx-max-props-per-line&quot;: [1, &#123;
+      &quot;maximum&quot;: 5
+    &#125;],
+    //防止在JSX中重复的props
+    &quot;react/jsx-no-duplicate-props&quot;: 2,
+    //  //防止使用未包装的JSX字符串
+    // &quot;react/jsx-no-literals&quot;: 0,
+    //在JSX中禁止未声明的变量
+    &quot;react/jsx-no-undef&quot;: 2,
+    //为用户定义的JSX组件强制使用PascalCase
+    &quot;react/jsx-pascal-case&quot;: 0,
+    //防止反应被错误地标记为未使用
+    &quot;react/jsx-uses-react&quot;: 2,
+    //防止在JSX中使用的变量被错误地标记为未使用
+    &quot;react/jsx-uses-vars&quot;: 2,
+    //防止在componentDidMount中使用setState
+    &quot;react/no-did-mount-set-state&quot;: 2,
+    //防止在componentDidUpdate中使用setState
+    &quot;react/no-did-update-set-state&quot;: 2,
+    //防止使用未知的DOM属性
+    &quot;react/no-unknown-property&quot;: 2,
+    //为React组件强制执行ES5或ES6类
+    &quot;react/prefer-es6-class&quot;: 2,
+    //防止在React组件定义中丢失props验证
+    // &quot;react/prop-types&quot;: 1,
+    //使用JSX时防止丢失React
+    &quot;react/react-in-jsx-scope&quot;: 2,
+    //防止没有children的组件的额外结束标签
+    &quot;react/self-closing-comp&quot;: 0,
+    //禁止不必要的bool转换
+    // &quot;no-extra-boolean-cast&quot;: 0,
+    //防止在数组中遍历中使用数组key做索引
+    // &quot;react/no-array-index-key&quot;: 0,
+    //不使用弃用的方法
+    &quot;react/no-deprecated&quot;: 2,
+    //在JSX属性中强制或禁止等号周围的空格
+    &quot;react/jsx-equals-spacing&quot;: 2,
+    &quot;react/jsx-filename-extension&quot;: [2, &#123;
+      &quot;extensions&quot;: [&quot;.js&quot;, &quot;.jsx&quot;]
+    &#125;],
+    // 禁止未使用的变量
+    &quot;no-unused-vars&quot;: 0,
+    &#125;
+&#125;
+</code></pre>
+<p>当我们代码被eslint检测到不符合规则的代码就会提示，根据eslint指示修改就可以</p>
+<p>在根目录下创建.prettierrc 或 prettier.config.js文件</p>
+<pre><code class="javascript">module.exports = &#123;
+    endOfLine: &#39;auto&#39;, // 不检测检测文件每行结束的格式
+    semi: true, // 使用分号, 默认true
+    singleQuote: true // 使用单引号, 默认false(在jsx中配置无效, 默认都是双引号)
+ &#125;
+</code></pre>
+<p>安装vscode插件：Prettier ESLint</p>
+<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221107154026317.png"></p>
+<p>该插件会根据工程根目录下的eslintrc.js和prettier.config.js文件格式化代码。可以进一步设置为vscode默认formater和自动格式化。</p>
+<p>Prettier配置常用的参数可以根据团队需求制定</p>
+<p>该文章只是配置简单的react脚手架，核心流程和方法是如此，其他具体需求可以根据团队客制化定制</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[antd官网]: 	“<a target="_blank" rel="noopener" href="https://ant.design/docs/react/introduce-cn">https://ant.design/docs/react/introduce-cn</a> “<br>[ESLint中文文档]: 	“<a target="_blank" rel="noopener" href="https://eslint.bootcss.com/">https://eslint.bootcss.com</a> “<br>[Prettier中文网]: 	“<a target="_blank" rel="noopener" href="https://www.prettier.cn/">https://www.prettier.cn</a> “</p>
+<h3 id="源码仓库地址："><a href="#源码仓库地址：" class="headerlink" title="源码仓库地址："></a>源码仓库地址：</h3><p><a target="_blank" rel="noopener" href="https://github.com/mengfeng/react-app-start.git">https://github.com/mengfeng/react-app-start.git</a></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/11/09/npm%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            npm命令详解
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">从0到1搭建自己的脚手架vue3</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

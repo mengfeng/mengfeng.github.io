@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>playcanvas初级 |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-playcanvas初级"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  playcanvas初级
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/" class="article-date">
+  <time datetime="2022-12-04T13:01:02.000Z" itemprop="datePublished">2022-12-04</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/playcanvas/">playcanvas</a> / <a class="article-category-link" href="/categories/Web3D/playcanvas/playcanvas%E5%88%9D%E7%BA%A7/">playcanvas初级</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">1.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">5 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="playcanvas初级"><a href="#playcanvas初级" class="headerlink" title="playcanvas初级"></a>playcanvas初级</h1><blockquote>
+<p>我们在开始本文章之前，推荐大家一个小工具，方便我们在油管上看英文视频</p>
+<p>YouTube™ 双字幕</p>
+<p>我们通过YouTube上<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=fXc-JjH2nNo&list=PLGmYIROty-5ZX-a88X8ztUeYSPeuBj7rG">Daniel Wood</a>博主的playcanvas视频来浅入一下（看着文章来梳理视频内容食用更佳哦！）</p>
+</blockquote>
+<h3 id="start：工具下载"><a href="#start：工具下载" class="headerlink" title="start：工具下载"></a>start：工具下载</h3><blockquote>
+<p>YouTube™ 双字幕可以帮助我们添加双语字幕</p>
+<p>安装步骤：谷歌浏览器-&gt;设置-&gt;扩展程序-&gt;打开应用商店-&gt;查找-&gt;安装</p>
+</blockquote>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204161502349.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204161617072.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204161720108.png"></p>
+<blockquote>
+<p>下载完成之后，我们在扩展程序图标上就可以使用了，如果不起效果，请重新打开浏览器</p>
+</blockquote>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204162049453.png"></p>
+<h3 id="一、第一课（Getting-started-with-PlayCanvas）"><a href="#一、第一课（Getting-started-with-PlayCanvas）" class="headerlink" title="一、第一课（Getting started with PlayCanvas）"></a>一、第一课（Getting started with PlayCanvas）</h3><blockquote>
+<p>我们第一课先来简单使用一下我们的可视化平台</p>
+</blockquote>
+<p>第一节课主要是熟悉我们的可视化面板，上一篇<a href="https://mengfeng.github.io/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/">playcanvas初识</a>有讲解，如果感兴趣，我们还是可以看看我们的第一课的视频的</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204174020956.png"></p>
+<h3 id="二、第二课（Entities-and-materials）"><a href="#二、第二课（Entities-and-materials）" class="headerlink" title="二、第二课（Entities and materials）"></a>二、第二课（Entities and materials）</h3><blockquote>
+<p>实体和材质是什么？</p>
+<p>实体就是我们编辑器里面的方块、平面等几何体</p>
+<p>材质是我们实体需要结合的属性</p>
+</blockquote>
+<p>1.当我们创建材质资源的时候，我们可以将其分成一个组，方便我们以后去管理我们的材质</p>
+<p>2.我们的贴图，那些属性，我建议先去看看Three.js的教程吧，或者有三维软件的使用基础也是容易理解的，如果不具备这些基础概念可以看看我之前的<a href="https://mengfeng.github.io/categories/">threejs</a>的文章</p>
+<p>3.简单的赋予实体材质的步骤就是如下图（还是比较容易的）</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204175100109.png"></p>
+<p>4.这节课视频主要讲的是贴图和材质和我们材质的一系列属性（不是api）</p>
+<p>5.点击我们的Camera（摄像机）调节角度，点击界面右上角的Launch就可以渲染我们的画面了</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204180337214.png"></p>
+<h3 id="三、第三课（Lighting）"><a href="#三、第三课（Lighting）" class="headerlink" title="三、第三课（Lighting）"></a>三、第三课（Lighting）</h3><blockquote>
+<p>我们的灯光也是有3种，平行光、点光源、聚光灯</p>
+<p>这节课除了讲解几种灯光的属性之外，也有灯光与阴影的关系</p>
+</blockquote>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204181635026.png"></p>
+<p>聚光灯效果，我们在右边的属性栏也可以去修改我们聚光灯的其他属性</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204183234836.png"></p>
+<p>点光源效果（可以看成一个灯泡）</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204183435845.png"></p>
+<h3 id="四、第四课（Skyboxes-in-PlayCanvas）"><a href="#四、第四课（Skyboxes-in-PlayCanvas）" class="headerlink" title="四、第四课（Skyboxes in PlayCanvas）"></a>四、第四课（Skyboxes in PlayCanvas）</h3><blockquote>
+<p>主要展示如何添加天空贴图</p>
+<p>我们的贴图就是从这里下载的，可以去试试</p>
+<p>[贴图纹理]: 	“<a target="_blank" rel="noopener" href="http://www.humus.name/index.php?page=Textures">http://www.humus.name/index.php?page=Textures</a> “</p>
+</blockquote>
+<p>具体的步骤总结：</p>
+<p>⚠️注意：还是看视频详细，这只是总结一下哈哈哈</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204184930487.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204185140511.png"></p>
+<h3 id="五、第五课（Particle-systems-in-PlayCanvas）"><a href="#五、第五课（Particle-systems-in-PlayCanvas）" class="headerlink" title="五、第五课（Particle systems in PlayCanvas）"></a>五、第五课（Particle systems in PlayCanvas）</h3><blockquote>
+<p>这节课的东西我比较喜欢，粒子系统（会生成粒子和粒子动画）</p>
+</blockquote>
+<p>具体的步骤总结：</p>
+<p>这个比较简单，到了后面，这个会生成很多惊艳的动画效果</p>
+<p>⚠️注意：这个属性比较多，认真看</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204185753349.png"></p>
+<h3 id="六、第六课（Overview-of-scripts-in-PlayCanvas）"><a href="#六、第六课（Overview-of-scripts-in-PlayCanvas）" class="headerlink" title="六、第六课（Overview of scripts in PlayCanvas）"></a>六、第六课（Overview of scripts in PlayCanvas）</h3><blockquote>
+<p>这节课没什么东西，就是讲解一下我们script资源文件的构造（给没有javaScript基础的同学讲的）</p>
+<p>有基础的同学可以快速略过了</p>
+</blockquote>
+<p>具体的步骤总结：</p>
+<p>主要是讲一下script资源的操作</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204190611547.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204190818807.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204191338719.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204191641346.png"></p>
+<h3 id="七、第七课（Make-a-3D-object-move-with-code）"><a href="#七、第七课（Make-a-3D-object-move-with-code）" class="headerlink" title="七、第七课（Make a 3D object move with code）"></a>七、第七课（Make a 3D object move with code）</h3><blockquote>
+<p>这节课开始就要编写js脚本文件了</p>
+<p>通过我们下面的脚步编译，我们就可以渲染出方块渐行渐远的动画了</p>
+<p>具体的API我们可以查询<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/api/pc.Entity.html">文档</a>了</p>
+</blockquote>
+<pre><code class="javascript">//test.js
+var Test = pc.createScript(&#39;test&#39;);
+var Move = function(entity)&#123;
+  this.entity = entity;
+&#125;
+// initialize code called once per entity
+Test.prototype.initialize = function() &#123;
+    
+&#125;;
+
+// update code called every frame
+Test.prototype.update = function(dt) &#123;
+    this.entity.translateLocal(-0.01,0,0);
+&#125;;
+
+// swap method called for script hot-reloading
+// inherit your script state here
+// Test.prototype.swap = function(old) &#123; &#125;;
+
+// to learn more about script anatomy, please read:
+// https://developer.playcanvas.com/en/user-manual/scripting/
+</code></pre>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204192521888.png"></p>
+<h3 id="八、第八课（Moving-objects-with-keyboard-input）"><a href="#八、第八课（Moving-objects-with-keyboard-input）" class="headerlink" title="八、第八课（Moving objects with keyboard input）"></a>八、第八课（Moving objects with keyboard input）</h3><blockquote>
+<p>利用键盘的按键来控制我们实体的移动、旋转等</p>
+<p>建议不要跟着视频的写法来练习，要自己去查文档，因为视频已经有点陈旧了</p>
+<p>api都有所变化</p>
+</blockquote>
+<p>我们的脚本实现的是利用键盘的上下左右来控制实体的上下左右</p>
+<pre><code class="javascript">//test.js
+var Test = pc.createScript(&#39;test&#39;);
+var keyboard = new pc.Keyboard(window);
+var Move = function(entity)&#123;
+  this.entity = entity;
+&#125;
+// initialize code called once per entity
+Test.prototype.initialize = function() &#123;
+    
+&#125;;
+
+// update code called every frame
+Test.prototype.update = function(dt) &#123;
+   if(keyboard.isPressed(pc.KEY_RIGHT))&#123;
+       this.entity.translate(0.01,0,0);
+   &#125;
+    if(keyboard.isPressed(pc.KEY_LEFT))&#123;
+       this.entity.translate(-0.01,0,0);
+   &#125;
+    if(keyboard.isPressed(pc.KEY_UP))&#123;
+       this.entity.translate(0,0,-0.01);
+   &#125;
+    if(keyboard.isPressed(pc.KEY_DOWN))&#123;
+       this.entity.translate(0,0,0.01);
+   &#125;
+&#125;;
+
+// swap method called for script hot-reloading
+// inherit your script state here
+// Test.prototype.swap = function(old) &#123; &#125;;
+
+// to learn more about script anatomy, please read:
+// https://developer.playcanvas.com/en/user-manual/scripting/
+</code></pre>
+<h3 id="九、第九课（Rotating-objects-with-keyboard-input）"><a href="#九、第九课（Rotating-objects-with-keyboard-input）" class="headerlink" title="九、第九课（Rotating objects with keyboard input）"></a>九、第九课（Rotating objects with keyboard input）</h3><blockquote>
+<p>这节课和上节课的内容差不多，就是利用键盘按键去控制实体的其他属性</p>
+<p>教js零基础的同学一下变量的基础写法（可以快速略过了哈哈哈，还得扫一眼哈）</p>
+</blockquote>
+<h3 id="十、第十课（Rigid-Bodies-and-Collision-in-PlayCanvas）"><a href="#十、第十课（Rigid-Bodies-and-Collision-in-PlayCanvas）" class="headerlink" title="十、第十课（Rigid Bodies and Collision in PlayCanvas）"></a>十、第十课（Rigid Bodies and Collision in PlayCanvas）</h3><blockquote>
+<p>PlayCanvas中的刚体和碰撞这节课的知识点还是可以的</p>
+<p>大体是讲物体碰撞的属性和运动</p>
+</blockquote>
+<p>根据步骤可以实现碰撞</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204204506027.png"></p>
+<h3 id="十一、第十一课（Adding-sound-to-your-game）"><a href="#十一、第十一课（Adding-sound-to-your-game）" class="headerlink" title="十一、第十一课（Adding sound to your game）"></a>十一、第十一课（Adding sound to your game）</h3><blockquote>
+<p>我们的游戏进去是不是有背景音乐呀，这节课就是将背景音乐加载进来</p>
+<p>Audio Listener可以简单的说像耳朵一样，可以听见附近的声音</p>
+</blockquote>
+<p>大体步骤如下，具体可以看视频了（还有许多细节）</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204205445304.png"></p>
+<h3 id="十二、第十二课（Controlling-audio-with-scripts）"><a href="#十二、第十二课（Controlling-audio-with-scripts）" class="headerlink" title="十二、第十二课（Controlling audio with scripts）"></a>十二、第十二课（Controlling audio with scripts）</h3><blockquote>
+<p>这节课就是延续上面的，对于audio的属性讲解和脚本编写了，</p>
+<p>这个任务交给你们了，写好评论，给你点大赞👍</p>
+</blockquote>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[playcanvas初级教程]: 	“<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=fXc-JjH2nNo&amp;list=PLGmYIROty-5ZX-a88X8ztUeYSPeuBj7rG">https://www.youtube.com/watch?v=fXc-JjH2nNo&amp;list=PLGmYIROty-5ZX-a88X8ztUeYSPeuBj7rG</a> “<br>[playcanvas官网API]: 	“<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/en/api/">https://developer.playcanvas.com/en/api/</a> “<br>[playcanvas中文]: 	“<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/zh/">https://developer.playcanvas.com/zh/</a> “</p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/playcanvas/" rel="tag">playcanvas</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            blender基本操作
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">playcanvas初识</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

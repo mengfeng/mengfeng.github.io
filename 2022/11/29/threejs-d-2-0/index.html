@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>threejs-d-2.0 |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-threejs-d-2-0"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  threejs-d-2.0
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/29/threejs-d-2-0/" class="article-date">
+  <time datetime="2022-11-29T08:43:31.000Z" itemprop="datePublished">2022-11-29</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/Three-js/">Three.js</a> / <a class="article-category-link" href="/categories/Web3D/Three-js/threejs-d-2-0/">threejs-d-2.0</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2.8k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">10 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="threejs-d-2-0"><a href="#threejs-d-2-0" class="headerlink" title="threejs-d-2.0"></a>threejs-d-2.0</h1><h3 id="一、创建第一个threejs应用"><a href="#一、创建第一个threejs应用" class="headerlink" title="一、创建第一个threejs应用"></a>一、创建第一个threejs应用</h3><p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+
+const scene = new THREE.Scene();//创建场景
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//创建透视相机（相机中的一种）
+const renderer = new THREE.WebGLRenderer();//创建渲染器
+renderer.setSize( window.innerWidth, window.innerHeight );//将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小
+document.body.appendChild( renderer.domElement );//将renderer（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中
+
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );//创建几何体
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );//创建基础网格材质
+const cube = new THREE.Mesh( geometry, material );//使用构造器
+scene.add( cube );//将几何体添加到场景
+camera.position.z = 5;//调整相机位置（默认0，0，0）
+
+//几何体循环旋转动画
+function animate() &#123;
+    requestAnimationFrame( animate );
+  //旋转坐标变换
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+  //重新渲染几何体
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<h4 id="1-创建场景、相机、渲染器"><a href="#1-创建场景、相机、渲染器" class="headerlink" title="1.创建场景、相机、渲染器"></a>1.创建场景、相机、渲染器</h4><blockquote>
+<p>如果我们有玩过三维软件的同学应该不会陌生这几个概念</p>
+<p>我们下面以三维软件C4D来简单认识一下吧</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129085326176.png"></p>
+<p>我们花一点点时间来解释一下这里发生了什么。我们现在建立了场景、相机和渲染器。</p>
+<pre><code class="javascript">const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>three.js里有几种不同的相机，在这里，我们使用的是<strong>PerspectiveCamera</strong>（透视摄像机）。</p>
+<p>第一个参数是<strong>视野角度（FOV）</strong>。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的单位是角度(与弧度区分开)。</p>
+<p>第二个参数是<strong>长宽比（aspect ratio）</strong>。 也就是你用一个物体的宽除以它的高的值。比如说，当你在一个宽屏电视上播放老电影时，可以看到图像仿佛是被压扁的。</p>
+<p>接下来的两个参数是<strong>近截面</strong>（near）和<strong>远截面</strong>（far）。 当物体某些部分比摄像机的<strong>远截面</strong>远或者比<strong>近截面</strong>近的时候，该这些部分将不会被渲染到场景中。或许现在你不用担心这个值的影响，但未来为了获得更好的渲染性能，你将可以在你的应用程序里去设置它。</p>
+<p>接下来是渲染器。这里是施展魔法的地方。除了我们在这里用到的WebGLRenderer渲染器之外，Three.js同时提供了其他几种渲染器，当用户所使用的浏览器过于老旧，或者由于其他原因不支持WebGL时，可以使用这几种渲染器进行降级。</p>
+<p>除了创建一个渲染器的实例之外，我们还需要在我们的应用程序里设置一个渲染器的尺寸。比如说，我们可以使用所需要的渲染区域的宽高，来让渲染器渲染出的场景填充满我们的应用程序。因此，我们可以将渲染器宽高设置为浏览器窗口宽高。对于性能比较敏感的应用程序来说，你可以使用<strong>setSize</strong>传入一个较小的值，例如<strong>window.innerWidth&#x2F;2</strong>和<strong>window.innerHeight&#x2F;2</strong>，这将使得应用程序在渲染时，以一半的长宽尺寸渲染场景。</p>
+<p>如果你希望保持你的应用程序的尺寸，但是以较低的分辨率来渲染，你可以在调用<strong>setSize</strong>时，将<strong>updateStyle</strong>（第三个参数）设为false。例如，假设你的<canvas> 标签现在已经具有了100%的宽和高，调用**setSize(window.innerWidth&#x2F;2, window.innerHeight&#x2F;2, false)**将使得你的应用程序以一半的分辨率来进行渲染。</p>
+<pre><code class="javascript">document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>最后一步很重要，我们将<strong>renderer</strong>（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中。这就是渲染器用来显示场景给我们看的<canvas>元素。</p>
+<h4 id="2-创建几何体、材质"><a href="#2-创建几何体、材质" class="headerlink" title="2.创建几何体、材质"></a>2.创建几何体、材质</h4><blockquote>
+<p>对于材质这块，就是给一个没有任何属性的物体添加属性，玻璃、金属、玉、有颜色的立方体。</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129090339038.png"></p>
+<p>要创建一个立方体，我们需要一个<strong>BoxGeometry</strong>（立方体）对象. 这个对象包含了一个立方体中所有的顶点（<strong>vertices</strong>）和面（<strong>faces</strong>）。未来我们将在这方面进行更多的探索。</p>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+camera.position.z = 5;
+</code></pre>
+<p>接下来，对于这个立方体，我们需要给它一个材质，来让它有颜色。Three.js自带了几种材质，在这里我们使用的是<strong>MeshBasicMaterial</strong>。所有的材质都存有应用于他们的属性的对象。在这里为了简单起见，我们只设置一个color属性，值为<strong>0x00ff00</strong>，也就是绿色。这里所做的事情，和在CSS或者Photoshop中使用十六进制(<strong>hex colors</strong>)颜色格式来设置颜色的方式一致。</p>
+<p>第三步，我们需要一个<strong>Mesh</strong>（网格）。 网格包含一个几何体以及作用在此几何体上的材质，我们可以直接将网格对象放入到我们的场景中，并让它在场景中自由移动。</p>
+<p>默认情况下，当我们调用**scene.add()<strong>的时候，物体将会被添加到</strong>(0,0,0)**坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。</p>
+<h4 id="3-创建渲染"><a href="#3-创建渲染" class="headerlink" title="3.创建渲染"></a>3.创建渲染</h4><blockquote>
+<p>这个就比较好理解了，添加x，y，z方向的位置变化</p>
+</blockquote>
+<p>现在，如果将之前写好的代码复制到HTML文件中，你不会在页面中看到任何东西。这是因为我们还没有对它进行真正的渲染。为此，我们需要使用一个被叫做“<strong>渲染循环</strong>”（render loop）或者“<strong>动画循环</strong>”（animate loop）的东西。</p>
+<pre><code class="javascript">function animate() &#123; 
+requestAnimationFrame( animate ); 
+renderer.render( scene, camera ); 
+&#125; 
+animate();
+</code></pre>
+<p>在这里我们创建了一个使渲染器能够在每次屏幕刷新时对场景进行绘制的循环（在大多数屏幕上，刷新率一般是60次&#x2F;秒）。如果你是一个浏览器游戏开发的新手，你或许会说<em>“为什么我们不直接用setInterval来实现刷新的功能呢？”</em>当然啦，我们的确可以用setInterval，但是，<strong>requestAnimationFrame</strong>有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。</p>
+<p>在开始之前，如果你已经将上面的代码写入到了你所创建的文件中，你可以看到一个绿色的方块。让我们来做一些更加有趣的事 —— 让它旋转起来。</p>
+<p>将下列代码添加到animate()函数中<strong>renderer.render</strong>调用的上方：</p>
+<pre><code class="javascript">cube.rotation.x += 0.01; 
+cube.rotation.y += 0.01;
+</code></pre>
+<p>这段代码每帧都会执行（正常情况下是60次&#x2F;秒），这就让立方体有了一个看起来很不错的旋转动画。基本上来说，当应用程序运行时，如果你想要移动或者改变任何场景中的东西，都必须要经过这个动画循环。当然，你可以在这个动画循环里调用别的函数，这样你就不会写出有上百行代码的<strong>animate</strong>函数。</p>
+<h4 id="效果演示："><a href="#效果演示：" class="headerlink" title="效果演示："></a>效果演示：</h4><p><img src="/2022/11/29/threejs-d-2-0/image-20221129090831716.png"></p>
+<h3 id="二、控制器（轨道控制器）"><a href="#二、控制器（轨道控制器）" class="headerlink" title="二、控制器（轨道控制器）"></a>二、控制器（轨道控制器）</h3><blockquote>
+<p>控制器有许多，我们这先说这一种</p>
+<p>轨道控制器是以物体为中心，对物体做环绕运动</p>
+</blockquote>
+<p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; //导入轨道控制器
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+const controls = new OrbitControls( camera,renderer.domElement  );
+camera.position.set(0,20,100);
+controls.update();//更新控制器。必须在摄像机的变换发生任何手动改变后调用
+function animate() &#123;
+    requestAnimationFrame( animate );
+    controls.update();//循环更新轨道控制器
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<p>OrbitControls( object : Camera, domElement : HTMLDOMElement )</p>
+<p>object: （必须）将要被控制的相机。该相机不允许是其他任何对象的子级，除非该对象是场景自身。</p>
+<p>domElement: 用于事件监听的HTML元素。</p>
+<p>那我们现在就可以移动我们的相机来观察我们的物体了。</p>
+<h3 id="三、添加辅助器"><a href="#三、添加辅助器" class="headerlink" title="三、添加辅助器"></a>三、添加辅助器</h3><blockquote>
+<p>这个来自与我们help里面的东西，文档里查就可以了</p>
+<p>添加辅助器的用处是为了更好的去开发</p>
+</blockquote>
+<h4 id="1-坐标辅助器"><a href="#1-坐标辅助器" class="headerlink" title="1.坐标辅助器"></a>1.坐标辅助器</h4><blockquote>
+<p>用于简单模拟3个坐标轴的对象.<br>红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.</p>
+</blockquote>
+<pre><code class="javascript">const axesHelper = new THREE.AxesHelper( 5 );//轴的线段长度. 默认为 1.
+scene.add( axesHelper );//添加到场景
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155031932.png"></p>
+<h4 id="2-相机辅助器"><a href="#2-相机辅助器" class="headerlink" title="2.相机辅助器"></a>2.相机辅助器</h4><blockquote>
+<p>用于模拟相机视锥体的辅助对象.<br>它使用 LineSegments 来模拟相机视锥体.</p>
+</blockquote>
+<pre><code class="javascript">const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const helper = new THREE.CameraHelper( camera );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155852737.png"></p>
+<p>CameraHelper( camera : Camera )</p>
+<p>camera – 被模拟的相机.</p>
+<p>为指定相机创建一个新的相机辅助对象 CameraHelper .</p>
+<h4 id="3-平面辅助器"><a href="#3-平面辅助器" class="headerlink" title="3.平面辅助器"></a>3.平面辅助器</h4><blockquote>
+<p>用于模拟平面 Plane 的辅助对象.</p>
+</blockquote>
+<pre><code class="javascript">const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
+const helper = new THREE.PlaneHelper( plane, 100, 0xffff00 );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160213446.png"></p>
+<p>PlaneHelper( plane : Plane, size : Float, hex : Color )</p>
+<p>plane – 被模拟的平面.<br>size – (可选的) 辅助对象的单边长度. 默认为 1.<br>color – (可选的) 辅助对象的颜色. 默认为 0xffff00.</p>
+<p>创建一个线框辅助对象来表示指定平面.</p>
+<h4 id="终结："><a href="#终结：" class="headerlink" title="终结："></a>终结：</h4><p>其他的辅助器，我们就自己按照需求去加吧，这个就是做一个参照</p>
+<h3 id="四、物体的属性"><a href="#四、物体的属性" class="headerlink" title="四、物体的属性"></a>四、物体的属性</h3><blockquote>
+<p>物体的属性，那我们要看一下cube是什么了</p>
+<p>根据控制台打印，它是个Mesh类，下面有许多属性</p>
+</blockquote>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160944920.png"></p>
+<h4 id="1-物体的位移"><a href="#1-物体的位移" class="headerlink" title="1.物体的位移"></a>1.物体的位移</h4><blockquote>
+<p>控制物体的位置</p>
+</blockquote>
+<pre><code class="javascript">cube.position.set(10,0,0)//默认为x，y，z方向
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161420179.png"></p>
+<h4 id="2-物体的旋转"><a href="#2-物体的旋转" class="headerlink" title="2.物体的旋转"></a>2.物体的旋转</h4><blockquote>
+<p>控制问题的旋转角度</p>
+<p>这个不是单纯的三维向量了</p>
+<p>是一个Euler类</p>
+</blockquote>
+<pre><code class="javascript">cube.rotation.set(Math.PI/4,0,0,&#39;XYZ&#39;)//默认为‘xyz’
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129162730828.png"></p>
+<p>Euler( x : Float, y : Float, z : Float, order : String )</p>
+<p>x - (optional) 用弧度表示x轴旋转量。 默认值是 <strong>0</strong>。<br>y - (optional) 用弧度表示y轴旋转量。 默认值是 <strong>0</strong>。<br>z - (optional) 用弧度表示z轴旋转量。 默认值是 <strong>0</strong>。<br>order - (optional) 表示旋转顺序的字符串，默认为’XYZ’（必须是大写）。</p>
+<h4 id="3-物体的缩放"><a href="#3-物体的缩放" class="headerlink" title="3.物体的缩放"></a>3.物体的缩放</h4><blockquote>
+<p>控制物体缩放</p>
+</blockquote>
+<pre><code class="javascript">cube.scale.set(3,2,1)
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161943968.png"></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/11/29/threejs-d-2-0/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/threejs/" rel="tag">threejs</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/11/30/threejs-d-3-0/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            threejs-d-3.0
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/11/28/electron-vue3-vite/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">electron-vue3-vite</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

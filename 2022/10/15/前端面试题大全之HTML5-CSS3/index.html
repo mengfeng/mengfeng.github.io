@@ -1,0 +1,2277 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>前端面试题大全之HTML5+CSS3 |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-前端面试题大全之HTML5-CSS3"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  前端面试题大全之HTML5+CSS3
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/" class="article-date">
+  <time datetime="2022-10-15T00:06:16.000Z" itemprop="datePublished">2022-10-15</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/">技术面试</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/HTML5-CSS3/">HTML5+CSS3</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">21k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">82 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="前端面试题大全（HTML5-CSS3）"><a href="#前端面试题大全（HTML5-CSS3）" class="headerlink" title="前端面试题大全（HTML5+CSS3）"></a>前端面试题大全（HTML5+CSS3）</h1><p>前端面试题类目分类</p>
+<ul>
+<li>HTML5 + CSS3</li>
+<li>JavaScript</li>
+<li>Vue + Vue3</li>
+<li>React</li>
+<li>Webpack</li>
+<li>服务端</li>
+</ul>
+<hr>
+<p>考点频率 ：♥︎ 、 ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎ ♥︎ ♥︎</p>
+<h2 id="HTML5-CSS3"><a href="#HTML5-CSS3" class="headerlink" title="HTML5 + CSS3"></a>HTML5 + CSS3</h2><h3 id="♥︎-父元素和子元素宽高不固定，如何实现水平垂直居中"><a href="#♥︎-父元素和子元素宽高不固定，如何实现水平垂直居中" class="headerlink" title="♥︎ 父元素和子元素宽高不固定，如何实现水平垂直居中"></a>♥︎ 父元素和子元素宽高不固定，如何实现水平垂直居中</h3><p>方法一：flex布局</p>
+<p>-父元素设置：display:flex; justify-content:center; align-items:center;</p>
+<p>-另一种：父元素设置弹性盒display:flex; 子元素可以设置margin:auto;实现水平居中</p>
+<p>方法二:定位属性（position）配合位移属性（transform）</p>
+<p>-子元素设置：position:absolute; top:50%;left:50%;transform:translate(-50%,-50%)</p>
+<pre><code class="html">//方法一：
+&lt;div class=&quot;parent&quot;&gt;
+    &lt;div class=&quot;child&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="css">body,html&#123;
+    width: 100%;
+    height: 100%;
+&#125;
+.parent&#123;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: antiquewhite;
+&#125;
+.parent .child&#123;
+    width: 200px;
+    height: 300px;
+    background-color: rgb(78,151,211);
+&#125;
+</code></pre>
+<pre><code class="html">//方法二
+&lt;div class=&quot;parent&quot;&gt;
+    &lt;div class=&quot;child&quot;&gt;
+        &lt;p&gt;&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="css">//css部分
+.parent&#123;
+         width: 100%;
+         height: 100%;
+         background-color: antiquewhite;
+        &#125;
+.child&#123;
+         position: absolute;
+         top:50%;
+         left:50%;
+         transform: translate(-50%,-50%);
+        &#125;
+.child p&#123;
+         width: 300px;
+         height: 400px;
+         background-color: rgb(78, 151, 211);
+        &#125;/
+</code></pre>
+<h3 id="♥︎简述title与h1的区别，b与strong的区别，i与em的区别"><a href="#♥︎简述title与h1的区别，b与strong的区别，i与em的区别" class="headerlink" title="♥︎简述title与h1的区别，b与strong的区别，i与em的区别"></a>♥︎简述title与h1的区别，b与strong的区别，i与em的区别</h3><p>《title与h1》</p>
+<p>1.从网站的角度来说，title更侧重于网站消息。title可以直接告诉搜索引擎和用户这个网站是关于什么主题和内容的。</p>
+<p>2.从文章的角度看，h1则是侧重于概括文章主题。</p>
+<p>3.一个网站可以有多个title，但最好一个单页用一个title，以便突出网站页面主体信息，从seo看，title权重比h1高，适用性比h1广。</p>
+<p>4.标记了h1的文字页面给予的权重会比页面内其他权重高很多，一个好的网站是h1和title并存，既突出h1文章主题，又突出网站主题和关键字。达到双重优化网站的效果。</p>
+<p>《b和strong》</p>
+<p>1.b只是对文本的简单加粗，strong是一个语义化标签，对相关文本具有强调作用。</p>
+<p>2.b标签只是侧重于字体加粗，strong标签加强字体的语气都是通过粗体来实现的，相比之下，搜索引擎更喜欢侧重于strong标签。</p>
+<p>3.strong标签更注重于内容上的应用，在html中，对关键词的标明。还有一些网站上，也有使用strong标签对小标题进行强调，但是在页面中，如果出现过多的strong标签，可能会对于排名不利。</p>
+<p>《i与em》</p>
+<p>1.i是实体标签，用来使字符倾斜，em是逻辑标签，作用是强调文本内容。</p>
+<p>2.i标签只是斜体的样式，没有实际含义，常用来表达无强调或者重意味的斜体，比如生物学名、术语、外来语。</p>
+<p>3.em表示标签内字符重要，用以强调，其默认格式是斜体，但是可以通过css添加样式。</p>
+<p>‼️建议：为了符合css的规范，i标签应尽量少用，应改用em。</p>
+<h3 id="♥︎什么是标准文档流"><a href="#♥︎什么是标准文档流" class="headerlink" title="♥︎什么是标准文档流"></a>♥︎什么是标准文档流</h3><p>标准文档流指的是元素排版布局过程中，元素会默认自动从左往右，从上往下的流式排列方式。当前面内容发生了变化，后面的内容位置也会随着发生变化。</p>
+<p>HTML就是一种标准文档流文件。</p>
+<h3 id="♥︎z-index是什么？在position的值什么时候可以触发"><a href="#♥︎z-index是什么？在position的值什么时候可以触发" class="headerlink" title="♥︎z-index是什么？在position的值什么时候可以触发"></a>♥︎z-index是什么？在position的值什么时候可以触发</h3><ul>
+<li>z-index堆叠上下文只有在postion:relative&#x2F;absolute&#x2F;fixed脱离文档流控制时才生效，static时无效。</li>
+<li>当父元素和子元素都处于堆叠上下文时，子元素继承父元素的优先级，故父元素大的就大，如果父元素没有处于堆叠上下文时，即z-index:auto;或者position:static;时，子元素不会继承父元素的优先级。</li>
+<li>z-index为0时依然处于堆叠上下文中，比负值高，比正值低。</li>
+<li>z-index为负值时不仅会处于z-index为0和正值元素的后面，还会处于非堆叠元素的后面。</li>
+</ul>
+<h3 id="♥︎简述一下src和href的区别，title和alt的区别"><a href="#♥︎简述一下src和href的区别，title和alt的区别" class="headerlink" title="♥︎简述一下src和href的区别，title和alt的区别"></a>♥︎简述一下src和href的区别，title和alt的区别</h3><p>href：href表示超文本引用，用来建立当前元素和文档的链接，常用在link和a等元素上。</p>
+<p>‼️注：当浏览器解析到这一句时会识别该文档为css文件，会下载并不会停止对当前文档的处理，所以建议使用link的方式而不是使用@import加载css。</p>
+<p>src：src表示引用资源，替换当前元素，是页面内容不可缺少的一部分，常用在img，script，iframe上。src指向外部资源的位置，指向的内部会嵌入到文档中当前标签所在的位置；请求src资源时会将其指向的资源下载并应用到当前文档中，例如js脚本、img图片等。</p>
+<p>‼️注：src链接内的地址不会有跨域问题。当浏览器解析到这一句时会暂停其他资源的下载和处理，直到将该资源加载、编译、执行完毕。这也是js脚本放在底部而不是头部的问题。</p>
+<p>title：</p>
+<p>1.title属性是为元素提供额外的注释信息，当鼠标放在元素上时会有title文字显示，以达到补充说明或提示。</p>
+<p>2.title属性更倾向于用户体验的考虑。</p>
+<p>3.title既可以是元素的属性也可以是标签。</p>
+<p>alt：</p>
+<p>1.alt属性是在你图片无法显示时的替代文本，它会直接输出在原本加载图片的地方。</p>
+<p>2.alt属性是有利于SEO，是搜索引擎搜录时判断图片与文字是否相关的重要依据。</p>
+<p>3.alt只能是元素的属性，只能用在img、area和input标签中（img，area中的alt必须指定）。</p>
+<p>‼️注：当a标签内嵌套img标签时，起作用的是img的title属性。</p>
+<h3 id="♥︎CSS清除浮动的方法"><a href="#♥︎CSS清除浮动的方法" class="headerlink" title="♥︎CSS清除浮动的方法"></a>♥︎CSS清除浮动的方法</h3><p>浮动问题，例如：</p>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221012073825650.png"></p>
+<p>浮动代码实现：</p>
+<pre><code class="html">&lt;div class=&quot;fater&quot;&gt;
+    &lt;div class=&quot;box1&quot;&gt;one&lt;/div&gt;
+    &lt;div class=&quot;box2&quot;&gt;two&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;box3&quot;&gt;three&lt;/div&gt;
+</code></pre>
+<pre><code class="css">.fater&#123;
+    width: 300px;
+    border:1px solid pink;
+&#125;
+.box1&#123;
+    width: 100px;
+    height: 100px;
+    background-color: blue;
+    float: left;
+&#125;
+.box2&#123;
+    width: 140px;
+    height: 120px;
+    background-color: blueviolet;
+    float: left;
+&#125;
+.box3&#123;
+    width: 200px;
+    height: 150px;
+    background-color: brown;
+&#125;
+</code></pre>
+<p>如上图所示，因为盒子1和2的浮动，脱离了文档流，那么在他们下面的盒子就会顶上来，又因为父盒子没有设置高度，此时父盒子的高度为零，浮动的元素不能撑开父盒子的高度是因为子元素脱离文档流，父元素没有脱离文档流，所以现在的父盒子相当于没有元素，所以高度为零。</p>
+<p>清除浮动的方法：</p>
+<p>1.在标签尾部添加空的块级标签，设置样式属性为：clear：both；</p>
+<p>缺点：如果页面浮动布局过多，就要添加很多空的块级元素，不利于页面的优化。</p>
+<pre><code class="html">//html
+&lt;div class=&quot;fater&quot;&gt;
+    &lt;div class=&quot;box1&quot;&gt;one&lt;/div&gt;
+    &lt;div class=&quot;box2&quot;&gt;two&lt;/div&gt;
+    &lt;div class=&quot;box4&quot;&gt;空元素&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;box3&quot;&gt;three&lt;/div&gt;
+//css
+.box4&#123;
+    clear:both;
+    background-color: aqua;
+&#125;
+</code></pre>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221012081413822.png"></p>
+<p>2.给父盒子添加overflow：hidden；（触发BFC）</p>
+<p>缺点：不能和position配合使用；内容增多的时候容易造成不会自动换行导致内容被隐藏，无法显示要溢出的元素。</p>
+<pre><code class="html">//html
+&lt;div class=&quot;fater&quot;&gt;
+    &lt;div class=&quot;box1&quot;&gt;one&lt;/div&gt;
+    &lt;div class=&quot;box2&quot;&gt;two&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;box3&quot;&gt;three&lt;/div&gt;
+//css
+.fater&#123;
+    width: 300px;
+    border:1px solid pink;
+    overflow: hidden;
+&#125;
+</code></pre>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221012081713849.png"></p>
+<p>3.使用伪元素清除浮动（推荐）</p>
+<p>缺点：ie6-7不支持伪元素 :after，使用zoom:1 触发hasLayout。</p>
+<pre><code class="html">//html
+&lt;div class=&quot;fater clear&quot;&gt;
+    &lt;div class=&quot;box1&quot;&gt;one&lt;/div&gt;
+    &lt;div class=&quot;box2&quot;&gt;two&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;box3&quot;&gt;three&lt;/div&gt;
+//css
+.clear::after&#123;
+    content: &quot;&quot;;
+    display: block;
+    clear: both;
+&#125;
+.clearfix&#123;
+        *zoom:1 // *ie6清除浮动的方式 *号只有IE6-IE7执行，其他浏览器不执行
+&#125;
+</code></pre>
+<p>4.直接给父元素单独设置高度（height）(不推荐)</p>
+<p>缺点：只适合高度固定的布局，不利于响应式布局。</p>
+<h3 id="♥︎hasLayout是什么？-了解即可"><a href="#♥︎hasLayout是什么？-了解即可" class="headerlink" title="♥︎hasLayout是什么？(了解即可)"></a>♥︎hasLayout是什么？(了解即可)</h3><p>hasLayout是IE特有的一个属性。很多的ie下的css bug都与其息息相关。在ie中，一个元素要么自己对自身的内容进行计算大小和组织，要么依赖于父元素来计算尺寸和组织内容。当一个元素的hasLayout属性值为true时，它负责对自己和可能的子孙元素进行尺寸计算和定位。虽然这意味着这个元素需要花更多的代价来维护自身和里面的内容，而不是依赖于祖先元素来完成这些工作。<br>下列元素默认 hasLayout&#x3D;true</p>
+<pre><code class="html">&lt;table&gt; &lt;td&gt; &lt;body&gt; &lt;img&gt; &lt;hr&gt; &lt;input&gt; &lt;select&gt; &lt;textarea&gt; &lt;button&gt; &lt;iframe&gt; &lt;embed&gt; &lt;object&gt; &lt;applet&gt; &lt;marquee&gt; 
+很多情况下，我们把 hasLayout的状态改成true 就可以解决很大部分ie下显示的bug。 
+hasLayout属性不能直接设定，你只能通过设定一些特定的css属性来触发并改变 hasLayout 状态。下面列出可以触发hasLayout的一些CSS属性值。 
+------------------------------------- 
+display 
+启动haslayout的值:inline-block 
+取消hasLayout的值:其他值 
+-------------------------------------- 
+width/height 
+启动hasLayout的值：除了auto以外的值 
+取消hasLayout的值：auto 
+--------------------------------------- 
+position 
+启动hasLayout的值：absolute 
+取消hasLayout的值：static 
+---------------------------------------- 
+float 
+启动hasLayout的值：left或right 
+取消hasLayout的值：none 
+--------------------------------------- 
+zoom 
+启动hasLayout的值：有值 
+取消hasLayout的值：narmal或者空值 
+（zoom是微软IE专有属性，可以触发hasLayout但不会影响页面的显示效果。zoom: 1常用来除错，不过 ie 5 对这个属性不支持。）
+</code></pre>
+<h3 id="♥︎什么是CSS3-transform-animation-区别是什么？"><a href="#♥︎什么是CSS3-transform-animation-区别是什么？" class="headerlink" title="♥︎什么是CSS3 transform? animation? 区别是什么？"></a>♥︎什么是CSS3 transform? animation? 区别是什么？</h3><p>一、transform描述的是元素静态样式</p>
+<p>​	transform属性应用与元素的2D和3D转换。这个属性允许你将元素旋转，缩放，移动，倾斜等。必须是鼠标移上或者点击执行属性变化，鼠标离开属性回归。说到底就是属性不会变化。配合-webkit-transition: 0.3s;transition: 0.3s;才会有动画的效果，否则会很生硬。</p>
+<pre><code class="css">旋转：rote(30deg)    水平面以元素中心旋转多少度；
+     rotateX(angle)   定义沿着 X 轴的 3D 旋转；
+     rotateY(angle)   定义沿着 Y 轴的 3D 旋转；
+位移：translate(x,y)   定义 2D 转换;
+     translate3d(x,y,z)  定义 3D 转换;
+缩放：scale(x,y)   定义 2D 缩放转换;
+     scale3d(x,y,z)   定义 3D 缩放转换;
+</code></pre>
+<p>二、实现动画效果的：transition  animation</p>
+<p>1、transition</p>
+<pre><code class="css">transition 属性是一个简写属性，用于设置四个过渡属性 
+transition: property    duration      timing-function   delay;
+            过渡的属性 | 完成过度效果需要时间 | 速度曲线  |  延迟时间
+.one1&#123;transition: width 3s linear 2s;&#125;    
+.one1:hover&#123;width:300px;&#125;
+
+transition定义了动画的属性、时间、速度曲线以及延迟时间  ；通常和hover等事件配合使用，由事件触发。
+</code></pre>
+<p>2、animation</p>
+<pre><code class="css">animation 属性是一个简写属性，用于设置六个动画属性：
+animation的使用必须结合@keyframes animation-name使用
+    @keyframes  move&#123;
+                                        form&#123; left:0px;&#125;  
+                                        to&#123; left:200px;&#125;
+                                    &#125;
+在需要动画的元素上面添加动画  div&#123;animation:move 5s infinite;&#125;
+animation: name duration timing-function delay iteration-count direction;
+动画名称，动画执行时间，速度曲线，动画延迟时间，播放次数，是否反向播放
+animation可以设定每一帧的样式和时间
+</code></pre>
+<p>区别：</p>
+<ol>
+<li>触发条件不同。transition通常和hover等事件配合使用，由事件触发。animation则立即播放。</li>
+<li>循环。 animation可以设定循环次数。</li>
+<li>精确性。 animation可以设定每一帧的样式和时间。tranistion 只能设定头尾。 animation中可以设置每一帧需要单独变化的样式属性， transition中所有样式属性都要一起变化。</li>
+<li>与javascript的交互。animation与js的交互不是很紧密。tranistion和js的结合更强大。js设定要变化的样式，transition负责动画效果，天作之合，比之前只能用js时爽太多。</li>
+</ol>
+<p>‼️总结：</p>
+<p>1.transition是css中检测指定属性变化进行自动补间动画的属性。</p>
+<p>2.animation是先指定好动画过程中的关键帧属性，进行动画的属性。</p>
+<h3 id="♥︎如何理解HTML结构语义化？"><a href="#♥︎如何理解HTML结构语义化？" class="headerlink" title="♥︎如何理解HTML结构语义化？"></a>♥︎如何理解HTML结构语义化？</h3><h4 id="一、什么是语义化？"><a href="#一、什么是语义化？" class="headerlink" title="一、什么是语义化？"></a>一、什么是语义化？</h4><p>字面意思就是说根据我们所说的话，就能了解其中的含义。语义化，故名思意，就是你写的HTML结构，是用相对应的有一定语义的英文字母(标签)表示的，标记的，因为HTML本身就是标记语言。不仅对自己来说，容易阅读，书写。别人看你的代码和结构也容易理解，甚至对一些不是做网页开发的人来说，也容易阅读。</p>
+<h4 id="二、什么是HTML语义化？"><a href="#二、什么是HTML语义化？" class="headerlink" title="二、什么是HTML语义化？"></a>二、什么是HTML语义化？</h4><p>首先标签语义化是指HTML，不是CSS, 语义化标签只是HTML，CSS不存在语义化。HTML是标签，CSS是属性。</p>
+<p>在最初html里标签的语义，我们看到table,就会知道这是列表，看到p，就知道这是段落，看到img知道是图片，看到input就知道这是一个表单，h1~h6是标题。 机器和人类相比笨多了，但是只要我们设定好程序，上面的标签的意思机器也能读懂。</p>
+<h4 id="三、怎样判断标签是否语义化"><a href="#三、怎样判断标签是否语义化" class="headerlink" title="三、怎样判断标签是否语义化"></a>三、怎样判断标签是否语义化</h4><p>去掉样式，看网页结构是否组织良好有序，是否仍然有很好的可读性。</p>
+<h4 id="四、写HTML代码时应注意什么？"><a href="#四、写HTML代码时应注意什么？" class="headerlink" title="四、写HTML代码时应注意什么？"></a>四、写HTML代码时应注意什么？</h4><p>1.尽可能少的使用无语义的标签div和span；</p>
+<p>2.在语义不明显时，既可以使用div或者p时，尽量用p, 因为p在默认情况下有上下间距，对兼容特殊终端有利；</p>
+<p>3.不要使用纯样式标签，如：b、font、u等，改用css设置。</p>
+<p>4.需要强调的文本，可以包含在strong或者em标签中(浏览器预设样式，能用CSS指定就不用他们)，strong默认样式是加粗(不要用b)，em是斜体(不用i)；</p>
+<p>5.使用表格时，标题要用caption，表头用thead，主体部分用tbody包围，尾部用tfoot包围。表头和一般单元格要区分开，表头用th，单元格用td；</p>
+<p>6.每个input标签对应的说明文本都需要使用label标签，并且通过为input设置id属性，在lable标签中设置for&#x3D;someld来让说明文本和相对应的input关联起来；</p>
+<h4 id="五、解决的问题（好处）"><a href="#五、解决的问题（好处）" class="headerlink" title="五、解决的问题（好处）"></a>五、解决的问题（好处）</h4><p>1.清晰的页面结构。去掉或样式丢失的时候,也能让页面呈现清晰的结构，增强页面的可读性。</p>
+<p>2.支持更多的设备。屏幕阅读器会完全根据你的标记来“读”你的网页。更好的支持浏览器的阅读模式等。</p>
+<p>3.有利于SEO(搜索引擎优化)。和搜索引擎建立良好沟通，有助于爬虫抓取更多的有效信息，搜索引擎的爬虫也依赖于标记来确定上下文和各个关键字的权重。</p>
+<p>4.便于团队开发和维护。在团队中大家都遵循同一个标准，可以减少很多差异化的东西，方便开发和维护，提高开发效率，甚至实现模块化开发。</p>
+<p>5.方便其他设备解析(如屏幕阅读器、盲人阅读器、移动设备)以意义的方式来渲染网页；</p>
+<h3 id="♥︎块级元素？行内元素？空元素？"><a href="#♥︎块级元素？行内元素？空元素？" class="headerlink" title="♥︎块级元素？行内元素？空元素？"></a>♥︎块级元素？行内元素？空元素？</h3><p>1.行内元素：</p>
+<p>不独占一行、会和其他的行内元素排成一排；</p>
+<p>不能设置宽高，默认的宽高是由其内容宽高撑起来的；</p>
+<p>margin 上下不生效，左右生效；</p>
+<p>2.块级元素</p>
+<p>独占一行，不会和其他的元素排成一排；</p>
+<p>可以设置宽高，默认的宽度是继承父元素的宽度、高度默认是其内容的高度；</p>
+<p>margin 上下左右都可以设置，margin : auto;不生效；</p>
+<p>3.行内块元素</p>
+<p>不独占一行，可以和其他的行内元素或者行内块级元素排成一排；</p>
+<p>设置宽高生效、默认宽度为父元素的宽度，默认高度为其内容的高度；</p>
+<p>margin 上下左右生效，margin : auto;不生效；</p>
+<hr>
+<p>常见行内元素：a、b、u、span、i、em、strong等文字标签</p>
+<p>常见块级元素： div、table、tr、form、ul、li、ol、h1~h6、p</p>
+<p>常见行内块元素： img、select、input</p>
+<p>常见空元素： img、hr、br、input、meta</p>
+<hr>
+<h3 id="♥︎meta标签的name属性值"><a href="#♥︎meta标签的name属性值" class="headerlink" title="♥︎meta标签的name属性值"></a>♥︎meta标签的name属性值</h3><p>meta标签的name属性是用来定义一个HTML文档的描述、关键词，规定了元数据的名称，规定了content属性的信息&#x2F;值的名称。</p>
+<pre><code class="html">//属性值
+1.application-name  //规定页面所代表的Web应用程序的名称
+2.author  //规定页面文档的作者的名字
+</code></pre>
+<pre><code class="html">1.description  //规定页面的描述。搜索引擎会把这个描述显示在搜索结果中
+实例：&lt;meta name=&quot;description&quot; content=&quot;页面描述&quot;&gt;
+2.gennerator  //规定用于生成文档的一个软件包（不用于手写页面）
+实例：&lt;meta name=&quot;gennerator&quot; content=&quot;FrontPage 4.0&quot;&gt;
+3.keywords  //规定一个逗号分隔的关键词列表 - 相关的网页（告诉搜索引擎页面是与什么相关的）
+实例：&lt;meta name=&quot;keywords&quot; content=&quot;HTML，meta tag，tag reference&quot;&gt;
+</code></pre>
+<h3 id="♥︎如何实现图片和文字在同一行显示？"><a href="#♥︎如何实现图片和文字在同一行显示？" class="headerlink" title="♥︎如何实现图片和文字在同一行显示？"></a>♥︎如何实现图片和文字在同一行显示？</h3><p>1.给img标签添加“vertical-align：middle”属性</p>
+<p>2.如果是背景图，则通过background的定位属性来设置位置</p>
+<p>3.分别把图片和文字放入不同的div中，设置“vertical-align：middle”属性</p>
+<h3 id="♥︎简述video标签的几个属性和方法"><a href="#♥︎简述video标签的几个属性和方法" class="headerlink" title="♥︎简述video标签的几个属性和方法"></a>♥︎简述video标签的几个属性和方法</h3><h4 id="1、video"><a href="#1、video" class="headerlink" title="1、video"></a>1、video</h4><p>video标签的使用方法，如下：</p>
+<pre><code class="html"> &lt;video src=&quot;视频文件路径&quot; controls&gt;请选择兼容的浏览器&lt;/video&gt;
+    &lt;!-- 
+        其中src时video的基本属性用于存放视频文件路径；
+        而controls是video标签提供的一套默认的控制栏功能；
+        而video标签中包含的文字是用于浏览器不支持时显示的；
+     --&gt;
+</code></pre>
+<p>通过在video中使用更多的视频格式，从而兼容更多的浏览器</p>
+<pre><code class="html">&lt;video controls&gt;
+    &lt;source src = &quot;视频文件路径&quot; type = &quot;video/格式&quot;&gt;
+    &lt;source src = &quot;视频文件路径&quot; type = &quot;video/格式&quot;&gt;
+    &lt;source src = &quot;视频文件路径&quot; type = &quot;video/格式&quot;&gt;
+    ...
+&lt;/video&gt;
+</code></pre>
+<h4 id="2、video常用的标签播放属性"><a href="#2、video常用的标签播放属性" class="headerlink" title="2、video常用的标签播放属性"></a>2、video常用的标签播放属性</h4><table>
+<thead>
+<tr>
+<th align="center">属性</th>
+<th align="center">允许取的值</th>
+<th align="center">取值的说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">autoplay</td>
+<td align="center">autoplay</td>
+<td align="center">如果出现了该属性，则视频在缓冲就绪后马上播放</td>
+</tr>
+<tr>
+<td align="center">controls</td>
+<td align="center">controls</td>
+<td align="center">如果出现了该属性，则向用户显示控件，比如播放按钮</td>
+</tr>
+<tr>
+<td align="center">height</td>
+<td align="center">px(多少像素)、100%</td>
+<td align="center">设置视频播放器的高度</td>
+</tr>
+<tr>
+<td align="center">width</td>
+<td align="center">px(多少像素)、100%</td>
+<td align="center">设置视频播放器的宽度</td>
+</tr>
+<tr>
+<td align="center">loop</td>
+<td align="center">loop</td>
+<td align="center">如果出现该属性，则当媒体文件播放完后再次播放（循环播放）</td>
+</tr>
+<tr>
+<td align="center">preload</td>
+<td align="center">preload</td>
+<td align="center">如果出现该属性，则视频在页面加载时进行加载，并预备播放。如果使用了autoplay，则忽略该属性）</td>
+</tr>
+<tr>
+<td align="center">src</td>
+<td align="center">视频文件的路径</td>
+<td align="center">视频文件的路径</td>
+</tr>
+</tbody></table>
+<h4 id="3、video对象的常用方法"><a href="#3、video对象的常用方法" class="headerlink" title="3、video对象的常用方法"></a>3、video对象的常用方法</h4><table>
+<thead>
+<tr>
+<th align="center">方法</th>
+<th align="center">方法描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">load()</td>
+<td align="center">该方法用于加载视频文件，为播放做准备。常用于播放前的预加载，也会用于重新加载媒体文件</td>
+</tr>
+<tr>
+<td align="center">play()</td>
+<td align="center">用于播放视频文件。如果视频没有加载，则加载并播放；如果视频时暂停的，则变为播放</td>
+</tr>
+<tr>
+<td align="center">pause()</td>
+<td align="center">暂停视频</td>
+</tr>
+<tr>
+<td align="center">canPlayType()</td>
+<td align="center">测试浏览器是否支持指定的视频类型</td>
+</tr>
+</tbody></table>
+<h4 id="4、video对象的常用属性"><a href="#4、video对象的常用属性" class="headerlink" title="4、video对象的常用属性"></a>4、video对象的常用属性</h4><table>
+<thead>
+<tr>
+<th align="center">属性</th>
+<th align="center">属性描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">currentSrc</td>
+<td align="center">返回当前视频文件的地址</td>
+</tr>
+<tr>
+<td align="center">currentTime</td>
+<td align="center">设置或者返回视频中的当前播放位置（以秒为单位）</td>
+</tr>
+<tr>
+<td align="center">duration</td>
+<td align="center">返回视频的长度（以秒为单位）</td>
+</tr>
+<tr>
+<td align="center">ended</td>
+<td align="center">返回视频的播放是否以及结束</td>
+</tr>
+<tr>
+<td align="center">error</td>
+<td align="center">返回视频错误状态的MediaError对象</td>
+</tr>
+<tr>
+<td align="center">paused</td>
+<td align="center">设置或者返回视频是否暂停</td>
+</tr>
+<tr>
+<td align="center">muted</td>
+<td align="center">设置或者返回视频是否关闭声音</td>
+</tr>
+<tr>
+<td align="center">volume</td>
+<td align="center">设置或者返回视频的音量大小</td>
+</tr>
+<tr>
+<td align="center">height &#x2F; width</td>
+<td align="center">设置或者返回视频的高度值 &#x2F; 宽度值</td>
+</tr>
+</tbody></table>
+<h3 id="♥︎什么是border-image？什么是box-sizing"><a href="#♥︎什么是border-image？什么是box-sizing" class="headerlink" title="♥︎什么是border-image？什么是box-sizing?"></a>♥︎什么是border-image？什么是box-sizing?</h3><h4 id="一、border-image"><a href="#一、border-image" class="headerlink" title="一、border-image"></a>一、border-image</h4><p>border-image 属性可以通过一些简单的规则，将一副图像划分为 9 个单独的部分，浏览器会自动使用相应的部分来替换边框的默认样式。border-image 属性是五个 border-image-* 属性的简写，其语法格式如下：</p>
+<pre><code class="css">//集成属性
+border-image：border-image-source || border-image-slice [ / border-image-width | / border-image-width ? / border-image-outset ]? || border-image-repeat；
+//单个属性
+border-image-source：定义边框图像的路径；
+border-image-slice：定义边框图像从什么位置开始分割；
+border-image-width：定义边框图像的厚度（宽度）；
+border-image-outset：定义边框图像的外延尺寸（边框图像区域超出边框的量）；
+border-image-repeat：定义边框图像的平铺方式。
+</code></pre>
+<h4 id="二、box-sizing"><a href="#二、box-sizing" class="headerlink" title="二、box-sizing"></a>二、box-sizing</h4><p>当布局使用的是自适应的布局方式时，盒子的宽度给的是百分比的形式，但是边框和内边距是用像素来表示的话就会改变盒子视觉上的大小，但是给加上<code>box-sizing:border-box</code>的话就会在不改变宽高的情况下，让边框和内边距满足我们所需要的条件之下，让<code>content</code>的大小自适应。</p>
+<p>使用box-sizing:border-box；时的盒子模型：</p>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/28377643-162495979b0b252c.png"></p>
+<p>使用了box-sizing:border-box；盒模型：</p>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/28377643-b283527c28a3d1c4.png"></p>
+<h3 id="♥︎div-css的布局比较table布局有什么有点？"><a href="#♥︎div-css的布局比较table布局有什么有点？" class="headerlink" title="♥︎div+css的布局比较table布局有什么有点？"></a>♥︎div+css的布局比较table布局有什么有点？</h3><h4 id="一、table布局"><a href="#一、table布局" class="headerlink" title="一、table布局"></a>一、table布局</h4><p>优点：</p>
+<p>1、对于新手而言，容易上手，尤其对于一些布局中规中矩的网页，更让人首先想到excel，进而通过使用table去实现它。</p>
+<p>2、表现上更加“严谨”，在不同浏览器中都能得到很好的兼容</p>
+<p>3、通过复杂的表格套表格的形式，也可以实现比较复杂的布局需求。布置好表格，然后将内容放进去就可以了。</p>
+<p>4、它可以不用顾及垂直居中的问题。</p>
+<p>5、数据化的存放更合理。</p>
+<p>缺点：</p>
+<p>1、标签结构多，复杂，在表格布局中，主要是用到表格的相互嵌套使用，这样就会造成代码的复杂度更高！</p>
+<p>2、表格布局，不利于搜索引擎抓取信息，直接影响到网站的排名；</p>
+<h4 id="二、div-css布局"><a href="#二、div-css布局" class="headerlink" title="二、div + css布局"></a>二、div + css布局</h4><p>优点：</p>
+<p>1、符合W3C标准的，W3C标准提出网页由三部分组成：结构（Structure）、表现（Presentation）和行为（Behavior）。结构清晰明了，结构、样式和行为分离，带来足够好的可维护性。</p>
+<p>2、布局更加灵活多样，能够通过样式选择来实现界面设计方面的更多要求。</p>
+<p>3、布局改版方便，不需要过多地变动页面内容，通常只要更换相应的css样式就可以将网页变成另外一种风格展现出来。</p>
+<p>4、布局可以让一些重要的链接和文字信息等优先让搜索引擎抓取，内容更便于搜索。</p>
+<p>5、增加网页打开速度，增强用户体验。</p>
+<p>缺点：</p>
+<p>1、开发技术高，要考虑兼容版本浏览器。目前来看，DIV+CSS还没有实现所有浏览器的统一兼容。</p>
+<p>2、CSS网站制作的设计元素通常放在1个外部文件中，或几个文件，</p>
+<p>有可能相当复杂，甚至比较庞大，如果CSS文件调用出现异常，那么整个网站将变得惨不忍睹。</p>
+<p>‼️总结：div+css的布局较table布局的明显优势；</p>
+<p>1，其实也是div+css布局的第一个特点，table标签被严格地定义为存放数据的一个区域，而不是布局工具，它的布局形式不符合W3C标准，没有实现结构和表现的分离，它既有css的表现功能，也有html的结构功能。</p>
+<p>2，table布局加载网页时，必须整体加载完，降低了网页的呈现速度，而div+css布局是边加载边显示的。</p>
+<p>3，table布局在网页代码编写时，有时需要嵌套多重表格才能实现，但使用div+css布局，相对而言会减少许多嵌套时的代码，更容易检查和维护。</p>
+<p>4，table布局不方便表现的更换，使用div+css布局，大多只要更改css样式表就能变化表现形式。</p>
+<p>5、易于维护和改版。</p>
+<h3 id="♥︎display-none和visbility-hidden的区别是什么？"><a href="#♥︎display-none和visbility-hidden的区别是什么？" class="headerlink" title="♥︎display:none和visbility:hidden的区别是什么？"></a>♥︎display:none和visbility:hidden的区别是什么？</h3><p>display：none 和visibility：hidden都可以实现让元素隐藏的效果，但原理是大不相同。</p>
+<p>1.display:none是让这个元素失去块元素的效果，其本身这个元素也是直接消失，会影响到布局问题。</p>
+<p>2.visibility:hidden:可以让元素消失，属于css样式，它只是简单的让元素看不见，但本身的位置还在，如果对div进行hidden，那么div除了看不见，其他所有的样式都在。</p>
+<hr>
+<h3 id="♥︎♥︎分别实现骰子中的一点-和-三点的布局。"><a href="#♥︎♥︎分别实现骰子中的一点-和-三点的布局。" class="headerlink" title="♥︎♥︎分别实现骰子中的一点 和 三点的布局。"></a>♥︎♥︎分别实现骰子中的一点 <strong>和</strong> 三点的布局。</h3><p>1.一点布局</p>
+<pre><code class="html">&lt;div class=&quot;father&quot;&gt;
+    &lt;div class=&quot;child&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="css">.father&#123;
+    width: 100px;
+    height: 100px;
+    background-color: black;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+&#125;
+.child&#123;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+&#125;
+</code></pre>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221012151555911.png" alt="一点"></p>
+<p>2.三点布局</p>
+<pre><code class="html">&lt;div class=&quot;father&quot;&gt;
+    &lt;div class=&quot;child&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;child1&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;child2&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="css">.father&#123;
+    width: 100px;
+    height: 100px;
+    background-color: black;
+    padding: 5px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+&#125;
+.child&#123;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+&#125;
+.child1&#123;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    align-self: center;
+&#125;
+.child2&#123;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    align-self: flex-end;
+&#125;
+</code></pre>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221012152019924.png" alt="三点布局"></p>
+<h3 id="♥︎♥︎简述选择器-和-的区别。"><a href="#♥︎♥︎简述选择器-和-的区别。" class="headerlink" title="♥︎♥︎简述选择器~和+的区别。"></a>♥︎♥︎简述选择器~和+的区别。</h3><p>～选择器的作用：</p>
+<p>​	1.选择紧跟着当前符合条件元素后面的同级元素</p>
+<p>​	2.可以匹配多个</p>
+<p>+选择器的作用：</p>
+<p>​	1.选择紧跟在当前符合条件元素后面的同级元素</p>
+<p>​	2.只能匹配一个</p>
+<h3 id="♥︎♥︎简述align-items和align-content的区别。"><a href="#♥︎♥︎简述align-items和align-content的区别。" class="headerlink" title="♥︎♥︎简述align-items和align-content的区别。"></a>♥︎♥︎简述align-items和align-content的区别。</h3><p>1.align-item属性是针对单独的每一个flex子项起作用，它的基本单位是每一个子项，在所有情况下都有效果（当然要看具体的属性值）。</p>
+<p>2.align-content属性是将flex子项作为一个整体起作用，它的基本单位是子项构成的行，只在两种情况下有效果：①子项多行且flex容器高度固定 ②子项单行，flex容器高度固定且设置了flex-wrap:wrap;</p>
+<p>‼️总结列表</p>
+<table>
+<thead>
+<tr>
+<th align="center">条件</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center">属性（是否有效果  是&#x2F;否）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">子项</td>
+<td align="center">flex容器</td>
+<td align="center">align-items</td>
+<td align="center">align-content</td>
+</tr>
+<tr>
+<td align="center">单行</td>
+<td align="center">不指定高度</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">固定高度</td>
+<td align="center">是</td>
+<td align="center">否（但是有设置flex-wrap:wrap;时，有效果）</td>
+</tr>
+<tr>
+<td align="center">多行</td>
+<td align="center">不指定高度</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">固定高度</td>
+<td align="center">是</td>
+<td align="center">是</td>
+</tr>
+</tbody></table>
+<h3 id="♥︎♥︎简述data-属性的用法（如何设置，如何获取），有何优势？"><a href="#♥︎♥︎简述data-属性的用法（如何设置，如何获取），有何优势？" class="headerlink" title="♥︎♥︎简述data-属性的用法（如何设置，如何获取），有何优势？"></a>♥︎♥︎简述data-属性的用法（如何设置，如何获取），有何优势？</h3><p>data-*定义：</p>
+<p>1.是用于存储页面或应用程序的私有自定义数据。</p>
+<p>2.赋予我们在所以html元素上嵌入自定义data属性的能力。</p>
+<p>data-*用法：</p>
+<p>1.属性名不应该包含任何大写字母，并且在前缀“data-”之后必须有至少一个字母。</p>
+<p>2.属性值可以是任何字符。</p>
+<p>3.一个元素可以拥有任意数量的data属性。</p>
+<p>4.data属性无法存储对象，如需存储，可以通过对象序列化。</p>
+<p>data-*设置方法：</p>
+<p>1.如何设置</p>
+<pre><code class="javascript">通过javascript内置的setAttribute（‘data属性名’，‘新内容’）即可设置。
+
+（兼容性方法）通过该数据类型的（dataset）API设置data值，IE10以上才支持；
+
+​		var button = document.queryselector(&#39;button&#39;)
+
+​		button.dataset.data属性名 = ‘新内容’；//这里的data属性名是指data-后面的名字
+</code></pre>
+<p>2.如果获取</p>
+<pre><code class="javascript">通过javascript内置的getAttribute（‘data属性名’）即可获取。
+兼容性方法）通过该数据类型的（dataset）API设置data值，IE10以上才支持；
+
+​		var button = document.queryselector(&#39;button&#39;)
+
+​		data = button.dataset.data属性名；//这里的data属性名是指data-后面的名字
+</code></pre>
+<p>❗️data-*优势：</p>
+<p>1.其存储的自定义数据能够被页面的javascript利用，可以创建更好的用户体验。</p>
+<p>2.可以通过javascript来构造数据、填充数据。</p>
+<p>3.代码体积小、较为灵活。</p>
+<p>4.解决网站的外观和实用性之间产生的冲突。</p>
+<h3 id="♥︎♥︎CSS3-如何实现圆角？"><a href="#♥︎♥︎CSS3-如何实现圆角？" class="headerlink" title="♥︎♥︎CSS3 如何实现圆角？"></a>♥︎♥︎CSS3 如何实现圆角？</h3><h4 id="一、border-radius-完整写法："><a href="#一、border-radius-完整写法：" class="headerlink" title="一、border-radius 完整写法："></a>一、border-radius 完整写法：</h4><p>border-radius:为元素添加圆角边框。<br>border-radius:10px 20px 30px 40px &#x2F; 40px 30px 20px 10px<br>“&#x2F;”前的四个数值表示圆角的水平半径，后面四个值表示圆角的垂直半径。</p>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221013161227251.png"></p>
+<pre><code class="css">比如：
+border-radius: 2em 1em 4em / 0.5em 3em;
+等同于：
+border-top-left-radius: 2em 0.5em; //左上角
+border-top-right-radius: 1em 3em; //右上角
+border-bottom-right-radius: 4em 0.5em; //右下角
+border-bottom-left-radius: 1em 3em; //左下角
+</code></pre>
+<p>常见简写方式：</p>
+<ul>
+<li>border-radius：30px&#x2F;20px；表示每个圆角的水平半径时30px,垂直半径为20px;</li>
+<li>border-radius:30px; 等同于：border-radius：30px 30px 30px 30px&#x2F;30px 30px 30px 30px；</li>
+</ul>
+<h3 id="♥︎♥︎HTML5有哪些缓存方式？"><a href="#♥︎♥︎HTML5有哪些缓存方式？" class="headerlink" title="♥︎♥︎HTML5有哪些缓存方式？"></a>♥︎♥︎HTML5有哪些缓存方式？</h3><p>1、localstorege缓存，将数据储存在本地客户端，只有用户手动清除才能清除缓存</p>
+<pre><code class="javascript">API：
+    1.localstorege.setItem(key,value)，键值对的形式缓存
+  2.localstorege.getItem(key)，根据键名来缓存值
+  3.localstorege.length ，获取总缓存数量
+</code></pre>
+<p>2、sessionStorege 会话缓存，会话机制是指从打开浏览器开始访问页面的时候，到关闭这个页面的过程成为一个会话，sessionStorege储存的数据会随着页面关闭而销毁</p>
+<pre><code class="javascript">API: 
+    1. sessionStorage.setItem(key,val)，localStorage是以键值对的形式创建的；
+  2. sessionStorage.getItem(key)，根据键名来获取缓存的值；
+  3. sessionStorage.length；获取总共缓存值得数量， localStoarge返回的是个对象；
+</code></pre>
+<p>3、离线缓存机制(Application Cache)</p>
+<pre><code class="javascript">一、配置manifest文件，manifest 文件是简单的文本文件，它告知浏览器被缓存的内容（以及不缓存的内容）
+二、manifest 文件可分为三个部分：
+    1、CACHE MANIFEST - 在此标题下列出的文件将在首次下载后进行缓存
+    2、NETWORK - 在此标题下列出的文件需要与服务器的连接，且不会被缓存
+    3、FALLBACK - 在此标题下列出的文件规定当页面无法访问时的回退页面（比如 404 页面）
+三、API： 0（UNCACHED） : 无缓存， 即没有与页面相关的应用缓存
+    1 （IDLE） : 闲置，即应用缓存未得到更新
+    2 （CHECKING） : 检查中，即正在下载描述文件并检查更新
+    3 （DOWNLOADING） : 下载中，即应用缓存正在下载描述文件中指定的资源
+    4 （UPDATEREADY） : 更新完成，所有资源都已下载完毕
+    5 （IDLE） : 废弃，即应用缓存的描述文件已经不存在了，因此页面无法再访问应用缓存
+</code></pre>
+<p>4、web SQL</p>
+<pre><code class="javascript">1. 关系数据库，通过SQL语句访问
+2. Web SQL 数据库API并不是HTML5 规范的一部分，但是它是一个独立的规范，引入了一组使用SQL操作客户端数据库的APIs
+3. 支持情况：Web SQL 数据库可以在最新版的 Safari, Chrome 和 Opera 浏览器中工作。
+4. API：
+    openDatabase：这个方法使用现有的数据库或者新建的数据库创建一个数据库对象。
+    transaction：这个方法让我们能够控制一个事务，以及基于这种情况执行提交或者回滚。
+    executeSql：这个方法用于执行实际的 SQL 查询。
+</code></pre>
+<p>5、 IndexDB</p>
+<pre><code class="javascript">    索引数据库 (IndexedDB) API（作为 HTML5 的一部分）对创建具有丰富本地存储数据的数据密集型的离线 HTML5 Web 应用程序很有用。同时它还有助于本地缓存数据，使传统在线 Web 应用程序（比如移动 Web 应用程序）能够更快地运行和响应。
+</code></pre>
+<h3 id="♥︎♥︎CSS3新增伪类有那些"><a href="#♥︎♥︎CSS3新增伪类有那些" class="headerlink" title="♥︎♥︎CSS3新增伪类有那些"></a>♥︎♥︎CSS3新增伪类有那些</h3><pre><code class="javascript">常用的伪类：
+     1. :link 选择所有未访问的链接
+     2. :visited 选择所有访问过的链接
+     3. :active 选择正在活动的链接（或理解为鼠标点击瞬间效果）
+     4. :hover 鼠标放到链接后的状态
+     5. :focus 选择元素输入后具有焦点
+     6. :before 在元素之前插入内容
+     7. :after 在元素之后插入内容
+</code></pre>
+<h3 id="♥︎♥︎什么叫做优雅降级和渐进增强？"><a href="#♥︎♥︎什么叫做优雅降级和渐进增强？" class="headerlink" title="♥︎♥︎什么叫做优雅降级和渐进增强？"></a>♥︎♥︎什么叫做优雅降级和渐进增强？</h3><h4 id="一、渐进增强-progressive-enhancement："><a href="#一、渐进增强-progressive-enhancement：" class="headerlink" title="一、渐进增强 progressive enhancement："></a>一、渐进增强 progressive enhancement：</h4><ol>
+<li><p>针对低版本浏览器进行构建页面，保证最基本的功能，然后再针对高级浏览器进行效果、交互等改进和追加功能达到更好的用户体验。</p>
+</li>
+<li><p>渐进增强观点则认为应关注于内容本身。内容是我们建立网站的诱因。有的网站展示它，有的则收集它，有的寻求，有的操作，还有的网站甚至会包含以上的种种，但相同点是它们全都涉及到内容。这使得“渐进增强”成为一种更为合理的设计范例。这也是它立即被 Yahoo! 所采纳并用以构建其“分级式浏览器支持 (Graded Browser Support)”策略的原因所在。</p>
+</li>
+</ol>
+<h4 id="二、优雅降级-graceful-degradation："><a href="#二、优雅降级-graceful-degradation：" class="headerlink" title="二、优雅降级 graceful degradation："></a>二、优雅降级 graceful degradation：</h4><ol>
+<li><p>一开始就构建完整的功能，然后再针对低版本浏览器进行兼容。</p>
+</li>
+<li><p>优雅降级观点认为应该针对那些最高级、最完善的浏览器来设计网站。而将那些被认为“过时”或有功能缺失的浏览器下的测试工作安排在开发周期的最后阶段，并把测试对象限定为主流浏览器（如 IE、Mozilla 等）的前一个版本。</p>
+</li>
+</ol>
+<p>‼️区别：</p>
+<ol>
+<li><p>优雅降级是从复杂的现状开始，并试图减少用户体验的供给</p>
+</li>
+<li><p>渐进增强则是从一个非常基础的，能够起作用的版本开始，并不断扩充，以适应未来环境的需要</p>
+</li>
+<li><p>降级（功能衰减）意味着往回看；而渐进增强则意味着朝前看，同时保证其根基处于安全地带</p>
+</li>
+</ol>
+<h3 id="♥︎♥︎请问苹果原生浏览器中默认样式如何清除，例如button，input默认样式？"><a href="#♥︎♥︎请问苹果原生浏览器中默认样式如何清除，例如button，input默认样式？" class="headerlink" title="♥︎♥︎请问苹果原生浏览器中默认样式如何清除，例如button，input默认样式？"></a>♥︎♥︎请问苹果原生浏览器中默认样式如何清除，例如button，input默认样式？</h3><pre><code class="css">清除苹果默认样式：css样式中加入 
+input,textarea,button &#123; 
+  -webkit-appearance: none; 
+  border-radius:0px; 
+  border:none;
+&#125;
+input、button默认样式： 
+input[type=&quot;button&quot;], input[type=&quot;submit&quot;], input[type=&quot;reset&quot;] &#123;
+  -webkit-appearance: none;
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎PC端常用的布局方法。"><a href="#♥︎♥︎PC端常用的布局方法。" class="headerlink" title="♥︎♥︎PC端常用的布局方法。"></a>♥︎♥︎PC端常用的布局方法。</h3><h4 id="一、两列布局"><a href="#一、两列布局" class="headerlink" title="一、两列布局"></a>一、两列布局</h4><p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221013164125310.png"></p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;&lt;/title&gt;
+        &lt;style type=&quot;text/css&quot;&gt;
+            /* 宽度适配 */
+            html,
+            body &#123;
+                width: 100%;
+                overflow-x: hidden;/* 外层盒子设置最小宽度的话看不到横向滚动条 */
+            &#125;
+
+            /*1. pc端适配的需求：目前我们pc项目的设计稿尺寸是宽度1920，高度最小是1080。
+            2.放大或者缩小屏幕，网页可以正常显示 */
+            /* 一、两列布局 */
+            /* 1.左定宽 右边自适应 或者 右边定宽左边自适应 */
+            .content&#123;
+                width: 1200px; /* 主容器 */
+                min-width: 960px;
+                margin: 0 auto;
+                background: #fff;
+            &#125;
+            .left &#123;
+                float: left;
+                width: 200px;/* 定宽 */
+                background: #ccc;
+                height: 800px;/* 测试设了一个高度和背景（为了更好看效果） */
+            &#125;
+
+            .right &#123;
+                margin-left: 100px;
+                background: #999;
+                height: 800px;/* 测试设了一个高度和背景（为了更好看效果） */
+            &#125;
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;content&quot;&gt;
+            &lt;div class=&quot;left&quot;&gt;左边&lt;/div&gt;
+            &lt;div class=&quot;right&quot;&gt;右边&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4 id="二、三列布局"><a href="#二、三列布局" class="headerlink" title="二、三列布局"></a>二、三列布局</h4><p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221013164657269.png"></p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;&lt;/title&gt;
+        &lt;style type=&quot;text/css&quot;&gt;
+            /* 宽度适配 */
+            html,
+            body &#123;
+                width: 100%;
+                overflow-x: hidden;
+                /* 外层盒子设置最小宽度的话看不到横向滚动条 */
+            &#125;
+            /* 一、三列布局 */
+            /* 1.左右定宽中间自适应 */
+            .content &#123;
+                width: 1200px;
+                /* 主容器 */
+                min-width: 960px;
+                margin: 0 auto;
+                background: firebrick;/* 测试设了一个背景（为了更好看效果） */
+                display: table;
+            &#125;
+
+            .left &#123;
+                width: 100px;
+                /* 定宽 */
+                background: #ccc;
+                height: 800px;
+                /* 测试设了一个高度和背景（为了更好看效果） */
+            &#125;
+            .right &#123;
+                width: 100px;
+                /* 定宽 */
+                background: fuchsia;
+                height: 800px;
+                /* 测试设了一个高度和背景（为了更好看效果） */
+            &#125;
+
+            .left,
+            .right,
+            .center &#123;
+                display: table-cell;
+            &#125;
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;content&quot;&gt;
+            &lt;div class=&quot;left&quot;&gt;左边&lt;/div&gt;
+            &lt;div class=&quot;center&quot;&gt;中间&lt;/div&gt;
+            &lt;div class=&quot;right&quot;&gt;右边&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4 id="三、双飞翼布局"><a href="#三、双飞翼布局" class="headerlink" title="三、双飞翼布局"></a>三、双飞翼布局</h4><p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221013165000520.png"></p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;实现三栏水平布局之双飞翼布局&lt;/title&gt;
+        &lt;style type=&quot;text/css&quot;&gt;
+            .container &#123;
+                width: 1200px;
+                /* 主容器 */
+                min-width: 960px;
+                margin: 0 auto;
+                background: #ccc;
+                /* 测试设了一个背景（为了更好看效果） */
+            &#125;
+
+            .left,
+            .center,
+            .right &#123;
+                float: left;
+                min-height: 400px;
+                /* 测试更好观看效果 统一高度*/
+                text-align: center;
+            &#125;
+
+            .left &#123;
+                margin-left: -100%;
+                background: #0000FF;
+                width: 200px;
+                /* 定宽 */
+            &#125;
+
+            .right &#123;
+                margin-left: -300px;
+                background-color: #FF0000;
+                width: 300px;
+                /* 定宽 */
+            &#125;
+
+            .center &#123;
+                background-color: #f2f1f1;
+                width: 100%;
+            &#125;
+
+            .content &#123;
+                margin: 0 300px 0 200px;
+            &#125;
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            　　&lt;div class=&quot;center&quot;&gt;
+                　　&lt;div class=&quot;content&quot;&gt;中间自适应&lt;/div&gt;
+            　  &lt;/div&gt;
+            　　&lt;div class=&quot;left&quot;&gt;左边&lt;/div&gt;
+            　　&lt;div class=&quot;right&quot;&gt;右边&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4 id="四、圣杯布局"><a href="#四、圣杯布局" class="headerlink" title="四、圣杯布局"></a>四、圣杯布局</h4><p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/1186521-20190213150008412-487648273.png"></p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;实现三栏水平布局之圣杯布局&lt;/title&gt;
+        &lt;style type=&quot;text/css&quot;&gt;
+            .container &#123;
+                width: 1200px;
+                /* 主容器 */
+                min-width: 960px;
+                margin: 0 auto;
+                background: #ccc;/* 测试设了一个背景（为了更好看效果） */
+                padding: 0 300px 0 200px;
+            &#125;
+
+            .left,
+            .center,
+            .right &#123;
+                position: relative;
+                min-height: 200px;
+                float: left;
+            &#125;
+
+            .left &#123;
+                left: -200px;
+                margin-left: -100%;
+                background: green;/* 测试设了一个背景（为了更好看效果） */
+                width: 200px;
+            &#125;
+
+            .right &#123;
+                right: -300px;
+                margin-left: -300px;
+                background: red;/* 测试设了一个背景（为了更好看效果） */
+                width: 300px;
+            &#125;
+
+            .center &#123;
+                background: blue;/* 测试设了一个背景（为了更好看效果） */
+                width: 100%;
+            &#125;
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            　　&lt;div class=&quot;center&quot;&gt;center&lt;/div&gt;
+            　　&lt;div class=&quot;left&quot;&gt;left&lt;/div&gt;
+            　　&lt;div class=&quot;right&quot;&gt;right&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;tip_expand&quot;&gt;双飞翼布局比圣杯布局多创建了一个div，但不用相对布局了&lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4 id="五、flex弹性盒布局"><a href="#五、flex弹性盒布局" class="headerlink" title="五、flex弹性盒布局"></a>五、flex弹性盒布局</h4><p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221013165402722.png"></p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;实现三栏水平布局-Flex布局&lt;/title&gt;
+        &lt;style type=&quot;text/css&quot;&gt;
+            .container &#123;
+                display: flex;
+                width: 1200px;
+                /* 主容器 */
+                min-width: 960px;
+                margin: 0 auto;
+                background: #ccc;
+                /* 测试设了一个背景（为了更好看效果） */
+                min-height: 800px;
+                font-size: 0; /* 间隙处理 */
+            &#125;
+
+            .main &#123;
+                flex-grow: 1;
+                background-color: blue;
+                font-size: 24px;
+            &#125;
+
+            .left &#123;
+                order: -1;/* 对于order属性：定义项目的排列顺序，越小越靠前，默认为0。 */
+                flex-basis: 200px;/* 通过项目属性flex-basis 设置left和right的固定宽度 */
+                background-color: green;
+                font-size: 24px;
+            &#125;
+
+            .right &#123;
+                flex-basis: 300px;/* 通过项目属性flex-basis 设置left和right的固定宽度 */
+                background-color: red;
+                font-size: 24px;
+            &#125;
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            　　&lt;div class=&quot;main&quot;&gt;main&lt;/div&gt;
+            　　&lt;div class=&quot;left&quot;&gt;left&lt;/div&gt;
+            　　&lt;div class=&quot;right&quot;&gt;right&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="♥︎♥︎行内元素和块级元素？img算什么？行内元素怎么转化为块元素？"><a href="#♥︎♥︎行内元素和块级元素？img算什么？行内元素怎么转化为块元素？" class="headerlink" title="♥︎♥︎行内元素和块级元素？img算什么？行内元素怎么转化为块元素？"></a>♥︎♥︎行内元素和块级元素？img算什么？行内元素怎么转化为块元素？</h3><pre><code class="css">行内元素：
+    1. 无法设置宽高；
+    2. 对margin仅设置左右有效，上下无效；
+    3. padding上下左右有效；不会自动换行
+块级元素：
+    1. 可以设置宽高;
+    2. margin和padding的上下左右均对其有效
+    3. 超出当前行会自动换行
+     4. 多个块状元素标签写在一起，默认排列方式为从上至下
+img：属于行内块元素(inline-block),即有行内元素的属性也有块级元素的属性
+元素之间的转化可以通过设置样式：display:block/inline/inline-block来改变自身的元素属性
+</code></pre>
+<h3 id="♥︎♥︎nth-of-type和nth-child的区别是什么？"><a href="#♥︎♥︎nth-of-type和nth-child的区别是什么？" class="headerlink" title="♥︎♥︎nth-of-type和nth-child的区别是什么？"></a>♥︎♥︎nth-of-type和nth-child的区别是什么？</h3><p>MDN上的概念：</p>
+<p>某个元素:nth-of-type(n)这个CSS 伪类是针对具有一组兄弟节点的标签, 用 n 来筛选出在一组兄弟节点的位置。(一组标签内选择)</p>
+<p>某个元素:nth-child(n)这个CSS 伪类首先找到所有当前元素的兄弟元素，, 用 n 来筛选出在当前元素的兄弟元素节点的位置。（兄弟元素里选择）</p>
+<p>我们可以注意到:nth-of-type他是当前元素的兄弟元素的第n个，而nth-child是当前元素的兄弟节点的第n个当前元素。</p>
+<h3 id="♥︎♥︎-before和-before区别是什么？"><a href="#♥︎♥︎-before和-before区别是什么？" class="headerlink" title="♥︎♥︎:before和 ::before区别是什么？"></a>♥︎♥︎:before和 ::before区别是什么？</h3><pre><code class="css">区别：
+ 1. 叫法不同：一个是伪类，一个是伪元素
+ 2. 版本不同：作用都是一样，但单冒号伪类写法是旧版本css2写法， 双冒号伪元素是新版本css3写法
+ 3. 兼容性差异：单冒号伪类写法 兼容性比 双冒号要好。 :before &gt; ::before
+</code></pre>
+<h3 id="♥︎♥︎简述-viewport所有属性"><a href="#♥︎♥︎简述-viewport所有属性" class="headerlink" title="♥︎♥︎简述 viewport所有属性"></a>♥︎♥︎简述 viewport所有属性</h3><pre><code class="css">width：控制 viewport 的大小，可以指定的一个值，如 600，或者特殊的值，如 device-width 为设备的宽度（单位为缩放为 100% 时的 CSS 的像素）。
+height：和 width 相对应，指定高度。
+initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例（调整页面缩放比例）。
+maximum-scale：允许用户缩放到的最大比例。
+minimum-scale：允许用户缩放到的最小比例。
+user-scalable：用户是否可以手动缩放
+</code></pre>
+<h3 id="♥︎♥︎伪类选择器和伪元素？CSS3中引入的伪元素有什么？"><a href="#♥︎♥︎伪类选择器和伪元素？CSS3中引入的伪元素有什么？" class="headerlink" title="♥︎♥︎伪类选择器和伪元素？CSS3中引入的伪元素有什么？"></a>♥︎♥︎伪类选择器和伪元素？CSS3中引入的伪元素有什么？</h3><pre><code class="css">1. 伪类选择器是css2版本中的旧写法，相对于css3中伪元素的的新写法兼容性会更好。
+2. 伪元素只能在一个选择器中出现一次，且需要配合content属性一起使用
+3. 伪元素不会出现在DOM中，所以不能通过js来进行操作，仅仅是在渲染层加入而已
+
+css3引入的伪元素：
+ 1、 ::after //在xxx之后插入内容
+ 2、 ::before // 在xxx之前插入内容
+ 3、 ::first-letter //选择xxx元素的首字母
+ 4、 ::first-line //选择xxx元素的首行
+ 5、 ::selection //选择用户选择的元素部分
+</code></pre>
+<h3 id="♥︎♥︎HTML5有哪些新特性，移除了哪些元素？如何处理HTML5"><a href="#♥︎♥︎HTML5有哪些新特性，移除了哪些元素？如何处理HTML5" class="headerlink" title="♥︎♥︎HTML5有哪些新特性，移除了哪些元素？如何处理HTML5"></a>♥︎♥︎HTML5有哪些新特性，移除了哪些元素？如何处理HTML5</h3><h4 id="HTML5-现在已经不是-SGML-的子集，主要是关于图像，位置，存储，多任务等功能的增加"><a href="#HTML5-现在已经不是-SGML-的子集，主要是关于图像，位置，存储，多任务等功能的增加" class="headerlink" title="HTML5 现在已经不是 SGML 的子集，主要是关于图像，位置，存储，多任务等功能的增加"></a>HTML5 现在已经不是 SGML 的子集，主要是关于图像，位置，存储，多任务等功能的增加</h4><pre><code class="css">新增选择器 document.querySelector、document.querySelectorAll
+拖拽释放(Drag and drop) API
+媒体播放的 video 和 audio
+本地存储 localStorage 和 sessionStorage
+离线应用 manifest
+桌面通知 Notifications
+语意化标签 article、footer、header、nav、section
+增强表单控件 calendar、date、time、email、url、search
+地理位置 Geolocation
+多任务 webworker
+全双工通信协议 websocket
+历史管理 history
+跨域资源共享(CORS) Access-Control-Allow-Origin
+页面可见性改变事件 visibilitychange
+跨窗口通信 PostMessage
+Form Data 对象
+绘画 canvas
+移除的元素：
+
+纯表现的元素：basefont、big、center、font、 s、strike、tt、u
+对可用性产生负面影响的元素：frame、frameset、noframes
+</code></pre>
+<h3 id="♥︎♥︎新标签兼容问题？如何区分HTML和HTML5？"><a href="#♥︎♥︎新标签兼容问题？如何区分HTML和HTML5？" class="headerlink" title="♥︎♥︎新标签兼容问题？如何区分HTML和HTML5？"></a>♥︎♥︎新标签兼容问题？如何区分HTML和HTML5？</h3><h4 id="支持HTML5新标签："><a href="#支持HTML5新标签：" class="headerlink" title="支持HTML5新标签："></a>支持HTML5新标签：</h4><p>IE8&#x2F;IE7&#x2F;IE6支持通过document.createElement方法产生的标签<br>可以利用这一特性让这些浏览器支持HTML5新标签<br>浏览器支持新标签后，还需要添加标签默认的样式<br>当然也可以直接使用成熟的框架、比如html5shim</p>
+<h4 id="如何区分HTML和HTML5："><a href="#如何区分HTML和HTML5：" class="headerlink" title="如何区分HTML和HTML5："></a>如何区分HTML和HTML5：</h4><pre><code class="css">HTML： 
+
+    1）标识文本（eg: 定义标题文本、段落文本、列表文本、预定义文本）；
+
+     2）建立超链接，便于页面链接的跳转；
+
+     3）创建列表，把信息有序地组织在一起，方便浏览；
+
+     4）在网页中显示“图像、声音、视频、动画”等多媒体信息，使网页设计更具冲击力；
+
+     5）可制作表格，以便显示大量数据；
+
+     6）可制作表单，允许在网页内输入文本信息，执行其他用户操作，方便信息互动；
+
+     7）没有体现结构语义化的标签;
+
+HTML5： 
+
+    1）用于绘画的canvas元素； 
+
+    2）用于媒介回放的video和audio元素； 
+
+    3）对本地离线存储有更好的支持； 
+
+    4）新的特殊内容元素（eg: article、footer、header、nav、section等）； 
+
+    5）新的表单控件（eg: calendar、date、time、email、url、search等）； 
+
+    6）有语义优势，提供了一些新标签，（eg: &lt;header&gt; &lt;article&gt; &lt;footer&gt; 提供了语义化标 
+
+签），可以更好地支持搜索引擎的读取，便于SEO蜘蛛的爬行。
+</code></pre>
+<h3 id="♥︎♥︎常见浏览器兼容性问题？"><a href="#♥︎♥︎常见浏览器兼容性问题？" class="headerlink" title="♥︎♥︎常见浏览器兼容性问题？"></a>♥︎♥︎常见浏览器兼容性问题？</h3><p>[常见浏览器兼容问题]: 	“<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43214644/article/details/125872520">https://blog.csdn.net/weixin_43214644/article/details/125872520</a> “</p>
+<h3 id="♥︎♥︎media属性？screen-All-max-width-min-width"><a href="#♥︎♥︎media属性？screen-All-max-width-min-width" class="headerlink" title="♥︎♥︎media属性？screen? All? max-width? min-width?"></a>♥︎♥︎media属性？screen? All? max-width? min-width?</h3><p>media： 媒体查询</p>
+<p>screen ：计算机屏幕</p>
+<p>All ：默认，适合所有设备</p>
+<p>max(min)-width ：规定目标显示区域的宽度</p>
+<p>css合并写法： @media screen and (min-width:xxxpx) {}</p>
+<h3 id="♥︎♥︎-一般做手机页面切图的几种方式"><a href="#♥︎♥︎-一般做手机页面切图的几种方式" class="headerlink" title="♥︎♥︎ 一般做手机页面切图的几种方式"></a>♥︎♥︎ 一般做手机页面切图的几种方式</h3><p>针对手机端页面，通常情况下，需要对设计图片切两种图片。</p>
+<p>①：dpr:2——切两倍图（即设计原图大小，因为设计图是按原来的手机尺寸放大两倍之后的）  一般保存为xxx@2x</p>
+<p>②：dpr:3——切三倍图（即设计原图大小的1.5倍，因为设计图是按原来的手机尺寸放大两倍之后的）   一般保存为xxx@3x</p>
+<p>例如：设计图是720px的宽度。</p>
+<p>由于设计图是放大两倍的。所以一倍的大小是&#x3D;720&#x2F;2 &#x3D; 360px;</p>
+<p>放大三倍图就是&#x3D; 360<em>3 &#x3D; 720</em>1.5 &#x3D; 1080px;</p>
+<h3 id="♥︎♥︎px-x2F-em-x2F-rem有什么区别？为什么通常给font-size设置的字体为62-5"><a href="#♥︎♥︎px-x2F-em-x2F-rem有什么区别？为什么通常给font-size设置的字体为62-5" class="headerlink" title="♥︎♥︎px&#x2F;em&#x2F;rem有什么区别？为什么通常给font-size设置的字体为62.5%"></a>♥︎♥︎px&#x2F;em&#x2F;rem有什么区别？为什么通常给font-size设置的字体为62.5%</h3><p>px（像素）：页面默认的尺寸计算单位，绝对长度,它是相对于显示器屏幕分辨率而言的；</p>
+<pre><code class="css">特点：
+        1. IE无法调整那些使用px作为单位的字体大小；
+        2. 国外的大部分网站能够调整的原因在于其使用了em或rem作为字体单位； 
+        3. Firefox能够调整px和em，rem，但是96%以上的中国网民使用IE浏览器(或内核)。
+</code></pre>
+<p>em：相对长度，相对于应用在当前元素的字体尺寸；一般浏览器默认字体大小为16px，则 1em &#x3D; 16px</p>
+<pre><code class="css">特点：1. em的值并不是固定的； 2. em会继承父级元素的字体大小。
+</code></pre>
+<p>rem（root em）：相对单位，相对于html根元素字体大小的单位，当html的font-size：16px时，</p>
+<p>1rem &#x3D; 16px</p>
+<pre><code class="css">特点：
+        1. 这个单位可谓集相对大小和绝对大小的优点于一身，通过它既可以做到只修改根元素就成比例地调整所有字体大小，又可以避免字体大小逐层复合的连锁反应。 
+        2. 除了IE8及更早版本外，所有浏览器均已支持rem。
+</code></pre>
+<p>为什么给font-size设置为62.5%： 方便换算！</p>
+<pre><code class="css">1. 因为绝大多数浏览器的默认字体大小为 16px ，而将font-size设置为 62.5% 则等价于字体大小的font-size:10px;
+2. 随之在其他的换算单位，如 rem 的字体换算时，则可以表示为 1rem = 10px， 整数值对于单位的
+换算会比较方便;
+3. 但是在Chrome（谷歌浏览器）中，支持最小字体的大小为 12px ，解决办法就是 将html根字体设置为 font-size: 625%; 意：1rem = 100px ，以此单位换算;
+</code></pre>
+<h3 id="♥︎♥︎sass和scss有什么区别-sass一般怎么样编译的"><a href="#♥︎♥︎sass和scss有什么区别-sass一般怎么样编译的" class="headerlink" title="♥︎♥︎sass和scss有什么区别? sass一般怎么样编译的"></a>♥︎♥︎sass和scss有什么区别? sass一般怎么样编译的</h3><p>Sass和SCSS其实是同一种东西，我们平时称之为Sass，两者之间不同之处有以下两点：</p>
+<p>1、文件扩展名不同，Sass是以“.sass”后缀为扩展名，而SCSS是以“.scss”后缀为扩展名<br>2、语法书写方式不同，Sass是以严格的缩进式语法规则来书写，不带大括号（{}）和分号（;），而SCSS的语法书写和我们的CSS语法书写方法非常类似。</p>
+<h4 id="Sass语法"><a href="#Sass语法" class="headerlink" title="Sass语法"></a>Sass语法</h4><pre><code class="css">$font-stack:Helvetica,sans-serif //定义变量
+$primary-color:#eee  //定义变量
+ 
+html
+  font:100% $font-stack
+  color:$primary-color
+</code></pre>
+<h4 id="SCSS语法"><a href="#SCSS语法" class="headerlink" title="SCSS语法"></a>SCSS语法</h4><pre><code class="css">$font-stack:Helvetica,sans-serif //定义变量
+$primary-color:#eee  //定义变量
+ 
+html &#123;
+  font:100% $font-stack
+  color:$primary-color
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎如果对css进行优化如何处理？"><a href="#♥︎♥︎如果对css进行优化如何处理？" class="headerlink" title="♥︎♥︎如果对css进行优化如何处理？"></a>♥︎♥︎如果对css进行优化如何处理？</h3><p>优化原则：减少css样式的渲染加载时间，通过削减css样式的代码体积等相关操作</p>
+<h4 id="实践型优化："><a href="#实践型优化：" class="headerlink" title="实践型优化："></a>实践型优化：</h4><p> 1、内联首屏关键CSS（Critical CSS）：内联CSS能够使浏览器开始页面渲染的时间提前,性能优化中有一个重要的指标——首次有效绘制（First Meaningful Paint，简称FMP）即指页面的首要内容（primary content）出现在屏幕上的时间,这一指标影响用户看到页面前所需等待的时间，而内联首屏关键CSS（即Critical CSS，可以称之为首屏关键CSS）能减少这一时间。</p>
+<p>‼️注：内联css并不是不加以限制的，它的初始拥堵窗口3存在限制（TCP相关概念，通常是 14.6kb， 压缩后的大小），如果内联CSS后的文件超出了这一限制，系统就需要在服务器和浏览器之间进行更多次的往返，这样并不能提前页面渲染时间。</p>
+<p>2、异步加载CSS ：CSS会阻塞渲染，在CSS文件请求、下载、解析完成之前，浏览器将不会渲染任何已处理的内容。 有时，这种阻塞是必须的，因为我们并不希望在所需的CSS加载之前，浏览器就开始渲染页面。 那么将首屏关键CSS内联后，剩余的CSS内容的阻塞渲染就不是必需的了，可以使用外部CSS，并且异步加载；</p>
+<pre><code class="css">方式一、 使用JavaScript动态创建样式表link元素，并插入到DOM中。 
+方式二、 将link元素的media属性设置为用户浏览器不匹配的媒体类型（或媒体查询），如 media=&quot;print&quot;，甚至可以是完全不存在的类型media=&quot;noexist&quot;。对浏览器来说，如果样式表不适用于当前媒体类型，其优先级会被放低，会在不阻塞页面渲染的情况下再进行下载。
+</code></pre>
+<p> 3、文件压缩 </p>
+<pre><code class="css">通过相关的构建工具对css样式进行打包压缩，去除多余的空格和换行。如 webpack、rollup、 
+grunt/gulp.js 等 
+</code></pre>
+<p>4、去除无用CSS </p>
+<pre><code class="css">1. 筛选去除相关重复的css样式 
+
+2. 去除在页面中无法生效或不生效的css样式
+</code></pre>
+<h4 id="建议型优化："><a href="#建议型优化：" class="headerlink" title="建议型优化："></a>建议型优化：</h4><p> 1、有选择地使用选择器;</p>
+<p>2、减少使用昂贵的属性;</p>
+<pre><code class="css">1. 在浏览器绘制屏幕时，所有需要浏览器进行操作或计算的属性相对而言都需要花费更大的代价。 
+2. 当页面发生重绘时，它们会降低浏览器的渲染性能。所以在编写CSS时，我们应该尽量减少使用昂贵 属性 * 昂贵属性： 如box-shadow/border-radius/filter/透明度/伪类:nth-child()等
+</code></pre>
+<p>3、优化重排与重绘;</p>
+<pre><code class="css">减少重排 
+        1. 重排会导致浏览器重新计算整个文档，重新构建渲染树，这一过程会降低浏览器的渲染速度。有 很多操作会触发重排，我们应该避免频繁触发这些操作。
+
+避免不必要的重绘 
+        1. 当元素的外观（如color，background，visibility等属性）发生改变时，会触发重绘。 
+        2. 在网站的使用过程中，重绘是无法避免的。不过，浏览器对此做了优化，它会将多次的重排、重 绘操作合并为一次执行。 
+        3. 不过我们仍需要避免不必要的重绘，如页面滚动时触发的hover事件，可以在滚动的时候禁用 hover事件，这样页面在滚动时会更加流畅。
+</code></pre>
+<p>4、不要使用@import;</p>
+<pre><code class="css">不建议使用@import主要有以下两点原因。 
+  1.使用@import引入CSS会影响浏览器的并行下载。
+  2.使用@import引用的CSS文件只有在引用它的 那个css文件被下载、解析之后，浏览器才会知道还有另外一个css需要下载，这时才去下载，然后下载后开始 解析、构建render tree等一系列操作。这就导致浏览器无法并行下载所需的样式文件。 
+  3.多个@import会导致下载顺序紊乱。在IE中，@import会引发资源文件的下载顺序被打乱， 即排列在@import后面的js文件先于@import下载，并且打乱甚至破坏@import自身的并行下载.
+</code></pre>
+<h3 id="♥︎♥︎如何对css文件进行压缩合并-gulp如何实现？"><a href="#♥︎♥︎如何对css文件进行压缩合并-gulp如何实现？" class="headerlink" title="♥︎♥︎如何对css文件进行压缩合并? gulp如何实现？"></a>♥︎♥︎如何对css文件进行压缩合并? gulp如何实现？</h3><p>[Gulp压缩css]: 	“<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/00b3f479dc90">https://www.jianshu.com/p/00b3f479dc90</a> “</p>
+<pre><code class="css">如何压缩合并：
+
+通过相关的构建工具对css样式进行打包压缩，去除多余的空格和换行。如 webpack、rollup、
+grunt/gulp.js 等
+</code></pre>
+<h3 id="♥︎♥︎a标签中active-hover-link-visited正确的设置顺序是什么"><a href="#♥︎♥︎a标签中active-hover-link-visited正确的设置顺序是什么" class="headerlink" title="♥︎♥︎a标签中active hover link visited正确的设置顺序是什么?"></a>♥︎♥︎a标签中active hover link visited正确的设置顺序是什么?</h3><pre><code class="css">a标签的设置顺序：
+     1. link ， 链接平常的状态
+     2. hover ，鼠标放置在链接上显示的样式
+     3. active ，链接被按下的样式
+     4. visited ， 链接被访问过后的状态
+</code></pre>
+<h3 id="♥︎♥︎常见的视频编码格式有几种？视频格式有几种？"><a href="#♥︎♥︎常见的视频编码格式有几种？视频格式有几种？" class="headerlink" title="♥︎♥︎常见的视频编码格式有几种？视频格式有几种？"></a>♥︎♥︎常见的视频编码格式有几种？视频格式有几种？</h3><pre><code class="css">常见的视频编码格式，H264 , VP8， AVS, RMVB，WMV，QuickTime（mov）
+
+视频格式有MPEG、AVI、nAVI、ASF、MOV、3GP、WMV、DivX、XviD、RM、RMVB、FLV/F4V。
+</code></pre>
+<h3 id="♥︎♥︎canvas在标签上设置宽高和在style中设置宽高有什么区别？"><a href="#♥︎♥︎canvas在标签上设置宽高和在style中设置宽高有什么区别？" class="headerlink" title="♥︎♥︎canvas在标签上设置宽高和在style中设置宽高有什么区别？"></a>♥︎♥︎canvas在标签上设置宽高和在style中设置宽高有什么区别？</h3><p>  在canvas标签上设置宽高， canvas画布发生的变化不会影响到画布内容，即画布内容不会发生改变相反的，在style样式中设置宽高则会影响到画布内容的形状;</p>
+<h3 id="♥︎♥︎canvas如何绘制一个三角形-正方形"><a href="#♥︎♥︎canvas如何绘制一个三角形-正方形" class="headerlink" title="♥︎♥︎canvas如何绘制一个三角形|正方形"></a>♥︎♥︎canvas如何绘制一个三角形|正方形</h3><p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221013174601774.png"></p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+    &lt;style&gt;
+    canvas &#123;
+        margin: 0 auto;
+        border: 2px solid #aaa;
+        display: block; /*画布居中*/
+    &#125;
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;canvas id=&quot;cont&quot; width=&quot;500px&quot; height=&quot;500px&quot;&gt;Hello Canvas&lt;/canvas&gt;
+    &lt;script&gt;
+        
+        //获取画布
+        var canvas = document.querySelector(&quot;#cont&quot;);
+        //获取画布上下文
+        var ctx = canvas.getContext(&#39;2d&#39;);
+        function drawLine(x1, y1, x2, y2, color, width) &#123;
+            ctx.beginPath();  //开启一条路径
+            ctx.moveTo(x1, y1); //确定起始点
+            ctx.lineTo(x2, y2); //确定结束点
+            ctx.strokeStyle = color;  //着色之前设置颜色和线宽
+            ctx.lineWidth = width;
+            ctx.stroke(); //着色
+            ctx.closePath(); //结束路径
+        &#125;
+        drawLine(100, 100, 400, 100, &#39;green&#39;, 5);
+        drawLine(400, 100, 400, 400, &#39;purple&#39;, 5);
+        drawLine(400, 400, 100, 400, &#39;orange&#39;, 5);
+        drawLine(100, 400, 100, 100, &#39;blue&#39;, 5);
+
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/image-20221013174702007.png"></p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+    &lt;style&gt;
+    canvas &#123;
+        margin: 0 auto;
+        border: 2px solid #aaa;
+        display: block; /*画布居中*/
+    &#125;
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;canvas id=&quot;cont&quot; width=&quot;500px&quot; height=&quot;500px&quot;&gt;Hello Canvas&lt;/canvas&gt;
+    &lt;script&gt;
+        var canvas = document.querySelector(&quot;#cont&quot;);
+        //获取画布上下文
+        var ctx = canvas.getContext(&#39;2d&#39;);
+        ctx.beginPath();
+        ctx.moveTo(100, 100);
+        //此处直线连用，画完三条线再关闭路径
+        ctx.lineTo(400, 100);
+        ctx.lineTo(400, 400);
+        ctx.lineTo(100, 100);
+        ctx.strokeStyle = &#39;purple&#39;;
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        ctx.closePath();
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="♥︎♥︎解释下CSS-sprites，以及你要如何在页面或者网站中使用它。"><a href="#♥︎♥︎解释下CSS-sprites，以及你要如何在页面或者网站中使用它。" class="headerlink" title="♥︎♥︎解释下CSS sprites，以及你要如何在页面或者网站中使用它。"></a>♥︎♥︎解释下CSS sprites，以及你要如何在页面或者网站中使用它。</h3><pre><code class="css">css sprites直译过来就是CSS精灵。通常被解释为“CSS图像拼合”或“CSS贴图定位”。其实就是通过将多个图片融合到一张图里面，然后通过CSS background背景定位技术技巧布局网页背景。这样做的好处也是显而易见的，因为图片多的话，会增加http的请求，无疑促使了网站性能的减低，特别是图片特别多的网站，如果能用css sprites降低图片数量，带来的将是速度的提升。
+
+css sprites是什么通俗解释：CSS Sprites其实就是把网页中一些背景图片整合拼合成一张图片中，再利用DIV CSS的“background-image”，“background- repeat”，“background-position”的组合进行背景定位，background-position可以用数字能精确的定位出背景图片在布局盒子对象位置。
+
+//如何使用
+ps切好图，利用定位代码实现
+</code></pre>
+<h3 id="♥︎♥︎a点击出现框，解决方法。"><a href="#♥︎♥︎a点击出现框，解决方法。" class="headerlink" title="♥︎♥︎a点击出现框，解决方法。"></a>♥︎♥︎a点击出现框，解决方法。</h3><pre><code class="css">解决a标签点击会出现虚框现象。
+    当a标签获得焦点的时候，a标签的周围就会出现虚框，它不同于border，不占任何宽度，a失去焦点的时候就会消失，就是outline。在遨游，Firefox ，IE的几个版本中就会看到、而Safari、Opera、Google 本身不支持这个效果，就看不到。
+
+解决方法： 
+    1、可以给a标签设置 outline： none；但在IE6、IE7 遨游中都不能实现。只有在IE8、Firefox中才会消除虚框。
+    2、在a标签中加入js控制，当a标签活的焦点是就强制取消焦点。&lt;a href=&quot;#&quot;  onfocus=&quot;this.blur();&quot;&gt;&lt;/a&gt;,这里设置聚焦时触发blur()，强制取消焦点。
+    3、在a标签里面嵌入其他标签，如span ，这样点击时，嵌套的标签活的焦点，a标签自然就不会出现虚框。
+    4、不用a标签做链接，采用其他标签，用js控制实现点击跳转。
+</code></pre>
+<h3 id="♥︎♥︎CSS3中多列布局的用处是什么"><a href="#♥︎♥︎CSS3中多列布局的用处是什么" class="headerlink" title="♥︎♥︎CSS3中多列布局的用处是什么?"></a>♥︎♥︎CSS3中多列布局的用处是什么?</h3><p>多列布局是专门针对于文本（图文）排版的一种布局形式，作用对象是容器中的内容数据。<br>常见应用于电子杂志、阅读APP类型的项目，兼容性较好，IE10+及现代浏览器都支持（加前缀）</p>
+<p>[多列布局属性]: 	“<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/6776f811b6d3">https://www.jianshu.com/p/6776f811b6d3</a> “</p>
+<h3 id="♥︎♥︎WebSQL是什么？WebSQL是HTML5规范的一部分吗？"><a href="#♥︎♥︎WebSQL是什么？WebSQL是HTML5规范的一部分吗？" class="headerlink" title="♥︎♥︎WebSQL是什么？WebSQL是HTML5规范的一部分吗？"></a>♥︎♥︎WebSQL是什么？WebSQL是HTML5规范的一部分吗？</h3><p>WebSQl是前端的一个独立模块，是web存储方式的一种，用于存储或管理数据库中数据的网页。我们调试的时候会经常看到，只是一般很少使用。并且，当前只有谷歌支持，ie和火狐均不支持。</p>
+<p>我们对数据库的一般概念是后端才会跟数据库打交道，进行一些业务性的增删改查。而这里的数据库也不同于真正意义上的数据库。</p>
+<p>WebSQl API不是HTML5规范的一部分，而是一个单独的规范。它提供了一组API来操作客户数据库。</p>
+<h3 id="♥︎♥︎介绍一下CSS的盒子模型？弹性盒子模型是什么？"><a href="#♥︎♥︎介绍一下CSS的盒子模型？弹性盒子模型是什么？" class="headerlink" title="♥︎♥︎介绍一下CSS的盒子模型？弹性盒子模型是什么？"></a>♥︎♥︎介绍一下CSS的盒子模型？弹性盒子模型是什么？</h3><p>盒子模型分为IE盒子和W3C盒子两种</p>
+<pre><code class="css">W3C盒子（标准盒子模型）由margin，border，padding，content，设置的width height是针对content的
+IE盒子（怪异盒子模型）由margin，border，padding，content构成，但是设置的width height是包括border+padding+content
+
+弹性盒子模型：弹性盒模型决定一个盒子在其他盒子中的分布方式以及如何处理可用的空间；可以很轻松的创建自适应浏览器窗口的流动布局或自适应字体大小的弹性布局;
+
+盒模型是CSS的基石之一，它指定元素如何显示以及如何相互交互。页面上的每个元素被看做一个矩形框，这个框由元素的内容、内边距、边框和外边距组成;
+</code></pre>
+<pre><code class="css">置为怪异盒模型，如何设置为怪异盒模型
+如果在.html页面中缺少&lt;!doctype&gt;声明的话，就会触发怪异盒子模型
+设置怪异盒子模型：通过box-sizing:border-box来设置怪异盒子模型
+</code></pre>
+<h3 id="♥︎♥︎Doctype的作用？标准模式与兼容模式各有什么区别？"><a href="#♥︎♥︎Doctype的作用？标准模式与兼容模式各有什么区别？" class="headerlink" title="♥︎♥︎Doctype的作用？标准模式与兼容模式各有什么区别？"></a>♥︎♥︎Doctype的作用？标准模式与兼容模式各有什么区别？</h3><pre><code class="css">一、Doctype作用
+&lt;!DOCTYPE&gt;声明位于HTML文档中的第一行，处于&lt;html&gt;标签之前。告知浏览器的解析器用什么文档标准解析这个文档。
+DOCTYPE不存在或格式不正确会导致文档以兼容模式呈现。
+
+二、兼容模式与标准模式的区别
+标准模式的排版和js运作模式，都是以该浏览器支持的最高标准运行。
+在兼容模式中，页面以宽松的向后兼容的方式显示，模拟老式浏览器的行为以防止站点无法工作。
+</code></pre>
+<h3 id="♥︎♥︎前端页面有哪三层构成？-分别是什么？-作用是什么？"><a href="#♥︎♥︎前端页面有哪三层构成？-分别是什么？-作用是什么？" class="headerlink" title="♥︎♥︎前端页面有哪三层构成？ 分别是什么？ 作用是什么？"></a>♥︎♥︎前端页面有哪三层构成？ 分别是什么？ 作用是什么？</h3><pre><code class="css">一、网页的**结构层(structural layer)**由HTML或XHTML之类的标记语言负责创建。
+标记语言也就是指网页的标签，标签只对网页内容的语义和含义做出描述，不包含任何关于如何显示内容的信息。
+
+二、网页的**表示层(resentation layer)**由CSS负责创建。
+作用是对内容如何显示做一定的控制。
+
+三、网页的**行为层(behavior layer)**由JavaScript语言和DOM创建。
+作用是控制用户做出一个事件该如何显示。例如：用户悬浮在某个元素上，弹出一个显示元素标题内容的提示框
+</code></pre>
+<h3 id="♥︎♥︎rem和em。"><a href="#♥︎♥︎rem和em。" class="headerlink" title="♥︎♥︎rem和em。"></a>♥︎♥︎rem和em。</h3><p>rem和em很容易混淆，其实两个都是css的单位，并且也都是相对单位，现有的em，css3才引入的rem。</p>
+<h4 id="一、em"><a href="#一、em" class="headerlink" title="一、em"></a>一、em</h4><p>em作为font-size的单位时，其代表父元素的字体大小，em作为其他属性单位时，代表自身字体大小——MDN</p>
+<p>em可以让我们的页面更灵活，更健壮，比起到处写死的px值，em似乎更有张力，改动父元素的字体大小，子元素会等比例变化，这一变化似乎预示了无限可能</p>
+<p>有些人提出用em来做弹性布局页面，但其复杂的计算让人诟病，甚至有人专门做了个px和em的计算器，不同节点像素值对应的em值。</p>
+<p><img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/v2-efc617ae2b76557c376fcd3d2a78f6d6_r.jpg"></p>
+<p>缺点：牵一发而动全身，一旦某个节点的字体大小发生变化，那么其后代元素都得重新计算。</p>
+<h4 id="二、rem"><a href="#二、rem" class="headerlink" title="二、rem"></a>二、rem</h4><p>rem作用于非根元素时，相对于根元素字体大小；rem作用于根元素字体大小时，相对于其出初始字体大小——MDN</p>
+<pre><code class="css">rem取值分为两种情况，设置在根元素时和非根元素时，举个例子
+
+/* 作用于根元素，相对于原始大小（16px），所以html的font-size为32px*/
+html &#123;font-size: 2rem&#125;
+
+/* 作用于非根元素，相对于根元素字体大小，所以为64px */
+p &#123;font-size: 2rem&#125;
+</code></pre>
+<p>本质：rem布局的本质是等比缩放，一般是基于宽度.</p>
+<h3 id="♥︎♥︎pointer-events-none-是干什么的？"><a href="#♥︎♥︎pointer-events-none-是干什么的？" class="headerlink" title="♥︎♥︎pointer-events: none 是干什么的？"></a>♥︎♥︎pointer-events: none 是干什么的？</h3><pre><code class="css">pointer-events: none;理解：你可以看的到某个元素，但是你无法摸的着，点击不到，点击会穿透触发到下层的元素
+display：none; 是你摸不着，但是你也看不见
+
+大家都知道 input[type=text|button|radio|checkbox]支持 disabled 属性，可以实现事件的完全禁用。
+如果其他标签需要类似的禁用效果，可以试试 pointer-events: none
+</code></pre>
+<hr>
+<h3 id="♥︎♥︎♥︎-html中元素的margin是否会叠加（合并）？如何解决？"><a href="#♥︎♥︎♥︎-html中元素的margin是否会叠加（合并）？如何解决？" class="headerlink" title="♥︎♥︎♥︎ html中元素的margin是否会叠加（合并）？如何解决？"></a>♥︎♥︎♥︎ html中元素的margin是否会叠加（合并）？如何解决？</h3><pre><code class="css">/* 会叠加 */
+问题详解1： flex布局对子元素的影响
+ 1.子元素的float、clear和vertical-align属性将会失效
+ 2.解决了margin传递、重叠（叠加）问题
+
+问题详解2：flex布局的margin传递叠加问题主要有以下两种
+ 1.父子间的margin，会由子级传递到父级
+ —— 解决方法： margin传递的产生的原因是父级的高度没有被自动撑开，所以在父级父级增加属
+性：overflow: auto 即可解决
+ 2.兄弟间的margin值会重复叠加
+ —— 解决方法： 浏览器为了保证列表的整齐，上下margin产生了叠加，不能直接解决。只能通过减
+少一个margin的方式。如只定义margin-top:100px; margin-bottom:0px。的方式解决。
+</code></pre>
+<h3 id="♥︎♥︎♥︎-移动端适配怎么做？"><a href="#♥︎♥︎♥︎-移动端适配怎么做？" class="headerlink" title="♥︎♥︎♥︎ 移动端适配怎么做？"></a>♥︎♥︎♥︎ 移动端适配怎么做？</h3><pre><code class="css">方法一：@media 媒体查询，通过查询设备的宽度来执行不同的 css 代码，最终达到界面的配置。
+方法二：Flex弹性布局
+方法三：rem + viewport 缩放，屏幕宽度设定 rem 值，需要适配的元素都使用 rem 为单位，不需要适配的元素还是使用 px 为单位。
+</code></pre>
+<h3 id="♥︎♥︎♥︎-手机端上图片长时间点击会选中图片，如何处理？"><a href="#♥︎♥︎♥︎-手机端上图片长时间点击会选中图片，如何处理？" class="headerlink" title="♥︎♥︎♥︎ 手机端上图片长时间点击会选中图片，如何处理？"></a>♥︎♥︎♥︎ 手机端上图片长时间点击会选中图片，如何处理？</h3><pre><code class="css">img&#123; pointer-events:none &#125;，禁止事件，但会把整个标签的事件都禁用掉，不建议使用
+img&#123; -webkit-user-select:none &#125;，用户选中状态
+
+推荐：
+img&#123;
+       -webkit-touch-callout: none; //触摸
+         -webkit-user-select: none;
+         -moz-user-select: none;
+         -ms-user-select: none;
+         user-select: none;
+ &#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-说说对transition的了解。"><a href="#♥︎♥︎♥︎-说说对transition的了解。" class="headerlink" title="♥︎♥︎♥︎ 说说对transition的了解。"></a>♥︎♥︎♥︎ 说说对transition的了解。</h3><p>1、transition 属性是一个简写属性，可用于设置四个过渡属性：</p>
+<pre><code class="css">transition-property 过渡效果的 CSS 属性的名称（height、width、opacity等）。
+transition-duration 完成过渡效果需要时间。
+transition-timing-function 规定速度效果的速度曲线。
+transition-delay 过渡效果何时开始（延迟时间）。
+注：如果 transition-duration属性时长为 0，就不会产生过渡效果。
+</code></pre>
+<p>2、渐变函数的值：</p>
+<p>渐变函数是transition-timing-function；</p>
+<p>其中贝塞尔曲线的预设值</p>
+<pre><code class="css">ease渐快，匀速，减慢cubic-bezier(0.25,0.1,0.25,1)
+ease-in渐快，匀速cubic-bezier(0.42,0,1,1)
+ease-out匀速，减慢cubic-bezier(0,0,0.58,1)
+ease-in-out和ease类似，但比ease的加速度大（幅度大）cubic-bezier(0.42,0,0.58,1)
+linear全程匀速cubic-bezier(0,0,1,1)
+</code></pre>
+<p>3、简写方式：</p>
+<pre><code class="css">transition：css属性名 过度时间 渐变函数值 延迟时间
+</code></pre>
+<h3 id="♥︎♥︎♥︎-为什么要初始化CSS样式？"><a href="#♥︎♥︎♥︎-为什么要初始化CSS样式？" class="headerlink" title="♥︎♥︎♥︎ 为什么要初始化CSS样式？"></a>♥︎♥︎♥︎ 为什么要初始化CSS样式？</h3><p>1、浏览器差异</p>
+<p>因为浏览器的兼容问题，不同浏览器对有些标签的默认值是不同的，如果没对CSS初始化往往会出现浏览器之间的页面显示差异。</p>
+<p>2、提高编码质量</p>
+<p>初始化CSS可以节约网页代码，节约网页下载时间；还会使得我们开发网页内容时更加方便简洁，不用考虑很多。</p>
+<p>如果不初始化，整个页面做完会很糟糕，重复的css样式很多。</p>
+<p>我们在开发比较复杂的网页时候就不会知道自己是否已经设置了此处的CSS属性，是否和前面的CSS属性相同，是否统一整个网页的风格和样式。</p>
+<p>‼️弊端：初始化样式会对seo有一定的影响，但鱼和熊掌不可兼得，但力求影响最小的情况下初始化。</p>
+<p>⁉️总结：CSS初始化是指重设浏览器的样式。不同的浏览器默认的样式可能不尽相同，所以开发时的第一件事可能就是如何把它们统一。如果没对CSS初始化往往会出现浏览器之间的页面差异。每次新开发网站或新网页时候通过初始化CSS样式的属性，为我们将用到的CSS或html标签更加方便准确，使得我们开发网页内容时更加方便简洁，同时减少CSS代码量，节约网页下载时间。</p>
+<h3 id="♥︎♥︎♥︎-CSS3中的选择器都有什么？"><a href="#♥︎♥︎♥︎-CSS3中的选择器都有什么？" class="headerlink" title="♥︎♥︎♥︎ CSS3中的选择器都有什么？"></a>♥︎♥︎♥︎ CSS3中的选择器都有什么？</h3><p>[CSS3所有选择器讲解汇总]: 	“<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44860226/article/details/126031813">https://blog.csdn.net/weixin_44860226/article/details/126031813</a> “</p>
+<h3 id="♥︎♥︎♥︎-本地存储有生命周期吗？"><a href="#♥︎♥︎♥︎-本地存储有生命周期吗？" class="headerlink" title="♥︎♥︎♥︎ 本地存储有生命周期吗？"></a>♥︎♥︎♥︎ 本地存储有生命周期吗？</h3><p>没有</p>
+<pre><code class="css">cookie: expire 和 max-age 都能控制数据的存储时间。expire 是一个绝对的过期时间，max-age是文档被访问之后的存活时间（是相对时间）。默认是 session。
+sessionStorage 当会话被关闭后（浏览器、标签页被关闭），就会被清除。与 localStorage 用法一样。
+localStorage: 除非被主动清除，不然永久储存在浏览器中。
+IndexedDB: 没有过期时间，除非主动清除。
+</code></pre>
+<h3 id="♥︎♥︎♥︎-CSS选择符有哪些？优先级算法如何计算？"><a href="#♥︎♥︎♥︎-CSS选择符有哪些？优先级算法如何计算？" class="headerlink" title="♥︎♥︎♥︎ CSS选择符有哪些？优先级算法如何计算？"></a>♥︎♥︎♥︎ CSS选择符有哪些？优先级算法如何计算？</h3><p>问题一：对多个选择器使用的优先级是怎么进行计算的？</p>
+<p>对于不同类别的选择器，以以下原则进行排序：</p>
+<pre><code class="css">1、在属性后面使用！important会覆盖页面内任何位置定义的元素样式。
+
+2、作为style属性写在元素内的样式
+
+3、id选择器
+
+4、类选择器
+
+5、标签选择器
+
+6、通配符选择器
+
+7、浏览器自定义或子元素集成父类的样式
+
+将上面的稍微总结一下就是：
+
+！important&gt;行内样式&gt;ID选择器&gt;类选择器&gt;标签&gt;通配符&gt;继承&gt;浏览器默认属性
+
+同一级别中后写的会覆盖先写的样式。
+</code></pre>
+<p>问题二：当不同类别的多个选择器混合使用个怎么计算优先级？</p>
+<p>有一个简单的算法，设</p>
+<p>a.内联样式表的权值为1000</p>
+<p>b.ID选择器的权值为100</p>
+<p>c.class类选择器的权值为10</p>
+<p>d.HTML标签选择器的权值为1</p>
+<p>[<img src="/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/attachments-2022-03-W59PaeQe6222c03c261ba.jpeg"></p>
+<p>我们可以把选择器中规则对应多加法，比较权值，如果权值相同那就后面的覆盖前面的。如图，div.test1.test3的权值是1+10+10&#x3D;21，而.test1.test2.test3的权值是10+10+10&#x3D;30，所以div会应用.test1.test2.test3变成绿色。</p>
+<h3 id="♥︎♥︎♥︎-iframe的优缺点？"><a href="#♥︎♥︎♥︎-iframe的优缺点？" class="headerlink" title="♥︎♥︎♥︎ iframe的优缺点？"></a>♥︎♥︎♥︎ iframe的优缺点？</h3><h4 id="iframe的优点："><a href="#iframe的优点：" class="headerlink" title="iframe的优点："></a>iframe的优点：</h4><p>1、iframe能够原封不动的把嵌入的网页展现出来;</p>
+<p>2、如果有多个网页引用iframe，那么只需要修改iframe的内容，就可以实现调用每一个页面的更改，方便快捷;</p>
+<p>3、网页如果为了统一风格，头部和版本都是一样的，就可以写成一个页面，用iframe嵌套，可以增加代码的可重用;</p>
+<p>4、如果遇到加载缓慢的第三方内容，如图标或广告，这些问题可以由iframe来解决;</p>
+<h4 id="iframe的缺点："><a href="#iframe的缺点：" class="headerlink" title="iframe的缺点："></a>iframe的缺点：</h4><p>1、iframe会阻塞主页面的Onload事件;</p>
+<p>2、iframe和主页面共享链接池，而浏览器对相同城的链接有限制，所以会影响页面的并行加载;</p>
+<p>3、使用iframe之前需要考虑这两个缺点，如果需要使用iframe，最好是通过JavaScript;</p>
+<p>4、动态给iframe添加src属性值，这样可以可以绕开以上两个问题</p>
+<p>5、不利于seo</p>
+<p>6、代码复杂，无法一下被搜索引擎索引到</p>
+<p>7、iframe框架页面会增加服务器的http请求，对于大型网站不可取。</p>
+<p>8、很多的移动设备无法完全显示框架，设备兼容性差。</p>
+<h3 id="♥︎♥︎♥︎-DPR？"><a href="#♥︎♥︎♥︎-DPR？" class="headerlink" title="♥︎♥︎♥︎ DPR？"></a>♥︎♥︎♥︎ DPR？</h3><p>设备像素比DPR(devicePixelRatio)是默认缩放为100%的情况下，设备像素和CSS像素的比值</p>
+<p>举例：</p>
+<p>iPhone6的设备宽度是375px&#x2F;设备独立像素(或css像素)，但是它一行有750个像素颗粒，dpr就是2。</p>
+<p>了解几个概念</p>
+<pre><code class="css">1.设备像素
+设备像素(device pixel)又称物理像素(physical pixel)，设备能控制显示的最小单位，我们可以把这些像素看作成显示器上一个个的点。
+
+2.CSS 中的像素
+CSS 中的像素是一个相对值，不是绝对值，因此1px 的 CSS 像素并不一定等于 1px 的物理像素。
+需要注意的是，CSS 中的像素单位是抽象的，只是一种规范，最终的显示是取决于物理设备的。物理设备根据某种规则，决定该采用几个物理像素去显示 1px 的 CSS 像素，这个规则就是设备像素比。
+CSS像素是一个抽象概念，设备无关像素，简称-“DIPS”，device-independent像素，主要使用在浏览器上，用来精确的度量(确定)Web页面上的内容。
+
+3.PPI
+像素密度(屏幕密度)，即每英寸所拥有的像素数目(比如：上面iPhone 7的PPI是326)，PPI数值越高，代表显示屏能够以越高的密度显示图像，画面的细节就会越丰富。
+
+4.DPR:
+设备像素比DPR(devicePixelRatio)是默认缩放为100%的情况下，设备像素和CSS像素的比值
+dpr，也被成为device pixel ratio，即物理像素与逻辑像素的比，那也就不难理解：iphone6下dpr=2，iphone6+下dpr=3(考虑的是栅格化时的像素，并非真实的物理像素);
+DPR = 设备像素 / CSS像素(某一方向上)
+公式表示就是：window.devicePixelRatio = 物理像素(device pixel) / (设备无关像素/CSS像素/dips)
+</code></pre>
+<h3 id="♥︎♥︎♥︎-简述一下Sass，Less，请说明区别？"><a href="#♥︎♥︎♥︎-简述一下Sass，Less，请说明区别？" class="headerlink" title="♥︎♥︎♥︎ 简述一下Sass，Less，请说明区别？"></a>♥︎♥︎♥︎ 简述一下Sass，Less，请说明区别？</h3><p>一. Sass 和 Less 的定义</p>
+<p>sass 与 less都是一种动态样式语言，对css赋予了一些动态语言特性</p>
+<p>二. 它们的区别大致有以下几种</p>
+<pre><code class="css">//编译环境不一样
+sass的安装需要Ruby环境的，是在服务端上处理的；
+而less是需要引入less.js来处理Less代码输出css到浏览器，也可以在开发环节使用Less，然后编译成css文件，直接放到项目中
+
+//变量符不一样
+Less是@，而Scss是$
+  
+//输出设置
+Less没有输出设置
+Sass提供四种输出选项：
+nested： 嵌套缩进的css代码
+expanded：展示的多行css代码
+compact：简洁格式的css代码
+conpressed： 压缩后的css代码
+Sass支持条件语句，可以使用if&#123;&#125;else&#123;&#125;，for&#123;&#125;循环等等，而Less不支持
+
+//引入外部CSS文件
+scss引用的外部文件命名必须以开头，文件名如果以下划线开头的话，Sass会认为该文件是一个引用文件，不会将其编译为css文件
+
+//Sass和Less的工具库不同
+Sass有工具库 Compass
+Less有UI组件库Bootstrap
+</code></pre>
+<hr>
+<h3 id="♥︎♥︎♥︎♥︎重排（reflow）与重绘（repaint）"><a href="#♥︎♥︎♥︎♥︎重排（reflow）与重绘（repaint）" class="headerlink" title="♥︎♥︎♥︎♥︎重排（reflow）与重绘（repaint）"></a>♥︎♥︎♥︎♥︎重排（reflow）与重绘（repaint）</h3><p>[重排（reflow）与重绘（repaint）]: 	“<a target="_blank" rel="noopener" href="https://blog.csdn.net/lhz_333/article/details/125001060">https://blog.csdn.net/lhz_333/article/details/125001060</a> “</p>
+<h3 id="♥︎♥︎♥︎♥︎BFC是什么东西"><a href="#♥︎♥︎♥︎♥︎BFC是什么东西" class="headerlink" title="♥︎♥︎♥︎♥︎BFC是什么东西"></a>♥︎♥︎♥︎♥︎BFC是什么东西</h3><h4 id="一、什么是BFC"><a href="#一、什么是BFC" class="headerlink" title="一、什么是BFC"></a>一、什么是BFC</h4><p>1、BFC即 Block Formatting Contexts (块级格式化上下文)， 是 W3C CSS2.1 规范中的一个概念。<br>2、BFC是指浏览器中创建了一个独立的渲染区域，并且拥有一套渲染规则，他决定了其子元素如何定位，以及与其他元素的相互关系和作用。</p>
+<h4 id="二、BFC的特点"><a href="#二、BFC的特点" class="headerlink" title="二、BFC的特点"></a>二、BFC的特点</h4><p>1、具有 BFC 特性的元素可以看作是隔离了的独立容器，容器里面的元素不会在布局上影响到外面的元素，并且 BFC 具有普通容器所没有的一些特性。通俗一点来讲，可以把 BFC 理解为一个封闭的大箱子，箱子内部的元素无论如何翻江倒海，都不会影响到外部。</p>
+<h4 id="三、BFC布局规则"><a href="#三、BFC布局规则" class="headerlink" title="三、BFC布局规则"></a>三、BFC布局规则</h4><p>内部的Box会在垂直方向，一个接一个地放置。<br>Box垂直方向的距离由margin决定。属于同一个BFC的两个相邻Box的margin会发生重叠<br>每个元素的margin box的左边， 与包含块border box的左边相接触(对于从左往右的格式化，否则相反)。即使存在浮动也是如此。<br>BFC的区域不会与float box重叠,而是紧贴浮动元素。<br>BFC就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。<br>计算BFC的高度时，浮动元素也参与计算</p>
+<h4 id="四、哪些元素会产生BFC"><a href="#四、哪些元素会产生BFC" class="headerlink" title="四、哪些元素会产生BFC"></a>四、哪些元素会产生BFC</h4><p>1、根元素<br>2、float属性不为none<br>3、position为absolute或fixed<br>4、 display为inline-block, table-cell, table-caption, flex, inline-flex<br>5、 overflow不为visible</p>
+<h4 id="五、在布局中BFC的应用场景"><a href="#五、在布局中BFC的应用场景" class="headerlink" title="五、在布局中BFC的应用场景"></a>五、在布局中BFC的应用场景</h4><p>（1）清除盒子垂直方向上外边距合并——盒子垂直方向的距离由margin决定。属于同一个BFC的两个相邻盒子垂直方向的margin会发生重叠。<br>解决方法：<br>根据属于同一个BFC的两个相邻盒子垂直方向的margin会发生重叠的性质，可以给其中一个盒子再包裹一个盒子父元素，并触发其BFC功能（例如添加overflow:hidden;）这样垂直方向的两个盒子就不在同一个BFC中了，因此也不会发生垂直外边距合并的问题了。<br>（2）在子元素设置成浮动元素的时候，会产生父元素高度塌陷的问题。<br>解决方法：<br>给父元素设置overflow:hidden；的时候会产生BFC<br>由于在计算BFC高度时，自然也会检测浮动的子盒子高度。所以当子盒子有高度但是浮动的时候，通过激发父盒子的BFC功能，会产生清除浮动的效果。</p>
+<h3 id="♥︎♥︎♥︎♥︎flex布局有哪些属性"><a href="#♥︎♥︎♥︎♥︎flex布局有哪些属性" class="headerlink" title="♥︎♥︎♥︎♥︎flex布局有哪些属性"></a>♥︎♥︎♥︎♥︎flex布局有哪些属性</h3><h4 id="1）Flex布局父容器属性"><a href="#1）Flex布局父容器属性" class="headerlink" title="1）Flex布局父容器属性"></a>1）Flex布局父容器属性</h4><pre><code class="css">flex-direction / flex-wrap / flex-flow / justify-content / align-items / align-content
+</code></pre>
+<p>1》水平（主轴上）对齐方式：</p>
+<pre><code class="css">justify-content：flex-start | flex-end | center | space-between | space-around;
+flex-start（默认值）：左对齐
+flex-end：右对齐
+center： 居中
+space-between：两端对齐，子元素间隔相等。
+space-around：子元素两侧的间隔相等。
+</code></pre>
+<p>2》十字交叉轴上对齐方式</p>
+<pre><code class="css">align-items：flex-start | flex-end | center | baseline | stretch;
+flex-start：上对齐。
+flex-end：下对齐。
+center：交叉轴对齐。
+baseline: 第一行文字的基线对齐。
+stretch（默认值）：如果子元素未设置高度或设为auto，将占满整个容器。
+</code></pre>
+<p>3》项目排列方向</p>
+<pre><code class="css">flex-direction：row | row-reverse | column | column-reverse;
+row（默认值）：从左1/2/3/...。
+row-reverse：从左../3/2/1。
+column：从上1/2/3/...。
+column-reverse：从上../3/2/1。
+</code></pre>
+<p>4》换行方式</p>
+<pre><code class="css">flex-wrap：nowrap（不换行） | wrap（向下换） | wrap-reverse（向上换）;
+</code></pre>
+<p>5》flex-flow</p>
+<pre><code class="css">flex-direction和flex-wrap的简写
+flex-flow：row nowrap
+</code></pre>
+<p>6》多根轴线的对齐方式</p>
+<pre><code class="css">align-content：flex-start | flex-end | center | space-between | space-around | stretch;
+flex-start：上对齐。
+flex-end：下对齐。
+center：居中对齐。
+space-between：两端对齐，间隔平均。
+space-around：间隔相等。
+stretch（默认值）：占满。
+</code></pre>
+<h4 id="2）Flex布局子元素属性"><a href="#2）Flex布局子元素属性" class="headerlink" title="2）Flex布局子元素属性"></a>2）Flex布局子元素属性</h4><pre><code class="css">order/flex-grow/flex-shrink/flex-basis/flex/align-self
+</code></pre>
+<p>1》order属性（num）</p>
+<pre><code class="css">order定义自身排列顺序。数值越小，越靠前，默认为0。-1/0/1/2/3/...
+</code></pre>
+<p>2》flex-grow属性（num）</p>
+<pre><code class="css">flex-grow 定义自身放大比例，默认为0不放大。例如：1/2/1=25%:50%:25%
+</code></pre>
+<p>3》flex-shrink属性（num）</p>
+<pre><code class="css">flex-shrink定义了空间不足时自身缩小比例，默认为1自动缩小，0不缩小。
+</code></pre>
+<p>4》flex-basis属性</p>
+<pre><code class="css">flex-basis定义最小空间，默认值为auto，即自身的本来大小。
+</code></pre>
+<p>5》flex属性</p>
+<pre><code class="css">flex属性是flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。
+</code></pre>
+<p>6》align-self属性</p>
+<pre><code class="css">align-self定义自身对齐方式，可覆盖align-items属性。默认值为auto，表示继承父元素的align-items属性，如果没有父元素，则等同于stretch。
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎单行或者多行文本溢出展示省略号的实现方法。"><a href="#♥︎♥︎♥︎♥︎单行或者多行文本溢出展示省略号的实现方法。" class="headerlink" title="♥︎♥︎♥︎♥︎单行或者多行文本溢出展示省略号的实现方法。"></a>♥︎♥︎♥︎♥︎单行或者多行文本溢出展示省略号的实现方法。</h3><p>在页面布局时，经常会遇到文本内容超出盒子的情况，如果要实现单行文本的溢出显示省略号,大家应该都知道用text-overflow:ellipsis属性，当然还需要加宽度width属来兼容部分浏览，接下来，我们一起看看。</p>
+<pre><code class="css">//单行溢出 ... 显示
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+</code></pre>
+<p>但是这个属性只支持单行文本的溢出显示省略号，如果我们要实现多行文本溢出显示省略号呢。接下来重点说一说多行文本溢出显示省略号，如下。</p>
+<pre><code class="css">//多行溢出 ... 显示
+display:-webkit-box;
+-webkit-box-orient:vertical;
+-webkit-line-clamp:3;
+overflow:hidden;
+</code></pre>
+<p>‼️注：<br>1、-webkit-line-clamp用来限制在一个块元素显示的文本的行数。 为了实现该效果，它需要组合其他的WebKit属性。常见结合属性：<br>2、display: -webkit-box; 必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。<br>3、-webkit-box-orient 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。</p>
+<h3 id="♥︎♥︎♥︎♥︎position-sticky用过没，有啥效果？"><a href="#♥︎♥︎♥︎♥︎position-sticky用过没，有啥效果？" class="headerlink" title="♥︎♥︎♥︎♥︎position:sticky用过没，有啥效果？"></a>♥︎♥︎♥︎♥︎position:sticky用过没，有啥效果？</h3><p>[position:sticky 粘性定位的几种巧妙应用]: 	“<a target="_blank" rel="noopener" href="https://www.bbsmax.com/A/qVdeoVOrJP/">https://www.bbsmax.com/A/qVdeoVOrJP/</a> “</p>
+<h3 id="♥︎♥︎♥︎♥︎说说你对GPU的理解，举例说明哪些元素能触发GPU硬件加速？"><a href="#♥︎♥︎♥︎♥︎说说你对GPU的理解，举例说明哪些元素能触发GPU硬件加速？" class="headerlink" title="♥︎♥︎♥︎♥︎说说你对GPU的理解，举例说明哪些元素能触发GPU硬件加速？"></a>♥︎♥︎♥︎♥︎说说你对GPU的理解，举例说明哪些元素能触发GPU硬件加速？</h3><pre><code class="css">GPU: 图形处理器,用于处理图形有关的任务,用于渲染页面
+在css中使用 transform: translateZ(0),可以开启GPU硬件加速
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎纯CSS方式实现CSS动画的暂停与播放"><a href="#♥︎♥︎♥︎♥︎纯CSS方式实现CSS动画的暂停与播放" class="headerlink" title="♥︎♥︎♥︎♥︎纯CSS方式实现CSS动画的暂停与播放"></a>♥︎♥︎♥︎♥︎纯CSS方式实现CSS动画的暂停与播放</h3><p>动画控制要完成的效果是：</p>
+<ol>
+<li>页面 render 后，无任何操作，动画不会开始。只有当鼠标对元素进行 <code>click</code> ，触发元素的 <code>:active</code> 伪类效果的时候，动画才开始进行；</li>
+<li>动画进行到任意时刻，鼠标停止点击，则动画停止；</li>
+<li>重新对元素进行点击，动画继续从上一帧结束的状态开始</li>
+<li>如果动画播放完，再点击不会重复播放，动画状态保留在动画的最后一帧</li>
+</ol>
+<pre><code class="css">//html
+&lt;div&gt;&lt;/div&gt;
+
+//css
+div &#123;
+    margin: 50px auto;
+    width: 100px;
+    height: 100px;
+    background: #000;
+    animation: move 1s linear;
+    animation-fill-mode: forwards;
+&#125;
+@keyframes move &#123;
+    100% &#123;
+        transform: translate(200px, 0) rotate(180deg);
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="css">div &#123;
+    margin: 50px auto;
+    width: 100px;
+    height: 100px;
+    background: #000;
+    animation: move 1s linear;
+    animation-fill-mode: forwards;
++   animation-play-state: paused; //添加了动画播放状态默认暂停
+&#125;
+</code></pre>
+<p> 只有通过点击的时候，动画才会运行：</p>
+<pre><code class="css">body:active div &#123;
+    animation-play-state: running;
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎使用CSS3动画代替JS动画的好处"><a href="#♥︎♥︎♥︎♥︎使用CSS3动画代替JS动画的好处" class="headerlink" title="♥︎♥︎♥︎♥︎使用CSS3动画代替JS动画的好处"></a>♥︎♥︎♥︎♥︎使用CSS3动画代替JS动画的好处</h3><h4 id="导致JavaScript效率低的两大原因：操作DOM和使用页面动画。"><a href="#导致JavaScript效率低的两大原因：操作DOM和使用页面动画。" class="headerlink" title="导致JavaScript效率低的两大原因：操作DOM和使用页面动画。"></a>导致JavaScript效率低的两大原因：操作DOM和使用页面动画。</h4><p>通常我们会通过频繁的操作 DOM的css来实现视觉上的动画效果，导致js效率低的两个因素都包括在内了在频繁的操作DOM和css时，浏览器会不停的执行重排和重绘，在PC版本的浏览器中，因为浏览器可用的内存比较大，用户肉眼几乎看不见页面动画产生的repaint和reflow，所以工程师几乎无需过多的考虑动画带来的性能问题，但在移动设备上可大有不同，移动设备分配给内置浏览器的内存可没有PC版本的浏览器内存可观，目前对CSS3支持最好的莫过于webkit浏览器了，在webkit内核的浏览器，一是safari其次是chrome. </p>
+<h4 id="用CSS3动画替代js模拟动画的好处："><a href="#用CSS3动画替代js模拟动画的好处：" class="headerlink" title="用CSS3动画替代js模拟动画的好处："></a>用CSS3动画替代js模拟动画的好处：</h4><ul>
+<li>不占用JS主线程；</li>
+<li>可以利用硬件加速；</li>
+<li>浏览器可对动画做优化（元素不可见时不动画减少对FPS影响）</li>
+</ul>
+<p>CSS3动画提供了2D和3D以及常规动画属性接口，它可以工作在页面的任何一个元素的任意一个属性，CSS3的动画是利用C语言编写的，它是系统层面的动画。</p>
+<p>采用js动画还是css3动画，需要开发者根据不同的需求做出不同的抉择，但应该遵循一个基本的原则是：如果你需要做2D动画，请勿必使用CSS3的transition或animation</p>
+<h4 id="CSS3动画与JavaScript模拟动画有以下区别："><a href="#CSS3动画与JavaScript模拟动画有以下区别：" class="headerlink" title="CSS3动画与JavaScript模拟动画有以下区别："></a>CSS3动画与JavaScript模拟动画有以下区别：</h4><ol>
+<li>CSS 3D动画在js中无法实现<br>CSS3的3D动画是CSS3中非常强大的功能，因为它的工作原理是在一个三维的空间里，因此js是无法模拟出像CSS3那样的3D动画</li>
+<li>CSS 2D矩阵动画效率高于js利用margin和left,top模拟的矩阵动画<br>CSS3的2D动画是指是2D矩阵Transform变化，js当然是不能做变形动画的。就拿坐标动画来说，使用CSS3的transform做translateXY动画比js中的position left，position right快了近700mm!而且视觉上也比js动画流畅很多。</li>
+<li>CSS3其它常规动画属性的效率均低于js模拟的动画<br>常规动画属性在这里是指：height，width,opacity,border-width,color</li>
+</ol>
+<hr>
+<h3 id="♥︎♥︎♥︎♥︎♥︎flex-1是什么"><a href="#♥︎♥︎♥︎♥︎♥︎flex-1是什么" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎flex:1是什么"></a>♥︎♥︎♥︎♥︎♥︎flex:1是什么</h3><p>[css弹性盒flex-grow、flex-shrink、flex-basis详解]: 	“<a target="_blank" rel="noopener" href="https://www.qetool.com/scripts/view/24368.html">https://www.qetool.com/scripts/view/24368.html</a> “</p>
+<h3 id="♥︎♥︎♥︎♥︎♥︎移动端通用的1px边框的实现原理？"><a href="#♥︎♥︎♥︎♥︎♥︎移动端通用的1px边框的实现原理？" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎移动端通用的1px边框的实现原理？"></a>♥︎♥︎♥︎♥︎♥︎移动端通用的1px边框的实现原理？</h3><p>[7种方法实现移动端屏幕1px边框效果]: 	“<a target="_blank" rel="noopener" href="https://blog.csdn.net/z591102/article/details/106404049/">https://blog.csdn.net/z591102/article/details/106404049/</a> “</p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/10/15/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E9%A2%98%E5%A4%A7%E5%85%A8%E4%B9%8BHTML5-CSS3/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/10/27/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E5%A4%A7%E5%85%A8javaScript/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            前端面试大全javaScript
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/10/10/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E6%B5%8B%E8%AF%95%E5%8F%B7%E6%B5%AA%E6%BC%AB%E6%97%A9%E5%AE%89/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">微信公众测试号浪漫早安</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

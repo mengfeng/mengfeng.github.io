@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>Vite+Vue3+Ts搭建私有组件库2 |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Vite-Vue3-Ts搭建私有组件库2"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Vite+Vue3+Ts搭建私有组件库2
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/21/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/" class="article-date">
+  <time datetime="2022-11-21T06:40:38.000Z" itemprop="datePublished">2022-11-21</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/">Vite+Vue3+Ts搭建私有组件库2</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">8 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="Vite-Vue3-Ts搭建私有组件库2"><a href="#Vite-Vue3-Ts搭建私有组件库2" class="headerlink" title="Vite+Vue3+Ts搭建私有组件库2"></a>Vite+Vue3+Ts搭建私有组件库2</h1><p>本文章只供参考，具体实现可能会有出入（会尽快完善）</p>
+<h3 id="一、vite打包"><a href="#一、vite打包" class="headerlink" title="一、vite打包"></a>一、vite打包</h3><p>上一篇末尾的打包还是有缺陷的，打包的组件库只能给js项目使用,在ts项目下运行会出现一些错误，而且使用的时候还会失去代码提示功能，这样的话我们就失去了用ts开发组件库的意义了。所以我们需要在打包的库里加入声明文件(.d.ts)。</p>
+<p>那么如何向打包后的库里加入声明文件呢？ 其实很简单，只需要引入 vite-plugin-dts</p>
+<pre><code class="css">pnpm i vite-plugin-dts -D -w
+</code></pre>
+<p>如果pnpm命令一直error，用其他命令下载安装也是一样的（下载到根目录）</p>
+<p>然后修改一下我们的vite.config.ts引入这个插件</p>
+<pre><code class="javascript">//components/vite.config.ts
+import &#123; defineConfig &#125; from &quot;vite&quot;;
+import vue from &quot;@vitejs/plugin-vue&quot;
+import dts from &#39;vite-plugin-dts&#39;
+
+export default defineConfig(
+    &#123;
+        build: &#123;...&#125;,
+        plugins: [
+            vue(),
+            dts(&#123;
+                //指定使用的tsconfig.json为我们整个项目根目录下掉,如果不配置,你也可以在components下新建tsconfig.json
+                tsConfigFilePath: &#39;../../tsconfig.json&#39;
+            &#125;),
+            //因为这个插件默认打包到es下，我们想让lib目录下也生成声明文件需要再配置一个
+            dts(&#123;
+                outputDir:&#39;lib&#39;,
+                tsConfigFilePath: &#39;../../tsconfig.json&#39;
+            &#125;)
+
+        ]
+    &#125;
+)
+</code></pre>
+<p>执行pnpm run build你就会发现你的es和lib下就有了声明文件</p>
+<h3 id="二、组件样式"><a href="#二、组件样式" class="headerlink" title="二、组件样式"></a>二、组件样式</h3><p>首先我们需要做的是将less打包成css然后放到打包后对应的文件目录下,我们在components下新建build文件夹来存放我们的一些打包工具,然后新建buildLess.ts,首先我们需要先安装一些工具cpy和fast-glob</p>
+<pre><code class="css">pnpm i cpy fast-glob -D -w
+</code></pre>
+<p>它可以直接复制我们规定的文件并将我们的文件copy到指定目录,比如buildLess.ts:</p>
+<pre><code class="javascript">//build/buildLess.ts
+import cpy from &#39;cpy&#39;
+import &#123; resolve &#125; from &#39;path&#39;
+
+const sourceDir = resolve(__dirname, &#39;../src&#39;)
+//lib文件
+const targetLib = resolve(__dirname, &#39;../lib&#39;)
+//es文件
+const targetEs = resolve(__dirname, &#39;../es&#39;)
+console.log(sourceDir);
+const buildLess = async () =&gt; &#123;
+    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetLib)
+    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetEs)
+&#125;
+buildLess()
+</code></pre>
+<p>然后在package.json中新增命令</p>
+<pre><code class="erlang">...
+&quot;scripts&quot;: &#123;
+    &quot;build&quot;: &quot;vite build&quot;,
+    &quot;build:less&quot;: &quot;esno build/buildLess&quot;
+  &#125;,
+...
+</code></pre>
+<p>终端执行 pnpm run build:less 你就会发现lib和es文件对应目录下就出现了less文件.(如果error，切换node版本)</p>
+<p>但是我们最终要的并不是less文件而是css文件,所以我们要将less打包成css,所以我们需要用的less模块.在ts中引入less因为它本身没有声明文件所以会出现类型错误,所以我们要先安装它的 @types&#x2F;less</p>
+<pre><code class="css">pnpm i --save-dev @types/less -D -w
+</code></pre>
+<p>buildLess.ts如下(详细注释都在代码中)</p>
+<pre><code class="javascript">import cpy from &#39;cpy&#39;
+import &#123; resolve &#125; from &#39;path&#39;
+import &#123; promises as fs &#125; from &quot;fs&quot;
+import less from &quot;less&quot;
+import glob from &quot;fast-glob&quot;
+const sourceDir = resolve(__dirname, &#39;../src&#39;)
+//lib文件目录
+const targetLib = resolve(__dirname, &#39;../lib&#39;)
+//es文件目录
+const targetEs = resolve(__dirname, &#39;../es&#39;)
+
+
+
+const buildLess = async () =&gt; &#123;
+    //直接将less文件复制到打包后目录
+    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetLib)
+    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetEs)
+
+    //获取打包后.less文件目录(lib和es一样)
+    const lessFils = await glob(&quot;**/*.less&quot;, &#123; cwd: targetLib, onlyFiles: true &#125;)
+
+    //遍历含有less的目录
+    for (let path in lessFils) &#123;
+        const lessPathLib = `$&#123;targetLib&#125;/$&#123;lessFils[path]&#125;`
+        const lessPathEs = `$&#123;targetEs&#125;/$&#123;lessFils[path]&#125;`
+
+        //获取less文件字符串
+        const lessCode = await fs.readFile(lessPathLib, &#39;utf-8&#39;)
+        //将less解析成css
+        const code = await less.render(lessCode)
+
+        //拿到.css后缀path
+        const cssPathLib = lessPathLib.replace(&#39;.less&#39;, &#39;.css&#39;)
+        const cssPathEs = lessPathEs.replace(&#39;.less&#39;, &#39;.css&#39;)
+
+        //将css写入对应目录
+        await fs.writeFile(cssPathLib, code.css)
+        await fs.writeFile(cssPathEs, code.css)
+    &#125;
+
+
+
+&#125;
+buildLess()
+</code></pre>
+<p>执行打包命令之后你会发现对应文件夹下多了.css文件</p>
+<p><img src="/2022/11/21/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/image-20221121092003205.png"></p>
+<p>现在我已经将css文件放入对应的目录下了,但是我们的相关组件并没有引入这个css文件;所以我们需要的是每个打包后组件的index.js中出现如:</p>
+<pre><code class="cpp">import &quot;xxx/xxx.css&quot;
+</code></pre>
+<p>之类的代码我们的css才会生效;所以我们需要对vite.config.ts进行相关配置</p>
+<p>首先我们先将.less文件忽略external: [‘vue’, &#x2F;.less&#x2F;],这时候打包后的文件中如button&#x2F;index.js就会出现</p>
+<pre><code class="cpp">import &quot;./style/index.less&quot;;
+</code></pre>
+<p>然后我们再将打包后代码的.less换成.css就大功告成了</p>
+<pre><code class="typescript">...
+plugins: [
+            ...
+
+            &#123;
+                name: &#39;style&#39;,
+                generateBundle(config, bundle) &#123;
+                    //这里可以获取打包后的文件目录以及代码code
+                    const keys = Object.keys(bundle)
+
+                    for (const key of keys) &#123;
+                        const bundler: any = bundle[key as any]
+                        //rollup内置方法,将所有输出文件code中的.less换成.css,因为我们当时没有打包less文件
+
+                        this.emitFile(&#123;
+                            type: &#39;asset&#39;,
+                            fileName: key,//文件名名不变
+                            source: bundler.code.replace(/\.less/g, &#39;.css&#39;)
+                        &#125;)
+                    &#125;
+                &#125;
+            &#125;
+        ...
+        ]
+...
+</code></pre>
+<p>我们最终的vite.config.ts如下</p>
+<pre><code class="typescript">import &#123; defineConfig &#125; from &quot;vite&quot;;
+import vue from &quot;@vitejs/plugin-vue&quot;
+import dts from &#39;vite-plugin-dts&#39;
+
+export default defineConfig(
+    &#123;
+        build: &#123;
+            target: &#39;modules&#39;,
+            //打包文件目录
+            outDir: &quot;es&quot;,
+            //压缩
+            minify: false,
+            //css分离
+            //cssCodeSplit: true,
+            rollupOptions: &#123;
+                //忽略打包vue和.less文件
+                external: [&#39;vue&#39;, /\.less/],
+                input: [&#39;src/index.ts&#39;],
+                output: [
+                    &#123;
+                        format: &#39;es&#39;,
+                        //不用打包成.es.js,这里我们想把它打包成.js
+                        entryFileNames: &#39;[name].js&#39;,
+                        //让打包目录和我们目录对应
+                        preserveModules: true,
+                        //配置打包根目录
+                        dir: &#39;es&#39;,
+                        preserveModulesRoot: &#39;src&#39;
+                    &#125;,
+                    &#123;
+                        format: &#39;cjs&#39;,
+                        //不用打包成.mjs
+                        entryFileNames: &#39;[name].js&#39;,
+                        //让打包目录和我们目录对应
+                        preserveModules: true,
+                        //配置打包根目录
+                        dir: &#39;lib&#39;,
+                        preserveModulesRoot: &#39;src&#39;
+                    &#125;
+                ]
+            &#125;,
+            lib: &#123;
+                entry: &#39;./index.ts&#39;,
+                formats: [&#39;es&#39;, &#39;cjs&#39;]
+            &#125;
+        &#125;,
+
+
+
+
+        plugins: [
+            vue(),
+            dts(&#123;
+                //指定使用的tsconfig.json为我们整个项目根目录下掉,如果不配置,你也可以在components下新建tsconfig.json
+                tsConfigFilePath: &#39;../../tsconfig.json&#39;
+            &#125;),
+            //因为这个插件默认打包到es下，我们想让lib目录下也生成声明文件需要再配置一个
+            dts(&#123;
+                outputDir: &#39;lib&#39;,
+                tsConfigFilePath: &#39;../../tsconfig.json&#39;
+            &#125;),
+
+            &#123;
+                name: &#39;style&#39;,
+                generateBundle(config, bundle) &#123;
+                    //这里可以获取打包后的文件目录以及代码code
+                    const keys = Object.keys(bundle)
+
+                    for (const key of keys) &#123;
+                        const bundler: any = bundle[key as any]
+                        //rollup内置方法,将所有输出文件code中的.less换成.css,因为我们当时没有打包less文件
+
+                        this.emitFile(&#123;
+                            type: &#39;asset&#39;,
+                            fileName: key,//文件名名不变
+                            source: bundler.code.replace(/\.less/g, &#39;.css&#39;)
+                        &#125;)
+                    &#125;
+                &#125;
+            &#125;
+
+        ]
+    &#125;
+)
+</code></pre>
+<p>最后我们将打包less与打包组件合成一个命令(package.json):</p>
+<pre><code class="erlang">...
+&quot;scripts&quot;: &#123;
+     &quot;build&quot;:&quot;vite build&quot;,
+    &quot;build:less&quot;: &quot;esno build/buildLess&quot;
+  &#125;,
+...
+</code></pre>
+<p>后续直接执行pnpm run build 即可完成所有打包啦</p>
+<h3 id="三、引用ui包"><a href="#三、引用ui包" class="headerlink" title="三、引用ui包"></a>三、引用ui包</h3><p>做了那么多终于到发布的阶段了；其实npm发包是很容易的，就拿我们的组件alanmf举例吧</p>
+<p>发布之前记得到<a target="_blank" rel="noopener" href="https://www.npmjs.com/">npm</a>官网注册个账户,如果你要发布@xx&#x2F;xx这种包的话需要在npm新建个组织组织组织名就是@后面的，比如我建的组织就是kitty-ui,注册完之后你就可以发布了</p>
+<p>首先要将我们代码提交到git仓库，不然pnpm发布无法通过，后面每次发版记得在对应包下执行 <strong>pnpm version patch</strong>你就会发现这个包的版本号patch(版本号第三个数) +1 了</p>
+<p>如果你发布的是公共包的话，在对应包下执行</p>
+<pre><code class="cpp">pnpm publish --access public
+</code></pre>
+<p>输入你的账户和密码（记得输入密码的时候是不显示的，不要以为卡了）正常情况下应该是发布成功了</p>
+<p><strong>注意</strong></p>
+<p>发布的时候要将npm的源切换到npm的官方地址(<a target="_blank" rel="noopener" href="https://registry.npmjs.org/">https://registry.npmjs.org/</a>); 如果你使用了其它镜像源的话</p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/11/21/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/" rel="tag">私有组件库</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/11/22/vite%E9%85%8D%E7%BD%AE/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            vite配置
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Vite+Vue3+Ts搭建私有组件库</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

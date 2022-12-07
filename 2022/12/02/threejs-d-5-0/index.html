@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>threejs-d-5.0 |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-threejs-d-5-0"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  threejs-d-5.0
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/02/threejs-d-5-0/" class="article-date">
+  <time datetime="2022-12-02T08:37:44.000Z" itemprop="datePublished">2022-12-02</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/Three-js/">Three.js</a> / <a class="article-category-link" href="/categories/Web3D/Three-js/threejs-d-5-0/">threejs-d-5.0</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">12 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="threejs-d-5-0"><a href="#threejs-d-5-0" class="headerlink" title="threejs-d-5.0"></a>threejs-d-5.0</h1><h3 id="一、置换与置换贴图"><a href="#一、置换与置换贴图" class="headerlink" title="一、置换与置换贴图"></a>一、置换与置换贴图</h3><blockquote>
+<h3 id="displacementMap-Texture"><a href="#displacementMap-Texture" class="headerlink" title=".displacementMap : Texture"></a>.displacementMap : Texture</h3><p>位移贴图会影响网格顶点的位置，与仅影响材质的光照和阴影的其他贴图不同，移位的顶点可以投射阴影，阻挡其他对象， 以及充当真实的几何体。位移纹理是指：网格的所有顶点被映射为图像中每个像素的值（白色是最高的），并且被重定位。</p>
+<h3 id="displacementScale-Float"><a href="#displacementScale-Float" class="headerlink" title=".displacementScale : Float"></a>.displacementScale : Float</h3><p>位移贴图对网格的影响程度（黑色是无位移，白色是最大位移）。如果没有设置位移贴图，则不会应用此值。默认值为1。</p>
+</blockquote>
+<pre><code class="javascript">//main.js+
+const textureLoader = new THREE.TextureLoader();
+const mbColortexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_diffuse.jpg&#39;) 
+const mbHeighttexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_height.jpg&#39;) 
+mbColortexture.wrapS = THREE.RepeatWrapping
+mbColortexture.wrapT = THREE.RepeatWrapping
+mbColortexture.center.set(0.5,0.5)
+// mbColortexture.rotation = Math.PI / 4
+const geometry = new THREE.BoxGeometry( 1, 1, 1,100,100,100 );
+const material = new THREE.MeshStandardMaterial( &#123; 
+    color: &#39;#ffffff&#39;,
+    map:mbColortexture,
+    displacementMap:mbHeighttexture,
+    displacementScale:0.05
+
+ &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p>置换效果图：</p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202081128766.png"></p>
+<h3 id="二、粗糙度与粗糙度贴图"><a href="#二、粗糙度与粗糙度贴图" class="headerlink" title="二、粗糙度与粗糙度贴图"></a>二、粗糙度与粗糙度贴图</h3><blockquote>
+<h3 id="roughness-Float"><a href="#roughness-Float" class="headerlink" title=".roughness : Float"></a>.roughness : Float</h3><p>材质的粗糙程度。0.0表示平滑的镜面反射，1.0表示完全漫反射。默认值为1.0。如果还提供roughnessMap，则两个值相乘。</p>
+<h3 id="roughnessMap-Texture"><a href="#roughnessMap-Texture" class="headerlink" title=".roughnessMap : Texture"></a>.roughnessMap : Texture</h3><p>该纹理的绿色通道用于改变材质的粗糙度。</p>
+</blockquote>
+<pre><code class="javascript">//main.js+
+const textureLoader = new THREE.TextureLoader();
+const mbColortexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_diffuse.jpg&#39;) 
+const mbHeighttexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_height.jpg&#39;) 
+const mbRoughnesstexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_roughness.jpg&#39;) 
+mbColortexture.wrapS = THREE.RepeatWrapping
+mbColortexture.wrapT = THREE.RepeatWrapping
+mbColortexture.center.set(0.5,0.5)
+// mbColortexture.rotation = Math.PI / 4
+const geometry = new THREE.BoxGeometry( 1, 1, 1,50,50,50 );
+const material = new THREE.MeshStandardMaterial( &#123; 
+    color: &#39;#ffffff&#39;,
+    map:mbColortexture,
+    displacementMap:mbHeighttexture,
+    displacementScale:0.05,
+    // roughness:0,
+    roughnessMap:mbRoughnesstexture
+
+ &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p>粗糙度为0效果：</p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202082244999.png"></p>
+<p>加载粗糙度纹理：</p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202082433121.png"></p>
+<h3 id="三、金属度与金属贴图"><a href="#三、金属度与金属贴图" class="headerlink" title="三、金属度与金属贴图"></a>三、金属度与金属贴图</h3><blockquote>
+<h3 id="metalness-Float"><a href="#metalness-Float" class="headerlink" title=".metalness : Float"></a>.metalness : Float</h3><p>材质与金属的相似度。非金属材质，如木材或石材，使用0.0，金属使用1.0，通常没有中间值。 默认值为0.0。0.0到1.0之间的值可用于生锈金属的外观。如果还提供了metalnessMap，则两个值相乘。</p>
+<h3 id="metalnessMap-Texture"><a href="#metalnessMap-Texture" class="headerlink" title=".metalnessMap : Texture"></a>.metalnessMap : Texture</h3><p>该纹理的蓝色通道用于改变材质的金属度。</p>
+</blockquote>
+<pre><code class="javascript">//main.js+
+const textureLoader = new THREE.TextureLoader();
+const mbColortexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_diffuse.jpg&#39;) 
+const mbHeighttexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_height.jpg&#39;) 
+const mbRoughnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_roughness.jpg&#39;) 
+const mbMetalnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_metalness.jpg&#39;) 
+
+mbColortexture.wrapS = THREE.RepeatWrapping
+mbColortexture.wrapT = THREE.RepeatWrapping
+mbColortexture.center.set(0.5,0.5)
+// mbColortexture.rotation = Math.PI / 4
+const geometry = new THREE.PlaneGeometry( 1, 1,100,100 );
+const material = new THREE.MeshStandardMaterial( &#123; 
+    color: &#39;#ffffff&#39;,
+    map:mbColortexture,
+    displacementMap:mbHeighttexture,
+    displacementScale:0.05,
+    roughness:0.2,
+    roughnessMap:mbRoughnesstexture,
+    metalnessMap:mbMetalnesstexture,
+    metalness:0.3
+
+ &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p>添加金属和金属贴图前：</p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202091721564.png"></p>
+<p>添加金属和金属贴图后： </p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202091744042.png"></p>
+<h3 id="四、法线和法线贴图"><a href="#四、法线和法线贴图" class="headerlink" title="四、法线和法线贴图"></a>四、法线和法线贴图</h3><blockquote>
+<h3 id="normalMap-Texture"><a href="#normalMap-Texture" class="headerlink" title=".normalMap : Texture"></a>.normalMap : Texture</h3><p>用于创建法线贴图的纹理。RGB值会影响每个像素片段的曲面法线，并更改颜色照亮的方式。法线贴图不会改变曲面的实际形状，只会改变光照。 In case the material has a normal map authored using the left handed convention, the y component of normalScale should be negated to compensate for the different handedness.</p>
+<h3 id="normalMapType-Integer"><a href="#normalMapType-Integer" class="headerlink" title=".normalMapType : Integer"></a>.normalMapType : Integer</h3><p>法线贴图的类型。</p>
+<p>选项为THREE.TangentSpaceNormalMap（默认）和THREE.ObjectSpaceNormalMap。</p>
+<h3 id="normalScale-Vector2"><a href="#normalScale-Vector2" class="headerlink" title=".normalScale : Vector2"></a>.normalScale : Vector2</h3><p>法线贴图对材质的影响程度。典型范围是0-1。默认值是Vector2设置为（1,1）</p>
+</blockquote>
+<pre><code class="javascript">//main.js+
+const textureLoader = new THREE.TextureLoader();
+const mbColortexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_diffuse.jpg&#39;) 
+const mbHeighttexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_height.jpg&#39;) 
+const mbRoughnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_roughness.jpg&#39;) 
+const mbMetalnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_metalness.jpg&#39;) 
+const mbNormaltexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_normal.jpg&#39;) 
+
+mbColortexture.wrapS = THREE.RepeatWrapping
+mbColortexture.wrapT = THREE.RepeatWrapping
+mbColortexture.center.set(0.5,0.5)
+// mbColortexture.rotation = Math.PI / 4
+const geometry = new THREE.PlaneGeometry( 1, 1,100,100 );
+const material = new THREE.MeshStandardMaterial( &#123; 
+    color: &#39;#ffffff&#39;,
+    map:mbColortexture,
+    displacementMap:mbHeighttexture,
+    displacementScale:0.05,
+    roughness:0.2,
+    roughnessMap:mbRoughnesstexture,
+    metalnessMap:mbMetalnesstexture,
+    metalness:0.3,
+    normalMap:mbNormaltexture
+
+ &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p>添加法线贴图后：</p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202092454739.png"></p>
+<p>贴图到这里就已经很逼真了，当然，不同的材质所使用的贴图也有一定的区别。</p>
+<h3 id="五、纹理加载回调"><a href="#五、纹理加载回调" class="headerlink" title="五、纹理加载回调"></a>五、纹理加载回调</h3><h4 id="1-纹理回调"><a href="#1-纹理回调" class="headerlink" title="1.纹理回调"></a>1.纹理回调</h4><blockquote>
+<h3 id="load-url-String-onLoad-Function-onProgress-Function-onError-Function-Texture"><a href="#load-url-String-onLoad-Function-onProgress-Function-onError-Function-Texture" class="headerlink" title=".load ( url : String, onLoad : Function, onProgress : Function, onError : Function ) : Texture"></a>.load ( url : String, onLoad : Function, onProgress : Function, onError : Function ) : Texture</h3><p>url — 文件的URL或者路径，也可以为 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">Data URI</a>.<br>onLoad — 加载完成时将调用。回调参数为将要加载的texture.<br>onProgress — 将在加载过程中进行调用。参数为XMLHttpRequest实例，实例包含total和loaded字节。<br>onError — 在加载错误时被调用。</p>
+</blockquote>
+<pre><code class="javascript">//main.js+
+const textureLoader = new THREE.TextureLoader();
+const mbColortexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_diffuse.jpg&#39;) 
+const mbHeighttexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_height.jpg&#39;) 
+const mbRoughnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_roughness.jpg&#39;) 
+const mbMetalnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_metalness.jpg&#39;) 
+const event = &#123;&#125;;
+event.onLoad = function(e)&#123;
+    console.log(&#39;加载完成了&#39;)
+&#125;
+event.onProgress = function(e)&#123;
+    console.log(e)
+    console.log(&#39;正在加载&#39;)
+&#125;
+event.onError = function(e)&#123;
+    console.log(&#39;加载错误了&#39;)
+    console.log(e)
+&#125;
+const mbNormaltexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_normal.jpg&#39;,
+event.onLoad,//加载完成调用
+event.onProgress,//加载过程中调用
+event.onError//加载错误调用
+) 
+
+mbColortexture.wrapS = THREE.RepeatWrapping
+mbColortexture.wrapT = THREE.RepeatWrapping
+mbColortexture.center.set(0.5,0.5)
+// mbColortexture.rotation = Math.PI / 4
+const geometry = new THREE.PlaneGeometry( 1, 1,100,100 );
+const material = new THREE.MeshStandardMaterial( &#123; 
+    color: &#39;#ffffff&#39;,
+    map:mbColortexture,
+    displacementMap:mbHeighttexture,
+    displacementScale:0.05,
+    roughness:0.2,
+    roughnessMap:mbRoughnesstexture,
+    metalnessMap:mbMetalnesstexture,
+    metalness:0.3,
+    normalMap:mbNormaltexture
+
+ &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p>加载中</p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202101019627.png" alt="onProgress"></p>
+<p>加载完成</p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202101056269.png" alt="onLoad"></p>
+<p>加载错误</p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202101123771.png" alt="onError"></p>
+<h4 id="2-纹理加载器"><a href="#2-纹理加载器" class="headerlink" title="2.纹理加载器"></a>2.纹理加载器</h4><blockquote>
+<p>其功能是处理并跟踪已加载和待处理的数据，管理我们加载的纹理</p>
+</blockquote>
+<pre><code class="javascript">//main.js+
+const event = &#123;&#125;;
+event.onLoad = function(e)&#123;
+    console.log(&#39;加载完成了&#39;)
+&#125;
+event.onProgress = function( url,itemsLoaded,itemsTotal)&#123;
+    console.log(&#39;url:&#39;+ url)//当前加载纹理路径
+    console.log(&#39;itemsLoaded:&#39; + itemsLoaded )//加载当前纹理位置
+    console.log(&#39;itemsTotal:&#39; + itemsTotal)//纹理总数
+    console.log(&#39;加载角度:&#39; + ((itemsLoaded / itemsTotal) * 100).toFixed(2) + &#39;%&#39;)//纹理加载进度
+&#125;
+event.onError = function(e)&#123;
+    console.log(&#39;加载错误了&#39;)
+    console.log(e)
+&#125;
+const manager = new THREE.LoadingManager(
+    event.onLoad,
+    event.onProgress,
+    event.onError
+    );
+
+const textureLoader = new THREE.TextureLoader(manager);//装载加载器
+const mbColortexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_diffuse.jpg&#39;) 
+const mbHeighttexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_height.jpg&#39;) 
+const mbRoughnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_roughness.jpg&#39;) 
+const mbMetalnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_metalness.jpg&#39;) 
+const mbNormaltexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_normal.jpg&#39;) 
+mbColortexture.wrapS = THREE.RepeatWrapping
+mbColortexture.wrapT = THREE.RepeatWrapping
+mbColortexture.center.set(0.5,0.5)
+// mbColortexture.rotation = Math.PI / 4
+const geometry = new THREE.PlaneGeometry( 1, 1,100,100 );
+const material = new THREE.MeshStandardMaterial( &#123; 
+    color: &#39;#ffffff&#39;,
+    map:mbColortexture,
+    displacementMap:mbHeighttexture,
+    displacementScale:0.05,
+    roughness:0.2,
+    roughnessMap:mbRoughnesstexture,
+    metalnessMap:mbMetalnesstexture,
+    metalness:0.3,
+    normalMap:mbNormaltexture
+
+ &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202102251981.png"></p>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202104213221.png"></p>
+<h3 id="六、环境纹理"><a href="#六、环境纹理" class="headerlink" title="六、环境纹理"></a>六、环境纹理</h3><blockquote>
+<p>创建一个由6张图片所组成的纹理对象。</p>
+<p>（前后，上下，左右）也可以是 <a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F">hdr</a>（一张图）</p>
+</blockquote>
+<pre><code class="javascript">const loader = new THREE.CubeTextureLoader();
+loader.setPath( &#39;textures/cube/pisa/&#39; );
+
+const textureCube = loader.load( [
+    &#39;px.png&#39;, &#39;nx.png&#39;,
+    &#39;py.png&#39;, &#39;ny.png&#39;,
+    &#39;pz.png&#39;, &#39;nz.png&#39;
+] );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0xffffff, envMap: textureCube &#125; );
+scene.background = textureCube;
+scene.environment = textureCube;//若该值不为null，则该纹理贴图将会被设为场景中所有物理材质的环境贴图。 然而，该属性不能够覆盖已存在的、已分配给 MeshStandardMaterial.envMap 的贴图
+</code></pre>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202133340321.png"></p>
+<h3 id="七、HDR"><a href="#七、HDR" class="headerlink" title="七、HDR"></a>七、HDR</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F">HDR</a></p>
+<p>那么我们也是要知道如何加载hdr</p>
+</blockquote>
+<p><strong>高动态范围成像</strong>（英語：<strong>H</strong>igh <strong>D</strong>ynamic <strong>R</strong>ange Imaging，简称<strong>HDRI</strong>或<strong>HDR</strong>），在计算机图形学与电影摄影术中，是用来实现比普通数位图像技术更大曝光动态范围（即更大的明暗差别）的一组技术。高动态范围成像的目的就是要正确地表示真实世界中从太阳光直射到最暗的阴影这样大的范围亮度。</p>
+<blockquote>
+<h3 id="mapping-number"><a href="#mapping-number" class="headerlink" title=".mapping : number"></a>.mapping : number</h3><p>图像将如何应用到物体（对象）上。默认值是THREE.UVMapping对象类型， 即UV坐标将被用于纹理映射。</p>
+<p>EquirectangularReflectionMapping 和 EquirectangularRefractionMapping 用于等距圆柱投影的环境贴图，也被叫做经纬线映射贴图。等距圆柱投影贴图表示沿着其水平中线360°的视角，以及沿着其垂直轴向180°的视角。贴图顶部和底部的边缘分别对应于它所映射的球体的北极和南极。</p>
+</blockquote>
+<pre><code class="javascript">//main.js+
+import &#123; RGBELoader &#125; from &#39;three/examples/jsm/loaders/RGBELoader&#39;
+const rgbeLoader = new RGBELoader();
+rgbeLoader.loadAsync(&#39;./texture/ruin1.hdr&#39;).then((texture)=&gt;&#123;
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.background = texture;
+    scene.environment = texture;
+&#125;)
+const geometry = new THREE.SphereGeometry( 15, 100, 50 );
+const material = new THREE.MeshStandardMaterial( &#123; 
+    color: &#39;#ffffff&#39;,
+    metalness:0.5,
+    roughness:0.05
+ &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202141946012.png"></p>
+<h3 id="八、灯光与阴影"><a href="#八、灯光与阴影" class="headerlink" title="八、灯光与阴影"></a>八、灯光与阴影</h3><blockquote>
+<p>阴影需要满足的条件</p>
+<p>1.材质应满足对灯光有反应（环境光由于是四面八方的光，所以不具备阴影的条件）</p>
+<p>2.渲染器开启阴影计算：renderer.shadowMap.enabled &#x3D; true</p>
+<p>3.光照投射阴影：light.castShadow &#x3D; true</p>
+<p>4.物体投射阴影：cube.castShadow &#x3D; true（投影主体）</p>
+<p>5.物体接收投射阴影：plane.receiveShadow &#x3D; true（接收主体）</p>
+</blockquote>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; 
+import dat from &#39;dat.gui&#39;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.shadowMap.enabled = true;//渲染器开启阴影计算
+document.body.appendChild( renderer.domElement );
+
+const axesHelper = new THREE.AxesHelper( 30 );//轴的线段长度. 默认为 1.
+scene.add( axesHelper );//添加到场景
+
+
+const geometry = new THREE.SphereGeometry( 15, 100, 50 );
+const material = new THREE.MeshStandardMaterial();
+const cube = new THREE.Mesh( geometry, material );
+cube.castShadow = true;//物体投射阴影
+scene.add( cube );
+
+const geometryP = new THREE.PlaneGeometry( 100,100 );
+const materialP = new THREE.MeshStandardMaterial();
+const plane = new THREE.Mesh( geometryP, materialP );
+plane.rotation.x = -Math.PI / 2
+plane.position.set(0,-15,0)
+plane.receiveShadow = true//物体接收投射阴影
+scene.add( plane );
+
+const light = new THREE.PointLight( 0xffffff, 1, 100 );
+light.position.set( 10, 50, 10 );
+light.castShadow = true;//光照投射阴影
+scene.add( light ); 
+
+const gui = new dat.GUI();
+gui.add(light.position,&#39;x&#39;)
+.min(0)
+.max(30)
+.name(&#39;移动x坐标&#39;)
+.step(0.1)
+gui.add(light.position,&#39;y&#39;)
+.min(0)
+.max(30)
+.name(&#39;移动y坐标&#39;)
+.step(0.1)
+gui.add(light.position,&#39;z&#39;)
+.min(0)
+.max(30)
+.name(&#39;移动z坐标&#39;)
+.step(0.1)
+const controls = new OrbitControls( camera,renderer.domElement  );
+camera.position.set(0,20,100);
+controls.update();
+function animate() &#123;
+    requestAnimationFrame( animate );
+    controls.update();
+    renderer.render( scene, camera );
+&#125;
+animate();
+
+window.addEventListener(&#39;resize&#39;,()=&gt;&#123;
+    // console.log(&#39;屏幕变化了&#39;)
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+&#125;)
+</code></pre>
+<p><img src="/2022/12/02/threejs-d-5-0/image-20221202151934429.png"></p>
+<p>总结：</p>
+<p>我们还有一些灯光，例如点光源和聚光灯，它们的属性我们就不一一来讲了，相信我们到了这，文档已经可以比较熟悉的查阅了。加油！！！</p>
+<p>参考文档：</p>
+<p>[HDR讲解]: 	“<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F&quot;">https://zh.m.wikipedia.org/zh/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F&quot;</a></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/12/02/threejs-d-5-0/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/threejs/" rel="tag">threejs</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            playcanvas初识
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/12/01/threejs-d-4-0/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">threejs-d-4.0</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

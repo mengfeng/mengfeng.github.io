@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>pinia |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-pinia"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  pinia
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/23/pinia/" class="article-date">
+  <time datetime="2022-11-23T02:21:26.000Z" itemprop="datePublished">2022-11-23</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Electron/">Electron</a> / <a class="article-category-link" href="/categories/Electron/Pinia/">Pinia</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">1.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">6 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="pinia"><a href="#pinia" class="headerlink" title="pinia"></a>pinia</h1><h3 id="一、Vuex-与-Pinia-核心思想与用法"><a href="#一、Vuex-与-Pinia-核心思想与用法" class="headerlink" title="一、Vuex 与 Pinia 核心思想与用法"></a>一、Vuex 与 Pinia 核心思想与用法</h3><h4 id="Flux-架构"><a href="#Flux-架构" class="headerlink" title="Flux 架构"></a>Flux 架构</h4><p>Flux 是 Facebook 在构建大型 Web 应用程序时为了解决数据一致性问题而设计出的一种架构，它是一种描述状态管理的设计模式。绝大多数前端领域的状态管理工具都遵循这种架构，或者以它为参考原型。</p>
+<p>Flux 架构主要有四个组成部分：</p>
+<ul>
+<li>📦 <strong>store</strong>：状态数据的存储管理中心，可以有多个，可以接受 action 做出响应。</li>
+<li>🖼 <strong>view</strong>：视图，根据 store 中的数据渲染生成页面，与 store 之间存在发布订阅关系。</li>
+<li>🛠 <strong>action</strong>：一种描述动作行为的数据对象，通常会包含动作类型 type 和需要传递的参数 payload 等属性。</li>
+<li>📮 <strong>dispatcher</strong>：调度器，接收 action 并分发至 store。</li>
+</ul>
+<p><img src="/2022/11/23/pinia/b55512a3f1be47b2.png"></p>
+<p>整个数据流动关系为：</p>
+<p>1、view 视图中的交互行为会创建 action，交由 dispatcher 调度器。</p>
+<p>2、dispatcher 接收到 action 后会分发至对应的 store。</p>
+<p>3、store 接收到 action 后做出响应动作，并触发 change 事件，通知与其关联的 view 重新渲染内容。</p>
+<p>这就是 Flux 架构最核心的特点：单向数据流。</p>
+<p>与传统的 MVC 架构相比，单向数据流也带来了一个好处：可预测性。</p>
+<p>所有对于状态的修改都需要经过 dispatcher 派发的 action 来触发的，每一个 action 都是一个单独的数据对象实体，可序列化，操作记录可追踪，更易于调试。</p>
+<p>Vuex 与 Pinia 大体上沿用 Flux 的思想，并针对 Vue 框架单独进行了一些设计上的优化。</p>
+<h4 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h4><p><img src="/2022/11/23/pinia/f9ae36a64955b220.png"></p>
+<ul>
+<li>📦 <strong>state</strong>：整个应用的状态管理单例，等效于 Vue 组件中的 data，对应了 Flux 架构中的 store。</li>
+<li>🧮 <strong>getter</strong>：可以由 state 中的数据派生而成，等效于 Vue 组件中的计算属性。它会自动收集依赖，以实现计算属性的缓存。</li>
+<li>🛠 <strong>mutation</strong>：类似于事件，包含一个类型名和对应的回调函数，在回调函数中可以对 state 中的数据进行同步修改。<ul>
+<li>Vuex 不允许直接调用该函数，而是需要通过 <code>store.commit</code> 方法提交一个操作，并将参数传入回调函数。</li>
+<li>commit 的参数也可以是一个数据对象，正如 Flux 架构中的 action 对象一样，它包含了类型名 <code>type</code> 和负载 <code>payload</code>。</li>
+<li>这里要求 mutation 中回调函数的操作一定是同步的，这是因为同步的、可序列化的操作步骤能保证生成唯一的日志记录，才能使得 devtools 能够实现对状态的追踪，实现 time-travel。</li>
+</ul>
+</li>
+<li>🔨 <strong>action</strong>：action 内部的操作不受限制，可以进行任意的异步操作。我们需要通过 <code>dispatch</code> 方法来触发 action 操作，同样的，参数包含了类型名 <code>type</code> 和负载 <code>payload</code>。<ul>
+<li>action 的操作本质上已经脱离了 Vuex 本身，假如将它剥离出来，仅仅在用户（开发者）代码中调用 <code>commit</code> 来提交 mutation 也能达到一样的效果。</li>
+</ul>
+</li>
+<li>📁 <strong>module</strong>：store 的分割，每个 module 都具有独立的 state、getter、mutation 和 action。<ul>
+<li>可以使用 <code>module.registerModule</code> 动态注册模块。</li>
+<li>支持模块相互嵌套，可以通过设置命名空间来进行数据和操作隔离。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Pinia"><a href="#Pinia" class="headerlink" title="Pinia"></a>Pinia</h4><p><img src="/2022/11/23/pinia/image-20221123084525884.png"></p>
+<p>保留：</p>
+<ul>
+<li>📦 <strong>state</strong>：store 的核心，与 Vue 中的 data 一致，可以直接对其中的数据进行读写。</li>
+<li>🧮 <strong>getters</strong>：与 Vue 中的计算属性相同，支持缓存。</li>
+<li>🔨 <strong>actions</strong>：操作不受限制，可以创建异步任务，可以直接被调用，不再需要 commit、dispatch 等方法。</li>
+</ul>
+<p>舍弃：</p>
+<ul>
+<li>🛠 <strong>mutation</strong>：Pinia 并非完全抛弃了 mutation，而是将对 state 中单个数据进行修改的操作封装为一个 mutation，但不对外开放接口。可以在 devtools 中观察到 mutation。</li>
+<li>📁 <strong>module</strong>：Pinia 通过在创建 store 时指定 name 来区分不同的 store，不再需要 module。</li>
+</ul>
+<h3 id="二、使用Pinia"><a href="#二、使用Pinia" class="headerlink" title="二、使用Pinia"></a>二、使用Pinia</h3><h4 id="1-安装pinia"><a href="#1-安装pinia" class="headerlink" title="1.安装pinia"></a>1.安装pinia</h4><pre><code class="ini">npm i pinia -S //安装pinia依赖
+</code></pre>
+<h4 id="2-main-js组册"><a href="#2-main-js组册" class="headerlink" title="2.main.js组册"></a>2.main.js组册</h4><pre><code class="javascript">//main.js
+import &#123; createApp &#125; from &#39;vue&#39;
+import &#39;./style.css&#39;
+import App from &#39;./App.vue&#39;
+import &#123; createPinia &#125; from &#39;pinia&#39;
+
+createApp(App)
+.use(createPinia())
+.mount(&#39;#app&#39;)
+</code></pre>
+<h4 id="3-创建store"><a href="#3-创建store" class="headerlink" title="3.创建store"></a>3.创建store</h4><p><img src="/2022/11/23/pinia/image-20221123090656211.png"></p>
+<pre><code class="javascript">//countStore.js
+import &#123; defineStore &#125; from &#39;pinia&#39;
+const useCountStore = defineStore(&#39;countStore&#39;,&#123;
+    state()&#123;
+        return &#123;
+            count:0
+        &#125;
+    &#125;
+&#125; )
+export default useCountStore; //导出
+</code></pre>
+<h4 id="4-新建组件使用state"><a href="#4-新建组件使用state" class="headerlink" title="4.新建组件使用state"></a>4.新建组件使用state</h4><pre><code class="vue">//components/Count.vue
+&lt;script setup&gt;
+import useCountStore from &#39;../store/countStore&#39;
+const countStore = useCountStore();
+console.log(countStore)
+&lt;/script&gt;
+&lt;template&gt;
+  &lt;div&gt;
+    &#123;&#123;countStore.count&#125;&#125;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;style lang=&quot;css&quot;&gt;
+div&#123;
+    width: 100px;
+    height: 30px;
+    border:1px solid black;
+    border-radius: 5px;
+&#125;
+&lt;/style&gt;
+</code></pre>
+<pre><code class="vue">//App.vue
+&lt;script setup&gt;
+// This starter template is using Vue 3 &lt;script setup&gt; SFCs
+// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
+import Count from &#39;./components/Count.vue&#39;
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;Count/&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+.logo &#123;
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+&#125;
+.logo:hover &#123;
+  filter: drop-shadow(0 0 2em #646cffaa);
+&#125;
+.logo.vue:hover &#123;
+  filter: drop-shadow(0 0 2em #42b883aa);
+&#125;
+&lt;/style&gt;
+</code></pre>
+<p><img src="/2022/11/23/pinia/image-20221123091224524.png" alt="countStore"></p>
+<p>我们可以直接使用就可以了，根据上面控制台输出可以看清楚countStore</p>
+<p>到现在已经实现了创建store及使用</p>
+<h4 id="5-更新store"><a href="#5-更新store" class="headerlink" title="5.更新store"></a>5.更新store</h4><p>1.我们添加一个action方法</p>
+<pre><code class="javascript">//countStore.js
+import &#123; defineStore &#125; from &#39;pinia&#39;
+
+const useCountStore = defineStore(&#39;countStore&#39;,&#123;
+    //定义state
+    state()&#123;
+        return &#123;
+            count:0
+        &#125;
+    &#125;,
+    //定义action方法
+    actions:&#123;
+        add()&#123;
+            this.count++
+        &#125;
+    &#125;
+&#125; )
+
+export default useCountStore;
+</code></pre>
+<p>2.解构方法和state</p>
+<pre><code class="vue">//Count.vue
+&lt;script setup&gt;
+import &#123; storeToRefs &#125; from &#39;pinia&#39;
+import useCountStore from &#39;../store/countStore&#39;
+const &#123;count,add&#125; = storeToRefs(useCountStore());
+&lt;/script&gt;
+&lt;template&gt;
+  &lt;div&gt;
+    &#123;&#123;count&#125;&#125;
+  &lt;/div&gt;
+  &lt;button @click=&quot;add()&quot;&gt;Add&lt;/button&gt;
+&lt;/template&gt;
+&lt;style lang=&quot;css&quot;&gt;
+div&#123;
+    width: 100px;
+    height: 30px;
+    border:1px solid black;
+    border-radius: 5px;
+    text-align: center;
+&#125;
+button&#123;
+    position: relative;
+    bottom: -30px;
+&#125;
+&lt;/style&gt; 
+</code></pre>
+<p>如果我们不使用 storeToRefs 来转发，那么页面将不会有任何响应</p>
+<p>但是我们包裹了useCountStore()并且解构了，发现控制台输出错误error</p>
+<p><img src="/2022/11/23/pinia/image-20221123094109387.png"></p>
+<p>经过修改发现，actions方法不可以通过解构来使用，只能通过另一种方法</p>
+<p><img src="/2022/11/23/pinia/image-20221123094416363.png"> </p>
+<h3 id="参考文档："><a href="#参考文档：" class="headerlink" title="参考文档："></a>参考文档：</h3><p>[Pinia中文文档]: 	“<a target="_blank" rel="noopener" href="https://pinia.web3doc.top/">https://pinia.web3doc.top/</a> “<br>[Vite中文文档]: 	“<a target="_blank" rel="noopener" href="https://vitejs.cn/">https://vitejs.cn/</a> “</p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/11/23/pinia/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pinia/" rel="tag">Pinia</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/11/24/Electron-d-1-0/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Electron-d-1.0
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/11/22/vite%E9%85%8D%E7%BD%AE/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">vite配置</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

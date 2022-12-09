@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>react-native环境搭建 |  艺术码畜</title>
+      <title>如何设计一个组件 |  艺术码畜</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -84,7 +84,7 @@ var _hmt = _hmt || [];
     <main class="content on">
       <section class="outer">
   <article
-  id="post-react-native环境搭建"
+  id="post-如何设计一个组件"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -95,7 +95,7 @@ var _hmt = _hmt || [];
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  react-native环境搭建
+  如何设计一个组件
 </h1>
  
 
@@ -103,11 +103,11 @@ var _hmt = _hmt || [];
     </header>
      
     <div class="article-meta">
-      <a href="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="article-date">
-  <time datetime="2022-12-08T00:29:43.000Z" itemprop="datePublished">2022-12-08</time>
+      <a href="/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/" class="article-date">
+  <time datetime="2022-12-09T02:06:22.000Z" itemprop="datePublished">2022-12-09</time>
 </a> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">react-native环境搭建</a>
+    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/">如何设计一个组件</a>
   </div>
   
 <div class="word_count">
@@ -115,7 +115,7 @@ var _hmt = _hmt || [];
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">454</span>
+            <span class="post-count">1.6k</span>
         </span>
     </span>
 
@@ -124,7 +124,7 @@ var _hmt = _hmt || [];
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">1 min</span>
+            <span class="post-count">5 min</span>
         </span>
     </span>
 </div>
@@ -139,62 +139,97 @@ var _hmt = _hmt || [];
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h1 id="react-native环境搭建（Mac-M1）"><a href="#react-native环境搭建（Mac-M1）" class="headerlink" title="react-native环境搭建（Mac M1）"></a>react-native环境搭建（Mac M1）</h1><h3 id="一、本机安装环境"><a href="#一、本机安装环境" class="headerlink" title="一、本机安装环境"></a>一、本机安装环境</h3><p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221207175048319.png"></p>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221207175217956.png"></p>
-<p>安装官方的说法，需要具备的环境条件</p>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221207175323650.png"></p>
-<p>node和npm的安装就不说了</p>
-<p>下载yarn：</p>
-<pre><code class="ini">npm install -g yarn
-</code></pre>
-<p>react-native：</p>
-<pre><code class="ini">yarn add react-native --exact
-</code></pre>
-<pre><code class="ini">//Mac m1 安装 Homebrew
-/bin/bash -c &quot;$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)&quot;
-
-环境变量：
- echo &#39;eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;&#39; &gt;&gt; /Users/mengfeng/.zprofile
-   eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;
-</code></pre>
-<blockquote>
-<p>建议同学们早上去下载（网好），当然，不可避免的还是要出现一系列的问题，我们根据错误提示去查询相应的解决方案就行（因为每个同学的问题都不太一样）</p>
+  <h1 id="如何设计一个组件"><a href="#如何设计一个组件" class="headerlink" title="如何设计一个组件"></a>如何设计一个组件</h1><blockquote>
+<p>在开发过程中，我们经常会遇到现有组件库无法满足需求，需要自己设计和实现组件的情况。那么，如何才能设计一个既满足产品需求，又易于开发人员使用的组件呢？本文就以一个级联组件的设计为例，探讨一下如何设计一个优质组件。</p>
 </blockquote>
-<p>下载watchman：</p>
-<pre><code class="ini">brew install watchman
+<h2 id="组件设计"><a href="#组件设计" class="headerlink" title="组件设计"></a>组件设计</h2><h3 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h3><p>开发这个组件的原因是来自工作中遇到的一个需求。</p>
+<p>产品提出的业务需求是实现一个地区的级联选择，并且应设计师要求，不能使用 Ant Design 的Cascader 级联选择，因此需要自己实现一个级联选择。</p>
+<p>通常需要从 4 个角度对需求进行分析：</p>
+<ol>
+<li>业务需求角度</li>
+<li>UI 设计角度</li>
+<li>开发人员角度</li>
+<li>与其他组件配合角度</li>
+</ol>
+<h4 id="业务需求角度"><a href="#业务需求角度" class="headerlink" title="业务需求角度"></a>业务需求角度</h4><p>在拿到一个需求之后，我们不应当直接考虑如何实现，而要先思考一下，这个需求是不是真正的需求。或者说，这个需求背后，是否还有更加基础和核心的需求。</p>
+<p>现在，我们拿到了一个<strong>地区级联选择</strong>的需求，那么我们应该<strong>仅仅实现</strong>地区级联选择吗？我认为不是的，今天我们拿到的是地区选择的需求，明天就可能变成职业选择。</p>
+<p>因此，我们实际需要实现的，应该是一个支持<strong>N 级</strong>的级联选择框。</p>
+<h4 id="UI-设计角度"><a href="#UI-设计角度" class="headerlink" title="UI 设计角度"></a>UI 设计角度</h4><p>既然已经确定了要实现 N 级级联选择框，就需要考虑其在各个屏幕尺寸的兼容情况，于是我在组件中引入了 Grid 栅格 。并默认设置了 3 级级联的样式，同时为使用者提供了相应的配置选项，如下：</p>
+<pre><code class="yaml">&lt;Cascade
+  rowProps=&#123;&#123;
+    gutter: 10,
+  &#125;&#125;
+  colProps=&#123;&#123;
+    xs: 24,
+    sm: 24,
+    md: 8,
+    lg: 8,
+    xl: 8,
+  &#125;&#125;
+/&gt;
 </code></pre>
-<p>下载pod（cocoapods）：</p>
-<pre><code class="ini">brew install cocoapods
+<h4 id="开发人员角度"><a href="#开发人员角度" class="headerlink" title="开发人员角度"></a>开发人员角度</h4><p>我们开发的组件，不止会被我们的团队成员使用，甚至会开源给其他开发者使用。那么，提供给开发者更好的体验就尤为重要。</p>
+<p>为了节省开发人员的学习成本，我们可以按照以下思路考虑：</p>
+<ol>
+<li>在满足基本需求的前提下，提供尽量少的 API。</li>
+<li>为 API 选项提供尽量少的配置项。</li>
+<li>为代码，特别是 API 提供尽量好的文档或注释。</li>
+</ol>
+<p>定义的 <code>Cascade</code> 组件 <code>Props</code> 示例如下：</p>
+<pre><code class="less">interface Props&lt;T&gt; &#123;
+  cascadeKeys?: CascadeKeys; // 自定义 dataSource 中 value label children 的字段
+  value?: T[]; // 指定当前选中的条目
+  onChange?: (value: T[], level: number) =&gt; void; // 选中选项时，调用此函数
+  rowProps?: RowProps; // 行排列方式，可参考https://ant.design/components/grid-cn/
+  colProps?: ColProps; // 列排列方式
+  loading?: boolean[]; // 选择框loading装填
+  dataSource?: T[] | CascadeData&lt;T&gt; | T[][]; // 可选项数据源
+&#125;
 </code></pre>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208082020782.png"></p>
-<p>到目前为止，我们已经安装了 Node、Homebrew、watchman、cocoapods</p>
-<p>下面我们来安装xcode</p>
-<h3 id="二、xcode安装模拟器"><a href="#二、xcode安装模拟器" class="headerlink" title="二、xcode安装模拟器"></a>二、xcode安装模拟器</h3><p>我们在app store下载就可以，当然版本历史记录可以查看以前的xcode版本</p>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208082606954.png"></p>
-<p>当我们创建了一个项目，点击小三角，模拟器完美运行</p>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208083302861.png"></p>
-<h3 id="三、react-native创建项目"><a href="#三、react-native创建项目" class="headerlink" title="三、react-native创建项目"></a>三、react-native创建项目</h3><p>创建项目</p>
-<pre><code class="ini">npx react-native init testapp
+<p>可以看到， <code>Props</code> 中只有 <code>dataSource</code> 是必须的。也就是说，如果你对配置项并不了解，组件也只需要最简单的配置，就可以正常工作了，例如：</p>
+<pre><code class="ini">&lt;Cascade
+  dataSource=&#123;pcaCascadeData&#125;
+/&gt;
 </code></pre>
-<blockquote>
-<p>出现报错</p>
-</blockquote>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208084024802.png"></p>
-<blockquote>
-<p>解决以上问题的第一个error</p>
-<p>报了一个警告，大概意思是不安全的写权限，目录是 &#x2F;opt&#x2F;homebrew&#x2F;bin<br>于是我们把这个目录的写权限去掉</p>
-<pre><code class="ini">sudo chmod -R go-w /opt/homebrew/bin
-sudo chmod -R go-w /opt/homebrew
+<ol>
+<li><p>在使用 TypeScript 时，还需要特别考虑类型匹配的问题。例如可以在使用组件时，传入一个类型，并且在 <code>onChange</code> 事件中如果使用了其他类型， TypeScript 检查就会提示错误，如下面例子中的 <code>PCAItem</code> 。</p>
+<pre><code class="ini">&lt;Cascade&lt;PCAItem&gt;
+  dataSource=&#123;pcaCascadeData&#125;
+  cascadeKeys=&#123;pcaCascadeKeys&#125;
+  onChange=&#123;async (value: PCAItem[], level: number) =&gt; &#123;
+    setPCAData(value);
+    setPCAIndex(level);
+  &#125;&#125;
+/&gt;
 </code></pre>
-</blockquote>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208085035978.png"></p>
-<blockquote>
-<p>解决第一个问题</p>
-<p>我们需要下载ruby 2.7.5并将ruby版本指向2.7.5</p>
-</blockquote>
-<p>如果你有条件的话请试试<a target="_blank" rel="noopener" href="https://www.rubyonmac.dev/?utm_campaign=install-ruby-guide">macruby</a>109美元终身，ruby不太友好</p>
-<p>下篇文章继续</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Mac下的环境搭建]: 	“<a target="_blank" rel="noopener" href="https://juejin.cn/post/7119039164074426375">https://juejin.cn/post/7119039164074426375</a> “<br>[rbenv下载缓慢解决]: 	“<a target="_blank" rel="noopener" href="https://blog.csdn.net/shine_a/article/details/103927374">https://blog.csdn.net/shine_a/article/details/103927374</a> “<br>[mac下载rbenv]: 	“<a target="_blank" rel="noopener" href="https://juejin.cn/post/6899650892313100302">https://juejin.cn/post/6899650892313100302</a> “<br>[CocoaPods安装方法]: 	“<a target="_blank" rel="noopener" href="https://blog.csdn.net/Wulitc/article/details/115682720&quot;">https://blog.csdn.net/Wulitc/article/details/115682720&quot;</a></p>
+</li>
+<li><p>对于级联组件，我们还需要考虑 dataSource 的数据来源可能有两种。</p>
+<ul>
+<li>组件初始化时，就传入了所有的级联数据，例如 省&#x2F;地&#x2F;县&#x2F;乡层级数据 。对应 Demo 中的“同步级联数据”，以及 <code>Props</code> 中 <code>dataSource</code> 类型定义的 <code>CascadeData&lt;T&gt; | T[][]</code> 。<ul>
+<li>在某些场景下，虽然没有级联选择框存在，但也需要处理树形数据，包括数据的查询和校验等功能，因此将该方法封装到 <code>CascadeData</code> 类中。</li>
+<li>考虑到树的数据量可能非常庞大，如果在每次选择时都在树中搜索效率较低。因此设计成在组件创建时，直接遍历树中的所有节点，然后将每个层级所有节点的数据都存储在相应的 <code>Map</code> 中，之后就能很方便地查询数据。</li>
+<li>虽然在组件初始化时遍历所有节点比较耗时，但考虑到用户从进入页面到操作组件有一定时间差，因此我认为这个问题可以忽略。</li>
+<li>基于以上考虑，你在 <code>Props</code> 中 <code>dataSource</code> 类型中看到的 <code>CascadeData&lt;T&gt;</code> ，就表示直接传入了一个 <code>new CascadeData(treeData)</code> 。而<code>T[][]</code>就表示直接传入树形数据，由组件内部进行 <code>new CascadeData(treeData) </code> 。</li>
+</ul>
+</li>
+<li>组件初始化时，只传入了第一级的选项，之后每级的选项通过前一级所选择的参数，从服务端获取。对应 Demo 中的“异步级联数据”，对应 <code>dataSource</code> 类型中的 <code>T[]</code> 。<ul>
+<li>组件初始化时，只传入第一级的数据，其他级别传入空数组，如：<code>[[&#123;&quot;code&quot;:110000,&quot;name&quot;:&quot;北京市&quot;&#125;],[],[]]</code>，组件会渲染出 3 层级联选项。</li>
+<li>当进行选择时，需要使用者通过 <code>onChange</code> 事件自行更新下一级的数据。也就是说，组件完全放弃了对数据的控制。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="与其他组件配合角度"><a href="#与其他组件配合角度" class="headerlink" title="与其他组件配合角度"></a>与其他组件配合角度</h4><p>由于该组件需要与 Ant Design 其他组件配合使用，如前面讨论过的 UI 部分，该组件就结合了 Grid 栅格 组件。既保证了该组件在各屏幕宽度下正常显示，又保证了与其他组件的显示一致。</p>
+<p>除此之外，还需要考虑与 Form 表单 组件的配合，特别是兼容表单校验功能。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文通过一个级联组件的设计案例，探讨了如何从四个角度分析，进而设计一个优秀的组件。这 4 个角度分别是：</p>
+<ol>
+<li>业务需求角度</li>
+<li>UI 设计角度</li>
+<li>开发人员角度</li>
+<li>与其他组件配合角度</li>
+</ol>
+<p>我认为很多时候组件的设计并没有最优解，总是需要根据需求在各种方案中取舍。但只要按照本文提到的 4 个角度进行分析，就能设计出优秀的组件。</p>
  
       <!-- reward -->
       
@@ -265,12 +300,12 @@ sudo chmod -R go-w /opt/homebrew
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>  
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%84%E4%BB%B6%E8%AE%BE%E8%AE%A1/" rel="tag">组件设计</a></li></ul>
 
     </footer>
   </div>
@@ -278,19 +313,10 @@ sudo chmod -R go-w /opt/homebrew
    
   <nav class="article-nav">
     
-      <a href="/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            如何设计一个组件
-          
-        </div>
-      </a>
     
-    
-      <a href="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/" class="article-nav-link">
+      <a href="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">c4d及其oc的安装和初始化设置</div>
+        <div class="article-nav-title">react-native环境搭建</div>
       </a>
     
   </nav>

@@ -436,6 +436,349 @@ console.log(appIcon)
       </tags>
   </entry>
   <entry>
+    <title>Vite+Vue3+Ts搭建私有组件库</title>
+    <url>/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vite-Vue3-Ts搭建私有组件库"><a href="#Vite-Vue3-Ts搭建私有组件库" class="headerlink" title="Vite+Vue3+Ts搭建私有组件库"></a>Vite+Vue3+Ts搭建私有组件库</h1><p>目前前端技术的持续发展，社区生态出现了一批比较适用的组件库，例如：ElementUI,Vant，AntDesign等，但这些组件库的组件不一定能满足我们一些项目的特定业务需求，那么我们的团队就应该建立起我们自己的组件库，方便于我们自己的业务开发，那么我们这篇文章就来了解一下我们开发组件库的大体技术架构体系。</p>
+<p>搭建组件库的技术要点：</p>
+<ul>
+<li>如何使用pnpm搭建出一个menorepo环境</li>
+<li>如何使用vite搭建一个基本的Vue3脚手架项目</li>
+<li>如何开发调试一个自己的UI组件库</li>
+<li>如何使用vite打包并发布自己的UI组件库</li>
+</ul>
+<h3 id="一、menorepo环境的搭建"><a href="#一、menorepo环境的搭建" class="headerlink" title="一、menorepo环境的搭建"></a>一、menorepo环境的搭建</h3><p>首先我们要了解什么是menorepo及它是如何搭建 (单仓库 多项目)</p>
+<p>就是指在一个大的项目仓库中，管理多个模块&#x2F;包（package），这种类型的项目大都在项目根目录下有一个packages文件夹，分多个项目管理。大概结构如下：</p>
+<pre><code class="ini">-- packages
+  -- pkg1
+    --package.json
+  -- pkg2
+    --package.json
+--package.json
+</code></pre>
+<p>目前很多我们熟知的项目都是采用这种模式，如Vant，ElementUI，Vue3等。打造一个menorepo环境的工具有很多，如：lerna、pnpm、yarn等，这里我们将使用pnpm来开发我们的UI组件库</p>
+<h4 id="1-使用pnpm"><a href="#1-使用pnpm" class="headerlink" title="1.使用pnpm"></a>1.使用pnpm</h4><pre><code class="ini">npm install pnpm -g //安装pnpm
+pnpm init //初始化package.json
+</code></pre>
+<p>新建配置文件 .npmrc</p>
+<pre><code class="ini">shamefully-hoist = true
+</code></pre>
+<p>这里简单说下为什么要配置shamefully-hoist。</p>
+<p>如果某些工具仅在根目录的node_modules时才有效，可以将其设置为true来提升那些不在根目录的node_modules，就是将你安装的依赖包的依赖包的依赖包的…都放到同一级别（扁平化）。说白了就是不设置为true有些包就有可能会出问题。</p>
+<p>安装对应依赖</p>
+<pre><code class="ini">pnpm i vue@next typescript less -D -w //开发环境中的依赖一般全部安装在整个项目根目录下，方便下面我们每个包都可以引用,所以在安装的时候需要加个 -w
+</code></pre>
+<p>如果我们是在根目录下运行命令，那么就不用加 -w 了，要不然会提示</p>
+<pre><code class="error">--workspace-root may only be used inside a workspace
+</code></pre>
+<p>配置tsconfit.json</p>
+<pre><code class="ini">npx tsc --init //初始化
+</code></pre>
+<pre><code class="javascript">//tsconfit.json配置
+&#123;
+  &quot;compilerOptions&quot;: &#123;
+    &quot;baseUrl&quot;: &quot;.&quot;,
+    &quot;jsx&quot;: &quot;preserve&quot;,
+    &quot;strict&quot;: true,
+    &quot;target&quot;: &quot;ES2015&quot;,
+    &quot;module&quot;: &quot;ESNext&quot;,
+    &quot;skipLibCheck&quot;: true,
+    &quot;esModuleInterop&quot;: true,
+    &quot;moduleResolution&quot;: &quot;Node&quot;,
+    &quot;lib&quot;: [&quot;esnext&quot;, &quot;dom&quot;]
+  &#125;
+&#125;
+</code></pre>
+<h4 id="2-monorepo的实现"><a href="#2-monorepo的实现" class="headerlink" title="2.monorepo的实现"></a>2.monorepo的实现</h4><p>各个项目之间能够互相引用我们要新建一个pnpm-workspace.yaml文件将我们的包关联起来</p>
+<pre><code class="ini">packages:
+    - &#39;packages/**&#39;
+    - &#39;examples&#39;
+</code></pre>
+<p>这样就能将我们项目下的packages目录和examples目录关联起来了，当然如果你想关联更多目录你只需要往里面添加即可。根据上面的目录结构很显然你在根目录下新建packages和examples文件夹，packages文件夹存放我们开发的包，examples用来调试我们的组件。</p>
+<p>examples文件夹就是接下来我们要使用vite搭建一个基本的Vue3脚手架项目的地方。</p>
+<h4 id="3-手动搭建一个基于vite的vue3项目"><a href="#3-手动搭建一个基于vite的vue3项目" class="headerlink" title="3.手动搭建一个基于vite的vue3项目"></a>3.手动搭建一个基于vite的vue3项目</h4><p>进入examples文件夹，执行</p>
+<pre><code class="ini">pnpm init //初始化仓库
+pnpm install vite @vitejs/plugin-vue -D -w //安装vite和@vitejs/plugin-vue
+</code></pre>
+<p>配置vite.config.ts</p>
+<p>新建vite.config.ts文件</p>
+<pre><code class="ini">import &#123; defineConfig &#125; from &#39;vite&#39;
+import vue from &#39;@vitejs/plugin-vue&#39;
+
+export default defineConfig(&#123;
+    plugins:[vue()]
+&#125;)
+</code></pre>
+<p>新建html文件</p>
+<p>@vitejs&#x2F;plugin-vue 会默认加载examples下的index.html</p>
+<p>新建index.html</p>
+<pre><code class="xml">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;main.ts&quot; type=&quot;module&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>注意：<br>vite 是基于esmodule的 所以type&#x3D;”module”</p>
+<p>新建app.vue模板</p>
+<pre><code class="xml">&lt;template&gt;
+    &lt;div&gt;
+        启动测试
+    &lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
+<p>新建main.ts</p>
+<pre><code class="javascript">import &#123;createApp&#125; from &#39;vue&#39;
+import App from &#39;./app.vue&#39;
+
+const app = createApp(App)
+
+app.mount(&#39;#app&#39;)
+</code></pre>
+<p>此时会发现编译器会提示个错误：找不到模块“.&#x2F;app.vue”或其相应的类型声明</p>
+<p>因为直接引入.vue文件 TS会找不到对应的类型声明；所以需要新建typings（命名没有明确规定，TS会自动寻找.d.ts文件）文件夹来专门放这些声明文件。</p>
+<p>typings&#x2F;vue-shim.d.ts</p>
+<p>TypeScriptTS默认只认ES 模块。如果你要导入.vue文件就要declare module把他们声明出来。</p>
+<pre><code class="typescript">declare module &#39;*.vue&#39; &#123;
+    import type &#123; DefineComponent &#125; from &quot;vue&quot;;
+    const component:DefineComponent&lt;&#123;&#125;,&#123;&#125;,any&gt;
+&#125;
+</code></pre>
+<p>配置脚本启动项目</p>
+<p>最后在package.json文件中配置scripts脚本</p>
+<pre><code class="erlang">...
+&quot;scripts&quot;: &#123;
+    &quot;dev&quot;: &quot;vite&quot;
+  &#125;,
+...
+</code></pre>
+<p>然后终端输入我们熟悉的命令：pnpm run dev</p>
+<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120114028908.png"></p>
+<p>如果出现了cannot find module ‘node:path’这样的错误提示，那可能是node版本不兼容，升级一下node版本就可以了</p>
+<p>我的node 版本是 v14.17.0 的版本，出现了不兼容的问题，于是升级到了稳定版 v16.16.0 。</p>
+<p>再运行vite就没问题了</p>
+<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120114403681.png"></p>
+<h3 id="二、本地调试"><a href="#二、本地调试" class="headerlink" title="二、本地调试"></a>二、本地调试</h3><h4 id="1-新建包文件"><a href="#1-新建包文件" class="headerlink" title="1.新建包文件"></a>1.新建包文件</h4><p>往packages文件夹冲填充内容</p>
+<p>一般packages要有utils包来存放我们公共方法，工具函数等</p>
+<p>既然它是一个包，所以我们新建utils目录后就需要初始化它，让它变成一个包；终端进入utils文件夹执行：pnpm init 然后会生成一个package.json文件；这里需要改一下包名，我这里将name改成@alanmf&#x2F;utils表示这个utils包是属于alanmf这个组织下的。所以记住发布之前要登录npm新建一个组织；例如alanmf</p>
+<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120152720676.png"></p>
+<p>因为我们使用ts写的，所以需要将入口文件index.js改为index.ts，并新建index.ts文件:(先导出一个简单的加法函数)</p>
+<p>components是我们用来存放各种UI组件的包</p>
+<p>新建components文件夹并执行 pnpm init 生成package.json</p>
+<ul>
+<li>组件库包 这里命名为alanmf</li>
+</ul>
+<pre><code class="ini">&#123;
+  &quot;name&quot;: &quot;@alanmf/utils&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.ts&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  &#125;,
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+&#125;
+</code></pre>
+<p>新建index.ts入口文件并引入utils包</p>
+<pre><code class="tsx">//@kitty-ui/utils
+import &#123;testfun&#125; from &#39;@alanmf/utils&#39;
+
+const result = testfun (1,1)
+
+console.log(result)
+</code></pre>
+<p>由于组件库是基于ts的，所以需要安装esno来执行ts文件便于测试组件之间的引入情况</p>
+<p>控制台输入esno xxx.ts即可执行ts文件</p>
+<pre><code class="ini">npm i esno -g //安装esno
+eson index.ts //执行index.ts文件
+</code></pre>
+<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120151321307.png"></p>
+<h4 id="2-包之间本地调试"><a href="#2-包之间本地调试" class="headerlink" title="2.包之间本地调试"></a>2.包之间本地调试</h4><p>进入components文件夹执行</p>
+<pre><code class="bash">pnpm install @alanmf/utils
+</code></pre>
+<p>你会发现pnpm会自动创建个软链接直接指向我们的utils包；此时components下的packages：</p>
+<pre><code class="swift">&#123;
+  &quot;name&quot;: &quot;alanmf&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.ts&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  &#125;,
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;dependencies&quot;: &#123;
+    &quot;@alanmf/utils&quot;: &quot;workspace:^1.0.0&quot;
+  &#125;
+&#125;
+</code></pre>
+<p>你会发现它的依赖@alanmf&#x2F;utils对应的版本为：workspace:^1.0.0；因为pnpm是由workspace管理的，所以有一个前缀workspace可以指向utils下的工作空间从而方便本地调试各个包直接的关联引用。</p>
+<p>到这里基本开发方法我们已经知道啦；接下来就要进入正题了，开发一个button组件</p>
+<h3 id="三、开发一个button组件"><a href="#三、开发一个button组件" class="headerlink" title="三、开发一个button组件"></a>三、开发一个button组件</h3><h4 id="1-创建一个测试组件"><a href="#1-创建一个测试组件" class="headerlink" title="1.创建一个测试组件"></a>1.创建一个测试组件</h4><p>在components文件夹下新建src,同时在src下新建button组件目录和icon组件目录(新建icon为了便于调试);此时components文件目录如下</p>
+<pre><code class="lua">-- components
+  -- src
+    -- button
+    -- icon
+    -- index.ts
+-- package.json
+</code></pre>
+<p>让我们先测试一下我们的button组件能否在我们搭建的examples下的vue3项目本引用~</p>
+<p>首先在button下新建一个简单的button.vue</p>
+<pre><code class="xml">&lt;template&gt;
+    &lt;button&gt;测试按钮&lt;/button&gt;
+&lt;/template&gt;
+</code></pre>
+<p>然后在button&#x2F;index.ts将其导出</p>
+<pre><code class="javascript">import Button from &#39;./button.vue&#39;
+
+export default Button
+</code></pre>
+<p>因为我们开发组件库的时候不可能只有button，所以我们需要一个components&#x2F;index.ts将我们开发的组件一个个的集中导出</p>
+<pre><code class="javascript">import Button from &#39;./button&#39;
+
+export &#123;
+    Button
+&#125;
+</code></pre>
+<p>好了，一个组件的大体目录差不多就是这样了，接下来请进入我们的examples来看看能否引入我们的button组件</p>
+<h4 id="2-测试项目引入"><a href="#2-测试项目引入" class="headerlink" title="2.测试项目引入"></a>2.测试项目引入</h4><p>上面已经说过执行在workspace执行 pnpm i xxx的时候pnpm会自动创建个软链接直接指向我们的xxx包。</p>
+<p>所以这里我们直接在examples执行：pnpm i alanmf</p>
+<p>此时你就会发现packages.json的依赖多了个</p>
+<pre><code class="json">&quot;alanmf&quot;: &quot;workspace:^1.0.0&quot;
+</code></pre>
+<p>这时候我们就能直接在我们的测试项目下引入我们本地的components组件库了，启动我们的测试项目，来到我们的 examples&#x2F;app.vue 直接引入Button</p>
+<pre><code class="xml">&lt;template&gt;
+    &lt;div&gt;
+        &lt;Button /&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+&lt;script lang=&quot;ts&quot; setup&gt;
+import &#123; Button &#125; from &#39;alanmf/src&#39;
+&lt;/script&gt;
+</code></pre>
+<p>不出意外的话你的页面就会展示我们刚刚写的button组件了</p>
+<p>接下来的工作就是专注于组件的开发了；让我们回到我们的button组件目录下（测试页面不用关，此时我们已经可以边开发边调试边看效果了）</p>
+<h4 id="3-types-ts文件规范组件属性"><a href="#3-types-ts文件规范组件属性" class="headerlink" title="3.types.ts文件规范组件属性"></a>3.types.ts文件规范组件属性</h4><p>我们的button组件是需要接收很多属性的，如type、size等等，所以我们要新建个types.ts文件来规范这些属性</p>
+<p>在button目录下新建types.ts</p>
+<pre><code class="tsx">
+import &#123; ExtractPropTypes &#125; from &#39;vue&#39;
+
+
+export const ButtonType = [&#39;default&#39;, &#39;primary&#39;, &#39;success&#39;, &#39;warning&#39;, &#39;danger&#39;]
+
+export const ButtonSize = [&#39;large&#39;, &#39;normal&#39;, &#39;small&#39;, &#39;mini&#39;];
+
+
+export const buttonProps = &#123;
+  type: &#123;
+    type: String,
+    values: ButtonType
+  &#125;,
+  size: &#123;
+    type: String,
+    values: ButtonSize
+  &#125;
+&#125;
+
+export type ButtonProps = ExtractPropTypes&lt;typeof buttonProps&gt;
+</code></pre>
+<p>import type 表示只导入类型；ExtractPropTypes是vue3中内置的类型声明,它的作用是接收一个类型，然后把对应的vue3所接收的props类型提供出来，后面有需要可以直接使用</p>
+<p>很多时候我们在vue中使用一个组件会用的app.use 将组件挂载到全局。要使用app.use函数的话我们需要让我们的每个组件都提供一个install方法，app.use()的时候就会调用这个方法;</p>
+<p>我们将button&#x2F;index.ts调整为</p>
+<pre><code class="typescript">import button from &#39;./button.vue&#39;
+import type &#123;App,Plugin&#125; from &quot;vue&quot;
+type SFCWithInstall&lt;T&gt; = T&amp;Plugin
+const withInstall = &lt;T&gt;(comp:T) =&gt; &#123;
+    (comp as SFCWithInstall&lt;T&gt;).install = (app:App)=&gt;&#123;
+        //注册组件
+        app.component((comp as any).name,comp)
+    &#125;
+    return comp as SFCWithInstall&lt;T&gt;
+&#125;
+const Button = withInstall(button)
+export default Button
+</code></pre>
+<p>此时我们就可以使用app.use来挂载我们的组件啦</p>
+<p>其实withInstall方法可以做个公共方法放到工具库里，因为后续每个组件都会用到，这里等后面开发组件的时候再调整</p>
+<p>到这里组件开发的基本配置已经完成，最后我们对我们的组件库以及工具库进行打包，打包之前如果要发公共包的话记得将我们的各个包的协议改为MIT开源协议</p>
+<pre><code class="python-repl">...
+&quot;license&quot;: &quot;MIT&quot;,
+...
+</code></pre>
+<h3 id="四、vite打包"><a href="#四、vite打包" class="headerlink" title="四、vite打包"></a>四、vite打包</h3><h4 id="1-配置文件"><a href="#1-配置文件" class="headerlink" title="1.配置文件"></a>1.配置文件</h4><p>打包们这里选择vite，它有一个库模式专门为我们来打包这种库组件的。</p>
+<p>前面已经安装过vite了，所以这里直接在components下直接新建vite.config.ts(配置参数文件中已经注释):</p>
+<pre><code class="json">import &#123; defineConfig &#125; from &quot;vite&quot;;
+import vue from &quot;@vitejs/plugin-vue&quot;
+export default defineConfig(
+    &#123;
+        build: &#123;
+            target: &#39;modules&#39;,
+            //打包文件目录
+            outDir: &quot;es&quot;,
+            //压缩
+            minify: false,
+            //css分离
+            //cssCodeSplit: true,
+            rollupOptions: &#123;
+                //忽略打包vue文件
+                external: [&#39;vue&#39;],
+                input: [&#39;src/index.ts&#39;],
+                output: [
+                    &#123;
+                        format: &#39;es&#39;,
+                        //不用打包成.es.js,这里我们想把它打包成.js
+                        entryFileNames: &#39;[name].js&#39;,
+                        //让打包目录和我们目录对应
+                        preserveModules: true,
+                        //配置打包根目录
+                        dir: &#39;es&#39;,
+                        preserveModulesRoot: &#39;src&#39;
+                    &#125;,
+                    &#123;
+                        format: &#39;cjs&#39;,
+                        entryFileNames: &#39;[name].js&#39;,
+                        //让打包目录和我们目录对应
+                        preserveModules: true,
+                        //配置打包根目录
+                        dir: &#39;lib&#39;,
+                        preserveModulesRoot: &#39;src&#39;
+                    &#125;
+                ]
+            &#125;,
+            lib: &#123;
+                entry: &#39;./index.ts&#39;,
+                formats: [&#39;es&#39;, &#39;cjs&#39;]
+            &#125;
+        &#125;,
+        plugins: [
+            vue()
+        ]
+    &#125;
+)
+</code></pre>
+<p>这里我们选择打包cjs(CommonJS)和esm(ESModule)两种形式,cjs模式主要用于服务端引用(ssr),而esm就是我们现在经常使用的方式，它本身自带treeShaking而不需要额外配置按需引入(前提是你将模块分别导出)</p>
+<h4 id="2-vite打包"><a href="#2-vite打包" class="headerlink" title="2.vite打包"></a>2.vite打包</h4><p>到这里就已经可以直接打包了；components下执行： pnpm run build你就会发现打包了es和lib两个目录</p>
+<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120165853742.png"></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[私有仓库搭建源码]: 	“<a href="https://github.com/mengfeng/alanmf_ui.git">https://github.com/mengfeng/alanmf_ui.git</a> “</p>
+]]></content>
+      <categories>
+        <category>工程技术</category>
+        <category>Vite+Vue3+Ts搭建私有组件库</category>
+      </categories>
+      <tags>
+        <tag>组件库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Vite+Vue3+Ts搭建私有组件库2</title>
     <url>/2022/11/21/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vite-Vue3-Ts搭建私有组件库2"><a href="#Vite-Vue3-Ts搭建私有组件库2" class="headerlink" title="Vite+Vue3+Ts搭建私有组件库2"></a>Vite+Vue3+Ts搭建私有组件库2</h1><p>本文章只供参考，具体实现可能会有出入（会尽快完善）</p>
@@ -971,349 +1314,6 @@ module.exports = &#123;
       </categories>
       <tags>
         <tag>blender</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Vite+Vue3+Ts搭建私有组件库</title>
-    <url>/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vite-Vue3-Ts搭建私有组件库"><a href="#Vite-Vue3-Ts搭建私有组件库" class="headerlink" title="Vite+Vue3+Ts搭建私有组件库"></a>Vite+Vue3+Ts搭建私有组件库</h1><p>目前前端技术的持续发展，社区生态出现了一批比较适用的组件库，例如：ElementUI,Vant，AntDesign等，但这些组件库的组件不一定能满足我们一些项目的特定业务需求，那么我们的团队就应该建立起我们自己的组件库，方便于我们自己的业务开发，那么我们这篇文章就来了解一下我们开发组件库的大体技术架构体系。</p>
-<p>搭建组件库的技术要点：</p>
-<ul>
-<li>如何使用pnpm搭建出一个menorepo环境</li>
-<li>如何使用vite搭建一个基本的Vue3脚手架项目</li>
-<li>如何开发调试一个自己的UI组件库</li>
-<li>如何使用vite打包并发布自己的UI组件库</li>
-</ul>
-<h3 id="一、menorepo环境的搭建"><a href="#一、menorepo环境的搭建" class="headerlink" title="一、menorepo环境的搭建"></a>一、menorepo环境的搭建</h3><p>首先我们要了解什么是menorepo及它是如何搭建 (单仓库 多项目)</p>
-<p>就是指在一个大的项目仓库中，管理多个模块&#x2F;包（package），这种类型的项目大都在项目根目录下有一个packages文件夹，分多个项目管理。大概结构如下：</p>
-<pre><code class="ini">-- packages
-  -- pkg1
-    --package.json
-  -- pkg2
-    --package.json
---package.json
-</code></pre>
-<p>目前很多我们熟知的项目都是采用这种模式，如Vant，ElementUI，Vue3等。打造一个menorepo环境的工具有很多，如：lerna、pnpm、yarn等，这里我们将使用pnpm来开发我们的UI组件库</p>
-<h4 id="1-使用pnpm"><a href="#1-使用pnpm" class="headerlink" title="1.使用pnpm"></a>1.使用pnpm</h4><pre><code class="ini">npm install pnpm -g //安装pnpm
-pnpm init //初始化package.json
-</code></pre>
-<p>新建配置文件 .npmrc</p>
-<pre><code class="ini">shamefully-hoist = true
-</code></pre>
-<p>这里简单说下为什么要配置shamefully-hoist。</p>
-<p>如果某些工具仅在根目录的node_modules时才有效，可以将其设置为true来提升那些不在根目录的node_modules，就是将你安装的依赖包的依赖包的依赖包的…都放到同一级别（扁平化）。说白了就是不设置为true有些包就有可能会出问题。</p>
-<p>安装对应依赖</p>
-<pre><code class="ini">pnpm i vue@next typescript less -D -w //开发环境中的依赖一般全部安装在整个项目根目录下，方便下面我们每个包都可以引用,所以在安装的时候需要加个 -w
-</code></pre>
-<p>如果我们是在根目录下运行命令，那么就不用加 -w 了，要不然会提示</p>
-<pre><code class="error">--workspace-root may only be used inside a workspace
-</code></pre>
-<p>配置tsconfit.json</p>
-<pre><code class="ini">npx tsc --init //初始化
-</code></pre>
-<pre><code class="javascript">//tsconfit.json配置
-&#123;
-  &quot;compilerOptions&quot;: &#123;
-    &quot;baseUrl&quot;: &quot;.&quot;,
-    &quot;jsx&quot;: &quot;preserve&quot;,
-    &quot;strict&quot;: true,
-    &quot;target&quot;: &quot;ES2015&quot;,
-    &quot;module&quot;: &quot;ESNext&quot;,
-    &quot;skipLibCheck&quot;: true,
-    &quot;esModuleInterop&quot;: true,
-    &quot;moduleResolution&quot;: &quot;Node&quot;,
-    &quot;lib&quot;: [&quot;esnext&quot;, &quot;dom&quot;]
-  &#125;
-&#125;
-</code></pre>
-<h4 id="2-monorepo的实现"><a href="#2-monorepo的实现" class="headerlink" title="2.monorepo的实现"></a>2.monorepo的实现</h4><p>各个项目之间能够互相引用我们要新建一个pnpm-workspace.yaml文件将我们的包关联起来</p>
-<pre><code class="ini">packages:
-    - &#39;packages/**&#39;
-    - &#39;examples&#39;
-</code></pre>
-<p>这样就能将我们项目下的packages目录和examples目录关联起来了，当然如果你想关联更多目录你只需要往里面添加即可。根据上面的目录结构很显然你在根目录下新建packages和examples文件夹，packages文件夹存放我们开发的包，examples用来调试我们的组件。</p>
-<p>examples文件夹就是接下来我们要使用vite搭建一个基本的Vue3脚手架项目的地方。</p>
-<h4 id="3-手动搭建一个基于vite的vue3项目"><a href="#3-手动搭建一个基于vite的vue3项目" class="headerlink" title="3.手动搭建一个基于vite的vue3项目"></a>3.手动搭建一个基于vite的vue3项目</h4><p>进入examples文件夹，执行</p>
-<pre><code class="ini">pnpm init //初始化仓库
-pnpm install vite @vitejs/plugin-vue -D -w //安装vite和@vitejs/plugin-vue
-</code></pre>
-<p>配置vite.config.ts</p>
-<p>新建vite.config.ts文件</p>
-<pre><code class="ini">import &#123; defineConfig &#125; from &#39;vite&#39;
-import vue from &#39;@vitejs/plugin-vue&#39;
-
-export default defineConfig(&#123;
-    plugins:[vue()]
-&#125;)
-</code></pre>
-<p>新建html文件</p>
-<p>@vitejs&#x2F;plugin-vue 会默认加载examples下的index.html</p>
-<p>新建index.html</p>
-<pre><code class="xml">&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
-    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-    &lt;title&gt;Document&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
-    &lt;script src=&quot;main.ts&quot; type=&quot;module&quot;&gt;&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<p>注意：<br>vite 是基于esmodule的 所以type&#x3D;”module”</p>
-<p>新建app.vue模板</p>
-<pre><code class="xml">&lt;template&gt;
-    &lt;div&gt;
-        启动测试
-    &lt;/div&gt;
-&lt;/template&gt;
-</code></pre>
-<p>新建main.ts</p>
-<pre><code class="javascript">import &#123;createApp&#125; from &#39;vue&#39;
-import App from &#39;./app.vue&#39;
-
-const app = createApp(App)
-
-app.mount(&#39;#app&#39;)
-</code></pre>
-<p>此时会发现编译器会提示个错误：找不到模块“.&#x2F;app.vue”或其相应的类型声明</p>
-<p>因为直接引入.vue文件 TS会找不到对应的类型声明；所以需要新建typings（命名没有明确规定，TS会自动寻找.d.ts文件）文件夹来专门放这些声明文件。</p>
-<p>typings&#x2F;vue-shim.d.ts</p>
-<p>TypeScriptTS默认只认ES 模块。如果你要导入.vue文件就要declare module把他们声明出来。</p>
-<pre><code class="typescript">declare module &#39;*.vue&#39; &#123;
-    import type &#123; DefineComponent &#125; from &quot;vue&quot;;
-    const component:DefineComponent&lt;&#123;&#125;,&#123;&#125;,any&gt;
-&#125;
-</code></pre>
-<p>配置脚本启动项目</p>
-<p>最后在package.json文件中配置scripts脚本</p>
-<pre><code class="erlang">...
-&quot;scripts&quot;: &#123;
-    &quot;dev&quot;: &quot;vite&quot;
-  &#125;,
-...
-</code></pre>
-<p>然后终端输入我们熟悉的命令：pnpm run dev</p>
-<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120114028908.png"></p>
-<p>如果出现了cannot find module ‘node:path’这样的错误提示，那可能是node版本不兼容，升级一下node版本就可以了</p>
-<p>我的node 版本是 v14.17.0 的版本，出现了不兼容的问题，于是升级到了稳定版 v16.16.0 。</p>
-<p>再运行vite就没问题了</p>
-<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120114403681.png"></p>
-<h3 id="二、本地调试"><a href="#二、本地调试" class="headerlink" title="二、本地调试"></a>二、本地调试</h3><h4 id="1-新建包文件"><a href="#1-新建包文件" class="headerlink" title="1.新建包文件"></a>1.新建包文件</h4><p>往packages文件夹冲填充内容</p>
-<p>一般packages要有utils包来存放我们公共方法，工具函数等</p>
-<p>既然它是一个包，所以我们新建utils目录后就需要初始化它，让它变成一个包；终端进入utils文件夹执行：pnpm init 然后会生成一个package.json文件；这里需要改一下包名，我这里将name改成@alanmf&#x2F;utils表示这个utils包是属于alanmf这个组织下的。所以记住发布之前要登录npm新建一个组织；例如alanmf</p>
-<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120152720676.png"></p>
-<p>因为我们使用ts写的，所以需要将入口文件index.js改为index.ts，并新建index.ts文件:(先导出一个简单的加法函数)</p>
-<p>components是我们用来存放各种UI组件的包</p>
-<p>新建components文件夹并执行 pnpm init 生成package.json</p>
-<ul>
-<li>组件库包 这里命名为alanmf</li>
-</ul>
-<pre><code class="ini">&#123;
-  &quot;name&quot;: &quot;@alanmf/utils&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;&quot;,
-  &quot;main&quot;: &quot;index.ts&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
-  &#125;,
-  &quot;keywords&quot;: [],
-  &quot;author&quot;: &quot;&quot;,
-  &quot;license&quot;: &quot;ISC&quot;
-&#125;
-</code></pre>
-<p>新建index.ts入口文件并引入utils包</p>
-<pre><code class="tsx">//@kitty-ui/utils
-import &#123;testfun&#125; from &#39;@alanmf/utils&#39;
-
-const result = testfun (1,1)
-
-console.log(result)
-</code></pre>
-<p>由于组件库是基于ts的，所以需要安装esno来执行ts文件便于测试组件之间的引入情况</p>
-<p>控制台输入esno xxx.ts即可执行ts文件</p>
-<pre><code class="ini">npm i esno -g //安装esno
-eson index.ts //执行index.ts文件
-</code></pre>
-<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120151321307.png"></p>
-<h4 id="2-包之间本地调试"><a href="#2-包之间本地调试" class="headerlink" title="2.包之间本地调试"></a>2.包之间本地调试</h4><p>进入components文件夹执行</p>
-<pre><code class="bash">pnpm install @alanmf/utils
-</code></pre>
-<p>你会发现pnpm会自动创建个软链接直接指向我们的utils包；此时components下的packages：</p>
-<pre><code class="swift">&#123;
-  &quot;name&quot;: &quot;alanmf&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;&quot;,
-  &quot;main&quot;: &quot;index.ts&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
-  &#125;,
-  &quot;keywords&quot;: [],
-  &quot;author&quot;: &quot;&quot;,
-  &quot;license&quot;: &quot;ISC&quot;,
-  &quot;dependencies&quot;: &#123;
-    &quot;@alanmf/utils&quot;: &quot;workspace:^1.0.0&quot;
-  &#125;
-&#125;
-</code></pre>
-<p>你会发现它的依赖@alanmf&#x2F;utils对应的版本为：workspace:^1.0.0；因为pnpm是由workspace管理的，所以有一个前缀workspace可以指向utils下的工作空间从而方便本地调试各个包直接的关联引用。</p>
-<p>到这里基本开发方法我们已经知道啦；接下来就要进入正题了，开发一个button组件</p>
-<h3 id="三、开发一个button组件"><a href="#三、开发一个button组件" class="headerlink" title="三、开发一个button组件"></a>三、开发一个button组件</h3><h4 id="1-创建一个测试组件"><a href="#1-创建一个测试组件" class="headerlink" title="1.创建一个测试组件"></a>1.创建一个测试组件</h4><p>在components文件夹下新建src,同时在src下新建button组件目录和icon组件目录(新建icon为了便于调试);此时components文件目录如下</p>
-<pre><code class="lua">-- components
-  -- src
-    -- button
-    -- icon
-    -- index.ts
--- package.json
-</code></pre>
-<p>让我们先测试一下我们的button组件能否在我们搭建的examples下的vue3项目本引用~</p>
-<p>首先在button下新建一个简单的button.vue</p>
-<pre><code class="xml">&lt;template&gt;
-    &lt;button&gt;测试按钮&lt;/button&gt;
-&lt;/template&gt;
-</code></pre>
-<p>然后在button&#x2F;index.ts将其导出</p>
-<pre><code class="javascript">import Button from &#39;./button.vue&#39;
-
-export default Button
-</code></pre>
-<p>因为我们开发组件库的时候不可能只有button，所以我们需要一个components&#x2F;index.ts将我们开发的组件一个个的集中导出</p>
-<pre><code class="javascript">import Button from &#39;./button&#39;
-
-export &#123;
-    Button
-&#125;
-</code></pre>
-<p>好了，一个组件的大体目录差不多就是这样了，接下来请进入我们的examples来看看能否引入我们的button组件</p>
-<h4 id="2-测试项目引入"><a href="#2-测试项目引入" class="headerlink" title="2.测试项目引入"></a>2.测试项目引入</h4><p>上面已经说过执行在workspace执行 pnpm i xxx的时候pnpm会自动创建个软链接直接指向我们的xxx包。</p>
-<p>所以这里我们直接在examples执行：pnpm i alanmf</p>
-<p>此时你就会发现packages.json的依赖多了个</p>
-<pre><code class="json">&quot;alanmf&quot;: &quot;workspace:^1.0.0&quot;
-</code></pre>
-<p>这时候我们就能直接在我们的测试项目下引入我们本地的components组件库了，启动我们的测试项目，来到我们的 examples&#x2F;app.vue 直接引入Button</p>
-<pre><code class="xml">&lt;template&gt;
-    &lt;div&gt;
-        &lt;Button /&gt;
-    &lt;/div&gt;
-&lt;/template&gt;
-&lt;script lang=&quot;ts&quot; setup&gt;
-import &#123; Button &#125; from &#39;alanmf/src&#39;
-&lt;/script&gt;
-</code></pre>
-<p>不出意外的话你的页面就会展示我们刚刚写的button组件了</p>
-<p>接下来的工作就是专注于组件的开发了；让我们回到我们的button组件目录下（测试页面不用关，此时我们已经可以边开发边调试边看效果了）</p>
-<h4 id="3-types-ts文件规范组件属性"><a href="#3-types-ts文件规范组件属性" class="headerlink" title="3.types.ts文件规范组件属性"></a>3.types.ts文件规范组件属性</h4><p>我们的button组件是需要接收很多属性的，如type、size等等，所以我们要新建个types.ts文件来规范这些属性</p>
-<p>在button目录下新建types.ts</p>
-<pre><code class="tsx">
-import &#123; ExtractPropTypes &#125; from &#39;vue&#39;
-
-
-export const ButtonType = [&#39;default&#39;, &#39;primary&#39;, &#39;success&#39;, &#39;warning&#39;, &#39;danger&#39;]
-
-export const ButtonSize = [&#39;large&#39;, &#39;normal&#39;, &#39;small&#39;, &#39;mini&#39;];
-
-
-export const buttonProps = &#123;
-  type: &#123;
-    type: String,
-    values: ButtonType
-  &#125;,
-  size: &#123;
-    type: String,
-    values: ButtonSize
-  &#125;
-&#125;
-
-export type ButtonProps = ExtractPropTypes&lt;typeof buttonProps&gt;
-</code></pre>
-<p>import type 表示只导入类型；ExtractPropTypes是vue3中内置的类型声明,它的作用是接收一个类型，然后把对应的vue3所接收的props类型提供出来，后面有需要可以直接使用</p>
-<p>很多时候我们在vue中使用一个组件会用的app.use 将组件挂载到全局。要使用app.use函数的话我们需要让我们的每个组件都提供一个install方法，app.use()的时候就会调用这个方法;</p>
-<p>我们将button&#x2F;index.ts调整为</p>
-<pre><code class="typescript">import button from &#39;./button.vue&#39;
-import type &#123;App,Plugin&#125; from &quot;vue&quot;
-type SFCWithInstall&lt;T&gt; = T&amp;Plugin
-const withInstall = &lt;T&gt;(comp:T) =&gt; &#123;
-    (comp as SFCWithInstall&lt;T&gt;).install = (app:App)=&gt;&#123;
-        //注册组件
-        app.component((comp as any).name,comp)
-    &#125;
-    return comp as SFCWithInstall&lt;T&gt;
-&#125;
-const Button = withInstall(button)
-export default Button
-</code></pre>
-<p>此时我们就可以使用app.use来挂载我们的组件啦</p>
-<p>其实withInstall方法可以做个公共方法放到工具库里，因为后续每个组件都会用到，这里等后面开发组件的时候再调整</p>
-<p>到这里组件开发的基本配置已经完成，最后我们对我们的组件库以及工具库进行打包，打包之前如果要发公共包的话记得将我们的各个包的协议改为MIT开源协议</p>
-<pre><code class="python-repl">...
-&quot;license&quot;: &quot;MIT&quot;,
-...
-</code></pre>
-<h3 id="四、vite打包"><a href="#四、vite打包" class="headerlink" title="四、vite打包"></a>四、vite打包</h3><h4 id="1-配置文件"><a href="#1-配置文件" class="headerlink" title="1.配置文件"></a>1.配置文件</h4><p>打包们这里选择vite，它有一个库模式专门为我们来打包这种库组件的。</p>
-<p>前面已经安装过vite了，所以这里直接在components下直接新建vite.config.ts(配置参数文件中已经注释):</p>
-<pre><code class="json">import &#123; defineConfig &#125; from &quot;vite&quot;;
-import vue from &quot;@vitejs/plugin-vue&quot;
-export default defineConfig(
-    &#123;
-        build: &#123;
-            target: &#39;modules&#39;,
-            //打包文件目录
-            outDir: &quot;es&quot;,
-            //压缩
-            minify: false,
-            //css分离
-            //cssCodeSplit: true,
-            rollupOptions: &#123;
-                //忽略打包vue文件
-                external: [&#39;vue&#39;],
-                input: [&#39;src/index.ts&#39;],
-                output: [
-                    &#123;
-                        format: &#39;es&#39;,
-                        //不用打包成.es.js,这里我们想把它打包成.js
-                        entryFileNames: &#39;[name].js&#39;,
-                        //让打包目录和我们目录对应
-                        preserveModules: true,
-                        //配置打包根目录
-                        dir: &#39;es&#39;,
-                        preserveModulesRoot: &#39;src&#39;
-                    &#125;,
-                    &#123;
-                        format: &#39;cjs&#39;,
-                        entryFileNames: &#39;[name].js&#39;,
-                        //让打包目录和我们目录对应
-                        preserveModules: true,
-                        //配置打包根目录
-                        dir: &#39;lib&#39;,
-                        preserveModulesRoot: &#39;src&#39;
-                    &#125;
-                ]
-            &#125;,
-            lib: &#123;
-                entry: &#39;./index.ts&#39;,
-                formats: [&#39;es&#39;, &#39;cjs&#39;]
-            &#125;
-        &#125;,
-        plugins: [
-            vue()
-        ]
-    &#125;
-)
-</code></pre>
-<p>这里我们选择打包cjs(CommonJS)和esm(ESModule)两种形式,cjs模式主要用于服务端引用(ssr),而esm就是我们现在经常使用的方式，它本身自带treeShaking而不需要额外配置按需引入(前提是你将模块分别导出)</p>
-<h4 id="2-vite打包"><a href="#2-vite打包" class="headerlink" title="2.vite打包"></a>2.vite打包</h4><p>到这里就已经可以直接打包了；components下执行： pnpm run build你就会发现打包了es和lib两个目录</p>
-<p><img src="/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/image-20221120165853742.png"></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[私有仓库搭建源码]: 	“<a href="https://github.com/mengfeng/alanmf_ui.git">https://github.com/mengfeng/alanmf_ui.git</a> “</p>
-]]></content>
-      <categories>
-        <category>工程技术</category>
-        <category>Vite+Vue3+Ts搭建私有组件库</category>
-      </categories>
-      <tags>
-        <tag>组件库</tag>
       </tags>
   </entry>
   <entry>
@@ -2048,6 +2048,76 @@ Test.prototype.update = function(dt) &#123;
       </tags>
   </entry>
   <entry>
+    <title>threejs-d-1.0</title>
+    <url>/2022/11/27/threejs-d-1-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-1-0"><a href="#threejs-d-1-0" class="headerlink" title="threejs-d-1.0"></a>threejs-d-1.0</h1><blockquote>
+<p>d-1.0主要是准备我们开发环境和其他的一些准备，为了我们更好的去进入three的世界</p>
+</blockquote>
+<h3 id="一、搭建three-js本地网站"><a href="#一、搭建three-js本地网站" class="headerlink" title="一、搭建three.js本地网站"></a>一、搭建three.js本地网站</h3><blockquote>
+<p>搭建本地网站的原因，是因为我们访问官网的时候，由于网速限制，导致我们的体验感下降，搭建本地服务器，快很多了。</p>
+</blockquote>
+<p>我们打开官网<a href="https://threejs.org/">Three.js</a>点击github就进入了threejs仓库了</p>
+<p><img src="/2022/11/27/threejs-d-1-0/image-20221127171040581.png"></p>
+<p>我们下载仓库的dev开发包</p>
+<p>git clone 和 下载压缩包都可以！</p>
+<p><img src="/2022/11/27/threejs-d-1-0/image-20221127171152583.png"></p>
+<p>执行命令运行：</p>
+<pre><code class="ini">npm i //安装依赖
+npm start //运行项目
+</code></pre>
+<p><img src="/2022/11/27/threejs-d-1-0/image-20221127171346283.png"></p>
+<p><img src="/2022/11/27/threejs-d-1-0/image-20221127171325067.png"></p>
+<p>我们现在访问本地项目就快多了，我们想知道任何一个例子也可以查看其具体的文件了。</p>
+<h3 id="二、使用parcel搭建threejs开发环境"><a href="#二、使用parcel搭建threejs开发环境" class="headerlink" title="二、使用parcel搭建threejs开发环境"></a>二、使用<a href="https://parceljs.org/">parcel</a>搭建threejs开发环境</h3><pre><code class="ini">npm init -y //初始化项目
+npm install  parcel-bundler -D //安装parcel
+</code></pre>
+<p>设置入口文件main.js和index.html</p>
+<p><img src="/2022/11/27/threejs-d-1-0/image-20221127173957450.png"></p>
+<p>配置package.json</p>
+<pre><code class="javascript">//package.json
+&#123;
+  &quot;name&quot;: &quot;threejs&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;dev&quot;: &quot;parcel ./src/index.html&quot;,
+    &quot;build&quot;: &quot;parcel build ./src/index.html&quot;
+  &#125;,
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;devDependencies&quot;: &#123;
+    &quot;parcel-bundler&quot;: &quot;^1.12.5&quot;
+  &#125;
+&#125;
+</code></pre>
+<p>下载threejs依赖</p>
+<pre><code class="ini">npm install three --save //安装依赖
+</code></pre>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+console.log(THREE)
+</code></pre>
+<p>运行项目，打包项目</p>
+<pre><code class="ini">npm run dev //运行项目
+npm run build //打包项目
+</code></pre>
+<p><img src="/2022/11/27/threejs-d-1-0/image-20221127174654769.png"></p>
+<p><img src="/2022/11/27/threejs-d-1-0/image-20221127174742984.png"></p>
+<p>运行成功！！！</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Three.js官网]: 	“<a href="https://threejs.org/">https://threejs.org/</a> “<br>[Three.js-github]: 	“<a href="https://github.com/mrdoob/three.js/">https://github.com/mrdoob/three.js/</a> “<br>[parcel官网]: 	“<a href="https://parceljs.org/&quot;">https://parceljs.org/&quot;</a><br>[parcel中文官网]: 	“<a href="https://www.parceljs.cn/">https://www.parceljs.cn/</a> “</p>
+]]></content>
+      <categories>
+        <category>Web3D</category>
+        <category>Three.js</category>
+        <category>threejs-d-1.0</category>
+      </categories>
+      <tags>
+        <tag>three.js</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>react-native环境搭建</title>
     <url>/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="react-native环境搭建（Mac-M1）"><a href="#react-native环境搭建（Mac-M1）" class="headerlink" title="react-native环境搭建（Mac M1）"></a>react-native环境搭建（Mac M1）</h1><h3 id="一、本机安装环境"><a href="#一、本机安装环境" class="headerlink" title="一、本机安装环境"></a>一、本机安装环境</h3><p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221207175048319.png"></p>
@@ -2116,73 +2186,196 @@ sudo chmod -R go-w /opt/homebrew
       </tags>
   </entry>
   <entry>
-    <title>threejs-d-1.0</title>
-    <url>/2022/11/27/threejs-d-1-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-1-0"><a href="#threejs-d-1-0" class="headerlink" title="threejs-d-1.0"></a>threejs-d-1.0</h1><blockquote>
-<p>d-1.0主要是准备我们开发环境和其他的一些准备，为了我们更好的去进入three的世界</p>
-</blockquote>
-<h3 id="一、搭建three-js本地网站"><a href="#一、搭建three-js本地网站" class="headerlink" title="一、搭建three.js本地网站"></a>一、搭建three.js本地网站</h3><blockquote>
-<p>搭建本地网站的原因，是因为我们访问官网的时候，由于网速限制，导致我们的体验感下降，搭建本地服务器，快很多了。</p>
-</blockquote>
-<p>我们打开官网<a href="https://threejs.org/">Three.js</a>点击github就进入了threejs仓库了</p>
-<p><img src="/2022/11/27/threejs-d-1-0/image-20221127171040581.png"></p>
-<p>我们下载仓库的dev开发包</p>
-<p>git clone 和 下载压缩包都可以！</p>
-<p><img src="/2022/11/27/threejs-d-1-0/image-20221127171152583.png"></p>
-<p>执行命令运行：</p>
-<pre><code class="ini">npm i //安装依赖
-npm start //运行项目
-</code></pre>
-<p><img src="/2022/11/27/threejs-d-1-0/image-20221127171346283.png"></p>
-<p><img src="/2022/11/27/threejs-d-1-0/image-20221127171325067.png"></p>
-<p>我们现在访问本地项目就快多了，我们想知道任何一个例子也可以查看其具体的文件了。</p>
-<h3 id="二、使用parcel搭建threejs开发环境"><a href="#二、使用parcel搭建threejs开发环境" class="headerlink" title="二、使用parcel搭建threejs开发环境"></a>二、使用<a href="https://parceljs.org/">parcel</a>搭建threejs开发环境</h3><pre><code class="ini">npm init -y //初始化项目
-npm install  parcel-bundler -D //安装parcel
-</code></pre>
-<p>设置入口文件main.js和index.html</p>
-<p><img src="/2022/11/27/threejs-d-1-0/image-20221127173957450.png"></p>
-<p>配置package.json</p>
-<pre><code class="javascript">//package.json
-&#123;
-  &quot;name&quot;: &quot;threejs&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;&quot;,
-  &quot;main&quot;: &quot;index.js&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;dev&quot;: &quot;parcel ./src/index.html&quot;,
-    &quot;build&quot;: &quot;parcel build ./src/index.html&quot;
-  &#125;,
-  &quot;keywords&quot;: [],
-  &quot;author&quot;: &quot;&quot;,
-  &quot;license&quot;: &quot;ISC&quot;,
-  &quot;devDependencies&quot;: &#123;
-    &quot;parcel-bundler&quot;: &quot;^1.12.5&quot;
-  &#125;
-&#125;
-</code></pre>
-<p>下载threejs依赖</p>
-<pre><code class="ini">npm install three --save //安装依赖
-</code></pre>
+    <title>threejs-d-2.0</title>
+    <url>/2022/11/29/threejs-d-2-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-2-0"><a href="#threejs-d-2-0" class="headerlink" title="threejs-d-2.0"></a>threejs-d-2.0</h1><h3 id="一、创建第一个threejs应用"><a href="#一、创建第一个threejs应用" class="headerlink" title="一、创建第一个threejs应用"></a>一、创建第一个threejs应用</h3><p>代码汇总：</p>
 <pre><code class="javascript">//main.js
 import * as THREE from &#39;three&#39;
-console.log(THREE)
+
+const scene = new THREE.Scene();//创建场景
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//创建透视相机（相机中的一种）
+const renderer = new THREE.WebGLRenderer();//创建渲染器
+renderer.setSize( window.innerWidth, window.innerHeight );//将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小
+document.body.appendChild( renderer.domElement );//将renderer（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中
+
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );//创建几何体
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );//创建基础网格材质
+const cube = new THREE.Mesh( geometry, material );//使用构造器
+scene.add( cube );//将几何体添加到场景
+camera.position.z = 5;//调整相机位置（默认0，0，0）
+
+//几何体循环旋转动画
+function animate() &#123;
+    requestAnimationFrame( animate );
+  //旋转坐标变换
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+  //重新渲染几何体
+    renderer.render( scene, camera );
+&#125;
+animate();
 </code></pre>
-<p>运行项目，打包项目</p>
-<pre><code class="ini">npm run dev //运行项目
-npm run build //打包项目
+<h4 id="1-创建场景、相机、渲染器"><a href="#1-创建场景、相机、渲染器" class="headerlink" title="1.创建场景、相机、渲染器"></a>1.创建场景、相机、渲染器</h4><blockquote>
+<p>如果我们有玩过三维软件的同学应该不会陌生这几个概念</p>
+<p>我们下面以三维软件C4D来简单认识一下吧</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129085326176.png"></p>
+<p>我们花一点点时间来解释一下这里发生了什么。我们现在建立了场景、相机和渲染器。</p>
+<pre><code class="javascript">const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 </code></pre>
-<p><img src="/2022/11/27/threejs-d-1-0/image-20221127174654769.png"></p>
-<p><img src="/2022/11/27/threejs-d-1-0/image-20221127174742984.png"></p>
-<p>运行成功！！！</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Three.js官网]: 	“<a href="https://threejs.org/">https://threejs.org/</a> “<br>[Three.js-github]: 	“<a href="https://github.com/mrdoob/three.js/">https://github.com/mrdoob/three.js/</a> “<br>[parcel官网]: 	“<a href="https://parceljs.org/&quot;">https://parceljs.org/&quot;</a><br>[parcel中文官网]: 	“<a href="https://www.parceljs.cn/">https://www.parceljs.cn/</a> “</p>
+<p>three.js里有几种不同的相机，在这里，我们使用的是<strong>PerspectiveCamera</strong>（透视摄像机）。</p>
+<p>第一个参数是<strong>视野角度（FOV）</strong>。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的单位是角度(与弧度区分开)。</p>
+<p>第二个参数是<strong>长宽比（aspect ratio）</strong>。 也就是你用一个物体的宽除以它的高的值。比如说，当你在一个宽屏电视上播放老电影时，可以看到图像仿佛是被压扁的。</p>
+<p>接下来的两个参数是<strong>近截面</strong>（near）和<strong>远截面</strong>（far）。 当物体某些部分比摄像机的<strong>远截面</strong>远或者比<strong>近截面</strong>近的时候，该这些部分将不会被渲染到场景中。或许现在你不用担心这个值的影响，但未来为了获得更好的渲染性能，你将可以在你的应用程序里去设置它。</p>
+<p>接下来是渲染器。这里是施展魔法的地方。除了我们在这里用到的WebGLRenderer渲染器之外，Three.js同时提供了其他几种渲染器，当用户所使用的浏览器过于老旧，或者由于其他原因不支持WebGL时，可以使用这几种渲染器进行降级。</p>
+<p>除了创建一个渲染器的实例之外，我们还需要在我们的应用程序里设置一个渲染器的尺寸。比如说，我们可以使用所需要的渲染区域的宽高，来让渲染器渲染出的场景填充满我们的应用程序。因此，我们可以将渲染器宽高设置为浏览器窗口宽高。对于性能比较敏感的应用程序来说，你可以使用<strong>setSize</strong>传入一个较小的值，例如<strong>window.innerWidth&#x2F;2</strong>和<strong>window.innerHeight&#x2F;2</strong>，这将使得应用程序在渲染时，以一半的长宽尺寸渲染场景。</p>
+<p>如果你希望保持你的应用程序的尺寸，但是以较低的分辨率来渲染，你可以在调用<strong>setSize</strong>时，将<strong>updateStyle</strong>（第三个参数）设为false。例如，假设你的<canvas> 标签现在已经具有了100%的宽和高，调用**setSize(window.innerWidth&#x2F;2, window.innerHeight&#x2F;2, false)**将使得你的应用程序以一半的分辨率来进行渲染。</p>
+<pre><code class="javascript">document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>最后一步很重要，我们将<strong>renderer</strong>（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中。这就是渲染器用来显示场景给我们看的<canvas>元素。</p>
+<h4 id="2-创建几何体、材质"><a href="#2-创建几何体、材质" class="headerlink" title="2.创建几何体、材质"></a>2.创建几何体、材质</h4><blockquote>
+<p>对于材质这块，就是给一个没有任何属性的物体添加属性，玻璃、金属、玉、有颜色的立方体。</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129090339038.png"></p>
+<p>要创建一个立方体，我们需要一个<strong>BoxGeometry</strong>（立方体）对象. 这个对象包含了一个立方体中所有的顶点（<strong>vertices</strong>）和面（<strong>faces</strong>）。未来我们将在这方面进行更多的探索。</p>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+camera.position.z = 5;
+</code></pre>
+<p>接下来，对于这个立方体，我们需要给它一个材质，来让它有颜色。Three.js自带了几种材质，在这里我们使用的是<strong>MeshBasicMaterial</strong>。所有的材质都存有应用于他们的属性的对象。在这里为了简单起见，我们只设置一个color属性，值为<strong>0x00ff00</strong>，也就是绿色。这里所做的事情，和在CSS或者Photoshop中使用十六进制(<strong>hex colors</strong>)颜色格式来设置颜色的方式一致。</p>
+<p>第三步，我们需要一个<strong>Mesh</strong>（网格）。 网格包含一个几何体以及作用在此几何体上的材质，我们可以直接将网格对象放入到我们的场景中，并让它在场景中自由移动。</p>
+<p>默认情况下，当我们调用**scene.add()<strong>的时候，物体将会被添加到</strong>(0,0,0)**坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。</p>
+<h4 id="3-创建渲染"><a href="#3-创建渲染" class="headerlink" title="3.创建渲染"></a>3.创建渲染</h4><blockquote>
+<p>这个就比较好理解了，添加x，y，z方向的位置变化</p>
+</blockquote>
+<p>现在，如果将之前写好的代码复制到HTML文件中，你不会在页面中看到任何东西。这是因为我们还没有对它进行真正的渲染。为此，我们需要使用一个被叫做“<strong>渲染循环</strong>”（render loop）或者“<strong>动画循环</strong>”（animate loop）的东西。</p>
+<pre><code class="javascript">function animate() &#123; 
+requestAnimationFrame( animate ); 
+renderer.render( scene, camera ); 
+&#125; 
+animate();
+</code></pre>
+<p>在这里我们创建了一个使渲染器能够在每次屏幕刷新时对场景进行绘制的循环（在大多数屏幕上，刷新率一般是60次&#x2F;秒）。如果你是一个浏览器游戏开发的新手，你或许会说<em>“为什么我们不直接用setInterval来实现刷新的功能呢？”</em>当然啦，我们的确可以用setInterval，但是，<strong>requestAnimationFrame</strong>有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。</p>
+<p>在开始之前，如果你已经将上面的代码写入到了你所创建的文件中，你可以看到一个绿色的方块。让我们来做一些更加有趣的事 —— 让它旋转起来。</p>
+<p>将下列代码添加到animate()函数中<strong>renderer.render</strong>调用的上方：</p>
+<pre><code class="javascript">cube.rotation.x += 0.01; 
+cube.rotation.y += 0.01;
+</code></pre>
+<p>这段代码每帧都会执行（正常情况下是60次&#x2F;秒），这就让立方体有了一个看起来很不错的旋转动画。基本上来说，当应用程序运行时，如果你想要移动或者改变任何场景中的东西，都必须要经过这个动画循环。当然，你可以在这个动画循环里调用别的函数，这样你就不会写出有上百行代码的<strong>animate</strong>函数。</p>
+<h4 id="效果演示："><a href="#效果演示：" class="headerlink" title="效果演示："></a>效果演示：</h4><p><img src="/2022/11/29/threejs-d-2-0/image-20221129090831716.png"></p>
+<h3 id="二、控制器（轨道控制器）"><a href="#二、控制器（轨道控制器）" class="headerlink" title="二、控制器（轨道控制器）"></a>二、控制器（轨道控制器）</h3><blockquote>
+<p>控制器有许多，我们这先说这一种</p>
+<p>轨道控制器是以物体为中心，对物体做环绕运动</p>
+</blockquote>
+<p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; //导入轨道控制器
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+const controls = new OrbitControls( camera,renderer.domElement  );
+camera.position.set(0,20,100);
+controls.update();//更新控制器。必须在摄像机的变换发生任何手动改变后调用
+function animate() &#123;
+    requestAnimationFrame( animate );
+    controls.update();//循环更新轨道控制器
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<p>OrbitControls( object : Camera, domElement : HTMLDOMElement )</p>
+<p>object: （必须）将要被控制的相机。该相机不允许是其他任何对象的子级，除非该对象是场景自身。</p>
+<p>domElement: 用于事件监听的HTML元素。</p>
+<p>那我们现在就可以移动我们的相机来观察我们的物体了。</p>
+<h3 id="三、添加辅助器"><a href="#三、添加辅助器" class="headerlink" title="三、添加辅助器"></a>三、添加辅助器</h3><blockquote>
+<p>这个来自与我们help里面的东西，文档里查就可以了</p>
+<p>添加辅助器的用处是为了更好的去开发</p>
+</blockquote>
+<h4 id="1-坐标辅助器"><a href="#1-坐标辅助器" class="headerlink" title="1.坐标辅助器"></a>1.坐标辅助器</h4><blockquote>
+<p>用于简单模拟3个坐标轴的对象.<br>红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.</p>
+</blockquote>
+<pre><code class="javascript">const axesHelper = new THREE.AxesHelper( 5 );//轴的线段长度. 默认为 1.
+scene.add( axesHelper );//添加到场景
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155031932.png"></p>
+<h4 id="2-相机辅助器"><a href="#2-相机辅助器" class="headerlink" title="2.相机辅助器"></a>2.相机辅助器</h4><blockquote>
+<p>用于模拟相机视锥体的辅助对象.<br>它使用 LineSegments 来模拟相机视锥体.</p>
+</blockquote>
+<pre><code class="javascript">const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const helper = new THREE.CameraHelper( camera );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155852737.png"></p>
+<p>CameraHelper( camera : Camera )</p>
+<p>camera – 被模拟的相机.</p>
+<p>为指定相机创建一个新的相机辅助对象 CameraHelper .</p>
+<h4 id="3-平面辅助器"><a href="#3-平面辅助器" class="headerlink" title="3.平面辅助器"></a>3.平面辅助器</h4><blockquote>
+<p>用于模拟平面 Plane 的辅助对象.</p>
+</blockquote>
+<pre><code class="javascript">const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
+const helper = new THREE.PlaneHelper( plane, 100, 0xffff00 );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160213446.png"></p>
+<p>PlaneHelper( plane : Plane, size : Float, hex : Color )</p>
+<p>plane – 被模拟的平面.<br>size – (可选的) 辅助对象的单边长度. 默认为 1.<br>color – (可选的) 辅助对象的颜色. 默认为 0xffff00.</p>
+<p>创建一个线框辅助对象来表示指定平面.</p>
+<h4 id="终结："><a href="#终结：" class="headerlink" title="终结："></a>终结：</h4><p>其他的辅助器，我们就自己按照需求去加吧，这个就是做一个参照</p>
+<h3 id="四、物体的属性"><a href="#四、物体的属性" class="headerlink" title="四、物体的属性"></a>四、物体的属性</h3><blockquote>
+<p>物体的属性，那我们要看一下cube是什么了</p>
+<p>根据控制台打印，它是个Mesh类，下面有许多属性</p>
+</blockquote>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160944920.png"></p>
+<h4 id="1-物体的位移"><a href="#1-物体的位移" class="headerlink" title="1.物体的位移"></a>1.物体的位移</h4><blockquote>
+<p>控制物体的位置</p>
+</blockquote>
+<pre><code class="javascript">cube.position.set(10,0,0)//默认为x，y，z方向
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161420179.png"></p>
+<h4 id="2-物体的旋转"><a href="#2-物体的旋转" class="headerlink" title="2.物体的旋转"></a>2.物体的旋转</h4><blockquote>
+<p>控制问题的旋转角度</p>
+<p>这个不是单纯的三维向量了</p>
+<p>是一个Euler类</p>
+</blockquote>
+<pre><code class="javascript">cube.rotation.set(Math.PI/4,0,0,&#39;XYZ&#39;)//默认为‘xyz’
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129162730828.png"></p>
+<p>Euler( x : Float, y : Float, z : Float, order : String )</p>
+<p>x - (optional) 用弧度表示x轴旋转量。 默认值是 <strong>0</strong>。<br>y - (optional) 用弧度表示y轴旋转量。 默认值是 <strong>0</strong>。<br>z - (optional) 用弧度表示z轴旋转量。 默认值是 <strong>0</strong>。<br>order - (optional) 表示旋转顺序的字符串，默认为’XYZ’（必须是大写）。</p>
+<h4 id="3-物体的缩放"><a href="#3-物体的缩放" class="headerlink" title="3.物体的缩放"></a>3.物体的缩放</h4><blockquote>
+<p>控制物体缩放</p>
+</blockquote>
+<pre><code class="javascript">cube.scale.set(3,2,1)
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161943968.png"></p>
 ]]></content>
       <categories>
         <category>Web3D</category>
         <category>Three.js</category>
-        <category>threejs-d-1.0</category>
+        <category>threejs-d-2.0</category>
       </categories>
       <tags>
-        <tag>three.js</tag>
+        <tag>threejs</tag>
       </tags>
   </entry>
   <entry>
@@ -2403,199 +2596,6 @@ window.addEventListener(&#39;resize&#39;,()=&gt;&#123;
       </tags>
   </entry>
   <entry>
-    <title>threejs-d-2.0</title>
-    <url>/2022/11/29/threejs-d-2-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-2-0"><a href="#threejs-d-2-0" class="headerlink" title="threejs-d-2.0"></a>threejs-d-2.0</h1><h3 id="一、创建第一个threejs应用"><a href="#一、创建第一个threejs应用" class="headerlink" title="一、创建第一个threejs应用"></a>一、创建第一个threejs应用</h3><p>代码汇总：</p>
-<pre><code class="javascript">//main.js
-import * as THREE from &#39;three&#39;
-
-const scene = new THREE.Scene();//创建场景
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//创建透视相机（相机中的一种）
-const renderer = new THREE.WebGLRenderer();//创建渲染器
-renderer.setSize( window.innerWidth, window.innerHeight );//将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小
-document.body.appendChild( renderer.domElement );//将renderer（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中
-
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );//创建几何体
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );//创建基础网格材质
-const cube = new THREE.Mesh( geometry, material );//使用构造器
-scene.add( cube );//将几何体添加到场景
-camera.position.z = 5;//调整相机位置（默认0，0，0）
-
-//几何体循环旋转动画
-function animate() &#123;
-    requestAnimationFrame( animate );
-  //旋转坐标变换
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-  //重新渲染几何体
-    renderer.render( scene, camera );
-&#125;
-animate();
-</code></pre>
-<h4 id="1-创建场景、相机、渲染器"><a href="#1-创建场景、相机、渲染器" class="headerlink" title="1.创建场景、相机、渲染器"></a>1.创建场景、相机、渲染器</h4><blockquote>
-<p>如果我们有玩过三维软件的同学应该不会陌生这几个概念</p>
-<p>我们下面以三维软件C4D来简单认识一下吧</p>
-</blockquote>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129085326176.png"></p>
-<p>我们花一点点时间来解释一下这里发生了什么。我们现在建立了场景、相机和渲染器。</p>
-<pre><code class="javascript">const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-</code></pre>
-<p>three.js里有几种不同的相机，在这里，我们使用的是<strong>PerspectiveCamera</strong>（透视摄像机）。</p>
-<p>第一个参数是<strong>视野角度（FOV）</strong>。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的单位是角度(与弧度区分开)。</p>
-<p>第二个参数是<strong>长宽比（aspect ratio）</strong>。 也就是你用一个物体的宽除以它的高的值。比如说，当你在一个宽屏电视上播放老电影时，可以看到图像仿佛是被压扁的。</p>
-<p>接下来的两个参数是<strong>近截面</strong>（near）和<strong>远截面</strong>（far）。 当物体某些部分比摄像机的<strong>远截面</strong>远或者比<strong>近截面</strong>近的时候，该这些部分将不会被渲染到场景中。或许现在你不用担心这个值的影响，但未来为了获得更好的渲染性能，你将可以在你的应用程序里去设置它。</p>
-<p>接下来是渲染器。这里是施展魔法的地方。除了我们在这里用到的WebGLRenderer渲染器之外，Three.js同时提供了其他几种渲染器，当用户所使用的浏览器过于老旧，或者由于其他原因不支持WebGL时，可以使用这几种渲染器进行降级。</p>
-<p>除了创建一个渲染器的实例之外，我们还需要在我们的应用程序里设置一个渲染器的尺寸。比如说，我们可以使用所需要的渲染区域的宽高，来让渲染器渲染出的场景填充满我们的应用程序。因此，我们可以将渲染器宽高设置为浏览器窗口宽高。对于性能比较敏感的应用程序来说，你可以使用<strong>setSize</strong>传入一个较小的值，例如<strong>window.innerWidth&#x2F;2</strong>和<strong>window.innerHeight&#x2F;2</strong>，这将使得应用程序在渲染时，以一半的长宽尺寸渲染场景。</p>
-<p>如果你希望保持你的应用程序的尺寸，但是以较低的分辨率来渲染，你可以在调用<strong>setSize</strong>时，将<strong>updateStyle</strong>（第三个参数）设为false。例如，假设你的<canvas> 标签现在已经具有了100%的宽和高，调用**setSize(window.innerWidth&#x2F;2, window.innerHeight&#x2F;2, false)**将使得你的应用程序以一半的分辨率来进行渲染。</p>
-<pre><code class="javascript">document.body.appendChild( renderer.domElement );
-</code></pre>
-<p>最后一步很重要，我们将<strong>renderer</strong>（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中。这就是渲染器用来显示场景给我们看的<canvas>元素。</p>
-<h4 id="2-创建几何体、材质"><a href="#2-创建几何体、材质" class="headerlink" title="2.创建几何体、材质"></a>2.创建几何体、材质</h4><blockquote>
-<p>对于材质这块，就是给一个没有任何属性的物体添加属性，玻璃、金属、玉、有颜色的立方体。</p>
-</blockquote>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129090339038.png"></p>
-<p>要创建一个立方体，我们需要一个<strong>BoxGeometry</strong>（立方体）对象. 这个对象包含了一个立方体中所有的顶点（<strong>vertices</strong>）和面（<strong>faces</strong>）。未来我们将在这方面进行更多的探索。</p>
-<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-camera.position.z = 5;
-</code></pre>
-<p>接下来，对于这个立方体，我们需要给它一个材质，来让它有颜色。Three.js自带了几种材质，在这里我们使用的是<strong>MeshBasicMaterial</strong>。所有的材质都存有应用于他们的属性的对象。在这里为了简单起见，我们只设置一个color属性，值为<strong>0x00ff00</strong>，也就是绿色。这里所做的事情，和在CSS或者Photoshop中使用十六进制(<strong>hex colors</strong>)颜色格式来设置颜色的方式一致。</p>
-<p>第三步，我们需要一个<strong>Mesh</strong>（网格）。 网格包含一个几何体以及作用在此几何体上的材质，我们可以直接将网格对象放入到我们的场景中，并让它在场景中自由移动。</p>
-<p>默认情况下，当我们调用**scene.add()<strong>的时候，物体将会被添加到</strong>(0,0,0)**坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。</p>
-<h4 id="3-创建渲染"><a href="#3-创建渲染" class="headerlink" title="3.创建渲染"></a>3.创建渲染</h4><blockquote>
-<p>这个就比较好理解了，添加x，y，z方向的位置变化</p>
-</blockquote>
-<p>现在，如果将之前写好的代码复制到HTML文件中，你不会在页面中看到任何东西。这是因为我们还没有对它进行真正的渲染。为此，我们需要使用一个被叫做“<strong>渲染循环</strong>”（render loop）或者“<strong>动画循环</strong>”（animate loop）的东西。</p>
-<pre><code class="javascript">function animate() &#123; 
-requestAnimationFrame( animate ); 
-renderer.render( scene, camera ); 
-&#125; 
-animate();
-</code></pre>
-<p>在这里我们创建了一个使渲染器能够在每次屏幕刷新时对场景进行绘制的循环（在大多数屏幕上，刷新率一般是60次&#x2F;秒）。如果你是一个浏览器游戏开发的新手，你或许会说<em>“为什么我们不直接用setInterval来实现刷新的功能呢？”</em>当然啦，我们的确可以用setInterval，但是，<strong>requestAnimationFrame</strong>有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。</p>
-<p>在开始之前，如果你已经将上面的代码写入到了你所创建的文件中，你可以看到一个绿色的方块。让我们来做一些更加有趣的事 —— 让它旋转起来。</p>
-<p>将下列代码添加到animate()函数中<strong>renderer.render</strong>调用的上方：</p>
-<pre><code class="javascript">cube.rotation.x += 0.01; 
-cube.rotation.y += 0.01;
-</code></pre>
-<p>这段代码每帧都会执行（正常情况下是60次&#x2F;秒），这就让立方体有了一个看起来很不错的旋转动画。基本上来说，当应用程序运行时，如果你想要移动或者改变任何场景中的东西，都必须要经过这个动画循环。当然，你可以在这个动画循环里调用别的函数，这样你就不会写出有上百行代码的<strong>animate</strong>函数。</p>
-<h4 id="效果演示："><a href="#效果演示：" class="headerlink" title="效果演示："></a>效果演示：</h4><p><img src="/2022/11/29/threejs-d-2-0/image-20221129090831716.png"></p>
-<h3 id="二、控制器（轨道控制器）"><a href="#二、控制器（轨道控制器）" class="headerlink" title="二、控制器（轨道控制器）"></a>二、控制器（轨道控制器）</h3><blockquote>
-<p>控制器有许多，我们这先说这一种</p>
-<p>轨道控制器是以物体为中心，对物体做环绕运动</p>
-</blockquote>
-<p>代码汇总：</p>
-<pre><code class="javascript">//main.js
-import * as THREE from &#39;three&#39;
-import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; //导入轨道控制器
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-
-const geometry = new THREE.BoxGeometry( 5, 5, 5 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-const controls = new OrbitControls( camera,renderer.domElement  );
-camera.position.set(0,20,100);
-controls.update();//更新控制器。必须在摄像机的变换发生任何手动改变后调用
-function animate() &#123;
-    requestAnimationFrame( animate );
-    controls.update();//循环更新轨道控制器
-    renderer.render( scene, camera );
-&#125;
-animate();
-</code></pre>
-<p>OrbitControls( object : Camera, domElement : HTMLDOMElement )</p>
-<p>object: （必须）将要被控制的相机。该相机不允许是其他任何对象的子级，除非该对象是场景自身。</p>
-<p>domElement: 用于事件监听的HTML元素。</p>
-<p>那我们现在就可以移动我们的相机来观察我们的物体了。</p>
-<h3 id="三、添加辅助器"><a href="#三、添加辅助器" class="headerlink" title="三、添加辅助器"></a>三、添加辅助器</h3><blockquote>
-<p>这个来自与我们help里面的东西，文档里查就可以了</p>
-<p>添加辅助器的用处是为了更好的去开发</p>
-</blockquote>
-<h4 id="1-坐标辅助器"><a href="#1-坐标辅助器" class="headerlink" title="1.坐标辅助器"></a>1.坐标辅助器</h4><blockquote>
-<p>用于简单模拟3个坐标轴的对象.<br>红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.</p>
-</blockquote>
-<pre><code class="javascript">const axesHelper = new THREE.AxesHelper( 5 );//轴的线段长度. 默认为 1.
-scene.add( axesHelper );//添加到场景
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155031932.png"></p>
-<h4 id="2-相机辅助器"><a href="#2-相机辅助器" class="headerlink" title="2.相机辅助器"></a>2.相机辅助器</h4><blockquote>
-<p>用于模拟相机视锥体的辅助对象.<br>它使用 LineSegments 来模拟相机视锥体.</p>
-</blockquote>
-<pre><code class="javascript">const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const helper = new THREE.CameraHelper( camera );
-scene.add( helper );
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155852737.png"></p>
-<p>CameraHelper( camera : Camera )</p>
-<p>camera – 被模拟的相机.</p>
-<p>为指定相机创建一个新的相机辅助对象 CameraHelper .</p>
-<h4 id="3-平面辅助器"><a href="#3-平面辅助器" class="headerlink" title="3.平面辅助器"></a>3.平面辅助器</h4><blockquote>
-<p>用于模拟平面 Plane 的辅助对象.</p>
-</blockquote>
-<pre><code class="javascript">const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
-const helper = new THREE.PlaneHelper( plane, 100, 0xffff00 );
-scene.add( helper );
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160213446.png"></p>
-<p>PlaneHelper( plane : Plane, size : Float, hex : Color )</p>
-<p>plane – 被模拟的平面.<br>size – (可选的) 辅助对象的单边长度. 默认为 1.<br>color – (可选的) 辅助对象的颜色. 默认为 0xffff00.</p>
-<p>创建一个线框辅助对象来表示指定平面.</p>
-<h4 id="终结："><a href="#终结：" class="headerlink" title="终结："></a>终结：</h4><p>其他的辅助器，我们就自己按照需求去加吧，这个就是做一个参照</p>
-<h3 id="四、物体的属性"><a href="#四、物体的属性" class="headerlink" title="四、物体的属性"></a>四、物体的属性</h3><blockquote>
-<p>物体的属性，那我们要看一下cube是什么了</p>
-<p>根据控制台打印，它是个Mesh类，下面有许多属性</p>
-</blockquote>
-<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 5, 5, 5 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160944920.png"></p>
-<h4 id="1-物体的位移"><a href="#1-物体的位移" class="headerlink" title="1.物体的位移"></a>1.物体的位移</h4><blockquote>
-<p>控制物体的位置</p>
-</blockquote>
-<pre><code class="javascript">cube.position.set(10,0,0)//默认为x，y，z方向
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161420179.png"></p>
-<h4 id="2-物体的旋转"><a href="#2-物体的旋转" class="headerlink" title="2.物体的旋转"></a>2.物体的旋转</h4><blockquote>
-<p>控制问题的旋转角度</p>
-<p>这个不是单纯的三维向量了</p>
-<p>是一个Euler类</p>
-</blockquote>
-<pre><code class="javascript">cube.rotation.set(Math.PI/4,0,0,&#39;XYZ&#39;)//默认为‘xyz’
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129162730828.png"></p>
-<p>Euler( x : Float, y : Float, z : Float, order : String )</p>
-<p>x - (optional) 用弧度表示x轴旋转量。 默认值是 <strong>0</strong>。<br>y - (optional) 用弧度表示y轴旋转量。 默认值是 <strong>0</strong>。<br>z - (optional) 用弧度表示z轴旋转量。 默认值是 <strong>0</strong>。<br>order - (optional) 表示旋转顺序的字符串，默认为’XYZ’（必须是大写）。</p>
-<h4 id="3-物体的缩放"><a href="#3-物体的缩放" class="headerlink" title="3.物体的缩放"></a>3.物体的缩放</h4><blockquote>
-<p>控制物体缩放</p>
-</blockquote>
-<pre><code class="javascript">cube.scale.set(3,2,1)
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161943968.png"></p>
-]]></content>
-      <categories>
-        <category>Web3D</category>
-        <category>Three.js</category>
-        <category>threejs-d-2.0</category>
-      </categories>
-      <tags>
-        <tag>threejs</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>vite配置</title>
     <url>/2022/11/22/vite%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="vite配置"><a href="#vite配置" class="headerlink" title="vite配置"></a>vite配置</h1><p>最直观的体验是“快速”、“清爽”，开发效率也得到明显提升（解决掉了webpack开发服务器存在的痛点）。</p>
@@ -2694,60 +2694,6 @@ export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt
       </categories>
       <tags>
         <tag>vite</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>yarn命令详解</title>
-    <url>/2022/11/09/yarn%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="yarn命令详解"><a href="#yarn命令详解" class="headerlink" title="yarn命令详解"></a>yarn命令详解</h1><h3 id="一、yarn安装初始化"><a href="#一、yarn安装初始化" class="headerlink" title="一、yarn安装初始化"></a>一、yarn安装初始化</h3><pre><code class="css">npm i yarn -g #yarn安装
-yarn -v #查看版本
-yarn init ｜ yarn #初始化，创建package.json文件
-yarn init --yes #简写 -y 跳过会话，直接通过默认值生成 package.json
-</code></pre>
-<h3 id="二、yarn安装依赖"><a href="#二、yarn安装依赖" class="headerlink" title="二、yarn安装依赖"></a>二、yarn安装依赖</h3><pre><code class="css">yarn add webpack@2.3.3 # yarn --save 是 yarn 默认的，默认记录在 package.json dependencies 中
-</code></pre>
-<pre><code class="css">yarn add webpack --dev # yarn 简写 -D  devDependencies 中
-</code></pre>
-<pre><code class="css">yarn global add webpack # yarn 安装全局依赖
-</code></pre>
-<h3 id="三、yarn更新依赖"><a href="#三、yarn更新依赖" class="headerlink" title="三、yarn更新依赖"></a>三、yarn更新依赖</h3><pre><code class="css">yarn upgrade # 升级所有依赖项，不记录在 package.json 中
-yarn upgrade webpack # 升级指定包
-yarn upgrade --latest # 忽略版本规则，升级到最新版本，并且更新 package.json
-</code></pre>
-<h3 id="四、yarn移除依赖"><a href="#四、yarn移除依赖" class="headerlink" title="四、yarn移除依赖"></a>四、yarn移除依赖</h3><pre><code class="css">yarn remove webpack # yarn
-</code></pre>
-<h3 id="五、其他命令"><a href="#五、其他命令" class="headerlink" title="五、其他命令"></a>五、其他命令</h3><pre><code class="css">yarn install # 或者 yarn 在 node_modules 目录安装 package.json 中列出的所有依赖
-yarn install --force # 强制下载安装
-yarn start # yarn  执行 scripts 下 start 对应的脚本
-
-###用来查看某个模块的最新版本信息
-yarn info webpack # yarn
-yarn info webpack --json # 输出 json 格式
-yarn info webpack readme # 输出 README 部分
-
-yarn list # 列出当前项目的依赖
-yarn list --depth=0 # 限制依赖的深度
-sudo yarn global list # 列出全局安装的模块
-
-###yarn配置文件
-yarn config set key value # 设置
-yarn config get key # 读取值
-yarn config delete key # 删除
-yarn config list # 显示当前配置
-yarn config set registry [https://registry.npm.taobao.org](https://links.jianshu.com/go?to=https%3A%2F%2Fregistry.npm.taobao.org) # 设置淘宝镜像
-
-###缓存
-sudo yarn cache list # 列出已缓存的每个包
-sudo yarn cache dir # 返回 全局缓存位置
-sudo yarn cache clean # 清除缓存
-</code></pre>
-]]></content>
-      <categories>
-        <category>npm&amp;yarn</category>
-        <category>yarn常用命令</category>
-      </categories>
-      <tags>
-        <tag>yarn</tag>
       </tags>
   </entry>
   <entry>
@@ -3156,6 +3102,87 @@ gl.drawArrays(gl.TRIANGLES,0,3);
       </tags>
   </entry>
   <entry>
+    <title>yarn命令详解</title>
+    <url>/2022/11/09/yarn%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="yarn命令详解"><a href="#yarn命令详解" class="headerlink" title="yarn命令详解"></a>yarn命令详解</h1><h3 id="一、yarn安装初始化"><a href="#一、yarn安装初始化" class="headerlink" title="一、yarn安装初始化"></a>一、yarn安装初始化</h3><pre><code class="css">npm i yarn -g #yarn安装
+yarn -v #查看版本
+yarn init ｜ yarn #初始化，创建package.json文件
+yarn init --yes #简写 -y 跳过会话，直接通过默认值生成 package.json
+</code></pre>
+<h3 id="二、yarn安装依赖"><a href="#二、yarn安装依赖" class="headerlink" title="二、yarn安装依赖"></a>二、yarn安装依赖</h3><pre><code class="css">yarn add webpack@2.3.3 # yarn --save 是 yarn 默认的，默认记录在 package.json dependencies 中
+</code></pre>
+<pre><code class="css">yarn add webpack --dev # yarn 简写 -D  devDependencies 中
+</code></pre>
+<pre><code class="css">yarn global add webpack # yarn 安装全局依赖
+</code></pre>
+<h3 id="三、yarn更新依赖"><a href="#三、yarn更新依赖" class="headerlink" title="三、yarn更新依赖"></a>三、yarn更新依赖</h3><pre><code class="css">yarn upgrade # 升级所有依赖项，不记录在 package.json 中
+yarn upgrade webpack # 升级指定包
+yarn upgrade --latest # 忽略版本规则，升级到最新版本，并且更新 package.json
+</code></pre>
+<h3 id="四、yarn移除依赖"><a href="#四、yarn移除依赖" class="headerlink" title="四、yarn移除依赖"></a>四、yarn移除依赖</h3><pre><code class="css">yarn remove webpack # yarn
+</code></pre>
+<h3 id="五、其他命令"><a href="#五、其他命令" class="headerlink" title="五、其他命令"></a>五、其他命令</h3><pre><code class="css">yarn install # 或者 yarn 在 node_modules 目录安装 package.json 中列出的所有依赖
+yarn install --force # 强制下载安装
+yarn start # yarn  执行 scripts 下 start 对应的脚本
+
+###用来查看某个模块的最新版本信息
+yarn info webpack # yarn
+yarn info webpack --json # 输出 json 格式
+yarn info webpack readme # 输出 README 部分
+
+yarn list # 列出当前项目的依赖
+yarn list --depth=0 # 限制依赖的深度
+sudo yarn global list # 列出全局安装的模块
+
+###yarn配置文件
+yarn config set key value # 设置
+yarn config get key # 读取值
+yarn config delete key # 删除
+yarn config list # 显示当前配置
+yarn config set registry [https://registry.npm.taobao.org](https://links.jianshu.com/go?to=https%3A%2F%2Fregistry.npm.taobao.org) # 设置淘宝镜像
+
+###缓存
+sudo yarn cache list # 列出已缓存的每个包
+sudo yarn cache dir # 返回 全局缓存位置
+sudo yarn cache clean # 清除缓存
+</code></pre>
+]]></content>
+      <categories>
+        <category>npm&amp;yarn</category>
+        <category>yarn常用命令</category>
+      </categories>
+      <tags>
+        <tag>yarn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>什么是CI/CD</title>
+    <url>/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署"><a href="#CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署" class="headerlink" title="CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署"></a>CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署</h1><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>CI&#x2F;CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。CI&#x2F;CD 的核心概念是持续集成、持续交付和持续部署。作为一个面向开发和运营团队的解决方案，CI&#x2F;CD 主要针对在集成新代码时所引发的问题（亦称：”集成地狱”）。</p>
+<p>具体而言，CI&#x2F;CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为”CI&#x2F;CD 管道”，由开发和运维团队以敏捷方式协同支持。</p>
+<h3 id="CI-是什么？CI-和-CD-有什么区别？"><a href="#CI-是什么？CI-和-CD-有什么区别？" class="headerlink" title="CI 是什么？CI 和 CD 有什么区别？"></a>CI 是什么？CI 和 CD 有什么区别？</h3><p>缩略词 CI &#x2F; CD 具有几个不同的含义。CI&#x2F;CD 中的”CI”始终指持续集成，它属于开发人员的自动化流程。成功的 CI 意味着应用代码的新更改会定期构建、测试并合并到共享存储库中。该解决方案可以解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</p>
+<p>CI&#x2F;CD 中的”CD”指的是持续交付和&#x2F;或持续部署，这些相关概念有时会交叉使用。两者都事关管道后续阶段的自动化，但它们有时也会单独使用，用于说明自动化程度。</p>
+<p>持续<em>交付</em>通常是指开发人员对应用的更改会自动进行错误测试并上传到存储库（如 GitHub或容器注册表），然后由运维团队将其部署到实时生产环境中。这旨在解决开发和运维团队之间可见性及沟通较差的问题。因此，持续交付的目的就是确保尽可能减少部署新代码时所需的工作量。</p>
+<p>持续<em>部署</em>（另一种”CD”）指的是自动将开发人员的更改从存储库发布到生产环境，以供客户使用。它主要为了解决因手动流程降低应用交付速度，从而使运维团队超负荷的问题。持续部署以持续交付的优势为根基，实现了管道后续阶段的自动化。</p>
+<p><img src="/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/ci-cd-flow-desktop_edited_0.png" alt="CI/CD flow"></p>
+<p>CI&#x2F;CD 既可能仅指持续集成和持续交付构成的关联环节，也可以指持续集成、持续交付和持续部署这三项构成的关联环节。更为复杂的是，有时”持续交付”也包含了持续部署流程。</p>
+<p>归根结底，我们没必要纠结于这些语义，您只需记得 CI&#x2F;CD 其实就是一个流程（通常形象地表述为管道），用于实现应用开发中的高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于 CI&#x2F;CD 管道的自动化程度。许多企业最开始先添加 CI，然后逐步实现交付和部署的自动化（例如作为云原生应用的一部分）。</p>
+<h3 id="CI-持续集成（Continuous-Integration）"><a href="#CI-持续集成（Continuous-Integration）" class="headerlink" title="CI 持续集成（Continuous Integration）"></a>CI 持续集成（Continuous Integration）</h3><p>现代应用开发的目标是让多位开发人员同时处理同一应用的不同功能。但是，如果企业安排在一天内将所有分支源代码合并在一起（称为”合并日”），最终可能造成工作繁琐、耗时，而且需要手动完成。这是因为当一位独立工作的开发人员对应用进行更改时，有可能会与其他开发人员同时进行的更改发生冲突。如果每个开发人员都自定义自己的本地集成开发环境（IDE），而不是让团队就一个基于云的 IDE 达成一致，那么就会让问题更加雪上加霜。</p>
+<p>持续集成（CI）可以帮助开发人员更加频繁地（有时甚至每天）将代码更改合并到共享分支或”主干”中。一旦开发人员对应用所做的更改被合并，系统就会通过自动构建应用并运行不同级别的自动化测试（通常是单元测试和集成测试）来验证这些更改，确保这些更改没有对应用造成破坏。这意味着测试内容涵盖了从类和函数到构成整个应用的不同模块。如果自动化测试发现新代码和现有代码之间存在冲突，CI 可以更加轻松地快速修复这些错误。</p>
+<h3 id="CD-持续交付（Continuous-Delivery）"><a href="#CD-持续交付（Continuous-Delivery）" class="headerlink" title="CD 持续交付（Continuous Delivery）"></a>CD 持续交付（Continuous Delivery）</h3><p>完成 CI 中构建及单元测试和集成测试的自动化流程后，持续交付可自动将已验证的代码发布到存储库。为了实现高效的持续交付流程，务必要确保 CI 已内置于开发管道。持续交付的目标是拥有一个可随时部署到生产环境的代码库。</p>
+<p>在持续交付中，每个阶段（从代码更改的合并，到生产就绪型构建版本的交付）都涉及测试自动化和代码发布自动化。在流程结束时，运维团队可以快速、轻松地将应用部署到生产环境中。</p>
+<h3 id="CD-持续部署（Continuous-Deployment）"><a href="#CD-持续部署（Continuous-Deployment）" class="headerlink" title="CD 持续部署（Continuous Deployment）"></a>CD 持续部署（Continuous Deployment）</h3><p>对于一个成熟的 CI&#x2F;CD 管道来说，最后的阶段是持续部署。作为持续交付——自动将生产就绪型构建版本发布到代码存储库——的延伸，持续部署可以自动将应用发布到生产环境。由于在生产之前的管道阶段没有手动门控，因此持续部署在很大程度上都得依赖精心设计的测试自动化。</p>
+<p>实际上，持续部署意味着开发人员对应用的更改在编写后的几分钟内就能生效（假设它通过了自动化测试）。这更加便于持续接收和整合用户反馈。总而言之，所有这些 CI&#x2F;CD 的关联步骤都有助于降低应用的部署风险，因此更便于以小件的方式（而非一次性）发布对应用的更改。不过，由于还需要编写自动化测试以适应 CI&#x2F;CD 管道中的各种测试和发布阶段，因此前期投资还是会很大。</p>
+]]></content>
+      <categories>
+        <category>CI/CD</category>
+        <category>什么是CI/CD</category>
+      </categories>
+      <tags>
+        <tag>CI/CD</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>从0到1搭建自己的脚手架vue3</title>
     <url>/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="搭建vue项目脚手架"><a href="#搭建vue项目脚手架" class="headerlink" title="搭建vue项目脚手架"></a>搭建vue项目脚手架</h1><h3 id="1-所以的网站都需要一个页面，所以创建第一个-html文件（index-html）"><a href="#1-所以的网站都需要一个页面，所以创建第一个-html文件（index-html）" class="headerlink" title="1.所以的网站都需要一个页面，所以创建第一个.html文件（index.html）"></a>1.所以的网站都需要一个页面，所以创建第一个.html文件（index.html）</h3><pre><code class="html">&lt;!DOCTYPE html&gt;
@@ -3462,33 +3489,6 @@ npm i --global prettier
       </categories>
       <tags>
         <tag>工程技术</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>什么是CI/CD</title>
-    <url>/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署"><a href="#CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署" class="headerlink" title="CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署"></a>CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署</h1><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>CI&#x2F;CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。CI&#x2F;CD 的核心概念是持续集成、持续交付和持续部署。作为一个面向开发和运营团队的解决方案，CI&#x2F;CD 主要针对在集成新代码时所引发的问题（亦称：”集成地狱”）。</p>
-<p>具体而言，CI&#x2F;CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为”CI&#x2F;CD 管道”，由开发和运维团队以敏捷方式协同支持。</p>
-<h3 id="CI-是什么？CI-和-CD-有什么区别？"><a href="#CI-是什么？CI-和-CD-有什么区别？" class="headerlink" title="CI 是什么？CI 和 CD 有什么区别？"></a>CI 是什么？CI 和 CD 有什么区别？</h3><p>缩略词 CI &#x2F; CD 具有几个不同的含义。CI&#x2F;CD 中的”CI”始终指持续集成，它属于开发人员的自动化流程。成功的 CI 意味着应用代码的新更改会定期构建、测试并合并到共享存储库中。该解决方案可以解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</p>
-<p>CI&#x2F;CD 中的”CD”指的是持续交付和&#x2F;或持续部署，这些相关概念有时会交叉使用。两者都事关管道后续阶段的自动化，但它们有时也会单独使用，用于说明自动化程度。</p>
-<p>持续<em>交付</em>通常是指开发人员对应用的更改会自动进行错误测试并上传到存储库（如 GitHub或容器注册表），然后由运维团队将其部署到实时生产环境中。这旨在解决开发和运维团队之间可见性及沟通较差的问题。因此，持续交付的目的就是确保尽可能减少部署新代码时所需的工作量。</p>
-<p>持续<em>部署</em>（另一种”CD”）指的是自动将开发人员的更改从存储库发布到生产环境，以供客户使用。它主要为了解决因手动流程降低应用交付速度，从而使运维团队超负荷的问题。持续部署以持续交付的优势为根基，实现了管道后续阶段的自动化。</p>
-<p><img src="/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/ci-cd-flow-desktop_edited_0.png" alt="CI/CD flow"></p>
-<p>CI&#x2F;CD 既可能仅指持续集成和持续交付构成的关联环节，也可以指持续集成、持续交付和持续部署这三项构成的关联环节。更为复杂的是，有时”持续交付”也包含了持续部署流程。</p>
-<p>归根结底，我们没必要纠结于这些语义，您只需记得 CI&#x2F;CD 其实就是一个流程（通常形象地表述为管道），用于实现应用开发中的高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于 CI&#x2F;CD 管道的自动化程度。许多企业最开始先添加 CI，然后逐步实现交付和部署的自动化（例如作为云原生应用的一部分）。</p>
-<h3 id="CI-持续集成（Continuous-Integration）"><a href="#CI-持续集成（Continuous-Integration）" class="headerlink" title="CI 持续集成（Continuous Integration）"></a>CI 持续集成（Continuous Integration）</h3><p>现代应用开发的目标是让多位开发人员同时处理同一应用的不同功能。但是，如果企业安排在一天内将所有分支源代码合并在一起（称为”合并日”），最终可能造成工作繁琐、耗时，而且需要手动完成。这是因为当一位独立工作的开发人员对应用进行更改时，有可能会与其他开发人员同时进行的更改发生冲突。如果每个开发人员都自定义自己的本地集成开发环境（IDE），而不是让团队就一个基于云的 IDE 达成一致，那么就会让问题更加雪上加霜。</p>
-<p>持续集成（CI）可以帮助开发人员更加频繁地（有时甚至每天）将代码更改合并到共享分支或”主干”中。一旦开发人员对应用所做的更改被合并，系统就会通过自动构建应用并运行不同级别的自动化测试（通常是单元测试和集成测试）来验证这些更改，确保这些更改没有对应用造成破坏。这意味着测试内容涵盖了从类和函数到构成整个应用的不同模块。如果自动化测试发现新代码和现有代码之间存在冲突，CI 可以更加轻松地快速修复这些错误。</p>
-<h3 id="CD-持续交付（Continuous-Delivery）"><a href="#CD-持续交付（Continuous-Delivery）" class="headerlink" title="CD 持续交付（Continuous Delivery）"></a>CD 持续交付（Continuous Delivery）</h3><p>完成 CI 中构建及单元测试和集成测试的自动化流程后，持续交付可自动将已验证的代码发布到存储库。为了实现高效的持续交付流程，务必要确保 CI 已内置于开发管道。持续交付的目标是拥有一个可随时部署到生产环境的代码库。</p>
-<p>在持续交付中，每个阶段（从代码更改的合并，到生产就绪型构建版本的交付）都涉及测试自动化和代码发布自动化。在流程结束时，运维团队可以快速、轻松地将应用部署到生产环境中。</p>
-<h3 id="CD-持续部署（Continuous-Deployment）"><a href="#CD-持续部署（Continuous-Deployment）" class="headerlink" title="CD 持续部署（Continuous Deployment）"></a>CD 持续部署（Continuous Deployment）</h3><p>对于一个成熟的 CI&#x2F;CD 管道来说，最后的阶段是持续部署。作为持续交付——自动将生产就绪型构建版本发布到代码存储库——的延伸，持续部署可以自动将应用发布到生产环境。由于在生产之前的管道阶段没有手动门控，因此持续部署在很大程度上都得依赖精心设计的测试自动化。</p>
-<p>实际上，持续部署意味着开发人员对应用的更改在编写后的几分钟内就能生效（假设它通过了自动化测试）。这更加便于持续接收和整合用户反馈。总而言之，所有这些 CI&#x2F;CD 的关联步骤都有助于降低应用的部署风险，因此更便于以小件的方式（而非一次性）发布对应用的更改。不过，由于还需要编写自动化测试以适应 CI&#x2F;CD 管道中的各种测试和发布阶段，因此前期投资还是会很大。</p>
-]]></content>
-      <categories>
-        <category>CI/CD</category>
-        <category>什么是CI/CD</category>
-      </categories>
-      <tags>
-        <tag>CI/CD</tag>
       </tags>
   </entry>
   <entry>
@@ -4212,72 +4212,6 @@ console.log(res);
       </tags>
   </entry>
   <entry>
-    <title>宝塔Linux部署</title>
-    <url>/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="宝塔Linux部署"><a href="#宝塔Linux部署" class="headerlink" title="宝塔Linux部署"></a>宝塔Linux部署</h1><h3 id="一、购买云服务器"><a href="#一、购买云服务器" class="headerlink" title="一、购买云服务器"></a>一、购买云服务器</h3><p>[阿里云官网]: 	“<a href="https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955">https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955</a> “</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100233843.png"></p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100305806.png"></p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100353042.png"></p>
-<p>当我购买了云服务器，那我们就可以登陆我们的服务器去下载mac的宝塔面板（通过外网地址访问浏览器）</p>
-<h3 id="二、登陆云服务器"><a href="#二、登陆云服务器" class="headerlink" title="二、登陆云服务器"></a>二、登陆云服务器</h3><p>初始化（重置）实例密码</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101533088.png"></p>
-<p>输入Password密码和实例密码</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100757824.png"></p>
-<h3 id="三、安装宝塔"><a href="#三、安装宝塔" class="headerlink" title="三、安装宝塔"></a>三、安装宝塔</h3><p>然后可以看到已经进了服务器，那么我们就可以开始安装了</p>
-<pre><code class="php">yum install -y wget &amp;&amp; wget -O install.sh http://download.bt.cn/install/install_6.0.sh &amp;&amp; sh install.sh fa1f2600
-</code></pre>
-<p>稍等片刻后，输入“y”继续</p>
-<p>下载成功之后，就会出现账户和密码和访问地址</p>
-<p>我们通过外网面板地址访问</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101323474.png"></p>
-<p>如果现在无法访问的话，就去阿里云服务器实例安全组添加提示端口</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101750883.png"></p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101826756.png"></p>
-<p>现在应该可以访问了，如果还不行就添加8888端口</p>
-<h3 id="四、配置宝塔"><a href="#四、配置宝塔" class="headerlink" title="四、配置宝塔"></a>四、配置宝塔</h3><p>当我们访问成功，根据提示安装宝塔面板所需要的创建就可以了</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102042938.png"></p>
-<p>如果我们下载插件时间过长，重启宝塔面板</p>
-<h3 id="五、创建站点"><a href="#五、创建站点" class="headerlink" title="五、创建站点"></a>五、创建站点</h3><p>我们来创建我们第一个站点</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102605290.png"></p>
-<p>提交的时候我们可能遇见下面的提示，配置错误</p>
-<pre><code class="ini">nginx: [emerg] open() &quot;/www/server/nginx/conf/enable-php.conf&quot; failed (2: No such file or directory) in /www/server/nginx/conf/nginx.conf:79 nginx: configuration file /www/server/nginx/conf/nginx.conf test failed
-</code></pre>
-<p>有一个最简单的方案就是，替换nginx 的版本，换一个更低一点的版本</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102833852.png"></p>
-<p>重启宝塔面板就可以了</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102931757.png"></p>
-<h3 id="六、上传站点部署文件"><a href="#六、上传站点部署文件" class="headerlink" title="六、上传站点部署文件"></a>六、上传站点部署文件</h3><p>选择要上传文件的站点</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103700868.png"></p>
-<p>选择要上传的文件，可以拖拽</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103850298.png"></p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115104445278.png"></p>
-<p>那么我们现在访问网站就可以了</p>
-<p>如果还是访问不到的话（阿里云购买的域名），建议先进行备案，然后再部署网站</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115132138765.png"></p>
-]]></content>
-      <categories>
-        <category>CI/CD</category>
-        <category>宝塔Linux部署</category>
-      </categories>
-      <tags>
-        <tag>CD</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>微信公众测试号浪漫早安</title>
-    <url>/2022/10/10/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E6%B5%8B%E8%AF%95%E5%8F%B7%E6%B5%AA%E6%BC%AB%E6%97%A9%E5%AE%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="微信公众测试号浪漫早安（公众号）"><a href="#微信公众测试号浪漫早安（公众号）" class="headerlink" title="微信公众测试号浪漫早安（公众号）"></a>微信公众测试号浪漫早安（公众号）</h2><p>去公众号查看吧，嘿嘿<br>浪漫与你同在<br>勇敢的少年</p>
-<p><a href="https://mp.weixin.qq.com/s?__biz=Mzg4OTg0NDY0Ng==&amp;mid=2247483683&amp;idx=1&amp;sn=06dc7ea6b771925d6fe70d67b21d67a9&amp;chksm=cfe4e7eaf8936efcb39dfdfce911f6b530a665040a98c4c740bc0099f70caa1c25a549fe0678#rd">https://mp.weixin.qq.com/s?__biz=Mzg4OTg0NDY0Ng==&amp;mid=2247483683&amp;idx=1&amp;sn=06dc7ea6b771925d6fe70d67b21d67a9&amp;chksm=cfe4e7eaf8936efcb39dfdfce911f6b530a665040a98c4c740bc0099f70caa1c25a549fe0678#rd</a></p>
-]]></content>
-      <categories>
-        <category>趣味技术</category>
-        <category>浪漫早安</category>
-      </categories>
-      <tags>
-        <tag>demo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何搭建一个自己的博客平台（github+hexo）</title>
     <url>/2022/08/27/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%B9%B3%E5%8F%B0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何搭建一个自己的博客平台（github-hexo）"><a href="#如何搭建一个自己的博客平台（github-hexo）" class="headerlink" title="如何搭建一个自己的博客平台（github+hexo）"></a>如何搭建一个自己的博客平台（github+hexo）</h1><h2 id="一、下载node-js"><a href="#一、下载node-js" class="headerlink" title="一、下载node.js"></a>一、下载node.js</h2><p>直接到<a href="https://nodejs.org/zh-cn/">node.js官网</a>下载就可以了</p>
@@ -4385,6 +4319,175 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
       </tags>
   </entry>
   <entry>
+    <title>如何设计一个组件</title>
+    <url>/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何设计一个组件"><a href="#如何设计一个组件" class="headerlink" title="如何设计一个组件"></a>如何设计一个组件</h1><blockquote>
+<p>在开发过程中，我们经常会遇到现有组件库无法满足需求，需要自己设计和实现组件的情况。那么，如何才能设计一个既满足产品需求，又易于开发人员使用的组件呢？本文就以一个级联组件的设计为例，探讨一下如何设计一个优质组件。</p>
+</blockquote>
+<h2 id="组件设计"><a href="#组件设计" class="headerlink" title="组件设计"></a>组件设计</h2><h3 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h3><p>开发这个组件的原因是来自工作中遇到的一个需求。</p>
+<p>产品提出的业务需求是实现一个地区的级联选择，并且应设计师要求，不能使用 Ant Design 的Cascader 级联选择，因此需要自己实现一个级联选择。</p>
+<p>通常需要从 4 个角度对需求进行分析：</p>
+<ol>
+<li>业务需求角度</li>
+<li>UI 设计角度</li>
+<li>开发人员角度</li>
+<li>与其他组件配合角度</li>
+</ol>
+<h4 id="业务需求角度"><a href="#业务需求角度" class="headerlink" title="业务需求角度"></a>业务需求角度</h4><p>在拿到一个需求之后，我们不应当直接考虑如何实现，而要先思考一下，这个需求是不是真正的需求。或者说，这个需求背后，是否还有更加基础和核心的需求。</p>
+<p>现在，我们拿到了一个<strong>地区级联选择</strong>的需求，那么我们应该<strong>仅仅实现</strong>地区级联选择吗？我认为不是的，今天我们拿到的是地区选择的需求，明天就可能变成职业选择。</p>
+<p>因此，我们实际需要实现的，应该是一个支持<strong>N 级</strong>的级联选择框。</p>
+<h4 id="UI-设计角度"><a href="#UI-设计角度" class="headerlink" title="UI 设计角度"></a>UI 设计角度</h4><p>既然已经确定了要实现 N 级级联选择框，就需要考虑其在各个屏幕尺寸的兼容情况，于是我在组件中引入了 Grid 栅格 。并默认设置了 3 级级联的样式，同时为使用者提供了相应的配置选项，如下：</p>
+<pre><code class="yaml">&lt;Cascade
+  rowProps=&#123;&#123;
+    gutter: 10,
+  &#125;&#125;
+  colProps=&#123;&#123;
+    xs: 24,
+    sm: 24,
+    md: 8,
+    lg: 8,
+    xl: 8,
+  &#125;&#125;
+/&gt;
+</code></pre>
+<h4 id="开发人员角度"><a href="#开发人员角度" class="headerlink" title="开发人员角度"></a>开发人员角度</h4><p>我们开发的组件，不止会被我们的团队成员使用，甚至会开源给其他开发者使用。那么，提供给开发者更好的体验就尤为重要。</p>
+<p>为了节省开发人员的学习成本，我们可以按照以下思路考虑：</p>
+<ol>
+<li>在满足基本需求的前提下，提供尽量少的 API。</li>
+<li>为 API 选项提供尽量少的配置项。</li>
+<li>为代码，特别是 API 提供尽量好的文档或注释。</li>
+</ol>
+<p>定义的 <code>Cascade</code> 组件 <code>Props</code> 示例如下：</p>
+<pre><code class="less">interface Props&lt;T&gt; &#123;
+  cascadeKeys?: CascadeKeys; // 自定义 dataSource 中 value label children 的字段
+  value?: T[]; // 指定当前选中的条目
+  onChange?: (value: T[], level: number) =&gt; void; // 选中选项时，调用此函数
+  rowProps?: RowProps; // 行排列方式，可参考https://ant.design/components/grid-cn/
+  colProps?: ColProps; // 列排列方式
+  loading?: boolean[]; // 选择框loading装填
+  dataSource?: T[] | CascadeData&lt;T&gt; | T[][]; // 可选项数据源
+&#125;
+</code></pre>
+<p>可以看到， <code>Props</code> 中只有 <code>dataSource</code> 是必须的。也就是说，如果你对配置项并不了解，组件也只需要最简单的配置，就可以正常工作了，例如：</p>
+<pre><code class="ini">&lt;Cascade
+  dataSource=&#123;pcaCascadeData&#125;
+/&gt;
+</code></pre>
+<ol>
+<li><p>在使用 TypeScript 时，还需要特别考虑类型匹配的问题。例如可以在使用组件时，传入一个类型，并且在 <code>onChange</code> 事件中如果使用了其他类型， TypeScript 检查就会提示错误，如下面例子中的 <code>PCAItem</code> 。</p>
+<pre><code class="ini">&lt;Cascade&lt;PCAItem&gt;
+  dataSource=&#123;pcaCascadeData&#125;
+  cascadeKeys=&#123;pcaCascadeKeys&#125;
+  onChange=&#123;async (value: PCAItem[], level: number) =&gt; &#123;
+    setPCAData(value);
+    setPCAIndex(level);
+  &#125;&#125;
+/&gt;
+</code></pre>
+</li>
+<li><p>对于级联组件，我们还需要考虑 dataSource 的数据来源可能有两种。</p>
+<ul>
+<li>组件初始化时，就传入了所有的级联数据，例如 省&#x2F;地&#x2F;县&#x2F;乡层级数据 。对应 Demo 中的“同步级联数据”，以及 <code>Props</code> 中 <code>dataSource</code> 类型定义的 <code>CascadeData&lt;T&gt; | T[][]</code> 。<ul>
+<li>在某些场景下，虽然没有级联选择框存在，但也需要处理树形数据，包括数据的查询和校验等功能，因此将该方法封装到 <code>CascadeData</code> 类中。</li>
+<li>考虑到树的数据量可能非常庞大，如果在每次选择时都在树中搜索效率较低。因此设计成在组件创建时，直接遍历树中的所有节点，然后将每个层级所有节点的数据都存储在相应的 <code>Map</code> 中，之后就能很方便地查询数据。</li>
+<li>虽然在组件初始化时遍历所有节点比较耗时，但考虑到用户从进入页面到操作组件有一定时间差，因此我认为这个问题可以忽略。</li>
+<li>基于以上考虑，你在 <code>Props</code> 中 <code>dataSource</code> 类型中看到的 <code>CascadeData&lt;T&gt;</code> ，就表示直接传入了一个 <code>new CascadeData(treeData)</code> 。而<code>T[][]</code>就表示直接传入树形数据，由组件内部进行 <code>new CascadeData(treeData) </code> 。</li>
+</ul>
+</li>
+<li>组件初始化时，只传入了第一级的选项，之后每级的选项通过前一级所选择的参数，从服务端获取。对应 Demo 中的“异步级联数据”，对应 <code>dataSource</code> 类型中的 <code>T[]</code> 。<ul>
+<li>组件初始化时，只传入第一级的数据，其他级别传入空数组，如：<code>[[&#123;&quot;code&quot;:110000,&quot;name&quot;:&quot;北京市&quot;&#125;],[],[]]</code>，组件会渲染出 3 层级联选项。</li>
+<li>当进行选择时，需要使用者通过 <code>onChange</code> 事件自行更新下一级的数据。也就是说，组件完全放弃了对数据的控制。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="与其他组件配合角度"><a href="#与其他组件配合角度" class="headerlink" title="与其他组件配合角度"></a>与其他组件配合角度</h4><p>由于该组件需要与 Ant Design 其他组件配合使用，如前面讨论过的 UI 部分，该组件就结合了 Grid 栅格 组件。既保证了该组件在各屏幕宽度下正常显示，又保证了与其他组件的显示一致。</p>
+<p>除此之外，还需要考虑与 Form 表单 组件的配合，特别是兼容表单校验功能。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文通过一个级联组件的设计案例，探讨了如何从四个角度分析，进而设计一个优秀的组件。这 4 个角度分别是：</p>
+<ol>
+<li>业务需求角度</li>
+<li>UI 设计角度</li>
+<li>开发人员角度</li>
+<li>与其他组件配合角度</li>
+</ol>
+<p>我认为很多时候组件的设计并没有最优解，总是需要根据需求在各种方案中取舍。但只要按照本文提到的 4 个角度进行分析，就能设计出优秀的组件。</p>
+]]></content>
+      <categories>
+        <category>工程技术</category>
+        <category>如何设计一个组件</category>
+      </categories>
+      <tags>
+        <tag>组件设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>宝塔Linux部署</title>
+    <url>/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="宝塔Linux部署"><a href="#宝塔Linux部署" class="headerlink" title="宝塔Linux部署"></a>宝塔Linux部署</h1><h3 id="一、购买云服务器"><a href="#一、购买云服务器" class="headerlink" title="一、购买云服务器"></a>一、购买云服务器</h3><p>[阿里云官网]: 	“<a href="https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955">https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955</a> “</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100233843.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100305806.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100353042.png"></p>
+<p>当我购买了云服务器，那我们就可以登陆我们的服务器去下载mac的宝塔面板（通过外网地址访问浏览器）</p>
+<h3 id="二、登陆云服务器"><a href="#二、登陆云服务器" class="headerlink" title="二、登陆云服务器"></a>二、登陆云服务器</h3><p>初始化（重置）实例密码</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101533088.png"></p>
+<p>输入Password密码和实例密码</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100757824.png"></p>
+<h3 id="三、安装宝塔"><a href="#三、安装宝塔" class="headerlink" title="三、安装宝塔"></a>三、安装宝塔</h3><p>然后可以看到已经进了服务器，那么我们就可以开始安装了</p>
+<pre><code class="php">yum install -y wget &amp;&amp; wget -O install.sh http://download.bt.cn/install/install_6.0.sh &amp;&amp; sh install.sh fa1f2600
+</code></pre>
+<p>稍等片刻后，输入“y”继续</p>
+<p>下载成功之后，就会出现账户和密码和访问地址</p>
+<p>我们通过外网面板地址访问</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101323474.png"></p>
+<p>如果现在无法访问的话，就去阿里云服务器实例安全组添加提示端口</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101750883.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101826756.png"></p>
+<p>现在应该可以访问了，如果还不行就添加8888端口</p>
+<h3 id="四、配置宝塔"><a href="#四、配置宝塔" class="headerlink" title="四、配置宝塔"></a>四、配置宝塔</h3><p>当我们访问成功，根据提示安装宝塔面板所需要的创建就可以了</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102042938.png"></p>
+<p>如果我们下载插件时间过长，重启宝塔面板</p>
+<h3 id="五、创建站点"><a href="#五、创建站点" class="headerlink" title="五、创建站点"></a>五、创建站点</h3><p>我们来创建我们第一个站点</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102605290.png"></p>
+<p>提交的时候我们可能遇见下面的提示，配置错误</p>
+<pre><code class="ini">nginx: [emerg] open() &quot;/www/server/nginx/conf/enable-php.conf&quot; failed (2: No such file or directory) in /www/server/nginx/conf/nginx.conf:79 nginx: configuration file /www/server/nginx/conf/nginx.conf test failed
+</code></pre>
+<p>有一个最简单的方案就是，替换nginx 的版本，换一个更低一点的版本</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102833852.png"></p>
+<p>重启宝塔面板就可以了</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102931757.png"></p>
+<h3 id="六、上传站点部署文件"><a href="#六、上传站点部署文件" class="headerlink" title="六、上传站点部署文件"></a>六、上传站点部署文件</h3><p>选择要上传文件的站点</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103700868.png"></p>
+<p>选择要上传的文件，可以拖拽</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103850298.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115104445278.png"></p>
+<p>那么我们现在访问网站就可以了</p>
+<p>如果还是访问不到的话（阿里云购买的域名），建议先进行备案，然后再部署网站</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115132138765.png"></p>
+]]></content>
+      <categories>
+        <category>CI/CD</category>
+        <category>宝塔Linux部署</category>
+      </categories>
+      <tags>
+        <tag>CD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微信公众测试号浪漫早安</title>
+    <url>/2022/10/10/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E6%B5%8B%E8%AF%95%E5%8F%B7%E6%B5%AA%E6%BC%AB%E6%97%A9%E5%AE%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="微信公众测试号浪漫早安（公众号）"><a href="#微信公众测试号浪漫早安（公众号）" class="headerlink" title="微信公众测试号浪漫早安（公众号）"></a>微信公众测试号浪漫早安（公众号）</h2><p>去公众号查看吧，嘿嘿<br>浪漫与你同在<br>勇敢的少年</p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=Mzg4OTg0NDY0Ng==&amp;mid=2247483683&amp;idx=1&amp;sn=06dc7ea6b771925d6fe70d67b21d67a9&amp;chksm=cfe4e7eaf8936efcb39dfdfce911f6b530a665040a98c4c740bc0099f70caa1c25a549fe0678#rd">https://mp.weixin.qq.com/s?__biz=Mzg4OTg0NDY0Ng==&amp;mid=2247483683&amp;idx=1&amp;sn=06dc7ea6b771925d6fe70d67b21d67a9&amp;chksm=cfe4e7eaf8936efcb39dfdfce911f6b530a665040a98c4c740bc0099f70caa1c25a549fe0678#rd</a></p>
+]]></content>
+      <categories>
+        <category>趣味技术</category>
+        <category>浪漫早安</category>
+      </categories>
+      <tags>
+        <tag>demo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>搭建私有的npm仓库</title>
     <url>/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="使用docker和verdaccio搭建npm私有库"><a href="#使用docker和verdaccio搭建npm私有库" class="headerlink" title="使用docker和verdaccio搭建npm私有库"></a>使用docker和verdaccio搭建npm私有库</h1><p>本文章docker环境为macos</p>
@@ -4460,21 +4563,6 @@ exports.ifYes = function() &#123;
       </categories>
       <tags>
         <tag>npm</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>秋天的第一个烤红薯</title>
-    <url>/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="秋天的第一个烤红薯"><a href="#秋天的第一个烤红薯" class="headerlink" title="秋天的第一个烤红薯"></a>秋天的第一个烤红薯</h1><h2 id="美丽的不只是风景"><a href="#美丽的不只是风景" class="headerlink" title="美丽的不只是风景"></a>美丽的不只是风景</h2><p><img src="/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/IMG_20220923_174805.jpg"></p>
-]]></content>
-      <categories>
-        <category>旅行</category>
-        <category>秋天</category>
-      </categories>
-      <tags>
-        <tag>旅行</tag>
-        <tag>秋天</tag>
-        <tag>季节</tag>
       </tags>
   </entry>
   <entry>
@@ -5061,436 +5149,18 @@ class ErrorBoundary extends React.Component &#123;
       </tags>
   </entry>
   <entry>
-    <title>Electron-d-2.0</title>
-    <url>/2022/11/25/Electron-d-2-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><p>本篇文章接上一篇文章，详细讲解主进程和渲染进程一些常用的API</p>
-<h3 id="主进程API"><a href="#主进程API" class="headerlink" title="主进程API"></a>主进程API</h3><h4 id="1-App-BrowserWindow"><a href="#1-App-BrowserWindow" class="headerlink" title="1.App+BrowserWindow"></a>1.App+BrowserWindow</h4><h5 id="App事件："><a href="#App事件：" class="headerlink" title="App事件："></a>App事件：</h5><h6 id="（1）Before-quit"><a href="#（1）Before-quit" class="headerlink" title="（1）Before-quit"></a>（1）Before-quit</h6><ul>
-<li><code>event</code> Event #返回</li>
-</ul>
-<p> 在程序关闭窗口前触发（macOS不是关闭窗口触发，而是关闭程序）</p>
-<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125085755781.png"></p>
-<h6 id="（2）browser-window-blur"><a href="#（2）browser-window-blur" class="headerlink" title="（2）browser-window-blur"></a>（2）browser-window-blur</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>window</code> BrowserWindow #返回</li>
-</ul>
-<p>当一个 browserWindow （窗口）失去焦点时触发。当我们鼠标点击窗口以外的地方就会失焦。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090204480.png"></p>
-<h6 id="（3）browser-window-focus"><a href="#（3）browser-window-focus" class="headerlink" title="（3）browser-window-focus"></a>（3）browser-window-focus</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>window</code> BrowserWindow #返回</li>
-</ul>
-<p>当一个 browserWindow 获得焦点时触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090450485.png"></p>
-<h6 id="（4）quit"><a href="#（4）quit" class="headerlink" title="（4）quit"></a>（4）quit</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>exitCode</code> Integer #返回</li>
-</ul>
-<p>在应用程序退出时发出。</p>
-<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090654139.png"></p>
-<h6 id="（5）window-all-closed"><a href="#（5）window-all-closed" class="headerlink" title="（5）window-all-closed"></a>（5）window-all-closed</h6><p>当所有的窗口都被关闭时触发。</p>
-<p>如果你没有监听此事件并且所有窗口都关闭了，默认的行为是控制退出程序；但如果你监听了此事件，你可以控制是否退出程序。 如果用户按下了 <code>Cmd + Q</code>，或者开发者调用了 <code>app.quit()</code>，Electron 会首先关闭所有的窗口然后触发 <code>will-quit</code> 事件，在这种情况下 <code>window-all-closed</code>事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090909458.png"></p>
-<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><p>由于各种app.方法使用频率都差不多，那么我们根据需要看官方文档吧（也比较容易看懂）</p>
-<p>[App.方法 文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app#%E6%96%B9%E6%B3%95">https://www.electronjs.org/zh/docs/latest/api/app#方法</a> “</p>
-<h5 id="BrowserWindow："><a href="#BrowserWindow：" class="headerlink" title="BrowserWindow："></a>BrowserWindow：</h5><p><code>BrowserWindow</code> 类暴露了各种方法来修改应用窗口的外观和行为</p>
-<h6 id="（1）优雅的打开窗口"><a href="#（1）优雅的打开窗口" class="headerlink" title="（1）优雅的打开窗口"></a>（1）优雅的打开窗口</h6><p><code>ready-to-show</code> 事件</p>
-<p>在加载页面时，渲染进程第一次完成绘制时，如果窗口还没有被显示，渲染进程会发出 <code>ready-to-show</code> 事件 。 在此事件后显示窗口将没有视觉闪烁：（不会有白屏出现，但如果绘制没有完成，窗口出现的时间也会延长，根据业务需求来选择是否要选择这种优雅的打开窗口方式）</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093133167.png"></p>
-<p>这个事件通常在 <code>did-finish-load</code> 事件之后发出，但是页面有许多远程资源时，它可能会在 <code>did-finish-load</code>之前发出事件。</p>
-<p><code>backgroundColor</code>属性</p>
-<p>对于一个复杂的应用，<code>ready-to-show</code> 可能发出的太晚，会让应用感觉缓慢。 在这种情况下，建议立刻显示窗口，并使用接近应用程序背景的 <code>backgroundColor</code></p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093813389.png"></p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093827541.png"></p>
-<p>建议 设置 <code>backgroundColor</code>和 <code>ready-to-show</code> 事件一起用，以使应用感觉更接近原生。</p>
-<pre><code class="javascript">//backgroundColor有效值
-const win = new BrowserWindow()
-win.setBackgroundColor(&#39;hsl(230, 100%, 50%)&#39;)
-win.setBackgroundColor(&#39;rgb(255, 145, 145)&#39;)
-win.setBackgroundColor(&#39;#ff00a3&#39;)
-win.setBackgroundColor(&#39;blueviolet&#39;)
-</code></pre>
-<h6 id="（2）父子窗口-amp-amp-模态窗口"><a href="#（2）父子窗口-amp-amp-模态窗口" class="headerlink" title="（2）父子窗口&amp;&amp;模态窗口"></a>（2）父子窗口&amp;&amp;模态窗口</h6><p>父子窗口：</p>
-<p>通过使用 <code>parent</code> 选项，你可以创建子窗口：</p>
-<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const top = new BrowserWindow()
-const child = new BrowserWindow(&#123; parent: top &#125;)
-child.show()
-top.show()
-</code></pre>
-<p><code>child</code> 窗口将总是显示在 <code>top</code> 窗口的顶部.</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125094829288.png"></p>
-<p>模态窗口</p>
-<p>模态窗口是禁用父窗口的子窗口，创建模态窗口必须设置 <code>parent</code> 和 <code>modal</code> 选项：</p>
-<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const child = new BrowserWindow(&#123; parent: top, modal: true, show: false &#125;)
-child.loadURL(&#39;https://github.com&#39;)
-child.once(&#39;ready-to-show&#39;, () =&gt; &#123;
-  child.show()
-&#125;)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125095057232.png"></p>
-<h6 id="（3）BrowserWindow属性"><a href="#（3）BrowserWindow属性" class="headerlink" title="（3）BrowserWindow属性"></a>（3）BrowserWindow属性</h6><p>这个BrowserWindow属性 比较多，而且都是设置窗口的一些属性，也是不难理解，我们就对照我们的官方文档来学习吧！</p>
-<p>[BrowserWindow属性]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions">https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions</a> “</p>
-<h6 id="（4）webContents"><a href="#（4）webContents" class="headerlink" title="（4）webContents"></a>（4）webContents</h6><p><code>did-finish-load</code> 事件</p>
-<p>导航完成时触发，即选项卡的旋转器将停止旋转，并指派<code>onload</code>事件后。</p>
-<p>[webContents类实例事件]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/web-contents#%E7%B1%BB-webcontents">https://www.electronjs.org/zh/docs/latest/api/web-contents#类-webcontents</a> “</p>
-<h6 id="（5）保存窗口状态"><a href="#（5）保存窗口状态" class="headerlink" title="（5）保存窗口状态"></a>（5）保存窗口状态</h6><p>当我们使用桌面程序的时候，那么我们有时候希望我们关闭程序再次打开程序的时候，程序的界面和状态能够是我们关闭前的样子，不希望再去重新设置。那我们就需要一个包<code>electron-win-state</code> </p>
-<p>安装这个包</p>
-<pre><code class="ini">npm i electron-win-state -S
-</code></pre>
-<p>我们可以在npmjs官网上找到这个包，去看它的说明文档</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101014250.png"></p>
-<p>根据使用说明，我们代码如下：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101245297.png"></p>
-<p>我们发现报错了，WinState is not a constructor</p>
-<p>当我们打印一下WinState看看什么情况</p>
-<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;)
-console.log(WinState)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101446532.png"></p>
-<p>发现没有直接引入WinState，我们修改一下</p>
-<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;).default 
-</code></pre>
-<p>现在就没报错了。</p>
-<p>但是我们发现，虽然安装了这个包，但是我们程序的状态还是没有改变，这就很奇怪了，其实，是我们自己已经给窗口设置了自定义宽高，覆盖了。我们也缺了一句代码；</p>
-<pre><code class="javascript"> winState.manage(win)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125102737449.png"></p>
-<p>现在我们的状态保存就没问题了。当我们关闭窗口再次打开的时候就是关闭之前的样子了。</p>
-<h4 id="2-dialog"><a href="#2-dialog" class="headerlink" title="2.dialog"></a>2.dialog</h4><p>这些具体参数请看官方文档，下面几个方法返回一个promise对象</p>
-<h6 id="（1）dialog-showOpenDialog-browserWindow-options"><a href="#（1）dialog-showOpenDialog-browserWindow-options" class="headerlink" title="（1）dialog.showOpenDialog([browserWindow, ]options)"></a>（1）<code>dialog.showOpenDialog([browserWindow, ]options)</code></h6><h6 id="（2）dialog-showSaveDialog-browserWindow-options"><a href="#（2）dialog-showSaveDialog-browserWindow-options" class="headerlink" title="（2）dialog.showSaveDialog([browserWindow, ]options)"></a>（2）<code>dialog.showSaveDialog([browserWindow, ]options)</code></h6><h6 id="（3）dialog-showMessageBox-browserWindow-options"><a href="#（3）dialog-showMessageBox-browserWindow-options" class="headerlink" title="（3）dialog.showMessageBox([browserWindow, ]options)"></a>（3）<code>dialog.showMessageBox([browserWindow, ]options)</code></h6><p>[dialog文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options">https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options</a> “</p>
-<h4 id="3-快捷键（globalShortcut）"><a href="#3-快捷键（globalShortcut）" class="headerlink" title="3.快捷键（globalShortcut）"></a>3.快捷键（globalShortcut）</h4><blockquote>
-<p>在应用程序没有键盘焦点时，监听键盘事件。</p>
-</blockquote>
-<p><code>globalShortcut</code> 模块可以在操作系统中注册&#x2F;注销全局快捷键, 以便可以为操作定制各种快捷键。</p>
-<p><strong>注意:</strong> 快捷方式是全局的; 即使应用程序没有键盘焦点, 它也仍然在持续监听键盘事件。 在 app 模块的 <code>ready</code> 事件就绪之前，这个模块不能使用。</p>
-<pre><code class="javascript">const &#123; app, globalShortcut &#125; = require(&#39;electron&#39;)
-
-app.whenReady().then(() =&gt; &#123;
-  // 注册一个&#39;CommandOrControl+X&#39; 快捷键监听器
-  const ret = globalShortcut.register(&#39;CommandOrControl+X&#39;, () =&gt; &#123;
-    console.log(&#39;CommandOrControl+X is pressed&#39;)
-  &#125;)
-
-  if (!ret) &#123;
-    console.log(&#39;registration failed&#39;)
-  &#125;
-
-  // 检查快捷键是否注册成功
-  console.log(globalShortcut.isRegistered(&#39;CommandOrControl+X&#39;))
-&#125;)
-
-app.on(&#39;will-quit&#39;, () =&gt; &#123;
-  // 注销快捷键
-  globalShortcut.unregister(&#39;CommandOrControl+X&#39;)
-
-  // 注销所有快捷键
-  globalShortcut.unregisterAll()
-&#125;)
-</code></pre>
-<p>方法</p>
-<p><code>globalShortcut</code> 模块具有以下方法:</p>
-<h6 id="（1）globalShortcut-register-accelerator-callback"><a href="#（1）globalShortcut-register-accelerator-callback" class="headerlink" title="（1）globalShortcut.register(accelerator, callback)"></a>（1）<code>globalShortcut.register(accelerator, callback)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-<li><code>callback</code> Function</li>
-</ul>
-<p>返回<code>boolean</code> - 快捷键注册是否成功</p>
-<p>注册 <code>accelerator</code> 的全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
-<p>如果指定的快捷键已经被其他应用程序注册掉, 调用会默默失败。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
-<ul>
-<li>“Media Play&#x2F;Pause”</li>
-<li>“Media Next Track”</li>
-<li>“Media Previous Track”</li>
-<li>“Media Stop”</li>
-</ul>
-<h6 id="（2）globalShortcut-registerAll-accelerators-callback"><a href="#（2）globalShortcut-registerAll-accelerators-callback" class="headerlink" title="（2）globalShortcut.registerAll(accelerators, callback)"></a>（2）<code>globalShortcut.registerAll(accelerators, callback)</code></h6><ul>
-<li><code>accelerators</code> string[] - an array of Accelerators.</li>
-<li><code>callback</code> Function</li>
-</ul>
-<p>注册多个全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
-<p>如果定义的快捷键已经被其他应用占用，这个调用会失效。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
-<ul>
-<li>“Media Play&#x2F;Pause”</li>
-<li>“Media Next Track”</li>
-<li>“Media Previous Track”</li>
-<li>“Media Stop”</li>
-</ul>
-<h6 id="（3）globalShortcut-isRegistered-accelerator"><a href="#（3）globalShortcut-isRegistered-accelerator" class="headerlink" title="（3）globalShortcut.isRegistered(accelerator)"></a>（3）<code>globalShortcut.isRegistered(accelerator)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-</ul>
-<p>Returns <code>boolean</code> - 表示 <code>accelerator</code> 全局快捷键是否注册成功</p>
-<p>当快捷键已经被其他应用程序注册时, 此调用依然将返回 <code>false</code>。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<h6 id="（4）globalShortcut-unregister-accelerator"><a href="#（4）globalShortcut-unregister-accelerator" class="headerlink" title="（4）globalShortcut.unregister(accelerator)"></a>（4）<code>globalShortcut.unregister(accelerator)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-</ul>
-<p>注销 <code>accelerator</code> 的全局快捷键。</p>
-<h6 id="（5）globalShortcut-unregisterAll"><a href="#（5）globalShortcut-unregisterAll" class="headerlink" title="（5）globalShortcut.unregisterAll()"></a>（5）<code>globalShortcut.unregisterAll()</code></h6><p>注销所有的全局快捷键（清空该应用程序的所有全局快捷键）。</p>
-<h4 id="4-菜单（Menu）"><a href="#4-菜单（Menu）" class="headerlink" title="4.菜单（Menu）"></a>4.菜单（Menu）</h4><p>我们这举个例子：</p>
-<pre><code class="javascript">//一个简单的菜单模板
-const &#123; app, Menu &#125; = require(&#39;electron&#39;)
-
-const isMac = process.platform === &#39;darwin&#39;//判断是不是macOS
-//role：菜单选项
-const template = [
-  // &#123; role: &#39;appMenu&#39; &#125;
-  ...(isMac ? [&#123;
-    label: app.name,//我们程序名称
-    submenu: [
-      &#123; role: &#39;about&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;services&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;hide&#39; &#125;,
-      &#123; role: &#39;hideOthers&#39; &#125;,
-      &#123; role: &#39;unhide&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;quit&#39; &#125;
-    ]
-  &#125;] : []),
-  // &#123; role: &#39;fileMenu&#39; &#125;
-  &#123;
-    label: &#39;File&#39;,
-    submenu: [
-      isMac ? &#123; role: &#39;close&#39; &#125; : &#123; role: &#39;quit&#39; &#125;
-    ]
-  &#125;,
-  // &#123; role: &#39;editMenu&#39; &#125;
-  &#123;
-    label: &#39;Edit&#39;,
-    submenu: [
-      &#123; role: &#39;undo&#39; &#125;,
-      &#123; role: &#39;redo&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;cut&#39; &#125;,
-      &#123; role: &#39;copy&#39; &#125;,
-      &#123; role: &#39;paste&#39; &#125;,
-      ...(isMac ? [
-        &#123; role: &#39;pasteAndMatchStyle&#39; &#125;,
-        &#123; role: &#39;delete&#39; &#125;,
-        &#123; role: &#39;selectAll&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123;
-          label: &#39;Speech&#39;,
-          submenu: [
-            &#123; role: &#39;startSpeaking&#39; &#125;,
-            &#123; role: &#39;stopSpeaking&#39; &#125;
-          ]
-        &#125;
-      ] : [
-        &#123; role: &#39;delete&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;selectAll&#39; &#125;
-      ])
-    ]
-  &#125;,
-  // &#123; role: &#39;viewMenu&#39; &#125;
-  &#123;
-    label: &#39;View&#39;,
-    submenu: [
-      &#123; role: &#39;reload&#39; &#125;,
-      &#123; role: &#39;forceReload&#39; &#125;,
-      &#123; role: &#39;toggleDevTools&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;resetZoom&#39; &#125;,
-      &#123; role: &#39;zoomIn&#39; &#125;,
-      &#123; role: &#39;zoomOut&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;togglefullscreen&#39; &#125;
-    ]
-  &#125;,
-  // &#123; role: &#39;windowMenu&#39; &#125;
-  &#123;
-    label: &#39;Window&#39;,
-    submenu: [
-      &#123; role: &#39;minimize&#39; &#125;,
-      &#123; role: &#39;zoom&#39; &#125;,
-      ...(isMac ? [
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;front&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;window&#39; &#125;
-      ] : [
-        &#123; role: &#39;close&#39; &#125;
-      ])
-    ]
-  &#125;,
-  &#123;
-    role: &#39;help&#39;,
-    submenu: [
-      &#123;
-        label: &#39;Learn More&#39;,
-        click: async () =&gt; &#123;
-          //定义自己的菜单方法
-          const &#123; shell &#125; = require(&#39;electron&#39;)
-          await shell.openExternal(&#39;https://electronjs.org&#39;)
-        &#125;
-      &#125;,
-      &#123;
-        label:&#39;alanmf&#39;,
-          click:()=&gt;&#123;console.log(&#39;shift+G&#39;)&#125;,
-          accelerator:&#39;shift+G&#39;//定义快捷键
-      &#125;
-    ]
-  &#125;
-]
-
-const menu = Menu.buildFromTemplate(template)//一般来说， template是一个options类型的数组，用于构建MenuItem。 使用方法可参考前文。还可以将其他字段附加到template，它们将成为菜单项的属性。
-Menu.setApplicationMenu(menu)//在macOS上将 menu设置成应用内菜单 在windows和Linux上，menu 将会被设置成窗口顶部菜单在Windows和Linux中
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125155603331.png"></p>
-<p>[Menu菜单文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu">https://www.electronjs.org/zh/docs/latest/api/menu</a> “<br>[role的属性值]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu-item#%E8%A7%92%E8%89%B2">https://www.electronjs.org/zh/docs/latest/api/menu-item#角色</a> “</p>
-<h4 id="5-系统托盘（Tray）"><a href="#5-系统托盘（Tray）" class="headerlink" title="5.系统托盘（Tray）"></a>5.系统托盘（Tray）</h4><blockquote>
-<p>添加图标和上下文菜单到系统通知区</p>
-</blockquote>
-<pre><code class="javascript">const &#123; app, Menu, Tray &#125; = require(&#39;electron&#39;)
-
-let tray = null
-app.whenReady().then(() =&gt; &#123;
-  tray = new Tray(&#39;/path/to/my/icon&#39;) //定义icon的路径
-  const contextMenu = Menu.buildFromTemplate([
-    &#123; label: &#39;Item1&#39;, type: &#39;radio&#39; &#125;,
-    &#123; label: &#39;Item2&#39;, type: &#39;radio&#39; &#125;,
-    &#123; label: &#39;Item3&#39;, type: &#39;radio&#39;, checked: true &#125;,
-    &#123; label: &#39;Item4&#39;, type: &#39;radio&#39; &#125;
-  ])
-  tray.setToolTip(&#39;This is my application.&#39;)//设置鼠标指针在托盘图标上悬停时显示的文本
-  tray.setContextMenu(contextMenu)//设置上下文菜单到托盘
-&#125;)
-</code></pre>
-<p>其实这个Tray跟Menu是布局差不太多的，所以学习起来也不是很难理解了。具体事件和方法也不是特别多，我们就直接看官方API文档吧！</p>
-<p>[Tray文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/tray">https://www.electronjs.org/zh/docs/latest/api/tray</a> “</p>
-<h4 id="6-触控板（TouchBar）"><a href="#6-触控板（TouchBar）" class="headerlink" title="6.触控板（TouchBar）"></a>6.触控板（TouchBar）</h4><p><strong>注意:</strong> TouchBar API目前为实验性质，可能会更改或删除。</p>
-<p>如果官网推荐的TouchBar模拟器下载失败，自己搜索一下即可。（如果下载的打不开，那就在应用程序-&gt;右键显示包内容-&gt;如下）执行就可以了</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172856290.png"></p>
-<pre><code class="javascript">//touchbar.js
-const &#123; app, BrowserWindow, TouchBar &#125; = require(&#39;electron&#39;)
-
-const &#123; TouchBarLabel, TouchBarButton, TouchBarSpacer &#125; = TouchBar
-
-let spinning = false
-
-// 类似老虎机的滚轴标签
-const reel1 = new TouchBarLabel()
-const reel2 = new TouchBarLabel()
-const reel3 = new TouchBarLabel()
-
-// 旋转结果标签
-const result = new TouchBarLabel()
-
-// 旋转按钮
-const spin = new TouchBarButton(&#123;
-  label: &#39;🎰 Spin&#39;,
-  backgroundColor: &#39;#7851A9&#39;,
-  click: () =&gt; &#123;
-    // Ignore clicks if already spinning
-    if (spinning) &#123;
-      return
-    &#125;
-
-    spinning = true
-    result.label = &#39;&#39;
-
-    let timeout = 10
-    const spinLength = 4 * 1000 // 4 seconds
-    const startTime = Date.now()
-
-    const spinReels = () =&gt; &#123;
-      updateReels()
-
-      if ((Date.now() - startTime) &gt;= spinLength) &#123;
-        finishSpin()
-      &#125; else &#123;
-        // Slow down a bit on each spin
-        timeout *= 1.1
-        setTimeout(spinReels, timeout)
-      &#125;
-    &#125;
-
-    spinReels()
-  &#125;
-&#125;)
-
-const getRandomValue = () =&gt; &#123;
-  const values = [&#39;🍒&#39;, &#39;💎&#39;, &#39;7️⃣&#39;, &#39;🍊&#39;, &#39;🔔&#39;, &#39;⭐&#39;, &#39;🍇&#39;, &#39;🍀&#39;]
-  return values[Math.floor(Math.random() * values.length)]
-&#125;
-
-const updateReels = () =&gt; &#123;
-  reel1.label = getRandomValue()
-  reel2.label = getRandomValue()
-  reel3.label = getRandomValue()
-&#125;
-
-const finishSpin = () =&gt; &#123;
-  const uniqueValues = new Set([reel1.label, reel2.label, reel3.label]).size
-  if (uniqueValues === 1) &#123;
-    // All 3 values are the same
-    result.label = &#39;💰 Jackpot!&#39;
-    result.textColor = &#39;#FDFF00&#39;
-  &#125; else if (uniqueValues === 2) &#123;
-    // 2个值相同
-    result.label = &#39;😍 Winner!&#39;
-    result.textColor = &#39;#FDFF00&#39;
-  &#125; else &#123;
-    // 没有值相同
-    result.label = &#39;🙁 Spin Again&#39;
-    result.textColor = null
-  &#125;
-  spinning = false
-&#125;
-
-const touchBar = new TouchBar(&#123;
-  items: [
-    spin,
-    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
-    reel1,
-    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
-    reel2,
-    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
-    reel3,
-    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
-    result
-  ]
-&#125;)
-
-let window
-
-app.whenReady().then(() =&gt; &#123;
-  window = new BrowserWindow(&#123;
-    frame: false,
-    titleBarStyle: &#39;hiddenInset&#39;,
-    width: 200,
-    height: 200,
-    backgroundColor: &#39;#000&#39;
-  &#125;)
-  window.loadURL(&#39;about:blank&#39;)
-  window.setTouchBar(touchBar)
-&#125;)
-</code></pre>
-<p>运行命令：</p>
-<pre><code class="ini">./node_modules/.bin/electron touchbar.js
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
-<p>[TouchBar文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
+    <title>秋天的第一个烤红薯</title>
+    <url>/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="秋天的第一个烤红薯"><a href="#秋天的第一个烤红薯" class="headerlink" title="秋天的第一个烤红薯"></a>秋天的第一个烤红薯</h1><h2 id="美丽的不只是风景"><a href="#美丽的不只是风景" class="headerlink" title="美丽的不只是风景"></a>美丽的不只是风景</h2><p><img src="/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/IMG_20220923_174805.jpg"></p>
 ]]></content>
       <categories>
-        <category>Electron</category>
-        <category>Electron-d-2.0</category>
+        <category>旅行</category>
+        <category>秋天</category>
       </categories>
       <tags>
-        <tag>electron</tag>
+        <tag>旅行</tag>
+        <tag>秋天</tag>
+        <tag>季节</tag>
       </tags>
   </entry>
   <entry>
@@ -5960,6 +5630,439 @@ ipcMain.on(&#39;counter-value&#39;, (_event, value) =&gt; &#123;
       <categories>
         <category>Electron</category>
         <category>Electron-d-1.0</category>
+      </categories>
+      <tags>
+        <tag>electron</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Electron-d-2.0</title>
+    <url>/2022/11/25/Electron-d-2-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><p>本篇文章接上一篇文章，详细讲解主进程和渲染进程一些常用的API</p>
+<h3 id="主进程API"><a href="#主进程API" class="headerlink" title="主进程API"></a>主进程API</h3><h4 id="1-App-BrowserWindow"><a href="#1-App-BrowserWindow" class="headerlink" title="1.App+BrowserWindow"></a>1.App+BrowserWindow</h4><h5 id="App事件："><a href="#App事件：" class="headerlink" title="App事件："></a>App事件：</h5><h6 id="（1）Before-quit"><a href="#（1）Before-quit" class="headerlink" title="（1）Before-quit"></a>（1）Before-quit</h6><ul>
+<li><code>event</code> Event #返回</li>
+</ul>
+<p> 在程序关闭窗口前触发（macOS不是关闭窗口触发，而是关闭程序）</p>
+<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125085755781.png"></p>
+<h6 id="（2）browser-window-blur"><a href="#（2）browser-window-blur" class="headerlink" title="（2）browser-window-blur"></a>（2）browser-window-blur</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>window</code> BrowserWindow #返回</li>
+</ul>
+<p>当一个 browserWindow （窗口）失去焦点时触发。当我们鼠标点击窗口以外的地方就会失焦。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090204480.png"></p>
+<h6 id="（3）browser-window-focus"><a href="#（3）browser-window-focus" class="headerlink" title="（3）browser-window-focus"></a>（3）browser-window-focus</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>window</code> BrowserWindow #返回</li>
+</ul>
+<p>当一个 browserWindow 获得焦点时触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090450485.png"></p>
+<h6 id="（4）quit"><a href="#（4）quit" class="headerlink" title="（4）quit"></a>（4）quit</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>exitCode</code> Integer #返回</li>
+</ul>
+<p>在应用程序退出时发出。</p>
+<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090654139.png"></p>
+<h6 id="（5）window-all-closed"><a href="#（5）window-all-closed" class="headerlink" title="（5）window-all-closed"></a>（5）window-all-closed</h6><p>当所有的窗口都被关闭时触发。</p>
+<p>如果你没有监听此事件并且所有窗口都关闭了，默认的行为是控制退出程序；但如果你监听了此事件，你可以控制是否退出程序。 如果用户按下了 <code>Cmd + Q</code>，或者开发者调用了 <code>app.quit()</code>，Electron 会首先关闭所有的窗口然后触发 <code>will-quit</code> 事件，在这种情况下 <code>window-all-closed</code>事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090909458.png"></p>
+<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><p>由于各种app.方法使用频率都差不多，那么我们根据需要看官方文档吧（也比较容易看懂）</p>
+<p>[App.方法 文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app#%E6%96%B9%E6%B3%95">https://www.electronjs.org/zh/docs/latest/api/app#方法</a> “</p>
+<h5 id="BrowserWindow："><a href="#BrowserWindow：" class="headerlink" title="BrowserWindow："></a>BrowserWindow：</h5><p><code>BrowserWindow</code> 类暴露了各种方法来修改应用窗口的外观和行为</p>
+<h6 id="（1）优雅的打开窗口"><a href="#（1）优雅的打开窗口" class="headerlink" title="（1）优雅的打开窗口"></a>（1）优雅的打开窗口</h6><p><code>ready-to-show</code> 事件</p>
+<p>在加载页面时，渲染进程第一次完成绘制时，如果窗口还没有被显示，渲染进程会发出 <code>ready-to-show</code> 事件 。 在此事件后显示窗口将没有视觉闪烁：（不会有白屏出现，但如果绘制没有完成，窗口出现的时间也会延长，根据业务需求来选择是否要选择这种优雅的打开窗口方式）</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093133167.png"></p>
+<p>这个事件通常在 <code>did-finish-load</code> 事件之后发出，但是页面有许多远程资源时，它可能会在 <code>did-finish-load</code>之前发出事件。</p>
+<p><code>backgroundColor</code>属性</p>
+<p>对于一个复杂的应用，<code>ready-to-show</code> 可能发出的太晚，会让应用感觉缓慢。 在这种情况下，建议立刻显示窗口，并使用接近应用程序背景的 <code>backgroundColor</code></p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093813389.png"></p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093827541.png"></p>
+<p>建议 设置 <code>backgroundColor</code>和 <code>ready-to-show</code> 事件一起用，以使应用感觉更接近原生。</p>
+<pre><code class="javascript">//backgroundColor有效值
+const win = new BrowserWindow()
+win.setBackgroundColor(&#39;hsl(230, 100%, 50%)&#39;)
+win.setBackgroundColor(&#39;rgb(255, 145, 145)&#39;)
+win.setBackgroundColor(&#39;#ff00a3&#39;)
+win.setBackgroundColor(&#39;blueviolet&#39;)
+</code></pre>
+<h6 id="（2）父子窗口-amp-amp-模态窗口"><a href="#（2）父子窗口-amp-amp-模态窗口" class="headerlink" title="（2）父子窗口&amp;&amp;模态窗口"></a>（2）父子窗口&amp;&amp;模态窗口</h6><p>父子窗口：</p>
+<p>通过使用 <code>parent</code> 选项，你可以创建子窗口：</p>
+<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
+
+const top = new BrowserWindow()
+const child = new BrowserWindow(&#123; parent: top &#125;)
+child.show()
+top.show()
+</code></pre>
+<p><code>child</code> 窗口将总是显示在 <code>top</code> 窗口的顶部.</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125094829288.png"></p>
+<p>模态窗口</p>
+<p>模态窗口是禁用父窗口的子窗口，创建模态窗口必须设置 <code>parent</code> 和 <code>modal</code> 选项：</p>
+<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
+
+const child = new BrowserWindow(&#123; parent: top, modal: true, show: false &#125;)
+child.loadURL(&#39;https://github.com&#39;)
+child.once(&#39;ready-to-show&#39;, () =&gt; &#123;
+  child.show()
+&#125;)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125095057232.png"></p>
+<h6 id="（3）BrowserWindow属性"><a href="#（3）BrowserWindow属性" class="headerlink" title="（3）BrowserWindow属性"></a>（3）BrowserWindow属性</h6><p>这个BrowserWindow属性 比较多，而且都是设置窗口的一些属性，也是不难理解，我们就对照我们的官方文档来学习吧！</p>
+<p>[BrowserWindow属性]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions">https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions</a> “</p>
+<h6 id="（4）webContents"><a href="#（4）webContents" class="headerlink" title="（4）webContents"></a>（4）webContents</h6><p><code>did-finish-load</code> 事件</p>
+<p>导航完成时触发，即选项卡的旋转器将停止旋转，并指派<code>onload</code>事件后。</p>
+<p>[webContents类实例事件]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/web-contents#%E7%B1%BB-webcontents">https://www.electronjs.org/zh/docs/latest/api/web-contents#类-webcontents</a> “</p>
+<h6 id="（5）保存窗口状态"><a href="#（5）保存窗口状态" class="headerlink" title="（5）保存窗口状态"></a>（5）保存窗口状态</h6><p>当我们使用桌面程序的时候，那么我们有时候希望我们关闭程序再次打开程序的时候，程序的界面和状态能够是我们关闭前的样子，不希望再去重新设置。那我们就需要一个包<code>electron-win-state</code> </p>
+<p>安装这个包</p>
+<pre><code class="ini">npm i electron-win-state -S
+</code></pre>
+<p>我们可以在npmjs官网上找到这个包，去看它的说明文档</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101014250.png"></p>
+<p>根据使用说明，我们代码如下：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101245297.png"></p>
+<p>我们发现报错了，WinState is not a constructor</p>
+<p>当我们打印一下WinState看看什么情况</p>
+<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;)
+console.log(WinState)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101446532.png"></p>
+<p>发现没有直接引入WinState，我们修改一下</p>
+<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;).default 
+</code></pre>
+<p>现在就没报错了。</p>
+<p>但是我们发现，虽然安装了这个包，但是我们程序的状态还是没有改变，这就很奇怪了，其实，是我们自己已经给窗口设置了自定义宽高，覆盖了。我们也缺了一句代码；</p>
+<pre><code class="javascript"> winState.manage(win)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125102737449.png"></p>
+<p>现在我们的状态保存就没问题了。当我们关闭窗口再次打开的时候就是关闭之前的样子了。</p>
+<h4 id="2-dialog"><a href="#2-dialog" class="headerlink" title="2.dialog"></a>2.dialog</h4><p>这些具体参数请看官方文档，下面几个方法返回一个promise对象</p>
+<h6 id="（1）dialog-showOpenDialog-browserWindow-options"><a href="#（1）dialog-showOpenDialog-browserWindow-options" class="headerlink" title="（1）dialog.showOpenDialog([browserWindow, ]options)"></a>（1）<code>dialog.showOpenDialog([browserWindow, ]options)</code></h6><h6 id="（2）dialog-showSaveDialog-browserWindow-options"><a href="#（2）dialog-showSaveDialog-browserWindow-options" class="headerlink" title="（2）dialog.showSaveDialog([browserWindow, ]options)"></a>（2）<code>dialog.showSaveDialog([browserWindow, ]options)</code></h6><h6 id="（3）dialog-showMessageBox-browserWindow-options"><a href="#（3）dialog-showMessageBox-browserWindow-options" class="headerlink" title="（3）dialog.showMessageBox([browserWindow, ]options)"></a>（3）<code>dialog.showMessageBox([browserWindow, ]options)</code></h6><p>[dialog文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options">https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options</a> “</p>
+<h4 id="3-快捷键（globalShortcut）"><a href="#3-快捷键（globalShortcut）" class="headerlink" title="3.快捷键（globalShortcut）"></a>3.快捷键（globalShortcut）</h4><blockquote>
+<p>在应用程序没有键盘焦点时，监听键盘事件。</p>
+</blockquote>
+<p><code>globalShortcut</code> 模块可以在操作系统中注册&#x2F;注销全局快捷键, 以便可以为操作定制各种快捷键。</p>
+<p><strong>注意:</strong> 快捷方式是全局的; 即使应用程序没有键盘焦点, 它也仍然在持续监听键盘事件。 在 app 模块的 <code>ready</code> 事件就绪之前，这个模块不能使用。</p>
+<pre><code class="javascript">const &#123; app, globalShortcut &#125; = require(&#39;electron&#39;)
+
+app.whenReady().then(() =&gt; &#123;
+  // 注册一个&#39;CommandOrControl+X&#39; 快捷键监听器
+  const ret = globalShortcut.register(&#39;CommandOrControl+X&#39;, () =&gt; &#123;
+    console.log(&#39;CommandOrControl+X is pressed&#39;)
+  &#125;)
+
+  if (!ret) &#123;
+    console.log(&#39;registration failed&#39;)
+  &#125;
+
+  // 检查快捷键是否注册成功
+  console.log(globalShortcut.isRegistered(&#39;CommandOrControl+X&#39;))
+&#125;)
+
+app.on(&#39;will-quit&#39;, () =&gt; &#123;
+  // 注销快捷键
+  globalShortcut.unregister(&#39;CommandOrControl+X&#39;)
+
+  // 注销所有快捷键
+  globalShortcut.unregisterAll()
+&#125;)
+</code></pre>
+<p>方法</p>
+<p><code>globalShortcut</code> 模块具有以下方法:</p>
+<h6 id="（1）globalShortcut-register-accelerator-callback"><a href="#（1）globalShortcut-register-accelerator-callback" class="headerlink" title="（1）globalShortcut.register(accelerator, callback)"></a>（1）<code>globalShortcut.register(accelerator, callback)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+<li><code>callback</code> Function</li>
+</ul>
+<p>返回<code>boolean</code> - 快捷键注册是否成功</p>
+<p>注册 <code>accelerator</code> 的全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
+<p>如果指定的快捷键已经被其他应用程序注册掉, 调用会默默失败。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
+<ul>
+<li>“Media Play&#x2F;Pause”</li>
+<li>“Media Next Track”</li>
+<li>“Media Previous Track”</li>
+<li>“Media Stop”</li>
+</ul>
+<h6 id="（2）globalShortcut-registerAll-accelerators-callback"><a href="#（2）globalShortcut-registerAll-accelerators-callback" class="headerlink" title="（2）globalShortcut.registerAll(accelerators, callback)"></a>（2）<code>globalShortcut.registerAll(accelerators, callback)</code></h6><ul>
+<li><code>accelerators</code> string[] - an array of Accelerators.</li>
+<li><code>callback</code> Function</li>
+</ul>
+<p>注册多个全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
+<p>如果定义的快捷键已经被其他应用占用，这个调用会失效。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
+<ul>
+<li>“Media Play&#x2F;Pause”</li>
+<li>“Media Next Track”</li>
+<li>“Media Previous Track”</li>
+<li>“Media Stop”</li>
+</ul>
+<h6 id="（3）globalShortcut-isRegistered-accelerator"><a href="#（3）globalShortcut-isRegistered-accelerator" class="headerlink" title="（3）globalShortcut.isRegistered(accelerator)"></a>（3）<code>globalShortcut.isRegistered(accelerator)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+</ul>
+<p>Returns <code>boolean</code> - 表示 <code>accelerator</code> 全局快捷键是否注册成功</p>
+<p>当快捷键已经被其他应用程序注册时, 此调用依然将返回 <code>false</code>。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<h6 id="（4）globalShortcut-unregister-accelerator"><a href="#（4）globalShortcut-unregister-accelerator" class="headerlink" title="（4）globalShortcut.unregister(accelerator)"></a>（4）<code>globalShortcut.unregister(accelerator)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+</ul>
+<p>注销 <code>accelerator</code> 的全局快捷键。</p>
+<h6 id="（5）globalShortcut-unregisterAll"><a href="#（5）globalShortcut-unregisterAll" class="headerlink" title="（5）globalShortcut.unregisterAll()"></a>（5）<code>globalShortcut.unregisterAll()</code></h6><p>注销所有的全局快捷键（清空该应用程序的所有全局快捷键）。</p>
+<h4 id="4-菜单（Menu）"><a href="#4-菜单（Menu）" class="headerlink" title="4.菜单（Menu）"></a>4.菜单（Menu）</h4><p>我们这举个例子：</p>
+<pre><code class="javascript">//一个简单的菜单模板
+const &#123; app, Menu &#125; = require(&#39;electron&#39;)
+
+const isMac = process.platform === &#39;darwin&#39;//判断是不是macOS
+//role：菜单选项
+const template = [
+  // &#123; role: &#39;appMenu&#39; &#125;
+  ...(isMac ? [&#123;
+    label: app.name,//我们程序名称
+    submenu: [
+      &#123; role: &#39;about&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;services&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;hide&#39; &#125;,
+      &#123; role: &#39;hideOthers&#39; &#125;,
+      &#123; role: &#39;unhide&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;quit&#39; &#125;
+    ]
+  &#125;] : []),
+  // &#123; role: &#39;fileMenu&#39; &#125;
+  &#123;
+    label: &#39;File&#39;,
+    submenu: [
+      isMac ? &#123; role: &#39;close&#39; &#125; : &#123; role: &#39;quit&#39; &#125;
+    ]
+  &#125;,
+  // &#123; role: &#39;editMenu&#39; &#125;
+  &#123;
+    label: &#39;Edit&#39;,
+    submenu: [
+      &#123; role: &#39;undo&#39; &#125;,
+      &#123; role: &#39;redo&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;cut&#39; &#125;,
+      &#123; role: &#39;copy&#39; &#125;,
+      &#123; role: &#39;paste&#39; &#125;,
+      ...(isMac ? [
+        &#123; role: &#39;pasteAndMatchStyle&#39; &#125;,
+        &#123; role: &#39;delete&#39; &#125;,
+        &#123; role: &#39;selectAll&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123;
+          label: &#39;Speech&#39;,
+          submenu: [
+            &#123; role: &#39;startSpeaking&#39; &#125;,
+            &#123; role: &#39;stopSpeaking&#39; &#125;
+          ]
+        &#125;
+      ] : [
+        &#123; role: &#39;delete&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;selectAll&#39; &#125;
+      ])
+    ]
+  &#125;,
+  // &#123; role: &#39;viewMenu&#39; &#125;
+  &#123;
+    label: &#39;View&#39;,
+    submenu: [
+      &#123; role: &#39;reload&#39; &#125;,
+      &#123; role: &#39;forceReload&#39; &#125;,
+      &#123; role: &#39;toggleDevTools&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;resetZoom&#39; &#125;,
+      &#123; role: &#39;zoomIn&#39; &#125;,
+      &#123; role: &#39;zoomOut&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;togglefullscreen&#39; &#125;
+    ]
+  &#125;,
+  // &#123; role: &#39;windowMenu&#39; &#125;
+  &#123;
+    label: &#39;Window&#39;,
+    submenu: [
+      &#123; role: &#39;minimize&#39; &#125;,
+      &#123; role: &#39;zoom&#39; &#125;,
+      ...(isMac ? [
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;front&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;window&#39; &#125;
+      ] : [
+        &#123; role: &#39;close&#39; &#125;
+      ])
+    ]
+  &#125;,
+  &#123;
+    role: &#39;help&#39;,
+    submenu: [
+      &#123;
+        label: &#39;Learn More&#39;,
+        click: async () =&gt; &#123;
+          //定义自己的菜单方法
+          const &#123; shell &#125; = require(&#39;electron&#39;)
+          await shell.openExternal(&#39;https://electronjs.org&#39;)
+        &#125;
+      &#125;,
+      &#123;
+        label:&#39;alanmf&#39;,
+          click:()=&gt;&#123;console.log(&#39;shift+G&#39;)&#125;,
+          accelerator:&#39;shift+G&#39;//定义快捷键
+      &#125;
+    ]
+  &#125;
+]
+
+const menu = Menu.buildFromTemplate(template)//一般来说， template是一个options类型的数组，用于构建MenuItem。 使用方法可参考前文。还可以将其他字段附加到template，它们将成为菜单项的属性。
+Menu.setApplicationMenu(menu)//在macOS上将 menu设置成应用内菜单 在windows和Linux上，menu 将会被设置成窗口顶部菜单在Windows和Linux中
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125155603331.png"></p>
+<p>[Menu菜单文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu">https://www.electronjs.org/zh/docs/latest/api/menu</a> “<br>[role的属性值]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu-item#%E8%A7%92%E8%89%B2">https://www.electronjs.org/zh/docs/latest/api/menu-item#角色</a> “</p>
+<h4 id="5-系统托盘（Tray）"><a href="#5-系统托盘（Tray）" class="headerlink" title="5.系统托盘（Tray）"></a>5.系统托盘（Tray）</h4><blockquote>
+<p>添加图标和上下文菜单到系统通知区</p>
+</blockquote>
+<pre><code class="javascript">const &#123; app, Menu, Tray &#125; = require(&#39;electron&#39;)
+
+let tray = null
+app.whenReady().then(() =&gt; &#123;
+  tray = new Tray(&#39;/path/to/my/icon&#39;) //定义icon的路径
+  const contextMenu = Menu.buildFromTemplate([
+    &#123; label: &#39;Item1&#39;, type: &#39;radio&#39; &#125;,
+    &#123; label: &#39;Item2&#39;, type: &#39;radio&#39; &#125;,
+    &#123; label: &#39;Item3&#39;, type: &#39;radio&#39;, checked: true &#125;,
+    &#123; label: &#39;Item4&#39;, type: &#39;radio&#39; &#125;
+  ])
+  tray.setToolTip(&#39;This is my application.&#39;)//设置鼠标指针在托盘图标上悬停时显示的文本
+  tray.setContextMenu(contextMenu)//设置上下文菜单到托盘
+&#125;)
+</code></pre>
+<p>其实这个Tray跟Menu是布局差不太多的，所以学习起来也不是很难理解了。具体事件和方法也不是特别多，我们就直接看官方API文档吧！</p>
+<p>[Tray文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/tray">https://www.electronjs.org/zh/docs/latest/api/tray</a> “</p>
+<h4 id="6-触控板（TouchBar）"><a href="#6-触控板（TouchBar）" class="headerlink" title="6.触控板（TouchBar）"></a>6.触控板（TouchBar）</h4><p><strong>注意:</strong> TouchBar API目前为实验性质，可能会更改或删除。</p>
+<p>如果官网推荐的TouchBar模拟器下载失败，自己搜索一下即可。（如果下载的打不开，那就在应用程序-&gt;右键显示包内容-&gt;如下）执行就可以了</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172856290.png"></p>
+<pre><code class="javascript">//touchbar.js
+const &#123; app, BrowserWindow, TouchBar &#125; = require(&#39;electron&#39;)
+
+const &#123; TouchBarLabel, TouchBarButton, TouchBarSpacer &#125; = TouchBar
+
+let spinning = false
+
+// 类似老虎机的滚轴标签
+const reel1 = new TouchBarLabel()
+const reel2 = new TouchBarLabel()
+const reel3 = new TouchBarLabel()
+
+// 旋转结果标签
+const result = new TouchBarLabel()
+
+// 旋转按钮
+const spin = new TouchBarButton(&#123;
+  label: &#39;🎰 Spin&#39;,
+  backgroundColor: &#39;#7851A9&#39;,
+  click: () =&gt; &#123;
+    // Ignore clicks if already spinning
+    if (spinning) &#123;
+      return
+    &#125;
+
+    spinning = true
+    result.label = &#39;&#39;
+
+    let timeout = 10
+    const spinLength = 4 * 1000 // 4 seconds
+    const startTime = Date.now()
+
+    const spinReels = () =&gt; &#123;
+      updateReels()
+
+      if ((Date.now() - startTime) &gt;= spinLength) &#123;
+        finishSpin()
+      &#125; else &#123;
+        // Slow down a bit on each spin
+        timeout *= 1.1
+        setTimeout(spinReels, timeout)
+      &#125;
+    &#125;
+
+    spinReels()
+  &#125;
+&#125;)
+
+const getRandomValue = () =&gt; &#123;
+  const values = [&#39;🍒&#39;, &#39;💎&#39;, &#39;7️⃣&#39;, &#39;🍊&#39;, &#39;🔔&#39;, &#39;⭐&#39;, &#39;🍇&#39;, &#39;🍀&#39;]
+  return values[Math.floor(Math.random() * values.length)]
+&#125;
+
+const updateReels = () =&gt; &#123;
+  reel1.label = getRandomValue()
+  reel2.label = getRandomValue()
+  reel3.label = getRandomValue()
+&#125;
+
+const finishSpin = () =&gt; &#123;
+  const uniqueValues = new Set([reel1.label, reel2.label, reel3.label]).size
+  if (uniqueValues === 1) &#123;
+    // All 3 values are the same
+    result.label = &#39;💰 Jackpot!&#39;
+    result.textColor = &#39;#FDFF00&#39;
+  &#125; else if (uniqueValues === 2) &#123;
+    // 2个值相同
+    result.label = &#39;😍 Winner!&#39;
+    result.textColor = &#39;#FDFF00&#39;
+  &#125; else &#123;
+    // 没有值相同
+    result.label = &#39;🙁 Spin Again&#39;
+    result.textColor = null
+  &#125;
+  spinning = false
+&#125;
+
+const touchBar = new TouchBar(&#123;
+  items: [
+    spin,
+    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
+    reel1,
+    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
+    reel2,
+    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
+    reel3,
+    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
+    result
+  ]
+&#125;)
+
+let window
+
+app.whenReady().then(() =&gt; &#123;
+  window = new BrowserWindow(&#123;
+    frame: false,
+    titleBarStyle: &#39;hiddenInset&#39;,
+    width: 200,
+    height: 200,
+    backgroundColor: &#39;#000&#39;
+  &#125;)
+  window.loadURL(&#39;about:blank&#39;)
+  window.setTouchBar(touchBar)
+&#125;)
+</code></pre>
+<p>运行命令：</p>
+<pre><code class="ini">./node_modules/.bin/electron touchbar.js
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
+<p>[TouchBar文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
+]]></content>
+      <categories>
+        <category>Electron</category>
+        <category>Electron-d-2.0</category>
       </categories>
       <tags>
         <tag>electron</tag>

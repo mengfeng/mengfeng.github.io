@@ -6,7 +6,7 @@
   <link href="https://mengfeng.github.io/atom.xml" rel="self"/>
   
   <link href="https://mengfeng.github.io/"/>
-  <updated>2022-12-09T02:08:15.861Z</updated>
+  <updated>2022-12-13T06:48:24.376Z</updated>
   <id>https://mengfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>响应式设计</title>
+    <link href="https://mengfeng.github.io/2022/12/13/%E5%93%8D%E5%BA%94%E5%BC%8F%E8%AE%BE%E8%AE%A1/"/>
+    <id>https://mengfeng.github.io/2022/12/13/%E5%93%8D%E5%BA%94%E5%BC%8F%E8%AE%BE%E8%AE%A1/</id>
+    <published>2022-12-13T06:45:26.000Z</published>
+    <updated>2022-12-13T06:48:24.376Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="响应式设计" scheme="https://mengfeng.github.io/categories/%E5%93%8D%E5%BA%94%E5%BC%8F%E8%AE%BE%E8%AE%A1/"/>
+    
+    <category term="响应式设计" scheme="https://mengfeng.github.io/categories/%E5%93%8D%E5%BA%94%E5%BC%8F%E8%AE%BE%E8%AE%A1/%E5%93%8D%E5%BA%94%E5%BC%8F%E8%AE%BE%E8%AE%A1/"/>
+    
+    
+    <category term="响应式" scheme="https://mengfeng.github.io/tags/%E5%93%8D%E5%BA%94%E5%BC%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>如何设计一个组件</title>
@@ -546,33 +573,6 @@
     
     
     <category term="组件库" scheme="https://mengfeng.github.io/tags/%E7%BB%84%E4%BB%B6%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Vue3+Ts+Vite+Pinia组合的高效开发套件</title>
-    <link href="https://mengfeng.github.io/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/"/>
-    <id>https://mengfeng.github.io/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/</id>
-    <published>2022-11-19T07:34:30.000Z</published>
-    <updated>2022-11-19T07:36:25.463Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="工程技术" scheme="https://mengfeng.github.io/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/"/>
-    
-    <category term="Vue3+Ts+Vite+Pinia组合的高效开发套件" scheme="https://mengfeng.github.io/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/"/>
-    
-    
-    <category term="技术" scheme="https://mengfeng.github.io/tags/%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   

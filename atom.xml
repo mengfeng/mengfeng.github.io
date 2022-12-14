@@ -6,7 +6,7 @@
   <link href="https://mengfeng.github.io/atom.xml" rel="self"/>
   
   <link href="https://mengfeng.github.io/"/>
-  <updated>2022-12-13T06:48:24.376Z</updated>
+  <updated>2022-12-14T00:40:14.768Z</updated>
   <id>https://mengfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>chatGPT注册</title>
+    <link href="https://mengfeng.github.io/2022/12/14/chatGPT%E6%B3%A8%E5%86%8C/"/>
+    <id>https://mengfeng.github.io/2022/12/14/chatGPT%E6%B3%A8%E5%86%8C/</id>
+    <published>2022-12-14T00:37:52.000Z</published>
+    <updated>2022-12-14T00:40:14.768Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="趣味技术" scheme="https://mengfeng.github.io/categories/%E8%B6%A3%E5%91%B3%E6%8A%80%E6%9C%AF/"/>
+    
+    <category term="chatGPT注册" scheme="https://mengfeng.github.io/categories/%E8%B6%A3%E5%91%B3%E6%8A%80%E6%9C%AF/chatGPT%E6%B3%A8%E5%86%8C/"/>
+    
+    
+    <category term="chatGPT" scheme="https://mengfeng.github.io/tags/chatGPT/"/>
+    
+  </entry>
   
   <entry>
     <title>响应式设计</title>
@@ -546,33 +573,6 @@
     
     
     <category term="私有组件库" scheme="https://mengfeng.github.io/tags/%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Vite+Vue3+Ts搭建私有组件库</title>
-    <link href="https://mengfeng.github.io/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/"/>
-    <id>https://mengfeng.github.io/2022/11/20/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/</id>
-    <published>2022-11-20T09:04:55.000Z</published>
-    <updated>2022-11-20T09:06:19.758Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="工程技术" scheme="https://mengfeng.github.io/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/"/>
-    
-    <category term="Vite+Vue3+Ts搭建私有组件库" scheme="https://mengfeng.github.io/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%93/"/>
-    
-    
-    <category term="组件库" scheme="https://mengfeng.github.io/tags/%E7%BB%84%E4%BB%B6%E5%BA%93/"/>
     
   </entry>
   

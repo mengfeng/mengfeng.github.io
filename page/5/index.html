@@ -177,6 +177,357 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-前端异常捕获问题"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/11/05/%E5%89%8D%E7%AB%AF%E5%BC%82%E5%B8%B8%E6%8D%95%E8%8E%B7%E9%97%AE%E9%A2%98/"
+    >前端异常捕获问题</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/05/%E5%89%8D%E7%AB%AF%E5%BC%82%E5%B8%B8%E6%8D%95%E8%8E%B7%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2022-11-05T01:33:35.000Z" itemprop="datePublished">2022-11-05</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/">技术面试</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/%E5%89%8D%E7%AB%AF%E5%BC%82%E5%B8%B8%E6%8D%95%E8%8E%B7/">前端异常捕获</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="前端面试题大全（异常捕获）"><a href="#前端面试题大全（异常捕获）" class="headerlink" title="前端面试题大全（异常捕获）"></a>前端面试题大全（异常捕获）</h1><p>前端面试题类目分类</p>
+<ul>
+<li>HTML5 + CSS3</li>
+<li>JavaScript</li>
+<li>Vue + Vue3</li>
+<li>React</li>
+<li>Webpack</li>
+<li>服务端</li>
+</ul>
+<hr>
+<p>考点频率 ：♥︎ 、 ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎ ♥︎ ♥︎</p>
+<h3 id="异常捕获"><a href="#异常捕获" class="headerlink" title="异常捕获"></a>异常捕获</h3><h4 id="什么是异常数据？"><a href="#什么是异常数据？" class="headerlink" title="什么是异常数据？"></a>什么是异常数据？</h4><p>异常数据，是指前端在操作页面的过程中，触发的执行异常或加载异常，此时浏览器会抛出来报错信息。</p>
+<p>比如说你的前端代码用了个未声明的变量，此时控制台会打印出红色错误，告诉你报错原因。或者是接口请求出错了，在网络面板内也能查到异常情况，是请求发送的异常，还是接口响应的异常。</p>
+<p>在我们实际的开发场景中，前端捕获的异常主要是分两个大类，接口异常 和 前端异常，我们分别看下这两大类异常怎么捕获。</p>
+<h4 id="接口异常"><a href="#接口异常" class="headerlink" title="接口异常"></a>接口异常</h4><p>接口异常一定是在请求的时候触发。前端目前大部分的请求是用 axios 发起的，所以只要获取 axios 可能发生的异常即可。</p>
+<p>如果你用 Promise 的写法，则用 .catch 捕获：</p>
+<pre><code class="javascript">axios
+  .post(&#39;/test&#39;)
+  .then((res) =&gt; &#123;
+    console.log(res);
+  &#125;)
+  .catch((err) =&gt; &#123;
+    // err 就是捕获到的错误对象
+    handleError(err);
+  &#125;);
+</code></pre>
+<p>如果你用 async&#x2F;await 的写法，则用 try..catch.. 捕获：</p>
+<pre><code class="javascript">async () =&gt; &#123;
+  try &#123;
+    let res = await axios.post(&#39;/test&#39;);
+    console.log(res);
+  &#125; catch (err) &#123;
+    // err 就是捕获到的错误对象
+    handleError(err);
+  &#125;
+&#125;;
+</code></pre>
+<p>当捕获到异常之后，统一交给 handleError 函数处理，这个函数会将接收到的异常进行处理，并调用 上报接口 将异常数据传到服务器，从而完成采集。</p>
+<p>上面我们写的异常捕获，逻辑上是没问题的，实操起来就会发现第一道坎：页面这么多，难道每个请求都要包一层 catch 吗？</p>
+<p>是啊，如果我们是新开发一个项目，在开始的时候就规定每个请求要包一层 catch 也无可厚非，但是如果是在一个已有的规模还不小的项目中接入前端监控，这时候在每个页面或每个请求 catch 显然是不现实的。</p>
+<p>所以，为了最大程度地降低接入成本，减少侵入性，我们是用第二种方案：在 axios 拦截器中捕获异常。</p>
+<p>前端项目，为了统一处理请求，比如 401 的跳转，或者全局错误提示，都会在全局写一个 axios 实例，为这个实例添加拦截器，然后在其他页面中直接导入这个实例使用，比如：</p>
+<pre><code class="javascript">// 全局请求：src/request/axios.js
+const instance = axios.create(&#123;
+  baseURL: &#39;https://api.test.com&#39;
+  timeout: 15000,
+  headers: &#123;
+    &#39;Content-Type&#39;: &#39;application/json&#39;,
+  &#125;,
+&#125;)
+export default instance1
+</code></pre>
+<p>然后在具体的页面中这样发起请求：</p>
+<pre><code class="javascript">// a 页面：src/page/a.jsx
+import http from &#39;@/src/request/axios.js&#39;;
+async () =&gt; &#123;
+  let res = await http.post(&#39;/test&#39;);
+  console.log(res);
+&#125;;
+</code></pre>
+<p>这样的话，我们发现每个页面的请求都会走全局 axios 实例，所以我们只需要在全局请求的位置捕获异常即可，就不需要在每个页面捕获了，这样接入成本会大大降低。</p>
+<p>按照这个方案，接下来我们在 src&#x2F;request&#x2F;axios.js 这个文件中动手实施。</p>
+<h4 id="拦截器中捕获异常"><a href="#拦截器中捕获异常" class="headerlink" title="拦截器中捕获异常"></a>拦截器中捕获异常</h4><p>首先我们为 axios 添加响应拦截器：</p>
+<pre><code class="javascript">// 响应拦截器
+instance.interceptors.response.use(
+  (response) =&gt; &#123;
+    return response.data;
+  &#125;,
+  (error) =&gt; &#123;
+    // 发生异常会走到这里
+    if (error.response) &#123;
+      let response = error.response;
+      if (response.status &gt;= 400) &#123;
+        handleError(response);
+      &#125;
+    &#125; else &#123;
+      handleError(null);
+    &#125;
+    return Promise.reject(error);
+  &#125;,
+);
+</code></pre>
+<p>响应拦截器的第二个参数是在发生错误时执行的函数，参数就是异常。我们首先要判断是否存在 error.response，存在就说明接口有响应，也就是接口通了，但是返回错误；不存在则说明接口没通，请求一直挂起，多数是接口崩溃了。</p>
+<p>如果有响应，首先获取状态码，根据状态码来判断什么时候需要收集异常。上面的判断方式简单粗暴，只要状态码大于 400 就视为一个异常，拿到响应数据，并执行上报逻辑。</p>
+<p>如果没有响应，可以看作是接口超时异常，调用异常处理函数时传一个 null 即可。</p>
+<h3 id="前端异常"><a href="#前端异常" class="headerlink" title="前端异常"></a>前端异常</h3><p>上面我们介绍了在 axios 拦截器中如何捕获接口异常，这部分我们再介绍如何捕获前端异常。</p>
+<p>前端代码捕获异常，最常用的方式就是用 try..catch.. 了，任意同步代码块都可以放到 try 块中，只要发生异常就会执行 catch：</p>
+<pre><code class="javascript">try &#123;
+  // 任意同步代码
+&#125; catch (err) &#123;
+  console.log(err);
+&#125;
+</code></pre>
+<p>上面说“任意同步代码”而不是“任意代码”，主要是普通的 Promise 写法 try..catch.. 是捕获不到的，只能用 .catch() 捕获，如：</p>
+<pre><code class="javascript">try &#123;
+  Promise.reject(new Error(&#39;出错了&#39;)).catch((err) =&gt; console.log(&#39;1：&#39;, err));
+&#125; catch (err) &#123;
+  console.log(&#39;2：&#39;, err);
+&#125;
+</code></pre>
+<p>把这段代码丢进浏览器，打印结果是：</p>
+<pre><code class="javascript">1： Error: 出错了1.
+</code></pre>
+<p>很明显只是 .catch 捕获到了异常。不过与上面接口异常的逻辑一样，这种方式处理当前页面异常没什么问题，但从整个应用来看，这样捕获异常侵入性强，接入成本高，所以我们的思路依然是全局捕获。</p>
+<p>全局捕获 js 的异常也比较简单，用 window.addEventLinstener(‘error’) 即可：</p>
+<pre><code class="javascript">// js 错误捕获
+window.addEventListener(&#39;error&#39;, (error) =&gt; &#123;
+  // error 就是js的异常
+&#125;);
+</code></pre>
+<h4 id="为啥不用-window-onerror-？"><a href="#为啥不用-window-onerror-？" class="headerlink" title="为啥不用 window.onerror ？"></a>为啥不用 window.onerror ？</h4><p>这里很多小伙伴有疑问，为什么不用 window.onerror 全局监听呢？window.addEventLinstener(‘error’) 和 window.onerror 有什么区别呢？</p>
+<p>首先这两个函数功能基本一致，都可以全局捕获 js 异常。但是有一类异常叫做 资源加载异常，就是在代码中引用了不存在的图片，js，css 等静态资源导致的异常，比如:</p>
+<pre><code class="javascript">const loadCss = ()=&gt; &#123;
+  let link = document.createElement(&#39;link&#39;)
+  link.type = &#39;text/css&#39;
+  link.rel = &#39;stylesheet&#39;
+  link.href = &#39;https://baidu.com/15.css&#39;
+  document.getElementsByTagName(&#39;head&#39;)[10].append(link)
+&#125;
+render() &#123;
+  return &lt;div&gt;
+    &lt;img src=&#39;./bbb.png&#39;/&gt;
+    &lt;button onClick=&#123;loadCss&#125;&gt;加载样式&lt;button/&gt;
+  &lt;/div&gt;
+&#125;
+</code></pre>
+<p>上述代码中的 baidu.com&#x2F;15.css 和 bbb.png 是不存在的，JS 执行到这里肯定会报一个资源找不到的错误。但是默认情况下，上面两种 window 对象上的全局监听函数都监听不到这类异常。</p>
+<p>因为资源加载的异常只会在当前元素触发，异常不会冒泡到 window，因此监听 window 上的异常是捕捉不到的。那怎么办呢？</p>
+<p>如果你熟悉 DOM 事件你就会明白，既然冒泡阶段监听不到，那么在捕获阶段一定能监听到。</p>
+<p>方法就是给 window.addEventListene 函数指定第三个参数，很简单就是 true，表示该监听函数会在捕获阶段执行，这样就能监听到资源加载异常了。</p>
+<pre><code class="javascript">// 捕获阶段全局监听
+window.addEventListene(
+  &#39;error&#39;,
+  (error) =&gt; &#123;
+    if (error.target != window) &#123;
+      console.log(error.target.tagName, error.target.src);
+    &#125;
+    handleError(error);
+  &#125;,
+  true,
+);
+</code></pre>
+<p>上述方式可以很轻松的监听到图片加载异常，这就是为什么更推荐 window.addEventListene 的原因。不过要记得，第三个参数设为 true，监听事件捕获，就可以全局捕获到 JS 异常和资源加载异常。</p>
+<p>需要特别注意，window.addEventListene 同样不能捕获 Promise 异常。不管是 Promise.then() 写法还是 async&#x2F;await 写法，发生异常时都不能捕获。</p>
+<p>因此，我们还需要全局监听一个 unhandledrejection 函数来捕获未处理的 Promise 异常。</p>
+<pre><code class="javascript">// promise 错误捕获
+window.addEventListener(&#39;unhandledrejection&#39;, (error) =&gt; &#123;
+  // 打印异常原因
+  console.log(error.reason);
+  handleError(error);
+  // 阻止控制台打印
+  error.preventDefault();
+&#125;);
+</code></pre>
+<p>unhandledrejection 事件会在 Promise 发生异常并且没有指定 catch 的时候触发，相当于一个全局的 Promise 异常兜底方案。这个函数会捕捉到运行时意外发生的 Promise 异常，这对我们排错非常有用。</p>
+<p>默认情况下，Promise 发生异常且未被 catch 时，会在控制台打印异常。如果我们想阻止异常打印，可以用上面的 error.preventDefault() 方法。</p>
+<h4 id="异常处理函数"><a href="#异常处理函数" class="headerlink" title="异常处理函数"></a>异常处理函数</h4><p>前面我们在捕获到异常时调用了一个异常处理函数 handleError，所有的异常和上报逻辑统一在这个函数内处理，接下来我们实现这个函数。</p>
+<pre><code class="javascript">const handleError = (error: any, type: 1 | 2) &#123;
+  if(type == 1) &#123;
+    // 处理接口异常
+  &#125;
+  if(type == 2) &#123;
+    // 处理前端异常
+  &#125;
+&#125;
+</code></pre>
+<p>为了区分异常类型，函数新加了第二个参数 type 表示当前异常属于前端还是接口。在不同的场景中使用如下：</p>
+<ul>
+<li>处理前端异常：handleError(error, 1)。</li>
+<li>处理接口异常：handleError(error, 2)。</li>
+</ul>
+<h3 id="处理接口异常"><a href="#处理接口异常" class="headerlink" title="处理接口异常"></a>处理接口异常</h3><p>处理接口异常，我们需要将拿到的 error 参数解析，然后取到需要的数据。接口异常一般需要的数据字段如下：</p>
+<ul>
+<li>code：http 状态码。</li>
+<li>url：接口请求地址。</li>
+<li>method：接口请求方法。</li>
+<li>params：接口请求参数。</li>
+<li>error：接口报错信息。</li>
+</ul>
+<p>这些字段都可以在 error 参数中获取，方法如下：</p>
+<pre><code class="javascript">const handleError = (error: any, type: 1 | 2) &#123;
+  if(type == 1) &#123;
+    // 此时的 error 响应，它的 config 字段中包含请求信息
+    let &#123; url, method, params, data &#125; = error.config
+    let err_data = &#123;
+       url, method,
+       params: &#123; query: params, body: data &#125;,
+       error: error.data?.message || JSON.stringify(error.data),
+    &#125;)
+  &#125;
+&#125;
+</code></pre>
+<p>config 对象中的 params 表示 GET 请求的 query 参数，data 表示 POST 请求的 body 参数，所以我在处理参数的时候，将这两个参数合并为一个，用一个属性 params 来表示。</p>
+<pre><code class="javascript">params: &#123; query: params, body: data &#125;
+</code></pre>
+<p>还有一个 error 属性表示错误信息，这个获取方式要根据你的接口返回格式来拿。要避免获取到接口可能返回的超长错误信息，多半是接口没处理，这样可能会导致写入数据失败，要提前与后台规定好。</p>
+<h3 id="处理前端异常"><a href="#处理前端异常" class="headerlink" title="处理前端异常"></a>处理前端异常</h3><p>前端异常异常大多数就是 js 异常，异常对应到 js 的 Error 对象，在处理之前，我们先看 Error 有哪几种类型：</p>
+<ul>
+<li>ReferenceError：引用错误。</li>
+<li>RangeError：超出有效范围。</li>
+<li>TypeError：类型错误。</li>
+<li>URIError：URI 解析错误。</li>
+</ul>
+<p>这几类异常的引用对象都是 Error，因此可以这样获取：</p>
+<pre><code class="javascript">const handleError = (error: any, type: 1 | 2) &#123;
+  if(type == 2) &#123;
+    let err_data = null
+    // 监测 error 是否是标准类型
+    if(error instanceof Error) &#123;
+      let &#123; name, message &#125; = error
+      err_data = &#123;
+        type: name,
+        error: message
+      &#125;
+    &#125; else &#123;
+      err_data = &#123;
+        type: &#39;other&#39;,
+        error: JSON.strigify(error)
+      &#125;
+    &#125;
+  &#125;
+&#125;
+</code></pre>
+<p>上述判断中，首先判断异常是否是 Error 的实例。事实上绝大部分的代码异常都是标准的 JS Error，但我们这里还是判断一下，如果是的话直接获取异常类型和异常信息，不是的话将异常类型设置为 other 即可。</p>
+<p>我们随便写一个异常代码，看一下捕获的结果：</p>
+<pre><code class="javascript">function test() &#123;
+  console.aaa(&#39;ccc&#39;);
+&#125;
+test();
+</code></pre>
+<p>然后捕获到的异常是这样的：</p>
+<pre><code class="javascript">const handleError = (error: any) =&gt; &#123;
+  if (error instanceof Error) &#123;
+    let &#123; name, message &#125; = error;
+    console.log(name, message);
+    // 打印结果：TypeError console.aaa is not a function
+  &#125;
+&#125;;
+</code></pre>
+<h4 id="获取环境数据"><a href="#获取环境数据" class="headerlink" title="获取环境数据"></a>获取环境数据</h4><p>获取环境数据的意思是，不管是接口异常还是前端异常，除了异常本身的数据之外，我们还需要一些其他信息来帮助我们更快更准的定位到哪里出错了。</p>
+<p>这类数据我们称之为 “环境数据”，就是触发异常时所在的环境。比如是谁在哪个页面的哪个地方触发的错误，有了这些，我们就能马上找到错误来源，再根据异常信息解决错误。</p>
+<p>环境数据至少包括下面这些：</p>
+<ul>
+<li>app：应用的名称&#x2F;标识。</li>
+<li>env：应用环境，一般是开发，测试，生产。</li>
+<li>version：应用的版本号。</li>
+<li>user_id：触发异常的用户 ID。</li>
+<li>user_name：触发异常的用户名。</li>
+<li>page_route：异常的页面路由。</li>
+<li>page_title：异常的页面名称。</li>
+</ul>
+<p>app 和 version 都是应用配置，可以判断异常出现在哪个应用的哪个版本。这两个字段我建议直接获取 package.json 下的 name 和 version 属性，在应用升级的时候，及时修改 version 版本号即可。</p>
+<h3 id="Vue和React异常处理"><a href="#Vue和React异常处理" class="headerlink" title="Vue和React异常处理"></a>Vue和React异常处理</h3><blockquote>
+<p>现在越来越多的项目开始使用前端框架，在MVVM框架中如果你一如既往的想使用window.onerror来捕获异常，那么很可能会竹篮打水一场空，或许根本捕获不到，因为你的异常信息被框架自身的异常机制捕获了。</p>
+</blockquote>
+<p>比如Vue 2.x中我们应该这样捕获全局异常：</p>
+<pre><code class="js">Vue.config.errorHandler = function (err, vm, info) &#123;
+    let &#123; 
+        message, // 异常信息
+        name, // 异常名称
+        script,  // 异常脚本url
+        line,  // 异常行号
+        column,  // 异常列号
+        stack  // 异常堆栈信息
+    &#125; = err;
+
+    // vm为抛出异常的 Vue 实例
+    // info为 Vue 特定的错误信息，比如错误所在的生命周期钩子
+&#125;
+</code></pre>
+<blockquote>
+<p>目前script、line、column这3个信息打印出来是undefined，不过这些信息在stack中都可以找到，可以通过正则匹配去进行获取，然后进行上报。</p>
+<p>同样的在react也提供了异常处理的方式，在 React 16.x 版本中引入了 Error Boundary：</p>
+</blockquote>
+<pre><code class="js">class ErrorBoundary extends React.Component &#123;
+    constructor(props) &#123;
+        super(props);
+        this.state = &#123; hasError: false &#125;;
+    &#125;
+
+    componentDidCatch(error, info) &#123;
+        this.setState(&#123; hasError: true &#125;);
+
+        // 将异常信息上报给服务器
+        logErrorToMyService(error, info); 
+    &#125;
+
+    render() &#123;
+        if (this.state.hasError) &#123;
+            return &#39;出错了&#39;;
+        &#125;
+
+        return this.props.children;
+    &#125;
+&#125;
+</code></pre>
+<p>然后我们就可以这样使用该组件：</p>
+<h3 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a>参考文献：</h3><p><a target="_blank" rel="noopener" href="https://www.51cto.com/article/711309.html">https://www.51cto.com/article/711309.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7072179884247744526">https://juejin.cn/post/7072179884247744526</a></p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-前端面试题大全前端工程化"
   class="article article-type-post"
   itemscope
@@ -9637,1486 +9988,6 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=Sec-WebSocket-Protocol: chat
 <li>体育实况更新</li>
 <li>股票基金报价实时更新</li>
 </ul>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-前端面试大全React"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/10/29/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E5%A4%A7%E5%85%A8React/"
-    >前端面试大全React</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/10/29/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E5%A4%A7%E5%85%A8React/" class="article-date">
-  <time datetime="2022-10-29T08:26:29.000Z" itemprop="datePublished">2022-10-29</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/">技术面试</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/React/">React</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="前端面试题大全（React-js）"><a href="#前端面试题大全（React-js）" class="headerlink" title="前端面试题大全（React.js）"></a>前端面试题大全（React.js）</h1><p>前端面试题类目分类</p>
-<ul>
-<li>HTML5 + CSS3</li>
-<li>JavaScript</li>
-<li>Vue + Vue3</li>
-<li>React</li>
-<li>Webpack</li>
-<li>服务端</li>
-</ul>
-<hr>
-<p>考点频率 ：♥︎ 、 ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎ ♥︎ ♥︎</p>
-<h2 id="React-js"><a href="#React-js" class="headerlink" title="React.js"></a>React.js</h2><h3 id="♥︎♥︎-fetch的延时操作"><a href="#♥︎♥︎-fetch的延时操作" class="headerlink" title="♥︎♥︎  fetch的延时操作"></a>♥︎♥︎  fetch的延时操作</h3><pre><code class="javascript">// fetch语法：fetch(resource, config).then( function(response) &#123; ... &#125; )；resource为要获取的资源，
-config是配置对象，包含method请求方法，headers请求头信息等
-// 定义一个延时函数，返回一个promise
-const delayPromise = (timeout=5000) =&gt; &#123;
- return new Promise((resolve, reject) =&gt; &#123;
- setTimeout(()=&gt;&#123;
- reject(new Error(&quot;网络错误&quot;))
- &#125;, timeout)
- &#125;)
-&#125;
-// 定义一个fetch网络请求，返回一个promise
-const fetchPromise = (resource, config) =&gt; &#123;
- return new Promise((resolve, reject)=&gt;&#123;
- fetch(resource, config).then(res=&gt;&#123;
- resolve(res)
- &#125;)
- &#125;)
-&#125;
-// promise的race静态方法接受多个promise对象组成的数组，该数组中哪个promise先执行完成，race方法就返回这个promise的执行结果
-const fetchRequest = (resource, config, timeout) =&gt; &#123;
- Promise.race([
- delayPromise(timeout), 
- fetchPromise(resource,config)
- ])
-&#125;
-</code></pre>
-<h3 id="♥︎♥︎-A-组件嵌套-B-组件，生命周期执行顺序"><a href="#♥︎♥︎-A-组件嵌套-B-组件，生命周期执行顺序" class="headerlink" title="♥︎♥︎   A 组件嵌套 B 组件，生命周期执行顺序"></a>♥︎♥︎   A 组件嵌套 B 组件，生命周期执行顺序</h3><pre><code class="css">父组件创建阶段的生命周期钩子函数 constructor
-父组件创建阶段的生命周期钩子函数 render
-子组件创建阶段的生命周期钩子函数 constructor
-子组件创建阶段的生命周期钩子函数 render
-子组件创建阶段的生命周期钩子函数 componentDidMount
-父组件创建阶段的生命周期钩子函数 componentDidMount
-
-父-&gt;父-&gt;子-&gt;子-&gt;子-&gt;父
-</code></pre>
-<h3 id="♥︎♥︎-React-组件中-props-和-state-有什么区别？"><a href="#♥︎♥︎-React-组件中-props-和-state-有什么区别？" class="headerlink" title="♥︎♥︎  React 组件中 props 和 state 有什么区别？"></a>♥︎♥︎  React 组件中 props 和 state 有什么区别？</h3><p>1、props是从外部传入组件的参数，一般用于父组件向子组件通信，在组件之间通信使用；state一般用于组件内部的状态维护，更新组建内部的数据，状态，更新子组件的props等</p>
-<p> 2、props不可以在组件内部修改，只能通过父组件进行修改；state在组件内部通过setState修改；</p>
-<h3 id="♥︎♥︎-react中组件分为那两种？"><a href="#♥︎♥︎-react中组件分为那两种？" class="headerlink" title="♥︎♥︎ react中组件分为那两种？"></a>♥︎♥︎ react中组件分为那两种？</h3><p>类组件和函数组件</p>
-<h3 id="♥︎♥︎-描述-Flux-与-MVC？"><a href="#♥︎♥︎-描述-Flux-与-MVC？" class="headerlink" title="♥︎♥︎ 描述 Flux 与 MVC？"></a>♥︎♥︎ 描述 Flux 与 MVC？</h3><p>传统的 MVC 模式在分离数据(Model)、UI(View和逻辑(Controller)方面工作得很好，但是 MVC 架构经常遇到两个主要问题:</p>
-<ol>
-<li>数据流不够清晰——跨视图发生的级联更新常常会导致混乱的事件网络，难于调试。</li>
-<li>缺乏数据完整性——模型数据可以在任何地方发生突变，从而在整个UI中产生不可预测的结果。</li>
-</ol>
-<p>使用 Flux 模式的复杂用户界面不再遭受级联更新，任何给定的React 组件都能够根据 store 提供的数据重建其状态。Flux 模式还通过限制对共享数据的直接访问来加强数据完整性。</p>
-<h3 id="♥︎♥︎-在-React-中使用构造函数和-getInitialState-有什么区别？"><a href="#♥︎♥︎-在-React-中使用构造函数和-getInitialState-有什么区别？" class="headerlink" title="♥︎♥︎ 在 React 中使用构造函数和 getInitialState 有什么区别？"></a>♥︎♥︎ 在 React 中使用构造函数和 getInitialState 有什么区别？</h3><pre><code class="react">// ES6
-class MyComponent extends React.Component &#123;
-constructor(props) &#123;
-super(props);
-this.state = &#123; /* initial state */ &#125;;
-&#125;
-&#125;
-// ES5
-var MyComponent = React.createClass(&#123;
-getInitialState() &#123;
-  return &#123; /* initial state */ &#125;;
-&#125;,
-&#125;);
-</code></pre>
-<p>本质上其实是等价的？</p>
-<p>区别在于ES6和ES5本身，getInitialState 是搭配 React.createClass 使用的， constructor 是搭配React.Component 使用的,在React组件的生命周期中 constructor 先于 getInitialState</p>
-<h3 id="♥︎♥︎-为什么说React是view（视图层）"><a href="#♥︎♥︎-为什么说React是view（视图层）" class="headerlink" title="♥︎♥︎ 为什么说React是view（视图层）"></a>♥︎♥︎ 为什么说React是view（视图层）</h3><p>react, 是 Facebook 推出的一个用来构建用户界面的 JavaScript 库. React 主要用于构建 UI</p>
-<p>React被认为是视图层的框架是因为它是基于组件的，一切都是组件，而组件就是渲染页面的基础。不论组件中包含的jsx，methods，state，props，都是属于组件内部的</p>
-<p>View（视图）是应用程序中处理数据显示的部分。视图层主要包括二个部分：</p>
-<p>1.视图层显示及交互逻辑；</p>
-<p>2.视图层的数据结构ViewObj， 包括React中的props和stats；</p>
-<hr>
-<h3 id="♥︎♥︎♥︎-React-事件绑定原理"><a href="#♥︎♥︎♥︎-React-事件绑定原理" class="headerlink" title="♥︎♥︎♥︎ React 事件绑定原理"></a>♥︎♥︎♥︎ React 事件绑定原理</h3><p>一、react并没有使用原生的浏览器事件，而是在基于Virtual DOM的基础上实现了合成事件，采用小驼峰命名法，默认的事件传播方式是冒泡，如果想改为捕获的话，直接在事件名后面加上Capture即可；事件对象event也不是原生事件对象，而是合成对象，但通过nativeEvent属性可以访问原生事件对象；</p>
-<p>二、react合成事件主要分为以下三个过程：</p>
-<p> 1、事件注册</p>
-<p> 在该阶段主要做了两件事：document上注册、存储事件回调。所有事件都会注册到document上，</p>
-<p>拥有统一的回调函数dispatchEvent来执行事件分发，类似于</p>
-<pre><code class="javascript">document.addEventListener(&quot;click&quot;,dispatchEvent)。
- register:
- addEventListener-click
- addEventListener-change
-listenerBank: 
-&#123; 
-click: &#123;key1: fn1, key2: fn2&#125;, 
-change: &#123;key1: fn3, key3: fn4&#125; 
-&#125; 
-</code></pre>
-<p>2、事件合成 </p>
-<p>事件触发后，会执行一下过程： </p>
-<p>（1）进入统一的事件分发函数dispatchEvent； </p>
-<p>（2）找到触发事件的 ReactDOMComponent； </p>
-<p>（3）开始事件的合成； </p>
-<p>—— 根据当前事件类型生成指定的合成对象 </p>
-<p>—— 封装原生事件和冒泡机制 </p>
-<p>—— 查找当前元素以及他所有父级 </p>
-<p>—— 在listenerBank根据key值查找事件回调并合成到 event(合成事件结束) </p>
-<p>3、批处理</p>
-<p> 批量处理合成事件内的回调函数</p>
-<h3 id="♥︎♥︎♥︎-React中的-setState-缺点是什么呢"><a href="#♥︎♥︎♥︎-React中的-setState-缺点是什么呢" class="headerlink" title="♥︎♥︎♥︎ React中的 setState 缺点是什么呢"></a>♥︎♥︎♥︎ React中的 setState 缺点是什么呢</h3><p>setState执行的时候可以简单的认为，隶属于原生js执行的空间，那么就是属于同步，被react处理过的空间属于异步，这其实也是一种性能的优化，如果多次使用setState修改值，那么在异步中会先进行合并，再进行渲染，降低了操作dom的次数，具体如下：</p>
-<p>（1）setState 在合成事件和钩子函数中是“异步”的，在原生事件和 <code>setTimeout</code> 中都是同步的。 </p>
-<p>（2）setState的“异步”并不是说内部由异步代码实现，其实本身执行的过程和代码都是同步的，只是合成事件和钩子函数的调用顺序在更新之前，导致在合成事件和钩子函数中没法立马拿到更新后的值，形式了所谓的“异步”，当然可以通过第二个参数 setState(partialState, callback) 中的callback拿到更 新后的结果。 </p>
-<p>（3）setState 的批量更新优化也是建立在“异步”（合成事件、钩子函数）之上的，在原生事件和setTimeout 中不会批量更新，在“异步”中如果对同一个值进行多次 setState， setState 的批量更新策略会对其进行覆盖，取最后一次的执行，如果是同时 setState 多个不同的值，在更新时会对其进行合并批量更新。 </p>
-<p>（4）正是由于setState存在异步的机制，如果setState修改值的时候依赖于state本身的值，有时候并不可靠，这时候我们需要传入一个回调函数作为其入参，这个回调函数的第一个参数为更新前的state值。</p>
-<h3 id="♥︎♥︎♥︎-React组件通信如何实现"><a href="#♥︎♥︎♥︎-React组件通信如何实现" class="headerlink" title="♥︎♥︎♥︎ React组件通信如何实现"></a>♥︎♥︎♥︎ React组件通信如何实现</h3><p>react本身:</p>
-<p> (1) props ——父组件向子组件通过props传参</p>
-<p> (2) 实例方法——在父组件中可以用 refs 引用子组件，之后就可以调用子组件的实例方法了</p>
-<p> (3) 回调函数——用于子组件向父组件通信，子组件调用props传递过来的方法</p>
-<p> (4) 状态提升——两个子组件可以通过父组件定义的参数进行传参</p>
-<p> (5) Context上下文——一般用作全局主题</p>
-<p> (6) Render Props——渲染的细节由父组件控制</p>
-<p>状态管理: </p>
-<p>(1) mobx&#x2F;redux&#x2F;dva——通过在view中触发action，改变state，进而改变其他组件的view</p>
-<h3 id="♥︎♥︎♥︎-类组件和函数组件的区别"><a href="#♥︎♥︎♥︎-类组件和函数组件的区别" class="headerlink" title="♥︎♥︎♥︎ 类组件和函数组件的区别"></a>♥︎♥︎♥︎ 类组件和函数组件的区别</h3><p>（1）语法上：函数组件是一个函数，返回一个jsx元素，而类组件是用es6语法糖class定义，继承component这个类</p>
-<p>（2）类组件中可以通过state进行状态管理，而在函数组件中不能使用setState()，在react16.8以后，函数组件可以通过hooks中的useState来模拟类组件中的状态管理；</p>
-<p>（3）类组件中有一系列的生命周期钩子函数，在函数组件中也需要借助hooks来使用生命周期函数；</p>
-<p>（4）类组件能够捕获最新的值（永远保持一致），这是因为当实例的props属性发生修改时，class组件能够直接通过this捕获到组件最新的props；而函数式组件是捕获渲染所使用的值，已经因为javascript闭包的特性，之前的props参数保存在内存之中，无法从外部进行修改。</p>
-<h3 id="♥︎♥︎♥︎-请你说说React的路由是什么？"><a href="#♥︎♥︎♥︎-请你说说React的路由是什么？" class="headerlink" title="♥︎♥︎♥︎ 请你说说React的路由是什么？"></a>♥︎♥︎♥︎ 请你说说React的路由是什么？</h3><p>路由分为前端路由和后端路由，后端路由是服务器根据用户发起的请求而返回不同内容，前端路由是客户端根据不同的URL去切换组件；在web应用前端开发中，路由系统是最核心的部分，当页面的URL发生改变时，页面的显示结果可以根据URL的变化而变化，但是页面不会刷新。</p>
-<p>react生态中路由通常是使用react-router来进行配置，其主要构成为：</p>
-<p>（1）Router——对应路由的两种模式，包括与BrowserRouter与HashRoute； </p>
-<p>（2）route matching组件——控制路径对应的显示组件，可以进行同步加载和异步加载； </p>
-<p>（3）navigation组件——用做路由切换和跳转；</p>
-<p>BrowserRouter与HashRouter的区别：</p>
-<p>（1）底层原理不一样：BrowserRouter使用的是H5的history API，不兼容IE9及以下版本；HashRouter使用的是URL的哈希值；</p>
-<p>（2）path表现形式不一样：BrowserRouter的路径中没有#,例如：localhost:3000&#x2F;demo&#x2F;test；HashRouter的路径包含#,例如：localhost:3000&#x2F;#&#x2F;demo&#x2F;test； </p>
-<p>（3）刷新后对路由state参数的影响：BrowserRouter没有任何影响，因为state保存在history对象中；</p>
-<p>react生态中路由通常是使用react-router来进行配置，其主要构成为： </p>
-<p>BrowserRouter与HashRouter的区别：HashRouter刷新后会导致路由state参数的丢失；</p>
-<h3 id="♥︎♥︎♥︎-聊聊-Redux-和-Vuex-的设计思想"><a href="#♥︎♥︎♥︎-聊聊-Redux-和-Vuex-的设计思想" class="headerlink" title="♥︎♥︎♥︎ 聊聊 Redux 和 Vuex 的设计思想"></a>♥︎♥︎♥︎ 聊聊 Redux 和 Vuex 的设计思想</h3><p>Flux的核心思想就是数据和逻辑永远单向流动，由三大部分组成 dispatcher(负责分发事件),store(负责保存数据，同时响应事件并更新数据)和 view(负责订阅store中的数据，并使用这些数据渲染相应的页面)，Redux和Vuex是flux思想的具体实现，都是用来做状态管理的工具，Redux主要在react中使用，Vuex主要在vue中使用。</p>
-<pre><code class="css">Redux设计和使用的三大原则： 
-（1）单一的数据源：整个应用的 state被储存在唯一一个 store中； 
-（2）状态是只读的：Store.state不能直接修改（只读），必须调用dispatch(action) =&gt; store.reducer =&gt; return newState；action是一个对象，有type（操作类型）和payload（新值） 属性；
-（3）状态修改均由纯函数完成：在Redux中，通过纯函数reducer来确定状态的改变，因为reducer是纯 函数，所以相同的输入，一定会得到相同的输出，同时也不支持异步；返回值是一个全新的state； 
-
-vuex由State + Muatations(commit) + Actions(dispatch) 组成： 
-（1）全局只有一个Store实例（单一数据源）；
-（2）Mutations必须是同步事务，不同步修改的话，会很难调试，不知道改变什么时候发生，也很难确定 先后顺序，A、B两个mutation，调用顺序可能是A -&gt; B，但是最终改变 State的结果可能是B -&gt; A； 
-（3）Actions负责处理异步事务，然后在异步回调中触发一个或多个mutations，也可以在业务代码中处 理异步事务，然后在回调中同样操作； 
-（4）模块化通过module方式来处理，这个跟Redux-combineReducer类似，在应用中可以通过 namespaceHelper来简化使用；
-</code></pre>
-<h3 id="♥︎♥︎♥︎-React中不同组件之间如何做到数据交互？"><a href="#♥︎♥︎♥︎-React中不同组件之间如何做到数据交互？" class="headerlink" title="♥︎♥︎♥︎  React中不同组件之间如何做到数据交互？"></a>♥︎♥︎♥︎  React中不同组件之间如何做到数据交互？</h3><h4 id="正向传值–使用-props"><a href="#正向传值–使用-props" class="headerlink" title="正向传值–使用 props"></a>正向传值–使用 props</h4><p>父组件发送数据在子组件中使用 this.props.xxx 来接收数据，如果父级的某个props 改变了，React 会重渲染所有的子节点</p>
-<h4 id="逆向传值—函数传值"><a href="#逆向传值—函数传值" class="headerlink" title="逆向传值—函数传值"></a>逆向传值—函数传值</h4><ul>
-<li>子组件通过事件调用函数传递</li>
-<li>在子组件中使用 this.props调用的函数名绑定发送数据。</li>
-<li>在父组件中进行函数传递。</li>
-<li>父组件中必须要有一个形参用来接收子组件发送过来的数据。</li>
-</ul>
-<h4 id="同级传值—pubsub-js"><a href="#同级传值—pubsub-js" class="headerlink" title="同级传值—pubsub-js"></a>同级传值—pubsub-js</h4><ul>
-<li>在第一个要传值的组件中进行数据抛出 PubSub.publish(“ 事件名”,”数据”)。</li>
-<li>在第二个要接收数据的组件中接收 PubSub.subscribe(“监听的事件”,(事件,数 据)&#x3D;&gt;{})。</li>
-</ul>
-<h4 id="跨组件传值—context"><a href="#跨组件传值—context" class="headerlink" title="跨组件传值—context"></a>跨组件传值—context</h4><p>context 上下文对象，无需为每一层组件手动添加 props，就能在组件数间进行数据传递的方法。<br>使用 createContext()方法提供了两个对象 - Provider 对象生产者—-&gt;用来生产数据 - Consumer对象消费者—-&gt;用来使用数据。</p>
-<h3 id="♥︎♥︎♥︎-React中refs的作用是什么？"><a href="#♥︎♥︎♥︎-React中refs的作用是什么？" class="headerlink" title="♥︎♥︎♥︎ React中refs的作用是什么？"></a>♥︎♥︎♥︎ React中refs的作用是什么？</h3><p> ref是React提供的用来操纵React组件实例或者DOM元素的接口。主要用来做文本框的聚焦、触发强制动画等；</p>
-<pre><code class="javascript">//类组件
-class Foo extends React.Component &#123;
-   constructor(props) &#123;
- super(props)
- this.myRef = React.createRef()
- &#125;
- render() &#123;
- return &#125;
-  
-&lt;input ref=&#123; this.myRef &#125; /&gt; &lt;button onClick = &#123;()=&gt;this.handle()&#125;&gt;聚焦
-&#125; 
-handle() &#123; 
- // 通过current属性访问到当前元素 this.myRef.current.focus() 
-&#125; 
-// 函数组件 function
-Foo() &#123; const inputEl = useRef(null) const handle = () =&gt; &#123; inputEl.current.focus() &#125; 
-return
-&lt;input type=&quot;text&quot; ref=&#123; inputEl &#125;/&gt; 聚焦&#125;
-</code></pre>
-<h3 id="♥︎♥︎♥︎-组件绑定和js原生绑定事件哪个先执行？"><a href="#♥︎♥︎♥︎-组件绑定和js原生绑定事件哪个先执行？" class="headerlink" title="♥︎♥︎♥︎ 组件绑定和js原生绑定事件哪个先执行？"></a>♥︎♥︎♥︎ 组件绑定和js原生绑定事件哪个先执行？</h3><p> 先执行js原生绑定事件，再执行合成事件，因为合成事件是发生在冒泡阶段</p>
-<h3 id="♥︎♥︎♥︎-diff-和-Key-之间的联系"><a href="#♥︎♥︎♥︎-diff-和-Key-之间的联系" class="headerlink" title="♥︎♥︎♥︎ diff 和 Key 之间的联系"></a>♥︎♥︎♥︎ diff 和 Key 之间的联系</h3><p>diff算法即差异查找算法，对于DOM结构即为tree的差异查找算法，只有在React更新阶段才会有Diff算法的运用；react的diff运算为了降低时间复杂度，是按层比较新旧两个虚拟dom树的。diff运算的主要流程见下：</p>
-<pre><code class="css">1、tree diff : 新旧两棵dom树，逐层对比的过程就是 tree diff, 当整棵DOM树逐层对比完毕，则所有需要被按需更新的元素，必然能够被找到。 
-2、component diff ： 在进行tree diff的时候，每一层中，都有自己的组件，组件级别的对比， 叫做 component diff。如果对比前后，组件的类型相同，则暂时认为此组件不需要更新；如果对比前后， 组件的类型不同，则需要移除旧组件，创建新组件，并渲染到页面上。 React只会匹配类型相同的组件，也就是说如果&lt;A&gt;被&lt;B&gt;替换，那么React将直接删除A组件然后创建一 个B组件；如果某组件A转移到同层B组件上，那么这个A组件会先被销毁，然后在B组件下重新生成，以A为根节 点的树整个都被重新创建，这会比较耗费性能，但实际上我们很少跨层移动dom节点，一般都是同层横向移动； 
-3、element diff ：在进行组件对比的时候，如果两个组件类型相同，则需要进行元素级别的对比， 这叫做element diff。 对于列表渲染，react会在创建时要求为每一项输入一个独一无二的key，这样就能进行高效的diff运算 了。比如我们要在b和c节点中间插入一个节点f，jquery会将f这个节点后面的每一个节点都进行更新，比如c 更新成f，d更新成c，e更新成d，这样操作的话就会特别多，而加了key的react咋不会频繁操作dom，而是优先采用移动的方式，找到正确的位置去插入新节点；所以我们不能省略key值，因为在对比两个新旧的子元素是通过key值来精确地判断两个节点是否为同一个，如果没有key的话则是见到谁就更新谁，非常耗费性能。 
-
-当我们通过this.setState()改变数据的时候，React会将其标记为脏节点，在事件循环的最后 才会重新渲染所有的脏节点以及脏节点的子树；另外我们可以使用shouldComponentUpdate这个生命周期来 选择性的渲染子树，可以基于组件之前的状态或者下一个状态来决定它是否需要重新渲染，这样的话可以组织 重新渲染大的子树。
-</code></pre>
-<h3 id="♥︎♥︎♥︎-虚拟-dom-和原生-dom"><a href="#♥︎♥︎♥︎-虚拟-dom-和原生-dom" class="headerlink" title="♥︎♥︎♥︎ 虚拟 dom 和原生 dom"></a>♥︎♥︎♥︎ 虚拟 dom 和原生 dom</h3><p>（1）原生dom是浏览器通过dom树渲染的复杂对象，属性非常多；</p>
-<p> （2）虚拟dom是存在于内存中的js对象，属性远少于原生的dom对象，它用来描述真实的dom，并不会直接在浏览器中显示；</p>
-<p> （3）原生dom操作、频繁排版与重绘的效率是相当低的，虚拟dom则是利用了计算机内存高效的运算性能减少了性能的损耗；</p>
-<p> （4）虚拟DOM进行频繁修改，然后一次性比较并修改真实DOM中需要改的部分，最后并在真实DOM中对修改部分进行排版与重绘，减少过多DOM节点排版与重绘损耗</p>
-<h3 id="♥︎♥︎♥︎-react中如何打包上传图片文件"><a href="#♥︎♥︎♥︎-react中如何打包上传图片文件" class="headerlink" title="♥︎♥︎♥︎ react中如何打包上传图片文件"></a>♥︎♥︎♥︎ react中如何打包上传图片文件</h3><p>通过 base64 前端处理图片为 base64 的解决方案</p>
-<ul>
-<li>利用 FileReader 对数据进行读取，如果是图片会将图片读取为 base64 的形式</li>
-<li>将得到的 base64 的字符串传给后端</li>
-<li>后端直接保存该html字符串，之后调用接口查询该数据直接前端通过img标签完成自动解析即可</li>
-</ul>
-<p>代码实现：</p>
-<pre><code class="react">function App() &#123;
-  const handleFileChange = e =&gt; &#123;
-    const file = e.currentTarget.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function() &#123;
-      // reader.results当完成onload后会将图片转为base64
-      // 后端只要解析base64对应的字符串即可
-      const result = this.result;
-      console.log(result);
-    &#125;;
-
-    reader.readAsDataURL(file); // 得到经过base64编码的图片信息
-  &#125;;
-
-  return (
-    &lt;div className=&quot;App&quot;&gt;
-      &lt;input type=&quot;file&quot; onChange=&#123;handleFileChange&#125; /&gt;
-    &lt;/div&gt;
-  );
-&#125;
-</code></pre>
-<p>利用input,xhr,formData来实现</p>
-<ul>
-<li>利用input[type&#x3D;‘file’]来实现</li>
-<li>点击选择文件，且选择文件完毕后，触发onChange事件</li>
-<li>通过event.targer.files(react中)获取所选文件</li>
-<li>通过FormData这个类，将文件添加到其实例中</li>
-<li>配置xhr，通过POST的方式发送formData到后端即可</li>
-</ul>
-<p>代码实现：</p>
-<pre><code class="react">import React, &#123; useState &#125; from &#39;react&#39;;
-import &#123; ApiHost &#125; from &#39;../../constant&#39;;
-import &#123; Button, FormControl, Progress &#125; from &#39;zent&#39;;
-
-export type UploadCompletCallback&lt;T&gt; = (
-  e: ProgressEvent&lt;XMLHttpRequestEventTarget&gt;,
-  reponse: T
-) =&gt; void;
-
-export type UploadStartCallback = (
-  e: ProgressEvent&lt;XMLHttpRequestEventTarget&gt;
-) =&gt; void;
-
-export type UploadProcessCallback = (loaded: number, total: number) =&gt; void;
-
-interface Props &#123;
-  onComplete?: UploadCompletCallback&lt;any&gt;;
-  onStart?: UploadStartCallback;
-  onProcess?: UploadProcessCallback;
-  hasProcess?: boolean;
-  title: string;
-&#125;
-
-export const UploadBtn: React.FC&lt;Props&gt; = props =&gt; &#123;
-  const &#123; onComplete, onStart, onProcess, hasProcess = false, title &#125; = props;
-  const [progress, setProgress] = useState&lt;number&gt;(0);
-  const [uploadStatus, setStatus] = useState&lt;boolean&gt;(false);
-
-  // 处理文件上传的核心方法
-  const handleChange = (e: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; &#123;
-    const files = e.target.files;
-
-    if (files) &#123;
-      if (!files.length) return;
-
-  // 将文件处理成formData
-      let formData = new FormData();
-      for (let k in files) &#123;
-        formData.append(&#39;file&#39;, files[k], window.encodeURI(files[k].name));
-      &#125;
-
-      let xhr = new XMLHttpRequest();
-
-      xhr.responseType = &#39;json&#39;;
-      xhr.timeout = 5000;
-      xhr.open(&#39;POST&#39;, `$&#123;ApiHost&#125;/user/upload`, true);
-
-   // 事件监听
-      xhr.addEventListener(&#39;loadstart&#39;, e =&gt; &#123;
-        setProgress(0);
-        setStatus(true);
-        onStart &amp;&amp; onStart(e);
-      &#125;);
-
-      xhr.upload.onprogress = function(e) &#123;
-        const &#123; total, loaded &#125; = e;
-        setProgress((loaded / total) * 100);
-        onProcess &amp;&amp; onProcess(loaded, total);
-      &#125;;
-
-      xhr.addEventListener(&#39;load&#39;, e =&gt; &#123;
-        const result = xhr.response;
-        onComplete &amp;&amp; onComplete(e, result);
-      &#125;);
-
-      xhr.send(formData);
-    &#125; else &#123;
-      return;
-    &#125;
-  &#125;;
-
-  const selectFile = () =&gt; &#123;
-    const btn = document.querySelector(&quot;input[type=&#39;file&#39;]&quot;);
-    
- //@ts-ignore
-    btn &amp;&amp; btn.click();
-  &#125;;
-  return (
-    &lt;FormControl label=&#123;title&#125;&gt;
-      &lt;input type=&quot;file&quot; onChange=&#123;handleChange&#125; style=&#123;&#123; display: 'none' &#125;&#125; /&gt;
-      &lt;Button onClick=&#123;selectFile&#125;&gt;上传&lt;/Button&gt;
-      &#123;hasProcess &amp;&amp; uploadStatus &amp;&amp; &lt;Progress percent=&#123;progress&#125;&gt;&lt;/Progress&gt;&#125;
-    &lt;/FormControl&gt;
-  );
-&#125;;
-</code></pre>
-<p>后端对于该文件上传请求的处理nodejs版本</p>
-<p>主要步骤：</p>
-<ul>
-<li>利用fs.createReadStream 来读取本地的传过去文件的地址</li>
-<li>利用fs.createWriteStream来写到服务器上的某个文件地址</li>
-<li>通过reader.pipe来将readFile里面的内容复制到writeFile中</li>
-</ul>
-<h3 id="♥︎♥︎♥︎-对单向数据流和双向数据绑定的理解，好处？"><a href="#♥︎♥︎♥︎-对单向数据流和双向数据绑定的理解，好处？" class="headerlink" title="♥︎♥︎♥︎ 对单向数据流和双向数据绑定的理解，好处？"></a>♥︎♥︎♥︎ 对单向数据流和双向数据绑定的理解，好处？</h3><p>react的单向数据流是指只允许父组件向子组件传递数据，子组件绝对不能修改父组件传的数据，如果想要修改数据，则要在子组件中执行父组件传递过来的回调函数，提醒父组件对数据进行修改。数据单向流让所有的状态改变可以追溯，有利于应用的可维护性；</p>
-<p> angular中实现了双向数据绑定，代码编写方便，但是不利于维护</p>
-<h3 id="♥︎♥︎♥︎-React-按需加载"><a href="#♥︎♥︎♥︎-React-按需加载" class="headerlink" title="♥︎♥︎♥︎ React 按需加载"></a>♥︎♥︎♥︎ React 按需加载</h3><p>1、使用React.lazy， 但是React.lazy技术还不支持服务端渲染</p>
-<pre><code class="react">const OtherComponent = React.lazy(() =&gt; import(&#39;./OtherComponent&#39;))
-</code></pre>
-<p>2、使用Loadable Components这个库</p>
-<pre><code class="react">import loadable from &#39;@loadable/component&#39;
-const OtherComponent = loadable(() =&gt; import(&#39;./OtherComponent&#39;))
-</code></pre>
-<h3 id="♥︎♥︎♥︎-React-实现目录树（组件自身调用自身）"><a href="#♥︎♥︎♥︎-React-实现目录树（组件自身调用自身）" class="headerlink" title="♥︎♥︎♥︎ React 实现目录树（组件自身调用自身）"></a>♥︎♥︎♥︎ React 实现目录树（组件自身调用自身）</h3><p>需求描述：实现n级属性目录展开，该实现使用react，antd-mobile</p>
-<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><pre><code class="react">import TreesMenu from &quot;./treeMenu.jsx&quot;;
-&lt;TreesMenu
-       datas=&#123;treesData&#125;
-       onselected=&#123;item =&gt; &#123;
-           console.log(&quot;选择了树形目录的数据：&quot;, item);
-       &#125;&#125;
-&gt;&lt;/TreesMenu&gt;
-</code></pre>
-<h4 id="实现数据"><a href="#实现数据" class="headerlink" title="实现数据"></a>实现数据</h4><pre><code class="react">export let treesData = [&#123;&quot;Childs&quot;:[&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;班子成员&quot;,&quot;ShortName&quot;:&quot;班子成员&quot;,&quot;DeptCode&quot;:&quot;81&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408498041056&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;调研员&quot;,&quot;ShortName&quot;:&quot;调研员&quot;,&quot;DeptCode&quot;:&quot;82&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408531598048&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;党政办公室&quot;,&quot;ShortName&quot;:&quot;党政办公室&quot;,&quot;DeptCode&quot;:&quot;83&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408548375776&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;党政办公室（财务）&quot;,&quot;ShortName&quot;:&quot;党政办公室（财务）&quot;,&quot;DeptCode&quot;:&quot;84&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408581929184&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;党建办公室&quot;,&quot;ShortName&quot;:&quot;党建办公室&quot;,&quot;DeptCode&quot;:&quot;85&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408598709728&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;平安办公室&quot;,&quot;ShortName&quot;:&quot;平安办公室&quot;,&quot;DeptCode&quot;:&quot;86&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408615482336&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;信访办公室&quot;,&quot;ShortName&quot;:&quot;信访办公室&quot;,&quot;DeptCode&quot;:&quot;87&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408632263392&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;管理办公室&quot;,&quot;ShortName&quot;:&quot;管理办公室&quot;,&quot;DeptCode&quot;:&quot;88&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408649039584&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;自治办公室&quot;,&quot;ShortName&quot;:&quot;自治办公室&quot;,&quot;DeptCode&quot;:&quot;89&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408665815776&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;综合事务办公室&quot;,&quot;ShortName&quot;:&quot;综合事务办公室&quot;,&quot;DeptCode&quot;:&quot;90&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408665819872&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;监察办公室&quot;,&quot;ShortName&quot;:&quot;监察办公室&quot;,&quot;DeptCode&quot;:&quot;91&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408682596576&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;武装部&quot;,&quot;ShortName&quot;:&quot;武装部&quot;,&quot;DeptCode&quot;:&quot;92&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408699368672&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;司法所&quot;,&quot;ShortName&quot;:&quot;司法所&quot;,&quot;DeptCode&quot;:&quot;93&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408699371232&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;城运中心&quot;,&quot;ShortName&quot;:&quot;城运中心&quot;,&quot;DeptCode&quot;:&quot;94&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408716144864&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;工会&quot;,&quot;ShortName&quot;:&quot;工会&quot;,&quot;DeptCode&quot;:&quot;95&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408749699296&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;团委&quot;,&quot;ShortName&quot;:&quot;团委&quot;,&quot;DeptCode&quot;:&quot;96&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408749700320&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;妇联&quot;,&quot;ShortName&quot;:&quot;妇联&quot;,&quot;DeptCode&quot;:&quot;97&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408749703648&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;房管办&quot;,&quot;ShortName&quot;:&quot;房管办&quot;,&quot;DeptCode&quot;:&quot;98&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408749704672&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;安监所&quot;,&quot;ShortName&quot;:&quot;安监所&quot;,&quot;DeptCode&quot;:&quot;99&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408766480352&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;党建服务中心&quot;,&quot;ShortName&quot;:&quot;党建服务中心&quot;,&quot;DeptCode&quot;:&quot;100&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408783258080&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;社区事务受理中心&quot;,&quot;ShortName&quot;:&quot;社区事务受理中心&quot;,&quot;DeptCode&quot;:&quot;101&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408816808672&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;社区文化中心&quot;,&quot;ShortName&quot;:&quot;社区文化中心&quot;,&quot;DeptCode&quot;:&quot;102&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408917476576&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;社区学校&quot;,&quot;ShortName&quot;:&quot;社区学校&quot;,&quot;DeptCode&quot;:&quot;103&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408951031264&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;绿化市容&quot;,&quot;ShortName&quot;:&quot;绿化市容&quot;,&quot;DeptCode&quot;:&quot;104&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408951033824&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;周家渡城管中队&quot;,&quot;ShortName&quot;:&quot;周家渡城管中队&quot;,&quot;DeptCode&quot;:&quot;105&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408967806688&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;商会&quot;,&quot;ShortName&quot;:&quot;商会&quot;,&quot;DeptCode&quot;:&quot;106&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408967810016&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;开发人员&quot;,&quot;ShortName&quot;:&quot;开发人员&quot;,&quot;DeptCode&quot;:&quot;107&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073408967811040&#125;,&#123;&quot;Childs&quot;:[&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南八村&quot;,&quot;ShortName&quot;:&quot;上南八村&quot;,&quot;DeptCode&quot;:&quot;109&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409034918368&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南四村&quot;,&quot;ShortName&quot;:&quot;上南四村&quot;,&quot;DeptCode&quot;:&quot;110&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409051695840&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南五村&quot;,&quot;ShortName&quot;:&quot;上南五村&quot;,&quot;DeptCode&quot;:&quot;111&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409068471776&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南六村&quot;,&quot;ShortName&quot;:&quot;上南六村&quot;,&quot;DeptCode&quot;:&quot;112&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409102022368&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南七村&quot;,&quot;ShortName&quot;:&quot;上南七村&quot;,&quot;DeptCode&quot;:&quot;113&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409118800352&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南九村&quot;,&quot;ShortName&quot;:&quot;上南九村&quot;,&quot;DeptCode&quot;:&quot;114&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409135576544&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;齐河一&quot;,&quot;ShortName&quot;:&quot;齐河一&quot;,&quot;DeptCode&quot;:&quot;115&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409152353760&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;齐河二&quot;,&quot;ShortName&quot;:&quot;齐河二&quot;,&quot;DeptCode&quot;:&quot;116&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409152360928&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南十村1&quot;,&quot;ShortName&quot;:&quot;上南十村1&quot;,&quot;DeptCode&quot;:&quot;117&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409169135840&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南十二村&quot;,&quot;ShortName&quot;:&quot;上南十二村&quot;,&quot;DeptCode&quot;:&quot;118&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409185911520&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南十村2&quot;,&quot;ShortName&quot;:&quot;上南十村2&quot;,&quot;DeptCode&quot;:&quot;119&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409202686432&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南十一村&quot;,&quot;ShortName&quot;:&quot;上南十一村&quot;,&quot;DeptCode&quot;:&quot;120&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409219461344&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;都市庭院&quot;,&quot;ShortName&quot;:&quot;都市庭院&quot;,&quot;DeptCode&quot;:&quot;121&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409219466976&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;川新&quot;,&quot;ShortName&quot;:&quot;川新&quot;,&quot;DeptCode&quot;:&quot;122&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409236243680&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;雪野二村&quot;,&quot;ShortName&quot;:&quot;雪野二村&quot;,&quot;DeptCode&quot;:&quot;123&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409253021152&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南花苑&quot;,&quot;ShortName&quot;:&quot;上南花苑&quot;,&quot;DeptCode&quot;:&quot;124&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409269798368&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;昌里花园&quot;,&quot;ShortName&quot;:&quot;昌里花园&quot;,&quot;DeptCode&quot;:&quot;125&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409286570976&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;恒大&quot;,&quot;ShortName&quot;:&quot;恒大&quot;,&quot;DeptCode&quot;:&quot;126&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409303348192&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南三村&quot;,&quot;ShortName&quot;:&quot;上南三村&quot;,&quot;DeptCode&quot;:&quot;127&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409303353824&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南一村&quot;,&quot;ShortName&quot;:&quot;上南一村&quot;,&quot;DeptCode&quot;:&quot;128&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409320130784&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;上南二村&quot;,&quot;ShortName&quot;:&quot;上南二村&quot;,&quot;DeptCode&quot;:&quot;129&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409336908000&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;昌里五&quot;,&quot;ShortName&quot;:&quot;昌里五&quot;,&quot;DeptCode&quot;:&quot;130&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409353685728&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;云台一&quot;,&quot;ShortName&quot;:&quot;云台一&quot;,&quot;DeptCode&quot;:&quot;131&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409370462176&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;云台二&quot;,&quot;ShortName&quot;:&quot;云台二&quot;,&quot;DeptCode&quot;:&quot;132&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409387237344&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;云莲一&quot;,&quot;ShortName&quot;:&quot;云莲一&quot;,&quot;DeptCode&quot;:&quot;133&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409404012512&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;昌里七&quot;,&quot;ShortName&quot;:&quot;昌里七&quot;,&quot;DeptCode&quot;:&quot;134&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409420789472&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;动迁联合&quot;,&quot;ShortName&quot;:&quot;动迁联合&quot;,&quot;DeptCode&quot;:&quot;135&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409437567200&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;齐河四&quot;,&quot;ShortName&quot;:&quot;齐河四&quot;,&quot;DeptCode&quot;:&quot;146&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409487902688&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;齐河三&quot;,&quot;ShortName&quot;:&quot;齐河三&quot;,&quot;DeptCode&quot;:&quot;147&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409504677856&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;昌里四&quot;,&quot;ShortName&quot;:&quot;昌里四&quot;,&quot;DeptCode&quot;:&quot;148&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409521452768&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;齐河八&quot;,&quot;ShortName&quot;:&quot;齐河八&quot;,&quot;DeptCode&quot;:&quot;149&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409538229984&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;齐河五&quot;,&quot;ShortName&quot;:&quot;齐河五&quot;,&quot;DeptCode&quot;:&quot;150&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409555007968&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;齐河七&quot;,&quot;ShortName&quot;:&quot;齐河七&quot;,&quot;DeptCode&quot;:&quot;151&quot;,&quot;ParentID&quot;:2073409034918112,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409034918112,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409555013600&#125;],&quot;DeptName&quot;:&quot;居委会&quot;,&quot;ShortName&quot;:&quot;居委会&quot;,&quot;DeptCode&quot;:&quot;108&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409034918112&#125;,&#123;&quot;Childs&quot;:[&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;办公室&quot;,&quot;ShortName&quot;:&quot;办公室&quot;,&quot;DeptCode&quot;:&quot;137&quot;,&quot;ParentID&quot;:2073409437571296,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409437571296,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409437571552&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;事务所&quot;,&quot;ShortName&quot;:&quot;事务所&quot;,&quot;DeptCode&quot;:&quot;138&quot;,&quot;ParentID&quot;:2073409437571296,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409437571296,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409454343904&#125;],&quot;DeptName&quot;:&quot;队伍建设办公室&quot;,&quot;ShortName&quot;:&quot;队伍建设办公室&quot;,&quot;DeptCode&quot;:&quot;136&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409437571296&#125;,&#123;&quot;Childs&quot;:[&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;办公室&quot;,&quot;ShortName&quot;:&quot;办公室&quot;,&quot;DeptCode&quot;:&quot;140&quot;,&quot;ParentID&quot;:2073409454347232,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409454347232,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409454347488&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;慈善超市&quot;,&quot;ShortName&quot;:&quot;慈善超市&quot;,&quot;DeptCode&quot;:&quot;141&quot;,&quot;ParentID&quot;:2073409454347232,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409454347232,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409471121632&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;残联&quot;,&quot;ShortName&quot;:&quot;残联&quot;,&quot;DeptCode&quot;:&quot;142&quot;,&quot;ParentID&quot;:2073409454347232,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409454347232,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409471122656&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;计生办&quot;,&quot;ShortName&quot;:&quot;计生办&quot;,&quot;DeptCode&quot;:&quot;143&quot;,&quot;ParentID&quot;:2073409454347232,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409454347232,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409471124448&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;爱卫办&quot;,&quot;ShortName&quot;:&quot;爱卫办&quot;,&quot;DeptCode&quot;:&quot;144&quot;,&quot;ParentID&quot;:2073409454347232,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409454347232,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409487897568&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;老龄办&quot;,&quot;ShortName&quot;:&quot;老龄办&quot;,&quot;DeptCode&quot;:&quot;145&quot;,&quot;ParentID&quot;:2073409454347232,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409454347232,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409487900896&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;居家养老服务中心&quot;,&quot;ShortName&quot;:&quot;居家养老服务中心&quot;,&quot;DeptCode&quot;:&quot;152&quot;,&quot;ParentID&quot;:2073409454347232,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409454347232,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2080463921349388&#125;,&#123;&quot;Childs&quot;:[],&quot;DeptName&quot;:&quot;综合为老服务中心&quot;,&quot;ShortName&quot;:&quot;综合为老服务中心&quot;,&quot;DeptCode&quot;:&quot;153&quot;,&quot;ParentID&quot;:2073409454347232,&quot;Layer&quot;:2,&quot;Path&quot;:&quot;,0,1,2073409454347232,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2080464005240076&#125;],&quot;DeptName&quot;:&quot;服务办公室&quot;,&quot;ShortName&quot;:&quot;服务办公室&quot;,&quot;DeptCode&quot;:&quot;139&quot;,&quot;ParentID&quot;:1,&quot;Layer&quot;:1,&quot;Path&quot;:&quot;,0,1,&quot;,&quot;Sequence&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:0,&quot;ID&quot;:2073409454347232&#125;],&quot;DeptName&quot;:&quot;周家渡街道办事处&quot;,&quot;ShortName&quot;:&quot;周家渡街道办事处&quot;,&quot;DeptCode&quot;:&quot;SHRGBTRJJSYXGS &quot;,&quot;ParentID&quot;:0,&quot;Layer&quot;:0,&quot;Path&quot;:&quot;,0,&quot;,&quot;Sequence&quot;:11,&quot;LeaderID&quot;:0,&quot;ManagerID&quot;:0,&quot;IsEnabled&quot;:1,&quot;IsUnit&quot;:1,&quot;ID&quot;:1,&quot;SystemID&quot;:1&#125;];
-</code></pre>
-<h4 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h4><pre><code class="react">import React from &quot;react&quot;;
-import &#123; Accordion, List &#125; from &quot;antd-mobile&quot;;
-
-class TreesMenu extends React.Component &#123;
-  render() &#123;
-    let datas = this.props.datas;
-    return (
-      &lt;div&gt;
-        &#123;datas instanceof Array ? (
-          &lt;div&gt;
-            &#123;datas.map((d, index) =&gt; &#123;
-              return &lt;TreeNode datas=&#123;d&#125; key=&#123;index&#125; onselected=&#123;(item) =&gt; this.props.onselected(item)&#125;&gt;&lt;/TreeNode&gt;;
-            &#125;)&#125;
-          &lt;/div&gt;
-        ) : (
-          &lt;div&gt;请传入正确格式&lt;/div&gt;
-        )&#125;
-      &lt;/div&gt;
-    );
-  &#125;
-&#125;
-
-export default TreesMenu;
-
-class TreeNode extends React.Component &#123;
-  renderItems(datas) &#123;
-    return (
-      &lt;List className=&quot;my-list&quot;&gt;
-        &lt;List.Item&gt;content 1&lt;/List.Item&gt;
-        &lt;List.Item&gt;content 2&lt;/List.Item&gt;
-        &lt;List.Item&gt;content 3&lt;/List.Item&gt;
-      &lt;/List&gt;
-    );
-  &#125;
-  render() &#123;
-    let data = this.props.datas;
-    return data &amp;&amp; (!data.Childs || data.Childs.length === 0) ? (
-      &lt;div&gt;
-        &lt;List className=&quot;my-list&quot; onClick=&#123;() =&gt; &#123;
-            this.props.onselected(data)
-        &#125;&#125;&gt;
-          &lt;List.Item&gt;&#123;data.DeptName&#125;&lt;/List.Item&gt;
-        &lt;/List&gt;
-      &lt;/div&gt;
-    ) : (
-      &lt;div&gt;
-        &lt;Accordion
-          onChange=&#123;this.onChange&#125;
-        &gt;
-          &lt;Accordion.Panel header=&#123;data.DeptName&#125; className=&quot;tree-accordion-panel&quot;&gt;
-            &#123;data &amp;&amp; data.Childs &amp;&amp; data.Childs.map((item, index) =&gt; &#123;
-              return &lt;TreeNode datas=&#123;item&#125; onselected=&#123;(item) =&gt; this.props.onselected(item)&#125; key=&#123;index&#125;&gt;&lt;/TreeNode&gt;;
-            &#125;)&#125;
-          &lt;/Accordion.Panel&gt;
-        &lt;/Accordion&gt;
-      &lt;/div&gt;
-    );
-  &#125;
-&#125;
-</code></pre>
-<h3 id="♥︎♥︎♥︎-如果我进行三次setState会发生什么"><a href="#♥︎♥︎♥︎-如果我进行三次setState会发生什么" class="headerlink" title="♥︎♥︎♥︎ 如果我进行三次setState会发生什么"></a>♥︎♥︎♥︎ 如果我进行三次setState会发生什么</h3><p> 如果是在原生js空间，则会同步执行，修改三次state的值，调用三次render函数；</p>
-<p>如果是在react函数空间下，则会进行合并，只修改一次state的值，调用一次render。</p>
-<h3 id="♥︎♥︎♥︎-渲染一个react组件的过程"><a href="#♥︎♥︎♥︎-渲染一个react组件的过程" class="headerlink" title="♥︎♥︎♥︎ 渲染一个react组件的过程"></a>♥︎♥︎♥︎ 渲染一个react组件的过程</h3><pre><code class="css">1、babel编译
- 当我们对代码进行编译的时候，babel会将我们在组件中编写的jsx代码转化为React.createElement的表达式，createElement方法有三个参数，分别为type(元素类型）、attributes(元素所有属性)、children(元素所有子节点)；2、生成element
- 当render方法被触发以后，createElement方法会执行，返回一个element对象，这个对象描述了真实节点的信息，其实就是虚拟dom节点；
-3、生成真实节点(初次渲染)
- 这时候我们会判断element的类型，如果是null、false则实例一个ReactDOMEmptyComponent对 象; 是string、number类型的话则实例一个ReactDOMTextComponent对象； 如果element是对象的话，会进一步判断type元素类型，是原生dom元素，则实例化ReactDOMComponent； 如果是自定义组件，则实例化ReactCompositeComponentWrapper；在这些类生成实例对象的时候，在其内部会调用 mountComponent方法，这个方法里面有一系列浏览器原生dom方法，可以将element渲染成真实的dom并插入到文档中；
- 4、生命周期
- componentDidMount：会在组件挂载后(插入DOM树中) 立即调用。一般可以在这里请求数据；
- componentDidUpdate：会在数据更新后立即调用，首次渲染不会执行此方法；可以在其中直接调用 setState，但必须用if语句进行判断，防止死循环；
- conponentWillUnmount：会在组件卸载及销毁之前调用，在此方法中执行必要的清理操作，如清除timer；
- static getDerivedStateFromProps(prps,state)：这个生命周期函数代替了componentWillMount和componentWillUpdate生命周期；props和state发生改变则调用，在初始化挂载及后续更新时都会被调用，返回一个对象来更新state，如果返回null则不更新任何内容；
- shouldComponentUpdate(nextProps,nextState)：这个生命周期函数的返回值用来判断React组件是否因为当前 state 或 props 更改而重新渲染，默认返回值是true；这个方法在初始化渲染或使用forceUpdate()时不会调用；当将旧的state的值原封不动赋值给新的state（即不改变state的值，但是调用了setState）和 无数据交换的父组件的重新渲染都会导致组件重新渲染，这时候都可以通过shouldComponentUpdate来优化。
-</code></pre>
-<h3 id="♥︎♥︎♥︎-useEffect-和-useLayoutEffect-的区别"><a href="#♥︎♥︎♥︎-useEffect-和-useLayoutEffect-的区别" class="headerlink" title="♥︎♥︎♥︎ useEffect 和 useLayoutEffect 的区别"></a>♥︎♥︎♥︎ useEffect 和 useLayoutEffect 的区别</h3><p>useEffect和useLayout都是副作用hooks，两则非常相似，同样都接收两个参数：</p>
-<p> (1)第一个参数为函数，第二个参数为依赖列表，只有依赖更新时才会执行函数；返回一个函数，当页面刷新的或销毁的时候执行return后的代码；</p>
-<p> (2)如果不接受第二个参数，那么在第一次渲染完成之后和每次更新渲染页面的时候，都会调用useEffect的回调函数；</p>
-<blockquote>
-<p>useEffect和 useLayout的主要区别就是他们的执行时机不同，在浏览器中js线程与渲染线程是互斥的，当js线程执行时，渲染线程呈挂起状态，只有当js线程空闲时渲染线程才会执行，将生成的 dom绘制。 </p>
-<p>useLayoutEffect在js线程执行完毕即dom更新之后立即执行，而useEffect是在渲染结束后才执行，也就是说 useLayoutEffect比 useEffect先执行。</p>
-</blockquote>
-<h3 id="♥︎♥︎♥︎-hooks-的使用有什么注意事项"><a href="#♥︎♥︎♥︎-hooks-的使用有什么注意事项" class="headerlink" title="♥︎♥︎♥︎  hooks 的使用有什么注意事项"></a>♥︎♥︎♥︎  hooks 的使用有什么注意事项</h3><p>（1）只能在React函数式组件或自定义Hook中使用Hook。</p>
-<p>（2）不要在循环，条件或嵌套函数中调用Hook，必须始终在React函数的顶层使用Hook。这是因为React需要利用调用顺序来正确更新相应的状态，以及调用相应的钩子函数。一旦在循环或条件分支语句中调用Hook，就容易导致调用顺序的不一致性，从而产生难以预料到的后果。</p>
-<h3 id="♥︎♥︎♥︎-纯函数有什么特点，副作用函数特点"><a href="#♥︎♥︎♥︎-纯函数有什么特点，副作用函数特点" class="headerlink" title="♥︎♥︎♥︎ 纯函数有什么特点，副作用函数特点"></a>♥︎♥︎♥︎ 纯函数有什么特点，副作用函数特点</h3><p>纯函数与外界交换数据只有一个唯一渠道——参数和返回值；函数从函数外部接受的所有输入信息都通过参数传递到该函数内部；函数输出到函数外部的所有信息都通过返回值传递到该函数外部。</p>
-<p> 纯函数的优点：无状态，线程安全；纯函数相互调用组装起来的函数，还是纯函数；应用程序或者运行环境可以对纯函数的运算结果进行缓存，运算加快速度。</p>
-<p> 函数副作用是指当调用函数时，除了返回函数值之外，还对主调用函数产生附加的影响。比如调接口、修改全局变量、抛出一个异常或以一个错误终止、打印到终端或读取用户输入、读取或写入一个文件等，所以说副作用是编程中最关键的部分，因为我们需要跟用户、跟数据进行交互。</p>
-<h3 id="♥︎♥︎♥︎-在构造函数调用-super-并将-props-作为参数传入的作用是啥？"><a href="#♥︎♥︎♥︎-在构造函数调用-super-并将-props-作为参数传入的作用是啥？" class="headerlink" title="♥︎♥︎♥︎ 在构造函数调用 super 并将 props 作为参数传入的作用是啥？"></a>♥︎♥︎♥︎ 在构造函数调用 super 并将 props 作为参数传入的作用是啥？</h3><p>ES6 中在调用 super()方法之前，子类构造函数无法使用this引用，在react的类组件中也是如此；将props 参数传递给 super() 调用的主要原因是在子构造函数中能够通过this.props来获取传入的 props。</p>
-<h3 id="♥︎♥︎♥︎-讲讲什么是-JSX-？"><a href="#♥︎♥︎♥︎-讲讲什么是-JSX-？" class="headerlink" title="♥︎♥︎♥︎ 讲讲什么是 JSX ？"></a>♥︎♥︎♥︎ 讲讲什么是 JSX ？</h3><p>JSX全称为JavaScript XML，是react中的一种语法糖，可以让我们在js代码中脱离字符串直接编写html代码；本身不能被浏览器读取，必须使用@babel&#x2F;preset-react和webpack等工具将其转换为传统的JS。</p>
-<p> 主要有以下特点：</p>
-<p> （1）类XML语法容易接受，结构清晰；</p>
-<p> （2）增强JS语义；</p>
-<p> （3）抽象程度高，屏蔽DOM操作，跨平台；</p>
-<p> （4）代码模块化；</p>
-<h3 id="♥︎♥︎♥︎-为什么不直接更新-state-呢？"><a href="#♥︎♥︎♥︎-为什么不直接更新-state-呢？" class="headerlink" title="♥︎♥︎♥︎ 为什么不直接更新 state 呢？"></a>♥︎♥︎♥︎ 为什么不直接更新 state 呢？</h3><p>如果试图直接更新 state ，则不会重新渲染组件；需要使用setState()方法来更新 state这样组件才会重新渲染；</p>
-<h3 id="♥︎♥︎♥︎-这三个点-…-在-React-干嘛用的？"><a href="#♥︎♥︎♥︎-这三个点-…-在-React-干嘛用的？" class="headerlink" title="♥︎♥︎♥︎ 这三个点(…)在 React 干嘛用的？"></a>♥︎♥︎♥︎ 这三个点(…)在 React 干嘛用的？</h3><p> …是es6语法新出的规范，叫做展开运算符；在react中可以将对象或数组进行展开，让我们操作改变数据结构非常方便。</p>
-<h3 id="♥︎♥︎♥︎-React-中的-useState-是什么？"><a href="#♥︎♥︎♥︎-React-中的-useState-是什么？" class="headerlink" title="♥︎♥︎♥︎ React 中的 useState() 是什么？"></a>♥︎♥︎♥︎ React 中的 useState() 是什么？</h3><p>useState是一个内置的React Hook，可以让我们在函数组件中像类组件一样使用state并且改变state的值。</p>
-<h3 id="♥︎♥︎♥︎-React-中的StrictMode-严格模式-是什么？"><a href="#♥︎♥︎♥︎-React-中的StrictMode-严格模式-是什么？" class="headerlink" title="♥︎♥︎♥︎ React 中的StrictMode(严格模式)是什么？"></a>♥︎♥︎♥︎ React 中的StrictMode(严格模式)是什么？</h3><p>React的StrictMode是一种辅助组件，用包装组件，可以帮助我们编写更好的react组件，不会渲染出任何可见的ui；仅在开发模式下运行，它们不会影响生产构建，可以做以下检查：</p>
-<p> （1）验证内部组件是否遵循某些推荐做法，如果没有，会在控制台给出警告；</p>
-<p> （2）验证是否使用的已经废弃的方法，如果有，会在控制台给出警告；</p>
-<p> （3）通过识别潜在的风险预防一些副作用。</p>
-<h3 id="♥︎♥︎♥︎-为什么类方法需要绑定到类实例？"><a href="#♥︎♥︎♥︎-为什么类方法需要绑定到类实例？" class="headerlink" title="♥︎♥︎♥︎ 为什么类方法需要绑定到类实例？"></a>♥︎♥︎♥︎ 为什么类方法需要绑定到类实例？</h3><p> 在 JS 中，this 值会根据当前上下文变化。在 React 类组件方法中，开发人员通常希望 this 引用组件的当前实例，因此有必要将这些方法绑定到实例。通常这是在构造函数中完成的:</p>
-<h3 id="♥︎♥︎♥︎-这段代码有什么问题吗？"><a href="#♥︎♥︎♥︎-这段代码有什么问题吗？" class="headerlink" title="♥︎♥︎♥︎ 这段代码有什么问题吗？"></a>♥︎♥︎♥︎ 这段代码有什么问题吗？</h3><pre><code class="react">this.setState((prevState, props) =&gt; &#123;
- return &#123;
- streak: prevState.streak + props.count
- &#125;
-&#125;)
-// 没有问题
-</code></pre>
-<h3 id="♥︎♥︎♥︎-如何在-React-的-Props-上应用验证？"><a href="#♥︎♥︎♥︎-如何在-React-的-Props-上应用验证？" class="headerlink" title="♥︎♥︎♥︎ 如何在 React 的 Props 上应用验证？"></a>♥︎♥︎♥︎ 如何在 React 的 Props 上应用验证？</h3><p>1、使用PropTypes进行类型检查</p>
-<p>PropTypes自React v15.5起，请使用这个库prop-types</p>
-<p>2、What &amp; Why &amp; When</p>
-<p>随着应用的不断增长，也是为了使程序设计更加严谨，我们通常需要对数据的类型（值）进行一些必要的验证。出于性能方面的考虑，propTypes仅在开发模式下进行检测,在程序运行时就能检测出错误，不能使用到用户交互提醒用户操作错误等，也可以使用Flow或者TypeScript做类型检查，后期建议用typescript进行替代更好</p>
-<p>3、Where</p>
-<ul>
-<li>class组件</li>
-<li>函数组件</li>
-<li>React.memo高阶组件 可自行扩展</li>
-<li>React.forwardRef组件 可自行扩展</li>
-</ul>
-<p>4、How</p>
-<p>我们在组件类下添加一个静态属性 propTypes (属性名不能更改)，它的值也是一个对象，用来设置组件中props的验证规则，key 是要验证的属性名称，value 是验证规则。</p>
-<pre><code class="react">// 类组件
-import PropTypes from &#39;prop-types&#39;;
-class Greeting extends React.Component &#123;
- render() &#123;
- return ()
- &#125;
-</code></pre>
-<h3 id="♥︎♥︎♥︎-如何有条件地向-React-组件添加属性？"><a href="#♥︎♥︎♥︎-如何有条件地向-React-组件添加属性？" class="headerlink" title="♥︎♥︎♥︎ 如何有条件地向 React 组件添加属性？"></a>♥︎♥︎♥︎ 如何有条件地向 React 组件添加属性？</h3><p>对于某些属性，React足够智能可以忽略该属性，比如值为boolean值属性的值也可以写控制语句管理是否给组件添加属性</p>
-<h3 id="♥︎♥︎♥︎-如何避免组件的重新渲染？"><a href="#♥︎♥︎♥︎-如何避免组件的重新渲染？" class="headerlink" title="♥︎♥︎♥︎ 如何避免组件的重新渲染？"></a>♥︎♥︎♥︎ 如何避免组件的重新渲染？</h3><ol>
-<li>当porps&#x2F;state改变时组件会执行render函数也就是重新渲染</li>
-<li>class组件中使用shouldComponentUpdate钩子函数</li>
-<li>PureComponent默认有避免重新渲染的功能</li>
-<li>函数组件使用高阶组件memo处理</li>
-</ol>
-<h3 id="♥︎♥︎♥︎-什么是纯函数？"><a href="#♥︎♥︎♥︎-什么是纯函数？" class="headerlink" title="♥︎♥︎♥︎ 什么是纯函数？"></a>♥︎♥︎♥︎ 什么是纯函数？</h3><p>一个不会更改入参，且多次调用下相同的入参始终返回相同的结果</p>
-<h3 id="♥︎♥︎♥︎-如何避免在React重新绑定实例？"><a href="#♥︎♥︎♥︎-如何避免在React重新绑定实例？" class="headerlink" title="♥︎♥︎♥︎ 如何避免在React重新绑定实例？"></a>♥︎♥︎♥︎ 如何避免在React重新绑定实例？</h3><ol>
-<li>将事件处理程序定义为内联箭头函数</li>
-<li>使用箭头函数来定义方法</li>
-<li>使用带有 Hooks 的函数组件</li>
-</ol>
-<h3 id="♥︎♥︎♥︎-在js原生事件中-onclick-和-jsx-里-onclick-的区别"><a href="#♥︎♥︎♥︎-在js原生事件中-onclick-和-jsx-里-onclick-的区别" class="headerlink" title="♥︎♥︎♥︎ 在js原生事件中 onclick 和 jsx 里 onclick 的区别"></a>♥︎♥︎♥︎ 在js原生事件中 onclick 和 jsx 里 onclick 的区别</h3><p>1、js原生中</p>
-<p>onclick添加事件处理函数是在全局环境下执行，污染了全局环境，且给很多dom元素添加onclick事件，影响网页的性能，同时如果动态的从dom树种删除了该元素，还要手动注销事件处理器，不然就可能造成内存泄露</p>
-<p>2、jsx里的onClick</p>
-<p>挂载的函数都控制在组件范围内，不会污染全局空间</p>
-<p>jsx中不是直接使用onclick，而是采取了事件委托的方式，挂载最顶层DOM节点，所有点击事件被这个事件捕获，然后根据具体组件分配给特定函数，性能当然比每个onClick都挂载一个事件处理函数要高，加上React控制了组件的生命周期，在unmount的时候自然能够清除相关的所有事件处理函数，内存泄露不再是一个问题</p>
-<h3 id="♥︎♥︎♥︎-React组件间信息传递"><a href="#♥︎♥︎♥︎-React组件间信息传递" class="headerlink" title="♥︎♥︎♥︎ React组件间信息传递"></a>♥︎♥︎♥︎ React组件间信息传递</h3><p>1.（父组件）向（子组件）传递信息 : porps传值</p>
-<p>2.（父组件）向更深层的（子组件） 进行传递信息 : context</p>
-<p>3.（子组件）向（父组件）传递信息：callback</p>
-<p>4.没有任何嵌套关系的组件之间传值（比如：兄弟组件之间传值）: 利用共同父组件context通信、自定义事件</p>
-<p>5.利用react-redux进行组件之间的状态信息共享 : 组件间状态信息共享：redux、flux、mobx等</p>
-<h3 id="♥︎♥︎♥︎-React状态管理工具有哪些？redux-actionCreator都有什么？"><a href="#♥︎♥︎♥︎-React状态管理工具有哪些？redux-actionCreator都有什么？" class="headerlink" title="♥︎♥︎♥︎ React状态管理工具有哪些？redux actionCreator都有什么？"></a>♥︎♥︎♥︎ React状态管理工具有哪些？redux actionCreator都有什么？</h3><p>简单状态管理：组件内部state、基于Context API封装</p>
-<p>复杂状态管理：redux(单项数据流)、mobx(响应式数据流)、RxJS(stream)、dva</p>
-<p>创建各种action，包含同步、异步，然后在组件中通过dispatch调用</p>
-<h3 id="♥︎♥︎♥︎-vuex-和-redux-的区别？"><a href="#♥︎♥︎♥︎-vuex-和-redux-的区别？" class="headerlink" title="♥︎♥︎♥︎  vuex 和 redux 的区别？"></a>♥︎♥︎♥︎  vuex 和 redux 的区别？</h3><h4 id="vuex的流向："><a href="#vuex的流向：" class="headerlink" title="vuex的流向："></a>vuex的流向：</h4><p>view——&gt;commit——&gt;mutations——&gt;state变化——&gt;view变化（同步操作）<br>view——&gt;dispatch——&gt;actions——&gt;mutations——&gt;state变化——&gt;view变化（异步操作）</p>
-<h4 id="redux的流向："><a href="#redux的流向：" class="headerlink" title="redux的流向："></a>redux的流向：</h4><p>view——&gt;actions——&gt;reducer——&gt;state变化——&gt;view变化（同步异步一样）</p>
-<h4 id="Redux相对于Flux的改进："><a href="#Redux相对于Flux的改进：" class="headerlink" title="Redux相对于Flux的改进："></a>Redux相对于Flux的改进：</h4><p>（1）把store和Dispatcher合并,结构更加简单清晰</p>
-<p>新增state角色，代表每个时间点store对应的值，对状态的管理更加明确</p>
-<p>Redux数据流的顺序是:</p>
-<p>（2）View调用store.dispatch发起Action-&gt;store接受Action(action传入reducer函数,reducer函数返回一个新的state)-&gt;通知store.subscribe订阅的重新渲染函数</p>
-<p>Vuex是专门为Vue设计的状态管理框架, 同样基于Flux架构，并吸收了Redux的优点</p>
-<h4 id="Vuex相对于Redux的不同点有"><a href="#Vuex相对于Redux的不同点有" class="headerlink" title="Vuex相对于Redux的不同点有:"></a>Vuex相对于Redux的不同点有:</h4><p>（1）改进了Redux中的Action和Reducer函数，以mutations变化函数取代Reducer，无需switch,只需在对应的mutation函数里改变state值即可</p>
-<p>（2）由于Vue自动重新渲染的特性，无需订阅重新渲染函数，只要生成新的State即可</p>
-<p>（3）Vuex数据流的顺序是:View调用store.commit提交对应的请求到Store中对应的mutation函数-&gt;store改变(vue检测到数据变化自动渲染)</p>
-<h3 id="♥︎♥︎♥︎-Redux遵循的三个原则是什么？"><a href="#♥︎♥︎♥︎-Redux遵循的三个原则是什么？" class="headerlink" title="♥︎♥︎♥︎  Redux遵循的三个原则是什么？"></a>♥︎♥︎♥︎  Redux遵循的三个原则是什么？</h3><p>1、单一数据源</p>
-<p>整个应用的state被存储在一棵object tree中，并且整个 object tree 只存在于唯一一个 store 中</p>
-<p>2、State是只读的</p>
-<p>唯一改变state的方法就是触发 action，action是一个描述已发生事件的普通对象，这样确保视图和网络请求不能直接修改state</p>
-<p>3、使用纯函数来执行修改</p>
-<p>为了描述action如何改变state tree，你需要编写reducers</p>
-<h3 id="♥︎♥︎♥︎-React中的keys的作用是什么？"><a href="#♥︎♥︎♥︎-React中的keys的作用是什么？" class="headerlink" title="♥︎♥︎♥︎  React中的keys的作用是什么？"></a>♥︎♥︎♥︎  React中的keys的作用是什么？</h3><p>key 是用来帮助 react 识别哪些内容被更改、添加或者删除。key 需要写在用数组渲染出来的元素内部，并且需要赋予其一个稳定的值。稳定在这里很重要，因为如果 key 值发生了变更，react 则会触发 UI 的重渲染。这是一个非常有用的特性。</p>
-<p>1、key 的唯一性</p>
-<p>在相邻的元素间，key 值必须是唯一的，如果出现了相同的 key，同样会抛出一个 Warning，告诉相邻组件间有重复的 key 值。并且只会渲染第一个重复 key 值中的元素，因为 react 会认为后续拥有相同key 的都是同一个组件。</p>
-<p>2、key 值不可读</p>
-<p>虽然我们在组件上定义了 key，但是在其子组件中，我们并没有办法拿到 key 的值，因为 key 仅仅是给react 内部使用的。如果我们需要使用到 key 值，可以通过其他方式传入，比如将 key 值赋给 id 等</p>
-<h3 id="♥︎♥︎♥︎-redux中使用setState不能立刻获取值，怎么办"><a href="#♥︎♥︎♥︎-redux中使用setState不能立刻获取值，怎么办" class="headerlink" title="♥︎♥︎♥︎  redux中使用setState不能立刻获取值，怎么办"></a>♥︎♥︎♥︎  redux中使用setState不能立刻获取值，怎么办</h3><p>setState 只在合成事件和钩子函数中是异步的，在原生事件和 setTimeout 中都是同步</p>
-<p>①addeventListener添加的事件或者dom事件中触发</p>
-<p>②setState接收的参数还可以是一个函数，在这个函数中可以拿先前的状态，并通过这个函数的返回值得到下一个状态。</p>
-<pre><code class="react"> this.setState((preState) =&gt; &#123;
- return &#123;
- xxx: preState.xxx + yyy
- &#125;
-&#125;)
-</code></pre>
-<p>③async&#x2F;await 异步调用处理</p>
-<h3 id="♥︎♥︎♥︎-React新老版生命周期函数"><a href="#♥︎♥︎♥︎-React新老版生命周期函数" class="headerlink" title="♥︎♥︎♥︎  React新老版生命周期函数"></a>♥︎♥︎♥︎  React新老版生命周期函数</h3><h4 id="New-Version"><a href="#New-Version" class="headerlink" title="New Version"></a>New Version</h4><p>挂载：constructor –&gt; getDerivedStateFromProps –&gt; render –&gt; componentDidMount</p>
-<p>更新：</p>
-<p>setState() –&gt; getDerivedStateFromProps –&gt; shouldComponentUpdate –&gt; render –&gt;getSnapshotBeforeUpdate –&gt; componentDidUpdate</p>
-<p>forceUpdate() –&gt; getDerivedStateFromProps –&gt; render –&gt; getSnapshotBeforeUpdate –&gt;componentDidUpdate</p>
-<p>卸载： componentWillUnmount</p>
-<h4 id="Old-Version"><a href="#Old-Version" class="headerlink" title="Old Version"></a>Old Version</h4><p>挂载：constructor –&gt; getDerivedStateFromProps –&gt; render –&gt; ComponentDidMount</p>
-<p>更新：</p>
-<p>New props –&gt; getDerivedStateFromProps –&gt; shouldComponentUpdate –&gt; render –&gt;getSnapshotBeforeUpdate –&gt; componentDidUpdate</p>
-<p>setState() –&gt; shouldComponentUpdate –&gt; render –&gt; getSnapshotBeforeUpdate –&gt;componentDidUpdate</p>
-<p>forceUpdate() –&gt; render –&gt; getSnapshotBeforeUpdate –&gt; componentDidUpdate</p>
-<p>卸载：componentWillUnmount</p>
-<h3 id="♥︎♥︎♥︎-React中怎么让-setState-同步更新？"><a href="#♥︎♥︎♥︎-React中怎么让-setState-同步更新？" class="headerlink" title="♥︎♥︎♥︎ React中怎么让 setState 同步更新？"></a>♥︎♥︎♥︎ React中怎么让 setState 同步更新？</h3><p>setState 回调，setState,第二个参数是一个回调函数，可实现同步</p>
-<p>引入 Promise 封装 setState，在调用时我们可以使用 Async&#x2F;Await 语法来优化代码风格</p>
-<pre><code class="react">setStateAsync(state) &#123;
- return new Promise((resolve) =&gt; &#123;
- this.setState(state, resolve)
- &#125;);
-&#125;
-
-//传入状态计算函数， setState 的第一个参数，
-this.setState((prevState, props) =&gt; (&#123; count: prevState.count + 1
-&#125;));
-
-//在 setTimeout 函数中调用 setState
-</code></pre>
-<h3 id="♥︎♥︎♥︎-为什么不建议在-componentWillMount-做AJAX操作"><a href="#♥︎♥︎♥︎-为什么不建议在-componentWillMount-做AJAX操作" class="headerlink" title="♥︎♥︎♥︎ 为什么不建议在 componentWillMount 做AJAX操作"></a>♥︎♥︎♥︎ 为什么不建议在 componentWillMount 做AJAX操作</h3><p>Fiber原因，React16之后，采用了Fiber架构，只有componentDidMount的生命周期函数确定会执行一次，其他像componentWillMount可能会执行多次</p>
-<p>render 阶段 可能会被React暂停，中止或重启</p>
-<h3 id="♥︎♥︎♥︎-怎么用useEffect模拟生命周期函数？"><a href="#♥︎♥︎♥︎-怎么用useEffect模拟生命周期函数？" class="headerlink" title="♥︎♥︎♥︎ 怎么用useEffect模拟生命周期函数？"></a>♥︎♥︎♥︎ 怎么用useEffect模拟生命周期函数？</h3><ul>
-<li>默认函数组件没有生命周期</li>
-<li>函数组件是一个纯函数，执行完即销毁，自己无法实现生命周期</li>
-<li>通过Effect hook把生命周期“钩”到纯函数中</li>
-</ul>
-<pre><code class="react">    // 模拟 class 组件的 DidMount 和 DidUpdate
-    useEffect(() =&gt; &#123;
-      console.log(&#39;在此发送一个 ajax 请求&#39;)
-    &#125;)
- 
-    // 模拟 class 组件的 DidMount
-     useEffect(() =&gt; &#123;
-        console.log(&#39;加载完了&#39;)
-     &#125;, []) // 第二个参数是 [] （不依赖于任何 state）
- 
-     // 模拟 class 组件的 DidUpdate
-     useEffect(() =&gt; &#123;
-         console.log(&#39;更新了&#39;)
-     &#125;, [count, name]) // 第二个参数就是依赖的 state
- 
-    // 模拟 class 组件的 DidMount
-    useEffect(() =&gt; &#123;
-        let timerId = window.setInterval(() =&gt; &#123;
-            console.log(Date.now())
-        &#125;, 1000)
- 
-        // 返回一个函数
-        // 模拟 WillUnMount 组件销毁的时候 停止计时器
-        return () =&gt; &#123;
-            window.clearInterval(timerId)
-        &#125;
-    &#125;, [])
-</code></pre>
-<ul>
-<li>模拟componentDidMount  -  useEffect 依赖 [ ]</li>
-<li>模拟compenentDidUpdate - useEffect 无依赖 ，或者 依赖 [a,b,c]</li>
-<li>模拟componentWillUnMount - useEffect 中返回一个函数</li>
-</ul>
-<h3 id="♥︎♥︎♥︎-各种useEffect使用情况？"><a href="#♥︎♥︎♥︎-各种useEffect使用情况？" class="headerlink" title="♥︎♥︎♥︎ 各种useEffect使用情况？"></a>♥︎♥︎♥︎ 各种useEffect使用情况？</h3><p>1、默认情况下，它在第一次渲染之后和每次更新之后都会执行，无需清除的effect</p>
-<pre><code class="react">// 在函数式组件中 在 return之前
-// Similar to componentDidMount and componentDidUpdate:
- useEffect(() =&gt; &#123;
- // Update the document title using the browser API
- document.title = You clicked $&#123;count&#125; times ;
- &#125;);
-</code></pre>
-<p>2、需要清除的effect：React 会在组件卸载的时候执行清除操作</p>
-<pre><code class="react"> useEffect(() =&gt; &#123;
- function handleStatusChange(status) &#123;
- setIsOnline(status.isOnline);
- &#125;
- ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
- // Specify how to clean up after this effect:
- return function cleanup() &#123;
- ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
- &#125;;
- &#125;);
-</code></pre>
-<p>3、使用多个effect实现关注点的分离</p>
-<p>把类组件中的分散在多个生命周期中的同一件事件的处理，合并到同一个effect中处理</p>
-<p>4、通过跳过effect进行性能优化</p>
-<pre><code class="react">useEffect(() =&gt; &#123;
- document.title = You clicked $&#123;count&#125; times ;
-&#125;, [count]); // 仅在 count 更改时更新
-</code></pre>
-<h3 id="♥︎♥︎♥︎-useCallback是干什么的？使用useCallback有什么好处？"><a href="#♥︎♥︎♥︎-useCallback是干什么的？使用useCallback有什么好处？" class="headerlink" title="♥︎♥︎♥︎  useCallback是干什么的？使用useCallback有什么好处？"></a>♥︎♥︎♥︎  useCallback是干什么的？使用useCallback有什么好处？</h3><p>把内联回调函数及依赖项数组作为参数传入 useCallback，它将返回该回调函数的 memoized(缓存)版本，该回调函数仅在某个依赖项改变时才会更新 好处 当你把回调函数传递给经过优化的并使用引用相等性去避免非必要渲染（例如 shouldComponentUpdate）的子组件时，它将非常有用</p>
-<h3 id="♥︎♥︎♥︎-能简单说一下redux-sage的使用流程吗？"><a href="#♥︎♥︎♥︎-能简单说一下redux-sage的使用流程吗？" class="headerlink" title="♥︎♥︎♥︎  能简单说一下redux-sage的使用流程吗？"></a>♥︎♥︎♥︎  能简单说一下redux-sage的使用流程吗？</h3><p>redux-saga 是一个用于管理 Redux 应用异步操作的中间件（又称异步 action）。 redux-saga 通过创建 Sagas 将所有的异步操作逻辑收集在一个地方集中处理，可以用来代替 redux-thunk 中间件。</p>
-<p>Reducers 负责处理 action 的 state 更新</p>
-<p>Sagas 负责协调那些复杂或异步的操作</p>
-<p>1、connet to the store：本质是管理 Redux 应用异步操作的中间件</p>
-<pre><code class="react">import &#123; createStore, applyMiddleware &#125; from &#39;redux&#39;
-import createSagaMiddleware from &#39;redux-saga&#39;
-import reducer from &#39;./reducers&#39;
-import mySaga from &#39;./sagas&#39;
-// Create the saga middleware
-const sagaMiddleware = createSagaMiddleware()
-// Mount it on the Store
-const store = createStore(
- reducer,
- applyMiddleware(sagaMiddleware)
-)
-// Then run the saga
-sagaMiddleware.run(mySaga)
-// Render the application
-</code></pre>
-<p>2、initiate a side effect：初始化副作用</p>
-<pre><code class="react">import &#123; call, put, takeEvery, takeLatest &#125; from &#39;redux-saga/effects&#39;
-import Api from &#39;...&#39;
-// Worker saga will be fired on USER_FETCH_REQUESTED actions
-function* fetchUser(action) &#123;
- try &#123;
- const user = yield call(Api.fetchUser, action.payload.userId);
- yield put(&#123;type: &quot;USER_FETCH_SUCCEEDED&quot;, user: user&#125;);
- &#125; catch (e) &#123;
- yield put(&#123;type: &quot;USER_FETCH_FAILED&quot;, message: e.message&#125;);
- &#125;
-&#125;
-// Starts fetchUser on each dispatched USER_FETCH_REQUESTED action
-// Allows concurrent fetches of user
-function* mySaga() &#123;
- yield takeEvery(&quot;USER_FETCH_REQUESTED&quot;, fetchUser);
-&#125;
-</code></pre>
-<p>3、dispath an action：组件中使用</p>
-<pre><code class="react"> ...
- onSomeButtonClicked() &#123;
- const &#123; userId, dispatch &#125; = this.props
- dispatch(&#123;type: &#39;USER_FETCH_REQUESTED&#39;, payload: &#123;userId&#125;&#125;)
- &#125;
- ...
-&#125;
-</code></pre>
-<p>4、more：takeEvery、takeLatest、take、put、call、fork、select</p>
-<h3 id="♥︎♥︎♥︎-redux-和-mobx-的区别"><a href="#♥︎♥︎♥︎-redux-和-mobx-的区别" class="headerlink" title="♥︎♥︎♥︎  redux 和 mobx 的区别"></a>♥︎♥︎♥︎  redux 和 mobx 的区别</h3><p>1、Redux的编程范式是函数式的而Mobx是面向对象的</p>
-<p>2、因此数据上来说Redux理想的是immutable的，每次都返回一个新的数据，而Mobx从始至终都是一份引用。因此Redux是支持数据回溯的</p>
-<p>3、然而和Redux相比，使用Mobx的组件可以做到精确更新，这一点得益于Mobx的observable；对应的，Redux是用dispatch进行广播，通过Provider和connect来比对前后差别控制更新粒度，有时需要自己写SCU；Mobx更加精细一点</p>
-<p>4、Mobx-react vs React-rdux：</p>
-<p>redux,采取Provider和connect方式，mobx采取Provider和inject、observer</p>
-<h3 id="♥︎♥︎♥︎-react中如何实现命名插槽"><a href="#♥︎♥︎♥︎-react中如何实现命名插槽" class="headerlink" title="♥︎♥︎♥︎ react中如何实现命名插槽"></a>♥︎♥︎♥︎ react中如何实现命名插槽</h3><p>由于在React组件中写的内容会被挂载到props中，以此来实现类似vue中的插槽功能</p>
-<p>这是最外层代码</p>
-<pre><code class="react">import React, &#123; Component &#125; from &#39;react&#39;
-import NavBar from &#39;./NavBar&#39;
-import NavBar2 from &#39;./NavBar2&#39;
-
-export default class App extends Component &#123;
-  render() &#123;
-    return (
-      &lt;div&gt;
-        &lt;NavBar&gt;
-          &lt;span&gt;aaa&lt;/span&gt;
-          &lt;strong&gt;bbb&lt;/strong&gt;
-          &lt;a href=&quot;/#&quot;&gt;ccc&lt;/a&gt;
-        &lt;/NavBar&gt;
-
-        &lt;NavBar2 leftslot=&#123;&lt;span&gt;aaa&lt;/span&gt;&#125;
-        centerslot=&#123;&lt;strong&gt;bbb&lt;/strong&gt;&#125;
-        rightslot=&#123;&lt;a href=&quot;/#&quot;&gt;ccc&lt;/a&gt;&#125;/&gt;
-      &lt;/div&gt;
-    )
-  &#125;
-&#125;
-</code></pre>
-<p>1.用this.props.children[index]</p>
-<pre><code class="react">import React, &#123; Component &#125; from &#39;react&#39;
-
-import &#39;./style.css&#39;
-export default class NavBar extends Component &#123;
-  render () &#123;
-    return (
-      &lt;div className=&quot;nav-bar&quot;&gt;
-        &lt;div className=&quot;nav-left&quot;&gt;
-          &#123;this.props.children[0]&#125;
-        &lt;/div&gt;
-        &lt;div className=&quot;nav-center&quot;&gt;
-          &#123;this.props.children[1]&#125;
-        &lt;/div&gt;
-        &lt;div className=&quot;nav-right&quot;&gt;
-          &#123;this.props.children[2]&#125;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    )
-  &#125;
-&#125;
-</code></pre>
-<p>2.用直接命名方式</p>
-<pre><code class="react">import React, &#123; Component &#125; from &#39;react&#39;
-
-import &#39;./style.css&#39;
-export default class NavBar extends Component &#123;
-  render () &#123;
-    const &#123;leftslot, centerslot,rightslot&#125; = this.props
-    return (
-      &lt;div className=&quot;nav-bar&quot;&gt;
-        &lt;div className=&quot;nav-left&quot;&gt;
-          &#123;leftslot&#125;
-        &lt;/div&gt;
-        &lt;div className=&quot;nav-center&quot;&gt;
-          &#123;centerslot&#125;
-        &lt;/div&gt;
-        &lt;div className=&quot;nav-right&quot;&gt;
-          &#123;rightslot&#125;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    )
-  &#125;
-&#125;
-</code></pre>
-<h3 id="♥︎♥︎♥︎-简单说一下，如何在react中实现瀑布流加载？（左右两列的一个商品长列表）"><a href="#♥︎♥︎♥︎-简单说一下，如何在react中实现瀑布流加载？（左右两列的一个商品长列表）" class="headerlink" title="♥︎♥︎♥︎  简单说一下，如何在react中实现瀑布流加载？（左右两列的一个商品长列表）"></a>♥︎♥︎♥︎  简单说一下，如何在react中实现瀑布流加载？（左右两列的一个商品长列表）</h3><p>根据红线，将数据分为两部分，然后根据两边的高度（哪边少往那边加内容）去渲染两个盒子，然后达到一个瀑布流的效果</p>
-<pre><code class="react">import React, &#123; Component,Fragment &#125; from &#39;react&#39;;
-import &#123;connect&#125; from&#39;react-redux&#39;
-import Axios from &#39;_axios@0.19.0@axios&#39;;
-class Waterfall extends Component &#123;
- constructor(props) &#123;
- super(props);
- this.state = &#123; 
- data:[],//整体的数据
- leftData:[],//左边的数据
- rightData:[]//右边的数据
- &#125;
- &#125;
- getHW(data)&#123;
- let heightDate = [0,0];//接收累计高度的容器数组
- let rightData =[]//渲染右侧盒子的数组
- let leftData = []//渲染左侧盒子的数组
- data.forEach(item =&gt; &#123;
- let height = item.src.replace(&#39;http://dummyimage.com/&#39;,&#39;&#39;).substr(0,7).split(&#39;x&#39;)[1]*1;//对url地址进行一
-个截取，拿到高度
- let minNum = Math.min.apply(null,heightDate)// 从heighetData筛选最小项
- let minIndex = heightDate.indexOf(minNum);// 获取 最小项的小标 准备开始进行累加
- heightDate[minIndex] = heightDate[minIndex] + height;//从 heightData 中找到最小的项后进行累加，
- if(minIndex===0)&#123;//[0]加到left [1]加到 right
- leftData.push(item)
- &#125;else&#123;
- rightData.push(item)
- &#125;
- &#125;)
- this.setState(&#123; leftData,rightData &#125;);//重新set state
- &#125;
- render() &#123; 
- let &#123;leftData,rightData&#125; = this.state;
- console.log(leftData,rightData)
- return ( 
- 
- 
-&#123; leftData &amp;&amp; leftData.map((item,index)=&gt;&#123; return &#125;) &#125; &#123; rightData &amp;&amp; rightData.map((item,index)=&gt;&#123; return &#125;) &#125;
-); &#125; componentDidMount()&#123; Axios.get(&#39;/api/data&#39;).then(res=&gt;&#123; this.props.dispatch(&#123; type:&#39;SET_DATA&#39;,
-data:res.data.data &#125;) this.getHW(this.props.data) //调用 &#125;) &#125; &#125;
-export default connect(
- (state)=&gt;&#123;
- return&#123;
- data:state.data,
- &#125;
- &#125;
-)(Waterfall);
-</code></pre>
-<hr>
-<h3 id="♥︎♥︎♥︎♥︎-React-hooks-用过吗，为什么要用？"><a href="#♥︎♥︎♥︎♥︎-React-hooks-用过吗，为什么要用？" class="headerlink" title="♥︎♥︎♥︎♥︎ React hooks 用过吗，为什么要用？"></a>♥︎♥︎♥︎♥︎ React hooks 用过吗，为什么要用？</h3><p>Hooks 是React在16.8版本中出的一个新功能，本质是一种函数，可以实现组件逻辑复用，让我们在函数式组件中使用类组件中的状态、生命周期等功能，hooks的名字都是以use开头。</p>
-<pre><code class="css">1、useState——创建状态 接收一个参数作为初始值；返回一个数组，第一个值为状态，第二个值为改变状态的函数 
-2、useEffect——副作用（数据获取、dom操作影响页面——在渲染结束之后执行)
-        (1)第一个参数为函数，第二个参数为依赖列表，只有依赖更新时才会执行函数；返回一个函 数，当页面刷新的时候先执行返回函数再执行参数函数 
-        (2)如果不接受第二个参数，那么在第一次渲染完成之后和每次更新渲染页面的时候，都会调 用useEffect的回调函数 
-3、useRef 返回一个可变的ref对象，此索引在整个生命周期中保持不变。可以用来获取元素或组件的实例，用来做 输入框的聚焦或者动画的触发。 
-4、useMemo——优化函数组件中的功能函数——在渲染期间执行 
-    （1）接收一个函数作为参数，同样接收第二个参数作为依赖列表，返回值可以是任何，函数、对象等都可 以 
-    （2）这种优化有助于避免在每次渲染时都进行高开销的计算，仅会在某个依赖项改变时才重新计算 
-5、useContext——获取上下文注入的值 
-        (1)接受一个context 对象，并返回该对象&lt;MyContext.Provider&gt; 元素的 value值； const value = useContext(MyContext)； 
-6、useLayoutEffect——有DOM操作的副作用——在DOM更新之后执行 和useEffet类似，但是执行时机不同，useLayoutEffect在DOM更新之后执行， useEffect在render渲染结束后执行，也就是说useLayoutEffect比useEffect先执行，这是因为DOM更 新之后，渲染才结束或者渲染还会结束 
-7、useCallback——与useMemo类似
-useMemo与useCallback相同，接收一个函数作为参数，也同样接收第二个参数作为依赖列 表；useCallback是对传过来的回调函数优化，返回的是一个函数
-</code></pre>
-<pre><code class="css">react-router:
- 被route包裹的组件，可以直接使用props进行路由相关操作，但是没有被route包裹的组件只能用withRouter高阶组件修饰或者使用hooks进行操作
- 1、useHistory——跳转路由
- 2、useLocation——得到url对象
- 3、useParams——得到url上的参数
-
-react-redux:
- 1、useSelector——共享状态——从redux的store中提取数据
- 2、useDispatch——共享状态——返回redux的store中对dispatch的引用
-</code></pre>
-<h3 id="♥︎♥︎♥︎♥︎-虚拟DOM的优劣如何？实现原理？"><a href="#♥︎♥︎♥︎♥︎-虚拟DOM的优劣如何？实现原理？" class="headerlink" title="♥︎♥︎♥︎♥︎ 虚拟DOM的优劣如何？实现原理？"></a>♥︎♥︎♥︎♥︎ 虚拟DOM的优劣如何？实现原理？</h3><p>虚拟dom是用js模拟一颗dom树,放在浏览器内存中，相当于在js和真实dom中加了一个缓存，利用dom diff算法避免了没有必要的dom操作，从而提高性能。</p>
-<p> 优点：</p>
-<p> （1）虚拟DOM具有批处理和高效的Diff算法,最终表现在DOM上的修改只是变更的部分，可以保证非常高效的渲染,优化性能；</p>
-<p> （2）虚拟DOM不会立马进行排版与重绘操作，对虚拟DOM进行频繁修改，最后一次性比较并修改真实DOM中需要改的部分；</p>
-<p> （3）虚拟 DOM 有效降低大面积真实 DOM 的重绘与排版，因为最终与真实 DOM 比较差异，可以只渲染局部；</p>
-<p> 缺点：</p>
-<p> （1）首次渲染大量DOM时，由于多了一层虚拟DOM的计算，会比innerHTML插入慢；</p>
-<pre><code class="css">React组件的渲染过程： 
-（1）使用JSX编写React组件后所有的JSX代码会通过Babel转化为 React.createElement执行; 
-（2）createElement函数对 key和 ref等特殊的 props进行处理，并获取 defaultProps对默认 props进行赋值，并且对传入的子节点进行处理，最终构造成一个 ReactElement对象（所谓的虚拟 DOM）。
-（3）ReactDOM.render将生成好的虚拟 DOM渲染到指定容器上，其中采用了批处理、事务等机制并且 对特定浏览器进行了性能优化，最终转换为真实 DOM。
-
-虚拟DOM的组成——ReactElementelement对象结构： 
-（1）type：元素的类型，可以是原生html类型（字符串），或者自定义组件（函数或class） 
-（2）key：组件的唯一标识，用于Diff算法，下面会详细介绍 
-（3）ref：用于访问原生dom节点 
-（4）props：传入组件的props，chidren是props中的一个属性，它存储了当前组件的孩子节点，可 以是数组（多个孩子节点）或对象（只有一个孩子节点） 
-（5）owner：当前正在构建的Component所属的Component 
-（6）self：（非生产环境）指定当前位于哪个组件实例 
-（7）_source：（非生产环境）指定调试代码来自的文件(fileName)和代码行数(lineNumber)
-</code></pre>
-<h3 id="♥︎♥︎♥︎♥︎-React-和-Vue-的-diff-时间复杂度从-O-n-3-优化到-O-n-，那么-O-n-3-和-O-n-是如何计算出来的？"><a href="#♥︎♥︎♥︎♥︎-React-和-Vue-的-diff-时间复杂度从-O-n-3-优化到-O-n-，那么-O-n-3-和-O-n-是如何计算出来的？" class="headerlink" title="♥︎♥︎♥︎♥︎ React 和 Vue 的 diff 时间复杂度从 O(n^3) 优化到 O(n) ，那么 O(n^3) 和 O(n) 是如何计算出来的？"></a>♥︎♥︎♥︎♥︎ React 和 Vue 的 diff 时间复杂度从 O(n^3) 优化到 O(n) ，那么 O(n^3) 和 O(n) 是如何计算出来的？</h3><p>react的diff算法只需要O(n)，这是因为react对树节点的比较做了一些前提假设，限定死了一些东西，不做过于复杂的计算操作，所以降低了复杂度。react和vue做了以下的假设，这样的话diff运算时只进行同层比较，每一个节点只遍历了一次。</p>
-<p> （1）Web UI中DOM节点跨层级的移动操作特别少，可以忽略不计；</p>
-<p> （2）拥有相同类的两个组件将会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构；</p>
-<p> （3）对于同一层级的一组子节点，它们可以通过唯一 id 进行区分。</p>
-<blockquote>
-<p>而传统的diff运算时间复杂度为O(n^3)，这是因为传统的树节点要做非常完整的检查，首先需要节点之 间需要两两比较，找到所有差异，这个对比过程时间复杂度为O(n^2)，找到差异后还要计算出最小的转换方式，最终复杂度为O(n^3) </p>
-</blockquote>
-<h3 id="♥︎♥︎♥︎♥︎-请列举react生命周期函数。"><a href="#♥︎♥︎♥︎♥︎-请列举react生命周期函数。" class="headerlink" title="♥︎♥︎♥︎♥︎ 请列举react生命周期函数。"></a>♥︎♥︎♥︎♥︎ 请列举react生命周期函数。</h3><table>
-<thead>
-<tr>
-<th align="center">阶段</th>
-<th align="center">生命周期</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">第一阶段：装载阶段3</td>
-<td align="center">constructor()    render()    componentDidMount()</td>
-</tr>
-<tr>
-<td align="center">第二阶段：更新阶段2</td>
-<td align="center">shouldComponentUpdate()     render()    componentDidUpdate()</td>
-</tr>
-<tr>
-<td align="center">第三阶段：卸载阶段1</td>
-<td align="center">componentWillUnmount()</td>
-</tr>
-</tbody></table>
-<h4 id="constructor生命周期："><a href="#constructor生命周期：" class="headerlink" title="constructor生命周期："></a>constructor生命周期：</h4><p> (1)当react组件实例化时，是第一个运行的生命周期；</p>
-<p> (2)在这个生命周期中，不能使用this.setState()；</p>
-<p> (3)在这个生命周期中，不能使用副作用(调接口、dom操作、定时器、长连接等)；</p>
-<p> (4)不能把props和state交叉赋值；</p>
-<h4 id="componentDidMount生命周期："><a href="#componentDidMount生命周期：" class="headerlink" title="componentDidMount生命周期："></a>componentDidMount生命周期：</h4><p> (1)相当于是vue中的mounted；</p>
-<p> (2)它表示DOM结构在浏览器中渲染已完成；</p>
-<p> (3)在这里可以使用任何的副作用；</p>
-<h4 id="shouldComponentUpdate-nextProps-nextState-生命周期："><a href="#shouldComponentUpdate-nextProps-nextState-生命周期：" class="headerlink" title="shouldComponentUpdate(nextProps,nextState)生命周期："></a>shouldComponentUpdate(nextProps,nextState)生命周期：</h4><p> (1)相当于一个开关，如果返回true则更新机制正常执行，如果为false则更新机制停止；</p>
-<p> (2)在vue中是没有的；</p>
-<p> (3)存在的意义：可以用于性能优化，但是不常用，最新的解决方案是使用PureComponent；</p>
-<p> (4)理论上，这个生命周期的作用，用于精细地控制声明式变量的更新问题，如果变化的声明式变量参与了视图渲染则返回true，如果被变化的声明式变量没有直接或间接参与视图渲染，则返回false；</p>
-<h4 id="componentDidUpdate生命周期："><a href="#componentDidUpdate生命周期：" class="headerlink" title="componentDidUpdate生命周期："></a>componentDidUpdate生命周期：</h4><p> (1)相当于vue中的updated()；</p>
-<p> (2)它表示DOM结构渲染更新已完成，只发生在更新阶段；</p>
-<p> (3)在这里，可以执行大多数的副作用，但是不建议；</p>
-<p> (4)在这里，可以使用this.setState()，但是要有终止条件判断。</p>
-<h4 id="componentWillUnmount生命周期："><a href="#componentWillUnmount生命周期：" class="headerlink" title="componentWillUnmount生命周期："></a>componentWillUnmount生命周期：</h4><p> (1)一般在这里清除定时器、长连接等其他占用内存的构造器；render生命周期：</p>
-<p> (1)render是类组件中唯一必须有的生命周期，同时必须有return（return 返回的jsx默认只能是单一根节点，但是在fragment的语法支持下，可以返回多个兄弟节点）；</p>
-<p> (2)Fragment碎片写法: &lt;React.Fragment&gt;&lt;&#x2F;React.Fragment&gt; 简写成&lt;&gt;&lt;&#x2F;&gt;；</p>
-<p> (3)return之前，可以做任意的业务逻辑，但是不能使用this.setState()，会造成死循环；</p>
-<p> (4)render()在装载阶段和更新阶段都会运行；</p>
-<p> (5)当render方法返回null的时候，不会影响生命周期函数的正常执行。</p>
-<h3 id="♥︎♥︎♥︎♥︎-新出来两个钩子函数？和砍掉的will系列有啥区别？"><a href="#♥︎♥︎♥︎♥︎-新出来两个钩子函数？和砍掉的will系列有啥区别？" class="headerlink" title="♥︎♥︎♥︎♥︎  新出来两个钩子函数？和砍掉的will系列有啥区别？"></a>♥︎♥︎♥︎♥︎  新出来两个钩子函数？和砍掉的will系列有啥区别？</h3><pre><code class="javascript">/ react16 中废弃了三个钩子
-componentWillMount // 组件将要挂载的钩子
-componentWillReceiveProps // 组件将要接收一个新的参数时的钩子
-componentWillUpdate // 组件将要更新的钩子
-</code></pre>
-<pre><code class="javascript">/ 新增了方法
-getDerivedStateFromProps // 静态方法
-getSnapshotBeforeUpdate
-</code></pre>
-<p>在16.8版本以后，react将diff运算改进为Fiber，这样的话当我们调用setState方法进行更新的时候，在reconciler 层中js运算会按照节点为单位拆分成一个个小的工作单元，在render前可能会中断或恢复，就有可能导致在render前这些生命周期在进行一次更新时存在多次执行的情况，此时如果我们在里面使用ref操作dom的话，就会造成页面频繁重绘，影响性能。 所以废弃了这几个will系列的勾子，增加了 getDerivedStateFromProps这个静态方法，这样的话我们就不能在其中使用this.refs以及this上的方法了；getSnapshotBeforeUpdate 这个方法已经到了commit阶段，只会执行一次，给想读取 dom 的用户一些空间。</p>
-<h3 id="♥︎♥︎♥︎♥︎-react中-setState-之后做了什么？"><a href="#♥︎♥︎♥︎♥︎-react中-setState-之后做了什么？" class="headerlink" title="♥︎♥︎♥︎♥︎  react中 setState 之后做了什么？"></a>♥︎♥︎♥︎♥︎  react中 setState 之后做了什么？</h3><p>如果是在隶属于原生js执行的空间，比如说setTimeout里面，setState是同步的，那么每次执行setState将立即更新this.state，然后触发render方法，渲染数据；</p>
-<p> 如果是在被react处理过的空间执行，比如说合成事件里，此时setState是异步执行的，并不会立即更新this.state的值，当执行setState的时候，会将需要更新的state放入状态队列，在这个空间最后再合并修改this.state，触发render；</p>
-<h3 id="♥︎♥︎♥︎♥︎-redux本来是同步的，为什么它能执行异步代码？中间件的实现原理是什么？"><a href="#♥︎♥︎♥︎♥︎-redux本来是同步的，为什么它能执行异步代码？中间件的实现原理是什么？" class="headerlink" title="♥︎♥︎♥︎♥︎  redux本来是同步的，为什么它能执行异步代码？中间件的实现原理是什么？"></a>♥︎♥︎♥︎♥︎  redux本来是同步的，为什么它能执行异步代码？中间件的实现原理是什么？</h3><p>当我们需要修改store中值的时候，我们是通过 dispatch(action)将要修改的值传到reducer中的，这个过程是同步的，如果我们要进行异步操作的时候，就需要用到中间件；中间件其实是提供了一个分类处理action的机会，在 middleware 中，我们可以检阅每一个流过的action，并挑选出特定类型的action进行相应操作，以此来改变 action；</p>
-<pre><code class="css">applyMiddleware 是个三级柯里化的函数。它将陆续的获得三个参数：第一个是 middlewares 数 组，第二个是 Redux 原生的 createStore，最后一个是 reducer；然后applyMiddleware会将不同的 中间件一层一层包裹到原生的 dispatch 之上； 
-redux-thunk 中间件的作用就是让我们可以异步执行redux，首先检查参数 action 的类型，如果 是函数的话，就执行这个 action这个函数，并把 dispatch, getState, extraArgument 作为参数传 递进去，否则就调用next让下一个中间件继续处理action。
-</code></pre>
-<pre><code class="react">// redux-thunk部分源码
-function createThunkMiddleware(extraArgument) &#123;
- return (&#123; dispatch, getState &#125;) =&gt; next =&gt; action =&gt; &#123;
- if (typeof action === &#39;function&#39;) &#123;
- return action(dispatch, getState, extraArgument)
- &#125;
- return next(action)
- &#125;
-&#125;
-const thunk = createThunkMiddleware()
-thunk.withExtraArgument = createThunkMiddleware
-export default thunk
-</code></pre>
-<h3 id="♥︎♥︎♥︎♥︎-列举重新渲染-render-的情况"><a href="#♥︎♥︎♥︎♥︎-列举重新渲染-render-的情况" class="headerlink" title="♥︎♥︎♥︎♥︎ 列举重新渲染 render 的情况"></a>♥︎♥︎♥︎♥︎ 列举重新渲染 render 的情况</h3><ol>
-<li>this.setState() </li>
-<li>this.forceUpdate()</li>
-<li>接受到新的props</li>
-<li>通过状态管理，mobx、redux等</li>
-<li>改变上下文</li>
-</ol>
-<h3 id="♥︎♥︎♥︎♥︎-类组件怎么做性能优化？函数组件怎么做性能优化？"><a href="#♥︎♥︎♥︎♥︎-类组件怎么做性能优化？函数组件怎么做性能优化？" class="headerlink" title="♥︎♥︎♥︎♥︎ 类组件怎么做性能优化？函数组件怎么做性能优化？"></a>♥︎♥︎♥︎♥︎ 类组件怎么做性能优化？函数组件怎么做性能优化？</h3><p>类组件：</p>
-<pre><code class="css"> （1）使用shouldComponentUpdate：这个生命周期可以让我们决定当前状态或属性的改变是否重新渲染组件，默认返回ture，返回false时不会执行render，在初始化渲染或使用forceUpdate()时不会调用；如果在shouldComponentUpdate比较的值是引用类型的话，可能达不到我们想要的效果，因为引用类型指向同一个地址；当将旧的state的值原封不动赋值给新的state（即不改变state的值，但是调用了setState）和 无数据交换的父组件的重新渲染都会导致组件重新渲染，这时候都可以通过shouldComponentUpdate来优化；
-
- （2）React.PureComponent：基本上和Component用法一致，不同之处在于 PureComponent不需要开发者自己设置shouldComponentUpdate，因为PureComponent自带通过props和state的浅对比来实现 shouldComponentUpate；但是如果props和state对象包含复杂的数据结构，它可能会判断错误(表现为对象深层的数据已改变，视图却没有更新）；
-
- （4）使用Immutable：immutable是一种持久化数据，一旦被创建就不会被修改，修改immutable对象的时候返回新的immutable；也就是说在使用旧数据创建新数据的时候，会保证旧数据同时可用且不变；为了避免深度复制所有节点的带来的性能损耗，immutable使用了结构共享，即如果对象树中的一个节点发生变化，只修改这个节点和受他影响的父节点，其他节点仍然共享；
-
- （5）bind函数：在react中改变this的指向有三种方法，a)constructor中用bind绑定; b)使用时通过bind绑定; c)使用箭头函数；选择第一种只在组件初始化的时候执行一次，第二种组件在每次render都要重新绑定，第三种在每次render时候都会生成新的箭头函数，所以选择第一种；
-</code></pre>
-<p>函数组件：</p>
-<pre><code class="css"> （1）useCallback：接收一个函数作为参数，接收第二个参数作为依赖列表，返回值为函数，有助于避免在每次渲染时都进行高开销的计算，仅会在某个依赖项改变时才重新计算；可以使用useCallback把要传递给子组件的函数包裹起来，这样父组件刷新的时候，传递给子组件的函数指向不会发生改变，可以减少子组件的渲染次数；
-
- const handleUseCallback=useCallback(handleClick,[])
-
- （2）useMemo：useMemo的使用和useCallback差不多，只是useCallback返回的是一个函数，useMemo返回值可以是函数、对象等都可以；
-</code></pre>
-<p>两者都可使用：</p>
-<pre><code class="css">（1）React.memo：React.memo 功能同React.PureComponent，但React.memo是高阶组件，既可以用在类组件中也可以用在函数组件中；memo还可以接收第二个参数，是一个可定制化的比较函数，其返回值与 shouldComponentUpdate的相反；
-
-（2）使用key：在列表渲染时使用key，这样当组件发生增删改、排序等操作时，diff运算后可以根据key值直接调整DOM顺序，避免不必要的渲染而避免性能的浪费；
-
-（3）不要滥用props：尽量只传需要的数据，避免多余的更新，尽量避免使用&#123;…props&#125;；
-</code></pre>
-<h3 id="♥︎♥︎♥︎♥︎-什么是-prop-drilling，如何避免？"><a href="#♥︎♥︎♥︎♥︎-什么是-prop-drilling，如何避免？" class="headerlink" title="♥︎♥︎♥︎♥︎ 什么是 prop drilling，如何避免？"></a>♥︎♥︎♥︎♥︎ 什么是 prop drilling，如何避免？</h3><p>从一个外部组件一层层将prop传递到内部组件很不方便，这个问题就叫做 prop drilling；主要缺点是原本不需要数据的组件变得不必要地复杂，并且难以维护，代码看起来也变得冗余，不优雅；</p>
-<p>为了避免prop drilling，一种常用的方法是使用React Context。通过定义提供数据的Provider组件，并允许嵌套的组件通过 Consumer组件或 useContext Hook 使用上下文数据。</p>
-<h3 id="♥︎♥︎♥︎♥︎-什么是-React-Context"><a href="#♥︎♥︎♥︎♥︎-什么是-React-Context" class="headerlink" title="♥︎♥︎♥︎♥︎ 什么是 React Context?"></a>♥︎♥︎♥︎♥︎ 什么是 React Context?</h3><p>React Context源码解析</p>
-<p>1、What</p>
-<p>Context提供了一个无需为每层组件手动添加props，就能在组件树间进行数据传递的功能</p>
-<p>2、Why</p>
-<p>某些全局属性，通过父子props传递太过繁琐，Context提供了一种组件之间共享此类值的方式，而不必显式的通过组件树逐层传递props</p>
-<p>3、When</p>
-<p>共享那些对于一个组件树而言是全局的数据，例如当前认证的用户、主题或者首选语言等</p>
-<p>4、Where</p>
-<p>Context应用场景在于很多不同层级的组件访问同样的数据，这样也使得组件的复用性变差。</p>
-<p>如果你只是想避免层层传递一些属性，组件组合有时候是一个比Context更好的方案，也就是直接传递组件</p>
-<p>所以一个技术方案的选定需要针对不同的场景具体分析，采取合适的方案</p>
-<p>5、How</p>
-<pre><code class="css">// ①创建
-
-const ThemeContext = React.createContext(&#39;xxx&#39;)
-
-// ②注入---提供者 在入口或者你想要注入的父类中，且可以嵌套，里层覆盖外层
-
-return (
-&lt;ThemeContext.Provider value=&quot;yyy&quot;&gt;
-&#123;children&#125;
-&lt;ThemeContext.Provider&gt;
-)
-
-// ③使用---消费者 需要使用共享数据的子类中
-
-// 方式一
-static contextType = ThemeContext
-// 方式二
-Class.contextType = ThemeContext 
-render() &#123;
-let value = this.context
-/* 基于这个值进行渲染工作 */ 
-&#125;
-//方式三
-return(
-&lt;ThemeContext.Consumer&gt;
-&#123; value =&gt; /* 基于 context 值进行渲染*/ &#125;
-&lt;/ThemeContext.Consumer&gt;
-)
-</code></pre>
-<p>6、More</p>
-<p>动态Context—类似父子组件</p>
-<pre><code class="css">// ①创建
-
-const ThemeContext = React.createContext(&#123;
-value: &#39;xxx&#39;,
-changeFunc: () =&gt; &#123;&#125; /*通过context传递这个函数，让consumers组件更新context*/
-&#125;)
-
-// ②注入
-return (
-&lt;ThemeContext.Provider value=&quot;yyy&quot;&gt;
-&lt;ThemeContext.Provider&gt;
-)
-
-// ③消费
-
-return(
-&lt;ThemeContext.Consumer&gt;
-&#123; (&#123;value, changeFunc&#125;) =&gt; /* 基于 context 值进行渲染,同时把changeFunc绑定*/ &#125;
- &lt;/ThemeContext.Consumer&gt;
-)
-消费多个Context、注意事项等参考React中文网
-</code></pre>
-<h3 id="♥︎♥︎♥︎♥︎-Hooks-会取代-render-props-和高阶组件吗"><a href="#♥︎♥︎♥︎♥︎-Hooks-会取代-render-props-和高阶组件吗" class="headerlink" title="♥︎♥︎♥︎♥︎  Hooks 会取代 render props 和高阶组件吗?"></a>♥︎♥︎♥︎♥︎  Hooks 会取代 render props 和高阶组件吗?</h3><p>可以取代，但没必要</p>
-<p>在Hook的渐进策略中也有提到，没有计划从React中移除class，在新的代码中同时使用Hook和class，所以这些方案目前还是可以有勇武之地</p>
-<p>1、What</p>
-<p>为什么要把这3种技术拿过来对比？</p>
-<p>都在处理同一个问题，逻辑复用</p>
-<p>高阶组件HOC—不是 React API 的一部分，是基于 React 的组合特性形成的设计模式。</p>
-<p>高阶组件是参数为组件，返回值为新组件的函数（将组件转换为另一个组件，纯函数，无副作用）</p>
-<p>Render Props是指一种在 React 组件之间使用一个值为函数的 prop 共享代码的 简单技术</p>
-<p>Hooks 是React16.8新增的特性，是一些可以让你在函数组件里“钩入”React state及生命周期等特性的函数</p>
-<p>虽然 HOC &amp; Render Props 能处理逻辑复用的问题，但是却存在各自的问题。</p>
-<p>HOC 存在的问题</p>
-<ul>
-<li>写法破坏了原来组件的结构，DevTools中组件会形成“嵌套地狱”</li>
-<li>不要在 render 方法中使用 HOC 每次调用render函数会创建一个新的高阶组件导致该组件及其子组件的状态丢失</li>
-<li>需要修复静态方法，即拷贝原组件的静态方法到高级组件中</li>
-<li>如需传递Ref则需要通过React.forwardRef创建组件</li>
-</ul>
-<p>Render Props 存在的问题</p>
-<ul>
-<li>同样的写法会破坏原来组件的结构，DevTools中组件会形成“嵌套地狱” </li>
-<li>与React.PureComponent组件使用有冲突</li>
-<li>Hook 目前最优雅的实现，React为共享状态逻辑提供最好的原生途径</li>
-<li>没有破坏性改动，完全可选，100%向后兼容</li>
-<li>解决复杂组件，中逻辑状态、副作用和各种生命周期函数中逻辑代码混在一起，难以拆分，甚至形成bug的问题</li>
-</ul>
-<p>2、When</p>
-<ul>
-<li>在函数组件中意识到要向其添加一些state—useState</li>
-<li>有副作用的行为时</li>
-</ul>
-<p>3、Where</p>
-<p>只能在函数最外层调用Hook，不要在循环、条件判断或者子函数中调用</p>
-<p>只能在函数组件或者自定义Hook中调用Hook</p>
-<h3 id="♥︎♥︎♥︎♥︎-当调用setState时，React-render-是如何工作的？"><a href="#♥︎♥︎♥︎♥︎-当调用setState时，React-render-是如何工作的？" class="headerlink" title="♥︎♥︎♥︎♥︎ 当调用setState时，React render 是如何工作的？"></a>♥︎♥︎♥︎♥︎ 当调用setState时，React render 是如何工作的？</h3><p>调用setState()</p>
-<ol>
-<li>检查上下文环境生成更新时间相关参数并判定事件优先级（fiber，currenttime，expirationtime等…）</li>
-<li>根据优先级相关参数判断更新模式是sync（同步更新）或是batched（批量处理）</li>
-<li>加入执行更新事件的队列，生成事件队列的链表结构</li>
-<li>根据链表顺序执行更新</li>
-<li>setState既是同步的，也是异步的。同步异步取决于setState运行时的上下文。且setState 只在合成事件和钩子函数中是“异步”的，在原生DOM事件和 setTimeout 中都是同步的</li>
-</ol>
-<p>render如何工作</p>
-<ol>
-<li>React在props或state发生改变时，会调用React的render方法，创建一颗不同的树</li>
-<li>React需要基于这两颗不同的树之间的差别来判断如何有效的更新UI diff算法，将两颗树完全比较更新的算法从O(n^3^),优化成O(n)；</li>
-<li>同层节点之间相互比较，不会跨节点比较</li>
-<li>不同类型的节点，产生不同的树结构</li>
-<li>设置key来指定节点在不同的渲染下保持稳定</li>
-</ol>
-<h3 id="♥︎♥︎♥︎♥︎-diff复杂度原理及具体过程画图"><a href="#♥︎♥︎♥︎♥︎-diff复杂度原理及具体过程画图" class="headerlink" title="♥︎♥︎♥︎♥︎ diff复杂度原理及具体过程画图"></a>♥︎♥︎♥︎♥︎ diff复杂度原理及具体过程画图</h3><ul>
-<li>React 通过制定大胆的 diff 策略，将 O(n3) 复杂度的问题转换成 O(n) 复杂度的问题；</li>
-<li>React 通过分层求异的策略，对 tree diff 进行算法优化；</li>
-<li>React 通过相同类生成相似树形结构，不同类生成不同树形结构的策略，对 component diff 进行算法优化；</li>
-<li>React 通过设置唯一 key的策略，对 element diff 进行算法优化；</li>
-<li>建议，在开发组件时，保持稳定的 DOM 结构会有助于性能的提升；</li>
-<li>建议，在开发过程中，尽量减少类似将最后一个节点移动到列表首部的操作，当节点数量过大或更新操作过于频繁时，在一定程度上会影响 React 的渲染性能。</li>
-</ul>
-<h3 id="♥︎♥︎♥︎♥︎-shouldComponentUpdate的作用是什么？"><a href="#♥︎♥︎♥︎♥︎-shouldComponentUpdate的作用是什么？" class="headerlink" title="♥︎♥︎♥︎♥︎  shouldComponentUpdate的作用是什么？"></a>♥︎♥︎♥︎♥︎  shouldComponentUpdate的作用是什么？</h3><p>shouldComponentUpdate的作用</p>
-<p>1、What</p>
-<p>不常用的生命周期方法，能影响组件是否重新渲染</p>
-<p>在更新阶段，当有new props 或者 调用了 setState()方法，在render方法执行前会执行到，默认返回值为true，如果返回false则不刷新组件</p>
-<p>2、Why &amp; When &amp; Where</p>
-<ol>
-<li>如果你知道在什么情况下组件不需要更新，你可以让其返回值为false跳过整个渲染过程</li>
-<li>次方法仅作为 性能优化方式 而存在，不要企图靠此方法来阻止渲染，</li>
-<li>大部分情况下，使用PureComponent代替手写shouldComponentUpdate，仅浅层对比</li>
-<li>不建议在shoulComponentUpdate中进行深层或者使用JSON.stringify()，这样非常影响效率和性能</li>
-<li>作为React组件中不常用的生命周期函数，能影响组件是否重渲染</li>
-<li>建议做浅层次的比较，来优化性能，当然这里也可以用PureComponent组件代替</li>
-<li>如果有较深层次的比较则可能会导致更严重的性能问题，因此在这种情况下不要靠手动管理组件的重新渲染来优化性能，要找其他方式</li>
-</ol>
-<h3 id="♥︎♥︎♥︎♥︎-什么是高阶组件、受控组件及非受控组件？都有啥区别"><a href="#♥︎♥︎♥︎♥︎-什么是高阶组件、受控组件及非受控组件？都有啥区别" class="headerlink" title="♥︎♥︎♥︎♥︎ 什么是高阶组件、受控组件及非受控组件？都有啥区别"></a>♥︎♥︎♥︎♥︎ 什么是高阶组件、受控组件及非受控组件？都有啥区别</h3><h4 id="1、定义"><a href="#1、定义" class="headerlink" title="1、定义"></a>1、定义</h4><p>高阶组件HOC—不是 React API 的一部分，是基于 React 的组合特性形成的设计模式。</p>
-<p>高阶组件是参数为组件，返回值为新组件的函数（将组件转换为另一个组件，纯函数，无副作用）</p>
-<h4 id="2、受控组件"><a href="#2、受控组件" class="headerlink" title="2、受控组件"></a>2、受控组件</h4><p>在表单元素中，state是唯一数据源，渲染表单的React组件控制着用户输入过程中表单发生的操作。被React以这种方式控制取值的表单输入元素叫做受控组件</p>
-<h3 id="3、非受控组件"><a href="#3、非受控组件" class="headerlink" title="3、非受控组件"></a>3、非受控组件</h3><p>表单数据由DOM节点来处理，而不是用state来管理数据，一般可以使用ref来从DOM节点中获取表单数据</p>
-<p>‼️区别</p>
-<ul>
-<li>受控组件和非受控组件是表单中的组件，高阶组件相当于对某个组件注入一些属性方法</li>
-<li>高阶组件是解决代码复用性问题产生的技术</li>
-<li>受控组件必须要有一个value，结合onChange来控制这个value，取值为event.target.value&#x2F;event.target.checked</li>
-<li>非受控组件相当于操作DOM，一般有个defaultValue，通过onBlur触发响应方法</li>
-</ul>
-<h3 id="♥︎♥︎♥︎♥︎-vue-react都怎么检测数据变化"><a href="#♥︎♥︎♥︎♥︎-vue-react都怎么检测数据变化" class="headerlink" title="♥︎♥︎♥︎♥︎ vue react都怎么检测数据变化"></a>♥︎♥︎♥︎♥︎ vue react都怎么检测数据变化</h3><h4 id="React"><a href="#React" class="headerlink" title="React"></a>React</h4><p>React默认是通过比较引用的方式（diff）进行的，不精确监听数据变化，如果不优化可能导致大量不必要的VDOM重新渲染</p>
-<p>16之前 componentWillReveiveProps 监听 props 变化</p>
-<p>16之后 getDerivedStateFromProps 监听 props</p>
-<h4 id="Vue"><a href="#Vue" class="headerlink" title="Vue"></a>Vue</h4><p>vue监听变量变化依靠 watch Object.defineProperty，Vue通过“getter&#x2F;setter”以及一些函数的劫持，能精确知道数据变化</p>
-<h3 id="♥︎♥︎♥︎♥︎-什么是-immutable？为什么要使用它？"><a href="#♥︎♥︎♥︎♥︎-什么是-immutable？为什么要使用它？" class="headerlink" title="♥︎♥︎♥︎♥︎ 什么是 immutable？为什么要使用它？"></a>♥︎♥︎♥︎♥︎ 什么是 immutable？为什么要使用它？</h3><p>immutable是一种持久化数据。一旦被创建就不会被修改。修改immutable对象的时候返回新的immutable。但是原数据不会改变。</p>
-<p>在Rudux中因为深拷贝对性能的消耗太大了（用到了递归，逐层拷贝每个节点）。 但当你使用immutable数据的时候：只会拷贝你改变的节点，从而达到了节省性能。 </p>
-<p>总结：immutable的不可变性</p>
-<p>让纯函数更强大，每次都返回新的immutable的特性让程序员可以对其进行链式操作，用起来更方便。</p>
-<p>因为在react中，react的生命周期中的setState()之后的shouldComponentUpdate()阶段默认返回true，所以会造成本组件和子组件的多余的render，重新生成virtual dom，并进行virtual dom diff，所以解决办法是我们在本组件或者子组件中的shouldComponentUpdate()函数中比较，当不需要render时，不render。 </p>
-<p>当state中的值是对象时，我们必须使用深拷贝和深比较！</p>
-<p>如果不进行深拷贝后再setState，会造成this.state和nextState指向同一个引用，所以shouldComponentUpdate()返回值一定是false，造成state值改了，而组件未渲染（这里不管shouldComponentUpdate中使用的是深比较还是浅比较）。所以必须深拷贝。</p>
-<p>如果不在shouldComponentUpdate中进行深比较，会造成即使state中的对象值没有改变，因为是不同的对象，而在shouldComponentUpdate返回true，造成不必要的渲染。</p>
-<p>所以只能是深拷贝和深比较。</p>
-<h3 id="♥︎♥︎♥︎♥︎-React路由懒加载的实现"><a href="#♥︎♥︎♥︎♥︎-React路由懒加载的实现" class="headerlink" title="♥︎♥︎♥︎♥︎ React路由懒加载的实现"></a>♥︎♥︎♥︎♥︎ React路由懒加载的实现</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>webpack代码分割</p>
-<p>React利用 React.lazy与import()实现了渲染时的动态加载</p>
-<p>利用Suspense来处理异步加载资源时页面应该如何显示的问题</p>
-<h4 id="1-React-lazy"><a href="#1-React-lazy" class="headerlink" title="1.React.lazy"></a>1.React.lazy</h4><p>通过lazy() api来动态import需要懒加载的组件</p>
-<p>import的组件目前只支持export default的形式导出</p>
-<p>Suspense来包裹懒加载的组件进行加载，可以设置fallback现实加载中效果</p>
-<p>React.lazy可以结合Router来对模块进行懒加载。</p>
-<pre><code class="react">import &#123; BrowserRouter as Router, Route, Switch &#125; from &#39;react-router-dom&#39;;
-import &#123; Suspense, lazy &#125; from &#39;react&#39;;
-const Home = lazy(() =&gt; import(&#39;./routes/Home&#39;))
-const AnyComponent = lazy(() =&gt; import(&#39;./routes/AnyComponent&#39;))
-...
-return (
- &lt;Suspense fallback=&#123;
-Loading...
-&#125;&gt; ...
-</code></pre>
-<h4 id="2-react-loadable"><a href="#2-react-loadable" class="headerlink" title="2.react-loadable"></a>2.react-loadable</h4><p>react-loadable是以组件级别来分割代码的，这意味着，我们不仅可以根据路由按需加载，还可以根据组件按需加载，使用方式和路由分割一样，只用修改组件的引入方式即可</p>
-<pre><code class="react">// 路由懒加载（异步组件）
-import Loadable from &#39;react-loadable&#39;;
-//通用过场组件
-const LoadingComponent = () =&gt; &#123;
- return (
-loading
-) &#125; ... export default (loader, loading=LoadingComponent) =&gt; &#123; return Loadable(&#123; loader, loading &#125;) &#125;
-//Route中调用
-import &#123; BrowserRouter, Route &#125; from &#39;react-router-dom&#39;
-const loadable from &#39;./loadable&#39;;
-const AnyComponent = loadable(() =&gt; import(&#39;./AnyComponent&#39;))
-const Routes = () =&gt; (
-);
-export default Routes;
-</code></pre>
-<p>以下是老版中的方法</p>
-<h4 id="3-webpack配置中使用lazyload-loader"><a href="#3-webpack配置中使用lazyload-loader" class="headerlink" title="3.webpack配置中使用lazyload-loader"></a>3.webpack配置中使用lazyload-loader</h4><pre><code class="react">// webpack 配置中
-module: &#123;
- rules: [
- &#123;
- test: /.(js|jsx)$/,,
- use: [
- &#39;babel-loader&#39;,
- &#39;lazyload-loader&#39;
- ]
-&#125;,
-// 业务代码中
-// 使用lazy! 前缀 代表需要懒加载的Router
- import Shop from &#39;lazy!./src/view/Shop&#39;;
- // Router 正常使用
-</code></pre>
-<h4 id="4-import-webpack-v2"><a href="#4-import-webpack-v2" class="headerlink" title="4.import() webpack v2+"></a>4.import() webpack v2+</h4><p>符合ECMAScript提议的import()语法，该提案与普通 import 语句或 require 函数的类似，但返回一个 Promise 对象</p>
-<pre><code class="react">function component() &#123;
- return import( /* webpackChunkName: &quot;lodash&quot; / &#39;lodash&#39;).then(_ =&gt; &#123;
- var element = document.createElement(&#39;div&#39;);
- element.innerHTML = _.join([&#39;Hello&#39;, &#39;webpack&#39;], &#39; &#39;);
- return element;
- &#125;).catch(error =&gt; &#39;An error occurred while loading the component&#39;);
-&#125;
-// 或者使用async
-async function getComponent() &#123;
- var element = document.createElement(&#39;div&#39;);
- const _ = await import(/ webpackChunkName: &quot;lodash&quot; */ &#39;lodash&#39;);
- element.innerHTML = _.join([&#39;Hello&#39;, &#39;webpack&#39;], &#39; &#39;);
- return element;
-&#125;
-</code></pre>
-<h4 id="5-requre-ensure-webpack-v1-v2"><a href="#5-requre-ensure-webpack-v1-v2" class="headerlink" title="5.requre.ensure webpack v1 v2"></a>5.requre.ensure webpack v1 v2</h4><pre><code class="react">require.ensure([], function(require)&#123;
- var list = require(&#39;./list&#39;);
- list.show();
-，&#39;list&#39;);
-const Foo = require.ensure([], () =&gt; &#123;
- require(&quot;Foo&quot;);
-&#125;, err =&gt; &#123;
- console.error(&quot;We failed to load chunk: &quot; + err);
-&#125;, &quot;chunk-name&quot;);
-//react-router2 or 3
-</code></pre>
-<h3 id="♥︎♥︎♥︎♥︎-React-router-dom内部是怎么样实现的，怎么做路由守卫？"><a href="#♥︎♥︎♥︎♥︎-React-router-dom内部是怎么样实现的，怎么做路由守卫？" class="headerlink" title="♥︎♥︎♥︎♥︎ React-router-dom内部是怎么样实现的，怎么做路由守卫？"></a>♥︎♥︎♥︎♥︎ React-router-dom内部是怎么样实现的，怎么做路由守卫？</h3><p>1、总</p>
-<p>react-router-dom利用了Context API，通过上下文对象将当前路由信息对象注入到 Router 组件中，所以 Router组件中 render() 渲染的内容就是 ContextAPI 提供的 Provider 组件，然后接收 Router 组件中的当前路由信息对象。 这样 Router 组件下的所有组件都能通过上下文拿到当前路由信息对象，即其中的Switch 、 Route 、 Link 、Redirect 等组件都可以拿到当前路由信息对象，然后通过改变当前路由信息来实现动态切换 Route 组件的渲染。</p>
-<p>2、分</p>
-<p>RouterContext：react-router使用context实现跨组件间数据传递，所以react-router定义了一个routerContext作为数据源，</p>
-<p>Router：BrowserRouter和HashRouter将当前路由注入到上下文中，同时路由信息包含location、match、history</p>
-<p>Route：路由规则，获取RouterContext的信息(location对象)，获取path和component属性，判断path和当前的location是否匹配，如果匹配，则渲染component，否则返回null，不渲染任何内容</p>
-<p>Switch：遍历所有子元素(Route)，判断Route的path和location是否匹配，如果匹配，则渲染，否则不渲染</p>
-<p>Redireact：未能配则重定向到指定页面</p>
-<p>Link&#x2F;NavLink: Link组件本质就是a标签，它修改了a标签的默认行为，当点击Link时，会导航到对应的路由，导致locaiton对象的改变，出发组件的更新</p>
-<p>withRouter：对传入的组件进行加强，功能就是获取routerContext上面的信息，然后作为props传给需要加强的组件</p>
-<p>3、怎么做路由守卫</p>
-<p>路由里设置meta元字符实现路由拦截</p>
-<p>React Router 4.0之前也像vue中一样有个钩子函数 onEnter 可实现</p>
-<p>ReactRouter 4.0开始自己实现如下</p>
-<pre><code class="react">// routerMap.js中
-import Index from &#39;./page/index&#39;
-export default [
- &#123; path:&#39;/&#39;, name: &#39;App&#39;, component:Index, auth: true &#125;,
- ...
-]
-//入口文件 app.js中
-import &#123; BrowserRouter as Router, Switch &#125; from &quot;react-router-dom&quot;;
-import FrontendAuth from &quot;./FrontendAuth&quot;;
-import routerMap from &quot;./routerMap&quot;;
-...
-return (
- 
- 
-)
-// 高阶组件FrontendAuth 处理路由跳转，即路由守卫功能
-//FrontendAuth.js
-import React, &#123; Component &#125; from &quot;react&quot;;
-import &#123; Route, Redirect &#125; from &quot;react-router-dom&quot;;
-class FrontendAuth extends Component &#123;
- // eslint-disable-next-line no-useless-constructor
- constructor(props) &#123;
- super(props);
- &#125;
- render() &#123;
- const &#123; routerConfig, location &#125; = this.props;
- const &#123; pathname &#125; = location;
- const isLogin = sessionStorage.getItem(&quot;username&quot;);
- console.log(pathname, isLogin);
- console.log(location);
- // 如果该路由不用进行权限校验，登录状态下登陆页除外
- // 因为登陆后，无法跳转到登陆页
- // 这部分代码，是为了在非登陆状态下，访问不需要权限校验的路由
- const targetRouterConfig = routerConfig.find(
- (item) =&gt; item.path === pathname
- );
- console.log(targetRouterConfig);
- if (targetRouterConfig &amp;&amp; !targetRouterConfig.auth &amp;&amp; !isLogin) &#123;
- const &#123; component &#125; = targetRouterConfig;
- return ;
- &#125;
- if (isLogin) &#123;
- // 如果是登陆状态，想要跳转到登陆，重定向到主页
- if (pathname === &quot;/login&quot;) &#123;
- return ;
- &#125; else &#123;
- // 如果路由合法，就跳转到相应的路由
- if (targetRouterConfig) &#123;
- return (
- 
- );
- &#125; else &#123;
- // 如果路由不合法，重定向到 404 页面
- return ;
- &#125;
- &#125;
- &#125; else &#123;
- // 非登陆状态下，当路由合法时且需要权限校验时，跳转到登陆页面，要求登陆
- if (targetRouterConfig &amp;&amp; targetRouterConfig.auth) &#123;
- return ;
- &#125; else &#123;
- // 非登陆状态下，路由不合法时，重定向至 404
- return ;
- &#125;
- &#125;
- &#125;
-&#125;
-export default FrontendAuth;
-</code></pre>
-<p>总结一下，实现路由守卫需要考虑到以下的问题：</p>
-<p>未登录情况下，访问不需要权限校验的合法页面：允许访问</p>
-<p>未登录情况下，访问需要权限校验的页面：禁止访问，跳转至登陆页</p>
-<p>未登录情况下，访问所有的非法页面：禁止访问，跳转至 404</p>
-<p>登陆情况下，访问登陆页面：禁止访问，跳转至主页</p>
-<p>登陆情况下，访问除登陆页以外的合法页面：允许访问</p>
-<p>登陆情况下，访问所有的非法页面：禁止访问，跳转至 404</p>
-<h3 id="♥︎♥︎♥︎♥︎-redux中sages和thunk中间件的区别，优缺点"><a href="#♥︎♥︎♥︎♥︎-redux中sages和thunk中间件的区别，优缺点" class="headerlink" title="♥︎♥︎♥︎♥︎ redux中sages和thunk中间件的区别，优缺点"></a>♥︎♥︎♥︎♥︎ redux中sages和thunk中间件的区别，优缺点</h3><p>1、区别</p>
-<ul>
-<li>redux-thunk异步采取 async&#x2F;await </li>
-<li>redux-saga采取generate函数</li>
-</ul>
-<p>2、优缺点</p>
-<p>redux-thunk</p>
-<ul>
-<li>优点： 库小，代码就几行 </li>
-<li>缺点：代码臃肿，reducer不再是纯粹函数，直接返回对象，违背了当初的设计原则；action的形式不统一，异步操作太为分散，分散在了各个action中</li>
-</ul>
-<p>redux-saga</p>
-<ul>
-<li>优点： 将异步与reducer区分开了，更加优雅，适合大量APi请求，而且每个请求之间存在复杂的依赖关系</li>
-<li>缺点：学习曲线比较陡，理解async await；而且库也比较大，即使发布的最小也有25kb,gzip压缩后也有7KB,React压缩后才45kb</li>
-</ul>
-<h3 id="♥︎♥︎♥︎♥︎-React复用组件的状态和增强功能的方法"><a href="#♥︎♥︎♥︎♥︎-React复用组件的状态和增强功能的方法" class="headerlink" title="♥︎♥︎♥︎♥︎  React复用组件的状态和增强功能的方法"></a>♥︎♥︎♥︎♥︎  React复用组件的状态和增强功能的方法</h3><ul>
-<li>render props模式</li>
-<li>高阶组件（HOC）</li>
-</ul>
-<p>注意：以上两种方式不是新的API，而是演化而成的一种固定模式（写法)</p>
-<ul>
-<li><p>思路：将要复用的state和操作state的方法封装在一个组件里面（在组件中提供复用的状态逻辑代码，即状态和操作状态的方法）</p>
-</li>
-<li><p>这时，我们就要思考两个问题：（1）状态是组件内部私有的，那么如何在复用组件的时候拿到组件内部的state呢？—-&gt; 可以在使用组件的时候，添加一个值为函数的props，那么就可以通过函数参数来获取组件内部的state。（2）复用组件时，需要渲染的UI结构会不一样，那么怎么在复用组件时实现渲染任意的UI呢？—–&gt;将函数的返回值作为要渲染的UI</p>
-</li>
-<li><p>注意：复用的组件并没有渲染任何的UI结构，而且通过函数的返回值来渲染的。</p>
-<p>以下通过一个简单的例子来演示使用render props模式实现的组件复用（一个效果是随着鼠标移动，获取鼠标的位置，另一个效果是图片随着鼠标移动而移动，这两个效果的实现都要获取x和y坐标，所以可以考虑用组件的复用来实现）</p>
-</li>
-</ul>
-<p>Mouse组件（要复用的组件）</p>
-<pre><code class="react">import React from &quot;react&quot;;
-class Mouse extends React.Component &#123;
-    //复用的state
-    state = &#123;
-        x: 0,
-        y: 0
-    &#125;
-    //操作state的方法
-    handleMouseMove = e =&gt; &#123;
-        this.setState(&#123;
-            x: e.clientX,
-            y: e.clientY
-        &#125;)
-    &#125;
-    //监听鼠标移动事件
-    componentDidMount() &#123;
-        window.addEventListener(&quot;mousemove&quot;, this.handleMouseMove)
-    &#125;
-    render()&#123;
-        return this.props.render(this.state)   //通过函数参数暴露组件内部的状态
-    &#125;
-&#125;
-export default Mouse;
-</code></pre>
-<p>Mouse_Tree组件（复用Mouse组件的组件）</p>
-<pre><code class="react">import React from &quot;react&quot;;
-import Mouse from &quot;./Mouse.js&quot;;
-import img from &quot;./images/tree.PNG&quot;
-
-class Mouse_Cat extends React.Component &#123;
-    render()&#123;
-        return(
-            &lt;div&gt;
-                &lt;Mouse render=&#123; mouse =&gt; &#123;
-                    return(
-                        &lt;p&gt;X坐标为：&#123;mouse.x&#125; Y坐标为：&#123;mouse.y&#125;&lt;/p&gt;
-                    )
-                &#125;&#125;/&gt;  
-                &lt;Mouse render=&#123; mouse =&gt; &#123;
-                    return(
-                        &lt;img src=&#123;img&#125; alt=&quot;树&quot; style=&#123;&#123;
-                            position: 'absolute',
-                            top: mouse.y,
-                            left: mouse.x
-                        &#125;&#125;/&gt;
-                    )
-                &#125;&#125;/&gt;    
-            &lt;/div&gt;
-        )
-    &#125;
-&#125;
-export default Mouse_Cat;
-</code></pre>
-<hr>
-<h3 id="♥︎♥︎♥︎♥︎♥︎-React有哪些性能优化的手段？"><a href="#♥︎♥︎♥︎♥︎♥︎-React有哪些性能优化的手段？" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ React有哪些性能优化的手段？"></a>♥︎♥︎♥︎♥︎♥︎ React有哪些性能优化的手段？</h3><p> 1、使用纯组件；</p>
-<p> 2、使用 React.memo 进行组件记忆（React.memo 是一个高阶组件），对于相同的输入，不重复执行；</p>
-<p> 3、如果是类组件，使用 shouldComponentUpdate（这是在重新渲染组件之前触发的其中一个生命周期事件）生命周期事件，可以利用此事件来决定何时需要重新渲染组件；</p>
-<p> 4、路由懒加载；</p>
-<p> 5、使用 React Fragments 避免额外标记；</p>
-<p> 6、不要使用内联函数定义（如果我们使用内联函数，则每次调用“render”函数时都会创建一个新的函数实例）；</p>
-<p> 7、避免在Willxxx系列的生命周期中进行异步请求，操作dom等；</p>
-<p> 8、如果是类组件，事件函数在Constructor中绑定bind改变this指向；</p>
-<p> 9、避免使用内联样式属性；</p>
-<p> 10、优化 React 中的条件渲染；</p>
-<p> 11、不要在 render 方法中导出数据；</p>
-<p> 12、列表渲染的时候加key；</p>
-<p> 13、在函数组件中使用useCallback和useMemo来进行组件优化，依赖没有变化的话，不重复执行；</p>
-<p> 14、类组件中使用immutable对象；</p>
-<h3 id="♥︎♥︎♥︎♥︎♥︎-调用this-setState之后，React都做了哪些操作？怎么拿到改变后的值？"><a href="#♥︎♥︎♥︎♥︎♥︎-调用this-setState之后，React都做了哪些操作？怎么拿到改变后的值？" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 调用this.setState之后，React都做了哪些操作？怎么拿到改变后的值？"></a>♥︎♥︎♥︎♥︎♥︎ 调用this.setState之后，React都做了哪些操作？怎么拿到改变后的值？</h3><p>如果是在隶属于原生js执行的空间，比如说setTimeout里面，setState是同步的，那么每次执行setState将立即更新this.state，然后触发render方法；因为是同步执行，可以直接获取改变后的值；</p>
-<p> 如果是在被react处理过的空间执行，比如说合成事件里，此时setState是异步执行的，并不会立即更新this.state的值，当执行setState的时候，会将需要更新的state放入状态队列，在这个空间最后再合并修改this.state，触发render；setState接受第二个参数，是一个回调函数，可以在这里获取改变后的state值；</p>
-<p> 触发render执行后，会生成一个新的虚拟dom结构，然后触发diff运算，找到变化的地方，重新渲染； </p>
-<h3 id="♥︎♥︎♥︎♥︎♥︎-什么是-React-Fiber"><a href="#♥︎♥︎♥︎♥︎♥︎-什么是-React-Fiber" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 什么是 React Fiber?"></a>♥︎♥︎♥︎♥︎♥︎ 什么是 React Fiber?</h3><h4 id="React-Fiber-En"><a href="#React-Fiber-En" class="headerlink" title="React Fiber En"></a>React Fiber En</h4><p>Fiber是React16中新的协调引擎，它的主要目的是使Virtual DOM可以进行增量式渲染，让界面渲染更流畅一种流程控制原语，也称为协程，可以类比es6中的generator函数；React渲染的过程可以被中断，可以将控制权交回浏览器，让位给高优先级的任务，浏览器空闲后再恢复渲染。</p>
-<p>一个执行单元，每次执行完一个“执行单元”，React就会检查现在还剩多少时间，如果没有时间就将控制权让出去。</p>
-<h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ul>
-<li>把可中断的工作拆分成小任务</li>
-<li>对正在做的工作调整优先次序、重做、复用上次（做了一半的）成果</li>
-<li>在父子任务之间从容切换（yield back and forth），以支持React执行过程中的布局刷新</li>
-<li>支持render()返回多个元素</li>
-<li>更好地支持error boundary</li>
-</ul>
-<h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><ul>
-<li>增量渲染（把渲染任务拆分成块，匀到多帧）</li>
-<li>更新时能够暂停，终止，复用渲染任务</li>
-<li>给不同类型的更新赋予优先级</li>
-<li>并发方面新的基础能力</li>
-</ul>
-<h3 id="♥︎♥︎♥︎♥︎♥︎-简述一下-memoization"><a href="#♥︎♥︎♥︎♥︎♥︎-简述一下-memoization" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 简述一下 memoization"></a>♥︎♥︎♥︎♥︎♥︎ 简述一下 memoization</h3><p>memoization最初是用来优化计算机程序使之计算的更快的技术，是通过存储调用函数的结果并且在同样参数传进来的时候返回结果。大部分应该是在递归函数中使用。memoization 是一种优化技术，避免一些不必要的重复计算，可以提高计算速度。</p>
-<p>以阶乘函数为例：</p>
-<h4 id="1-不使用memoization"><a href="#1-不使用memoization" class="headerlink" title="1.不使用memoization"></a>1.不使用memoization</h4><pre><code class="javascript">const factorial = n =&gt; &#123;
-  if (n === 1) &#123;
-    return 1
-  &#125; else &#123;
-    return factorial(n - 1) * n
-  &#125;
-&#125;
-</code></pre>
-<h4 id="2-使用memoization"><a href="#2-使用memoization" class="headerlink" title="2.使用memoization"></a>2.使用memoization</h4><pre><code class="javascript">const cache = [] // 定义一个空的存放缓存的数组
-const factorial = n =&gt; &#123;
-  if (n === 1) &#123;
-    return 1
-  &#125; else if (cache[n - 1]) &#123; // 先从cache数组里查询结果，如果没找到的话再计算
-    return cache[n - 1]
-  &#125; else &#123;
-    let result = factorial(n - 1) * n
-    cache[n - 1] = result
-    return result
-  &#125;
-&#125;
-</code></pre>
-<h4 id="3-搭配闭包使用memoization"><a href="#3-搭配闭包使用memoization" class="headerlink" title="3.搭配闭包使用memoization"></a>3.搭配闭包使用memoization</h4><pre><code class="javascript">const factorialMemo = () =&gt; &#123;
-  const cache = []
-  const factorial = n =&gt; &#123;
-    if (n === 1) &#123;
-      return 1
-    &#125; else if (cache[n - 1]) &#123;
-      console.log(`get factorial($&#123;n&#125;) from cache...`)
-      return cache[n - 1]
-    &#125; else &#123;
-      let result = factorial(n - 1) * n
-      cache[n - 1] = result
-      return result
-    &#125;
-  &#125;
-  return factorial
-&#125;
-const factorial = factorialMemo()
-</code></pre>
-<h4 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h4><p>memorization 可以把函数每次的返回值存在一个数组或者对象中，在接下来的计算中可以直接读取已经计算过并且返回的数据，不用重复多次相同的计算。是一个空间换时间的方式，这种方法可用于部分递归中以提高递归的效率。</p>
-<h3 id="♥︎♥︎♥︎♥︎♥︎-自定义hooks（重点❗️❗️❗️）"><a href="#♥︎♥︎♥︎♥︎♥︎-自定义hooks（重点❗️❗️❗️）" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 自定义hooks（重点❗️❗️❗️）"></a>♥︎♥︎♥︎♥︎♥︎ 自定义hooks（重点❗️❗️❗️）</h3><p>[实现自定义hooks案例]: 	“<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904074433789959">https://juejin.cn/post/6844904074433789959</a> “</p>
  
       <!-- reward -->
       

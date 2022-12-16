@@ -6,7 +6,7 @@
   <link href="https://mengfeng.github.io/atom.xml" rel="self"/>
   
   <link href="https://mengfeng.github.io/"/>
-  <updated>2022-12-14T01:06:18.204Z</updated>
+  <updated>2022-12-16T01:21:25.528Z</updated>
   <id>https://mengfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Vue3api变化</title>
+    <link href="https://mengfeng.github.io/2022/12/16/Vue3api%E5%8F%98%E5%8C%96/"/>
+    <id>https://mengfeng.github.io/2022/12/16/Vue3api%E5%8F%98%E5%8C%96/</id>
+    <published>2022-12-16T01:20:02.000Z</published>
+    <updated>2022-12-16T01:21:25.528Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Vue3" scheme="https://mengfeng.github.io/categories/Vue3/"/>
+    
+    <category term="Vue3api变化" scheme="https://mengfeng.github.io/categories/Vue3/Vue3api%E5%8F%98%E5%8C%96/"/>
+    
+    
+    <category term="vue3" scheme="https://mengfeng.github.io/tags/vue3/"/>
+    
+  </entry>
   
   <entry>
     <title>chatGPT是什么</title>
@@ -546,33 +573,6 @@
     
     
     <category term="Pinia" scheme="https://mengfeng.github.io/tags/Pinia/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>vite配置</title>
-    <link href="https://mengfeng.github.io/2022/11/22/vite%E9%85%8D%E7%BD%AE/"/>
-    <id>https://mengfeng.github.io/2022/11/22/vite%E9%85%8D%E7%BD%AE/</id>
-    <published>2022-11-22T01:50:43.000Z</published>
-    <updated>2022-11-22T01:52:05.206Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="工程技术" scheme="https://mengfeng.github.io/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/"/>
-    
-    <category term="vite配置" scheme="https://mengfeng.github.io/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/vite%E9%85%8D%E7%BD%AE/"/>
-    
-    
-    <category term="vite" scheme="https://mengfeng.github.io/tags/vite/"/>
     
   </entry>
   

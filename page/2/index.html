@@ -177,6 +177,215 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-playcanvas初级"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/"
+    >playcanvas初级</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/" class="article-date">
+  <time datetime="2022-12-04T13:01:02.000Z" itemprop="datePublished">2022-12-04</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/playcanvas/">playcanvas</a> / <a class="article-category-link" href="/categories/Web3D/playcanvas/playcanvas%E5%88%9D%E7%BA%A7/">playcanvas初级</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="playcanvas初级"><a href="#playcanvas初级" class="headerlink" title="playcanvas初级"></a>playcanvas初级</h1><blockquote>
+<p>我们在开始本文章之前，推荐大家一个小工具，方便我们在油管上看英文视频</p>
+<p>YouTube™ 双字幕</p>
+<p>我们通过YouTube上<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=fXc-JjH2nNo&list=PLGmYIROty-5ZX-a88X8ztUeYSPeuBj7rG">Daniel Wood</a>博主的playcanvas视频来浅入一下（看着文章来梳理视频内容食用更佳哦！）</p>
+</blockquote>
+<h3 id="start：工具下载"><a href="#start：工具下载" class="headerlink" title="start：工具下载"></a>start：工具下载</h3><blockquote>
+<p>YouTube™ 双字幕可以帮助我们添加双语字幕</p>
+<p>安装步骤：谷歌浏览器-&gt;设置-&gt;扩展程序-&gt;打开应用商店-&gt;查找-&gt;安装</p>
+</blockquote>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204161502349.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204161617072.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204161720108.png"></p>
+<blockquote>
+<p>下载完成之后，我们在扩展程序图标上就可以使用了，如果不起效果，请重新打开浏览器</p>
+</blockquote>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204162049453.png"></p>
+<h3 id="一、第一课（Getting-started-with-PlayCanvas）"><a href="#一、第一课（Getting-started-with-PlayCanvas）" class="headerlink" title="一、第一课（Getting started with PlayCanvas）"></a>一、第一课（Getting started with PlayCanvas）</h3><blockquote>
+<p>我们第一课先来简单使用一下我们的可视化平台</p>
+</blockquote>
+<p>第一节课主要是熟悉我们的可视化面板，上一篇<a href="https://mengfeng.github.io/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/">playcanvas初识</a>有讲解，如果感兴趣，我们还是可以看看我们的第一课的视频的</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204174020956.png"></p>
+<h3 id="二、第二课（Entities-and-materials）"><a href="#二、第二课（Entities-and-materials）" class="headerlink" title="二、第二课（Entities and materials）"></a>二、第二课（Entities and materials）</h3><blockquote>
+<p>实体和材质是什么？</p>
+<p>实体就是我们编辑器里面的方块、平面等几何体</p>
+<p>材质是我们实体需要结合的属性</p>
+</blockquote>
+<p>1.当我们创建材质资源的时候，我们可以将其分成一个组，方便我们以后去管理我们的材质</p>
+<p>2.我们的贴图，那些属性，我建议先去看看Three.js的教程吧，或者有三维软件的使用基础也是容易理解的，如果不具备这些基础概念可以看看我之前的<a href="https://mengfeng.github.io/categories/">threejs</a>的文章</p>
+<p>3.简单的赋予实体材质的步骤就是如下图（还是比较容易的）</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204175100109.png"></p>
+<p>4.这节课视频主要讲的是贴图和材质和我们材质的一系列属性（不是api）</p>
+<p>5.点击我们的Camera（摄像机）调节角度，点击界面右上角的Launch就可以渲染我们的画面了</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204180337214.png"></p>
+<h3 id="三、第三课（Lighting）"><a href="#三、第三课（Lighting）" class="headerlink" title="三、第三课（Lighting）"></a>三、第三课（Lighting）</h3><blockquote>
+<p>我们的灯光也是有3种，平行光、点光源、聚光灯</p>
+<p>这节课除了讲解几种灯光的属性之外，也有灯光与阴影的关系</p>
+</blockquote>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204181635026.png"></p>
+<p>聚光灯效果，我们在右边的属性栏也可以去修改我们聚光灯的其他属性</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204183234836.png"></p>
+<p>点光源效果（可以看成一个灯泡）</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204183435845.png"></p>
+<h3 id="四、第四课（Skyboxes-in-PlayCanvas）"><a href="#四、第四课（Skyboxes-in-PlayCanvas）" class="headerlink" title="四、第四课（Skyboxes in PlayCanvas）"></a>四、第四课（Skyboxes in PlayCanvas）</h3><blockquote>
+<p>主要展示如何添加天空贴图</p>
+<p>我们的贴图就是从这里下载的，可以去试试</p>
+<p>[贴图纹理]: 	“<a target="_blank" rel="noopener" href="http://www.humus.name/index.php?page=Textures">http://www.humus.name/index.php?page=Textures</a> “</p>
+</blockquote>
+<p>具体的步骤总结：</p>
+<p>⚠️注意：还是看视频详细，这只是总结一下哈哈哈</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204184930487.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204185140511.png"></p>
+<h3 id="五、第五课（Particle-systems-in-PlayCanvas）"><a href="#五、第五课（Particle-systems-in-PlayCanvas）" class="headerlink" title="五、第五课（Particle systems in PlayCanvas）"></a>五、第五课（Particle systems in PlayCanvas）</h3><blockquote>
+<p>这节课的东西我比较喜欢，粒子系统（会生成粒子和粒子动画）</p>
+</blockquote>
+<p>具体的步骤总结：</p>
+<p>这个比较简单，到了后面，这个会生成很多惊艳的动画效果</p>
+<p>⚠️注意：这个属性比较多，认真看</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204185753349.png"></p>
+<h3 id="六、第六课（Overview-of-scripts-in-PlayCanvas）"><a href="#六、第六课（Overview-of-scripts-in-PlayCanvas）" class="headerlink" title="六、第六课（Overview of scripts in PlayCanvas）"></a>六、第六课（Overview of scripts in PlayCanvas）</h3><blockquote>
+<p>这节课没什么东西，就是讲解一下我们script资源文件的构造（给没有javaScript基础的同学讲的）</p>
+<p>有基础的同学可以快速略过了</p>
+</blockquote>
+<p>具体的步骤总结：</p>
+<p>主要是讲一下script资源的操作</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204190611547.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204190818807.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204191338719.png"></p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204191641346.png"></p>
+<h3 id="七、第七课（Make-a-3D-object-move-with-code）"><a href="#七、第七课（Make-a-3D-object-move-with-code）" class="headerlink" title="七、第七课（Make a 3D object move with code）"></a>七、第七课（Make a 3D object move with code）</h3><blockquote>
+<p>这节课开始就要编写js脚本文件了</p>
+<p>通过我们下面的脚步编译，我们就可以渲染出方块渐行渐远的动画了</p>
+<p>具体的API我们可以查询<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/api/pc.Entity.html">文档</a>了</p>
+</blockquote>
+<pre><code class="javascript">//test.js
+var Test = pc.createScript(&#39;test&#39;);
+var Move = function(entity)&#123;
+  this.entity = entity;
+&#125;
+// initialize code called once per entity
+Test.prototype.initialize = function() &#123;
+    
+&#125;;
+
+// update code called every frame
+Test.prototype.update = function(dt) &#123;
+    this.entity.translateLocal(-0.01,0,0);
+&#125;;
+
+// swap method called for script hot-reloading
+// inherit your script state here
+// Test.prototype.swap = function(old) &#123; &#125;;
+
+// to learn more about script anatomy, please read:
+// https://developer.playcanvas.com/en/user-manual/scripting/
+</code></pre>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204192521888.png"></p>
+<h3 id="八、第八课（Moving-objects-with-keyboard-input）"><a href="#八、第八课（Moving-objects-with-keyboard-input）" class="headerlink" title="八、第八课（Moving objects with keyboard input）"></a>八、第八课（Moving objects with keyboard input）</h3><blockquote>
+<p>利用键盘的按键来控制我们实体的移动、旋转等</p>
+<p>建议不要跟着视频的写法来练习，要自己去查文档，因为视频已经有点陈旧了</p>
+<p>api都有所变化</p>
+</blockquote>
+<p>我们的脚本实现的是利用键盘的上下左右来控制实体的上下左右</p>
+<pre><code class="javascript">//test.js
+var Test = pc.createScript(&#39;test&#39;);
+var keyboard = new pc.Keyboard(window);
+var Move = function(entity)&#123;
+  this.entity = entity;
+&#125;
+// initialize code called once per entity
+Test.prototype.initialize = function() &#123;
+    
+&#125;;
+
+// update code called every frame
+Test.prototype.update = function(dt) &#123;
+   if(keyboard.isPressed(pc.KEY_RIGHT))&#123;
+       this.entity.translate(0.01,0,0);
+   &#125;
+    if(keyboard.isPressed(pc.KEY_LEFT))&#123;
+       this.entity.translate(-0.01,0,0);
+   &#125;
+    if(keyboard.isPressed(pc.KEY_UP))&#123;
+       this.entity.translate(0,0,-0.01);
+   &#125;
+    if(keyboard.isPressed(pc.KEY_DOWN))&#123;
+       this.entity.translate(0,0,0.01);
+   &#125;
+&#125;;
+
+// swap method called for script hot-reloading
+// inherit your script state here
+// Test.prototype.swap = function(old) &#123; &#125;;
+
+// to learn more about script anatomy, please read:
+// https://developer.playcanvas.com/en/user-manual/scripting/
+</code></pre>
+<h3 id="九、第九课（Rotating-objects-with-keyboard-input）"><a href="#九、第九课（Rotating-objects-with-keyboard-input）" class="headerlink" title="九、第九课（Rotating objects with keyboard input）"></a>九、第九课（Rotating objects with keyboard input）</h3><blockquote>
+<p>这节课和上节课的内容差不多，就是利用键盘按键去控制实体的其他属性</p>
+<p>教js零基础的同学一下变量的基础写法（可以快速略过了哈哈哈，还得扫一眼哈）</p>
+</blockquote>
+<h3 id="十、第十课（Rigid-Bodies-and-Collision-in-PlayCanvas）"><a href="#十、第十课（Rigid-Bodies-and-Collision-in-PlayCanvas）" class="headerlink" title="十、第十课（Rigid Bodies and Collision in PlayCanvas）"></a>十、第十课（Rigid Bodies and Collision in PlayCanvas）</h3><blockquote>
+<p>PlayCanvas中的刚体和碰撞这节课的知识点还是可以的</p>
+<p>大体是讲物体碰撞的属性和运动</p>
+</blockquote>
+<p>根据步骤可以实现碰撞</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204204506027.png"></p>
+<h3 id="十一、第十一课（Adding-sound-to-your-game）"><a href="#十一、第十一课（Adding-sound-to-your-game）" class="headerlink" title="十一、第十一课（Adding sound to your game）"></a>十一、第十一课（Adding sound to your game）</h3><blockquote>
+<p>我们的游戏进去是不是有背景音乐呀，这节课就是将背景音乐加载进来</p>
+<p>Audio Listener可以简单的说像耳朵一样，可以听见附近的声音</p>
+</blockquote>
+<p>大体步骤如下，具体可以看视频了（还有许多细节）</p>
+<p><img src="/2022/12/04/playcanvas%E5%88%9D%E7%BA%A7/image-20221204205445304.png"></p>
+<h3 id="十二、第十二课（Controlling-audio-with-scripts）"><a href="#十二、第十二课（Controlling-audio-with-scripts）" class="headerlink" title="十二、第十二课（Controlling audio with scripts）"></a>十二、第十二课（Controlling audio with scripts）</h3><blockquote>
+<p>这节课就是延续上面的，对于audio的属性讲解和脚本编写了，</p>
+<p>这个任务交给你们了，写好评论，给你点大赞👍</p>
+</blockquote>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[playcanvas初级教程]: 	“<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=fXc-JjH2nNo&amp;list=PLGmYIROty-5ZX-a88X8ztUeYSPeuBj7rG">https://www.youtube.com/watch?v=fXc-JjH2nNo&amp;list=PLGmYIROty-5ZX-a88X8ztUeYSPeuBj7rG</a> “<br>[playcanvas官网API]: 	“<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/en/api/">https://developer.playcanvas.com/en/api/</a> “<br>[playcanvas中文]: 	“<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/zh/">https://developer.playcanvas.com/zh/</a> “</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/playcanvas/" rel="tag">playcanvas</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-playcanvas初识"
   class="article article-type-post"
   itemscope
@@ -2495,518 +2704,6 @@ app.whenReady().then(() =&gt; &#123;
 <p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
 <p>[TouchBar文档]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
 <h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a target="_blank" rel="noopener" href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/electron/" rel="tag">electron</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-Electron-d-1-0"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/24/Electron-d-1-0/"
-    >Electron-d-1.0</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/24/Electron-d-1-0/" class="article-date">
-  <time datetime="2022-11-24T08:27:34.000Z" itemprop="datePublished">2022-11-24</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Electron/">Electron</a> / <a class="article-category-link" href="/categories/Electron/Electron-d-1-0/">Electron-d-1.0</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><h3 id="一、构建第一个electron应用"><a href="#一、构建第一个electron应用" class="headerlink" title="一、构建第一个electron应用"></a>一、构建第一个electron应用</h3><h4 id="1-初始化"><a href="#1-初始化" class="headerlink" title="1.初始化"></a>1.初始化</h4><pre><code class="ini">npm init -y //初始化项目
-npm install --save-dev electron //下载electron到开发依赖
-</code></pre>
-<h4 id="2-创建入口index-html"><a href="#2-创建入口index-html" class="headerlink" title="2.创建入口index.html"></a>2.创建入口index.html</h4><pre><code class="html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP --&gt;
-    &lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#39;self&#39;; script-src &#39;self&#39;&quot;&gt;
-    &lt;title&gt;Hello World!&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;h1&gt;Hello World!&lt;/h1&gt;
-    We are using Node.js &lt;span id=&quot;node-version&quot;&gt;&lt;/span&gt;,
-    Chromium &lt;span id=&quot;chrome-version&quot;&gt;&lt;/span&gt;,
-    and Electron &lt;span id=&quot;electron-version&quot;&gt;&lt;/span&gt;.
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<h4 id="3-创建入口文件"><a href="#3-创建入口文件" class="headerlink" title="3.创建入口文件"></a>3.创建入口文件</h4><pre><code class="javascript">//main.js
-const &#123; app,BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const createWindow = () =&gt; &#123;
-    const win = new BrowserWindow(&#123;
-      width: 800,
-      height: 600
-    &#125;)
-  
-    win.loadFile(&#39;index.html&#39;)
-  &#125;
-
-app.whenReady().then(() =&gt; &#123;
-    createWindow()
-  &#125;)
-</code></pre>
-<h4 id="4-创建窗口应用"><a href="#4-创建窗口应用" class="headerlink" title="4.创建窗口应用"></a>4.创建窗口应用</h4><p>Package.json配置</p>
-<pre><code class="javascript">//Package.json
-&#123;
-  &quot;name&quot;: &quot;electron-app&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;一个处于实验阶段的app&quot;,
-  &quot;main&quot;: &quot;main.js&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;start&quot;: &quot;electron .&quot;
-  &#125;,
-  &quot;keywords&quot;: [],
-  &quot;author&quot;: &quot;alanmf&quot;,
-  &quot;license&quot;: &quot;MIT&quot;,
-  &quot;devDependencies&quot;: &#123;
-    &quot;electron&quot;: &quot;^21.3.0&quot;
-  &#125;
-&#125;
-</code></pre>
-<pre><code class="ini">npm start //执行 electron .
-</code></pre>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221123155226283.png"></p>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221123155133707.png"></p>
-<p>为了更方便页面更新我们使用nodemon</p>
-<p>nodemon是一个自动重启node应用的工具，当监听的文件或监听目录下的文件发生修改时，自动重启应用</p>
-<pre><code class="ini">npm i nodemon -D
-</code></pre>
-<p>更改package.json</p>
-<pre><code class="javascript">//Package.json
-&#123;
-  &quot;name&quot;: &quot;electron-app&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;一个处于实验阶段的app&quot;,
-  &quot;main&quot;: &quot;main.js&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;start&quot;: &quot;nodemon --exec electron .&quot;
-  &#125;,
-  &quot;keywords&quot;: [],
-  &quot;author&quot;: &quot;alanmf&quot;,
-  &quot;license&quot;: &quot;MIT&quot;,
-  &quot;devDependencies&quot;: &#123;
-    &quot;electron&quot;: &quot;^21.3.0&quot;
-  &#125;
-&#125;
-</code></pre>
-<h3 id="二、electron核心"><a href="#二、electron核心" class="headerlink" title="二、electron核心"></a>二、electron核心</h3><h4 id="1-electron核心概念"><a href="#1-electron核心概念" class="headerlink" title="1.electron核心概念"></a>1.electron核心概念</h4><p><strong>主进程</strong>；启动项目时运行的main.js脚本就是我们说的主进程，在主进程运行的脚步可以创建web页面的形式展示GUI，主进程只有一个。</p>
-<p><strong>渲染进程</strong>：每个Electron的页面都在运行着自己的进程，这样的进程称之为渲染进程（基于Chromium的多进程结构）。</p>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221123160858462.png"></p>
-<p>主进程使用BrowserWindow创建实例，主进程销毁后，对应的渲染进程会被终止。主进程与渲染进程通过 IPC 的方式（事件驱动）进行通信。</p>
-<h4 id="2-electron窗口控制台"><a href="#2-electron窗口控制台" class="headerlink" title="2.electron窗口控制台"></a>2.electron窗口控制台</h4><pre><code class="javascript">//打开开发者工具
-win.webContents.openDevTools();
-//暂时关闭安全警告（不推荐）
-process.env[&#39;ELECTRON_DISABLE_SECURITY_WARNINGS&#39;] = &#39;true&#39;
-</code></pre>
-<pre><code class="javascript">//配置CSP（阻挡一部分安全警告）
-&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#39;self&#39;; script-src &#39;self&#39;&quot;&gt;
-</code></pre>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221123162757926.png"></p>
-<h4 id="3-主进程事件生命周期"><a href="#3-主进程事件生命周期" class="headerlink" title="3.主进程事件生命周期"></a>3.主进程事件生命周期</h4><p>关闭所有窗口时退出应用 <strong>Windows &amp; Linux</strong></p>
-<p>在Windows和Linux上，关闭所有窗口通常会完全退出一个应用程序。</p>
-<p>为了实现这一点，你需要监听 <code>app</code> 模块的 <code>&#39;window-all-closed&#39;事件。如果用户不是在 macOS(</code>darwin<code>) 上运行程序，则调用 </code>app.quit()&#96;。</p>
-<pre><code class="javascript">app.on(&#39;window-all-closed&#39;, () =&gt; &#123;
-  //macOS用户在关闭窗口时不会关闭应用
-  if (process.platform !== &#39;darwin&#39;) app.quit()
-&#125;)
-</code></pre>
-<p>当 Linux 和 Windows 应用在没有窗口打开时退出了，macOS 应用通常即使在没有打开任何窗口的情况下也继续运行，并且在没有窗口可用的情况下激活应用时会打开新的窗口。</p>
-<p>为了实现这一特性，监听 <code>app</code> 模块的 <code>activate</code> 事件。如果没有任何浏览器窗口是打开的，则调用 <code>createWindow()</code> 方法。</p>
-<p>因为窗口无法在 <code>ready</code> 事件前创建，你应当在你的应用初始化后仅监听 <code>activate</code> 事件。 通过在您现有的 <code>whenReady()</code> 回调中附上您的事件监听器来完成这个操作。</p>
-<pre><code class="javascript">app.whenReady().then(() =&gt; &#123;
-  createWindow()
-  app.on(&#39;activate&#39;, () =&gt; &#123;
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  &#125;)
-&#125;)
-</code></pre>
-<p>这样，我们的窗口的控件就完整了（实现macOS用户-没有窗口打开时创建新窗口-关闭窗口不关闭应用，点击程序坞应用打开新窗口）</p>
-<h4 id="4-通过预加载脚本从渲染器访问Node-js"><a href="#4-通过预加载脚本从渲染器访问Node-js" class="headerlink" title="4.通过预加载脚本从渲染器访问Node.js"></a>4.通过预加载脚本从渲染器访问Node.js</h4><p>现在，最后要做的是输出Electron的版本号和它的依赖项到你的web页面上。</p>
-<p>在主进程通过Node的全局 <code>process</code> 对象访问这个信息是微不足道的。 然而，你不能直接在主进程中编辑DOM，因为它无法访问渲染器 <code>文档</code> 上下文。 它们存在于完全不同的进程！</p>
-<p>这是将 <strong>预加载</strong> 脚本连接到渲染器时派上用场的地方。 预加载脚本在渲染器进程加载之前加载，并有权访问两个 渲染器全局 (例如 <code>window</code> 和 <code>document</code>) 和 Node.js 环境。</p>
-<p>创建一个名为 <code>preload.js</code> 的新脚本:</p>
-<pre><code class="javascript">//preload.js
-window.addEventListener(&#39;DOMContentLoaded&#39;, () =&gt; &#123;
-  const replaceText = (selector, text) =&gt; &#123;
-    const element = document.getElementById(selector)
-    if (element) element.innerText = text
-  &#125;
-
-  for (const dependency of [&#39;chrome&#39;, &#39;node&#39;, &#39;electron&#39;]) &#123;
-    replaceText(`$&#123;dependency&#125;-version`, process.versions[dependency])
-  &#125;
-&#125;)
-</code></pre>
-<p>上面的代码访问 Node.js <code>process.versions</code> 对象，并运行一个基本的 <code>replaceText</code> 辅助函数将版本号插入到 HTML 文档中。</p>
-<p>要将此脚本附加到渲染器流程，请在你现有的 <code>BrowserWindow</code> 构造器中将路径中的预加载脚本传入 <code>webPreferences.preload</code> 选项。</p>
-<pre><code class="javascript">// include the Node.js &#39;path&#39; module at the top of your file
-const path = require(&#39;path&#39;)
-
-// modify your existing createWindow() function
-const createWindow = () =&gt; &#123;
-  const win = new BrowserWindow(&#123;
-    width: 800,
-    height: 600,
-    webPreferences: &#123;
-      preload: path.join(__dirname, &#39;preload.js&#39;)
-    &#125;
-  &#125;)
-
-  win.loadFile(&#39;index.html&#39;)
-&#125;
-// ...
-</code></pre>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221124081539904.png"></p>
-<p>这里使用了两个Node.js概念：</p>
-<ul>
-<li><code>__dirname</code>字符串指向当前正在执行脚本的路径 (在本例中，它指向你的项目的根文件夹)。</li>
-<li><code>path.join</code> API 将多个路径联结在一起，创建一个跨平台的路径字符串。</li>
-</ul>
-<p>我们使用一个相对当前正在执行JavaScript文件的路径，这样相对路径将在开发模式和打包模式中都将有效。</p>
-<h4 id="5-contextBridge"><a href="#5-contextBridge" class="headerlink" title="5.contextBridge"></a>5.contextBridge</h4><p><code>contextBridge</code>模块有以下方法:</p>
-<p><code>contextBridge.exposeInMainWorld(apiKey, api)</code></p>
-<ul>
-<li><code>apiKey</code> string - 将 API 注入到 <code>窗口</code> 的键。 API 将可通过 <code>window[apiKey]</code> 访问。</li>
-<li><code>api</code> any - 你的 API可以是什么样的以及它是如何工作的相关信息如下。</li>
-</ul>
-<p>应用开发接口（API）</p>
-<p>提供给 <code>exposeInMainWorld</code> 的 <code>api</code> 必须是一个 <code>Function</code>， <code>string</code>， <code>number</code>， <code>Array</code>， <code>boolean</code>；或一个键为字符串，值为一个 <code>Function</code>， <code>string</code>， <code>number</code>， <code>Array</code>， <code>boolean</code>的对象；或其他符合相同条件的嵌套对象。</p>
-<p><code>Function</code> 类型的值被代理到其他上下文中，所有其他类型的值都会被 <strong>复制</strong> 并 <strong>冻结</strong>。 在 API 中发送的任何数据 &#x2F;原始数据将不可改变，在桥接器其中一侧的更新不会导致另一侧的更新。</p>
-<p>代码应用：</p>
-<pre><code class="javascript">//preload.js+
-const &#123; contextBridge &#125; = require(&#39;electron&#39;)
-
-contextBridge.exposeInMainWorld(&#39;myApi&#39;,&#123;
-    platform:process.platform
-  &#125;)
-</code></pre>
-<p>那我们就可以在页面上去访问window上的方法了</p>
-<pre><code class="javascript">//app.js
-console.log(window.myApi.platform) //darwin
-</code></pre>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221124093018081.png"></p>
-<h3 id="三、主进程与渲染进程通信"><a href="#三、主进程与渲染进程通信" class="headerlink" title="三、主进程与渲染进程通信"></a>三、主进程与渲染进程通信</h3><p>进程间通信 (IPC) 是在 Electron 中构建功能丰富的桌面应用程序的关键部分之一。 由于主进程和渲染器进程在 Electron 的进程模型具有不同的职责，因此 IPC 是执行许多常见任务的唯一方法，例如从 UI 调用原生 API 或从原生菜单触发 Web 内容的更改。</p>
-<p>在 Electron 中，进程使用 <code>ipcMain</code> 和 <code>ipcRenderer</code>模块，通过开发人员定义的“通道”传递消息来进行通信。 这些通道是 <strong>任意</strong> （您可以随意命名它们）和 <strong>双向</strong> （您可以在两个模块中使用相同的通道名称）的。</p>
-<h4 id="1-渲染器进程到主进程（单向"><a href="#1-渲染器进程到主进程（单向" class="headerlink" title="1.渲染器进程到主进程（单向 )"></a>1.渲染器进程到主进程（单向 )</h4><p>要将单向 IPC 消息从渲染器进程发送到主进程，您可以使用 <code>ipcRenderer.send</code>API 发送消息，然后使用 <code>ipcMain.on</code>API 接收。</p>
-<p>我们下边就按照官网的例子来说吧！</p>
-<h5 id="1-使用-ipcMain-on-监听事件"><a href="#1-使用-ipcMain-on-监听事件" class="headerlink" title="(1) 使用 ipcMain.on 监听事件"></a>(1) 使用 <code>ipcMain.on</code> 监听事件</h5><p>在主进程（main.js）中，使用 <code>ipcMain.on</code> API 在 <code>set-title</code> 通道上设置一个 IPC 监听器:</p>
-<pre><code class="javascript">//main.js+
-const &#123; ipcMain &#125; = require(&#39;electron&#39;)
- ipcMain.on(&#39;set-title&#39;, (event, title) =&gt; &#123;
-      const webContents = event.sender
-      const win = BrowserWindow.fromWebContents(webContents)
-      win.setTitle(title)
-    &#125;)
-</code></pre>
-<h5 id="2-通过预加载脚本暴露-ipcRenderer-send"><a href="#2-通过预加载脚本暴露-ipcRenderer-send" class="headerlink" title="(2) 通过预加载脚本暴露 ipcRenderer.send"></a>(2) 通过预加载脚本暴露 <code>ipcRenderer.send</code></h5><p>要将消息发送到上面创建的 IPC 监听器，可以使用 <code>ipcRenderer.send</code> API。 默认情况下，渲染器进程没有权限访问 Node.js 和 Electron 模块。 作为应用开发者，需要使用 <code>contextBridge</code> API 来选择要从预加载脚本中暴露哪些 API。</p>
-<p>在您的预加载脚本中添加以下代码，向渲染器进程暴露一个全局的 <code>window.electronAPI</code> 变量。</p>
-<pre><code class="javascript">//preload.js+
-const &#123; contextBridge,ipcRenderer &#125; = require(&#39;electron&#39;)
-contextBridge.exposeInMainWorld(&#39;electronAPI&#39;, &#123;
-    setTitle: (title) =&gt; ipcRenderer.send(&#39;set-title&#39;, title)
-&#125;)
-</code></pre>
-<p>此时，将能够在渲染器进程中使用 <code>window.electronAPI.setTitle()</code> 函数。</p>
-<h5 id="3-构建渲染器进程-UI"><a href="#3-构建渲染器进程-UI" class="headerlink" title="(3) 构建渲染器进程 UI"></a>(3) 构建渲染器进程 UI</h5><p>在 BrowserWindow 加载的我们的 HTML 文件中，添加一个由文本输入框和按钮组成的基本用户界面：</p>
-<pre><code class="html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP --&gt;
-    &lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#39;self&#39;; script-src &#39;self&#39;&quot;&gt;
-    &lt;title&gt;Hello World!&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    Title: &lt;input id=&quot;title&quot;/&gt;
-    &lt;button id=&quot;btn&quot; type=&quot;button&quot;&gt;Set&lt;/button&gt;
-    &lt;script src=&quot;./renderer/app.js&quot;&gt;&lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<p>将在导入的 <code>renderer.js</code> 文件中添加几行代码，以利用从预加载脚本中暴露的 <code>window.electronAPI</code> 功能：</p>
-<pre><code class="javascript">//app.js
-const setButton = document.getElementById(&#39;btn&#39;)
-const titleInput = document.getElementById(&#39;title&#39;)
-setButton.addEventListener(&#39;click&#39;, () =&gt; &#123;
-    const title = titleInput.value
-    window.electronAPI.setTitle(title)
-&#125;);
-</code></pre>
-<p>到目前的代码为止，我们的一个渲染进程到主进程的进程通信就已经实现了，我们可以试一试我们的UI界面功能</p>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221124100800847.png"></p>
-<h5 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h5><p>！！！我们上面有一些地方不理解的方法和API，我们现在讲一下</p>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221124101054114.png"></p>
-<p>上面的 回调函数有两个参数：一个 IpcMainEvent 结构和一个 <code>title</code> 字符串。 每当消息通过 <code>set-title</code> 通道传入时，此函数找到附加到消息发送方的 BrowserWindow 实例，并在该实例上使用 <code>win.setTitle</code> API。</p>
-<p>我们只是为了更简单的理解进程通信，具体 API 见官方文档吧！</p>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221124101339509.png"></p>
-<h4 id="2-渲染器进程到主进程（双向）"><a href="#2-渲染器进程到主进程（双向）" class="headerlink" title="2.渲染器进程到主进程（双向）"></a>2.渲染器进程到主进程（双向）</h4><p>双向 IPC 的一个常见应用是从渲染器进程代码调用主进程模块并等待结果。 这可以通过将 <code>ipcRenderer.invoke</code> 与 <code>ipcMain.handle</code> 搭配使用来完成。</p>
-<h5 id="1-使用-ipcMain-handle-监听事件"><a href="#1-使用-ipcMain-handle-监听事件" class="headerlink" title="(1)使用 ipcMain.handle 监听事件"></a>(1)使用 <code>ipcMain.handle</code> 监听事件</h5><p>在主进程(main.js)中，我们将创建一个 <code>handleFileOpen()</code> 函数，它调用 <code>dialog.showOpenDialog</code> 并返回用户选择的文件路径值。 每当渲染器进程通过 <code>dialog:openFile</code> 通道发送 <code>ipcRender.invoke</code> 消息时，此函数被用作一个回调。 然后，返回值将作为一个 Promise 返回到最初的 <code>invoke</code> 调用。</p>
-<pre><code class="javascript">//main.js
-const &#123; app,BrowserWindow,ipcMain,dialog &#125; = require(&#39;electron&#39;)
-const path = require(&#39;path&#39;)
-
-//回调函数
-async function handleFileOpen() &#123;
-  const &#123; canceled, filePaths &#125; = await dialog.showOpenDialog()
-  if (canceled) &#123;
-    return
-  &#125; else &#123;
-    return filePaths[0]
-  &#125;
-&#125;
-
-const createWindow = () =&gt; &#123;
-    const win = new BrowserWindow(&#123;
-      width: 800,
-      height: 600,
-      webPreferences: &#123;
-        preload: path.join(__dirname, &#39;preload.js&#39;)
-      &#125;
-    &#125;)
-    win.loadFile(&#39;index.html&#39;) 
-    win.webContents.openDevTools()
-    
-  &#125;
-
-  app.whenReady().then(() =&gt; &#123;
-    //监听，执行回调
-    ipcMain.handle(&#39;dialog:openFile&#39;, handleFileOpen)
-    createWindow()
-    app.on(&#39;activate&#39;, () =&gt; &#123;
-      if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    &#125;)
-  &#125;)
-  app.on(&#39;window-all-closed&#39;, () =&gt; &#123;
-    if (process.platform !== &#39;darwin&#39;) app.quit()
-  &#125;)
-</code></pre>
-<h5 id="2-通过预加载脚本暴露-ipcRenderer-invoke"><a href="#2-通过预加载脚本暴露-ipcRenderer-invoke" class="headerlink" title="(2)通过预加载脚本暴露 ipcRenderer.invoke"></a>(2)通过预加载脚本暴露 <code>ipcRenderer.invoke</code></h5><p>在预加载脚本中，我们暴露了一个单行的 <code>openFile</code> 函数，它调用并返回 <code>ipcRenderer.invoke(&#39;dialog:openFile&#39;)</code> 的值。 我们将在下一步中使用此 API 从渲染器的用户界面调用原生对话框。</p>
-<pre><code class="javascript">//preload.js
-const &#123; contextBridge,ipcRenderer &#125; = require(&#39;electron&#39;)
- contextBridge.exposeInMainWorld(&#39;electronAPI&#39;, &#123;
-    openFile: () =&gt; ipcRenderer.invoke(&#39;dialog:openFile&#39;)
-&#125;)
-</code></pre>
-<h5 id="3-构建渲染器进程-UI-1"><a href="#3-构建渲染器进程-UI-1" class="headerlink" title="(3)构建渲染器进程 UI"></a>(3)构建渲染器进程 UI</h5><p>最后，让我们构建加载到 BrowserWindow 中的 HTML 文件。</p>
-<pre><code class="html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP --&gt;
-    &lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#39;self&#39;; script-src &#39;self&#39;&quot;&gt;
-    &lt;title&gt;Dialog&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;button type=&quot;button&quot; id=&quot;btn&quot;&gt;Open a File&lt;/button&gt;
-    File path: &lt;strong id=&quot;filePath&quot;&gt;&lt;/strong&gt;
-    &lt;script src=&#39;./renderer/app.js&#39;&gt;&lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<p>用户界面包含一个 <code>#btn</code> 按钮元素，将用于触发我们的预加载 API，以及一个 <code>#filePath</code> 元素，将用于显示所选文件的路径。需要在渲染器进程脚本中编写几行代码</p>
-<pre><code class="javascript">//app.js
-const btn = document.getElementById(&#39;btn&#39;)
-const filePathElement = document.getElementById(&#39;filePath&#39;)
-
-btn.addEventListener(&#39;click&#39;, async () =&gt; &#123;
-  const filePath = await window.electronAPI.openFile()
-  filePathElement.innerText = filePath
-&#125;)
-</code></pre>
-<p>到目前的代码为止，我们的一个渲染进程到主进程的双向进程通信就已经实现了，我们可以试一试我们的UI界面功能</p>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221124103530122.png"></p>
-<h5 id="总结：-1"><a href="#总结：-1" class="headerlink" title="总结："></a>总结：</h5><p><code>ipcRenderer.invoke</code> API （老方法了，但依然好用）是在 Electron 7 中添加的，作为处理渲染器进程中双向 IPC 的一种开发人员友好的方式。 但这种 IPC 模式存在几种替代方法。</p>
-<p>使用 <code>ipcRenderer.send</code>我们用于单向通信的 <code>ipcRenderer.send</code> API 也可用于双向通信。 这是在 Electron 7 之前通过 IPC 进行异步双向通信的推荐方式。</p>
-<pre><code class="javascript">//preload.js
-// 您也可以使用 `contextBridge` API
-// 将这段代码暴露给渲染器进程
-const &#123; ipcRenderer &#125; = require(&#39;electron&#39;)
-
-ipcRenderer.on(&#39;asynchronous-reply&#39;, (_event, arg) =&gt; &#123;
-  console.log(arg) // 在 DevTools 控制台中打印“pong”
-&#125;)
-ipcRenderer.send(&#39;asynchronous-message&#39;, &#39;ping&#39;)
-</code></pre>
-<pre><code class="javascript">//main.js
-ipcMain.on(&#39;asynchronous-message&#39;, (event, arg) =&gt; &#123;
-  console.log(arg) // 在 Node 控制台中打印“ping”
-  // 作用如同 `send`，但返回一个消息
-  // 到发送原始消息的渲染器
-  event.reply(&#39;asynchronous-reply&#39;, &#39;pong&#39;)
-&#125;)
-</code></pre>
-<p>这种方法有几个缺点：</p>
-<ul>
-<li>您需要设置第二个 <code>ipcRenderer.on</code> 监听器来处理渲染器进程中的响应。 使用 <code>invoke</code>，您将获得作为 Promise 返回到原始 API 调用的响应值。</li>
-<li>没有显而易见的方法可以将 <code>asynchronous-reply</code> 消息与原始的 <code>asynchronous-message</code>消息配对。 如果您通过这些通道非常频繁地来回传递消息，则需要添加其他应用代码来单独跟踪每个调用和响应。</li>
-</ul>
-<p>使用 <code>ipcRenderer.sendSync</code>API也是可以替代的，但不推荐</p>
-<p><code>ipcRenderer.sendSync</code> API 向主进程发送消息，并 <em>同步</em> 等待响应。</p>
-<pre><code class="javascript">//main.js
-const &#123; ipcMain &#125; = require(&#39;electron&#39;)
-ipcMain.on(&#39;synchronous-message&#39;, (event, arg) =&gt; &#123;
-  console.log(arg) // 在 Node 控制台中打印“ping”
-  event.returnValue = &#39;pong&#39;
-&#125;)
-</code></pre>
-<pre><code class="javascript">//perload.js
-// 您也可以使用 `contextBridge` API
-// 将这段代码暴露给渲染器进程
-const &#123; ipcRenderer &#125; = require(&#39;electron&#39;)
-
-const result = ipcRenderer.sendSync(&#39;synchronous-message&#39;, &#39;ping&#39;)
-console.log(result) // 在 DevTools 控制台中打印“pong”
-</code></pre>
-<p>这份代码的结构与 <code>invoke</code> 模型非常相似，但出于性能原因，我们建议<strong>避免使用此 API</strong>。 它的同步特性意味着它将阻塞渲染器进程，直到收到回复为止。(容易阻塞渲染器进程)</p>
-<h4 id="3-主进程到渲染器进程"><a href="#3-主进程到渲染器进程" class="headerlink" title="3.主进程到渲染器进程"></a>3.主进程到渲染器进程</h4><p>将消息从主进程发送到渲染器进程时，需要指定是哪一个渲染器接收消息。 消息需要通过其 <code>WebContents</code>实例发送到渲染器进程。 此 WebContents 实例包含一个 <code>send</code> 方法，其使用方式与 <code>ipcRenderer.send</code> 相同。</p>
-<h5 id="1-使用-webContents-模块发送消息"><a href="#1-使用-webContents-模块发送消息" class="headerlink" title="(1)使用 webContents 模块发送消息"></a>(1)使用 <code>webContents</code> 模块发送消息</h5><p>我们需要首先使用 Electron 的 <code>Menu</code> 模块在主进程中构建一个自定义菜单，该模块使用 <code>webContents.send</code> API 将 IPC 消息从主进程发送到目标渲染器。</p>
-<pre><code class="javascript">//main.js
-const &#123; app,BrowserWindow,ipcMain,Menu &#125; = require(&#39;electron&#39;)
-const path = require(&#39;path&#39;)
-
-const createWindow = () =&gt; &#123;
-    const win = new BrowserWindow(&#123;
-      width: 800,
-      height: 600,
-      webPreferences: &#123;
-        preload: path.join(__dirname, &#39;preload.js&#39;)
-      &#125;
-    &#125;)
-
-    const menu = Menu.buildFromTemplate([
-      &#123;
-        label: app.name,
-        submenu: [
-        &#123;
-          click: () =&gt; win.webContents.send(&#39;update-counter&#39;, 1),
-          label: &#39;Increment&#39;,
-        &#125;,
-        &#123;
-          click: () =&gt; win.webContents.send(&#39;update-counter&#39;, -1),
-          label: &#39;Decrement&#39;,
-        &#125;
-        ]
-      &#125;
-  
-    ])
-
-    Menu.setApplicationMenu(menu)
-    win.loadFile(&#39;index.html&#39;) 
-    win.webContents.openDevTools()
-    
-  &#125;
-
-  app.whenReady().then(() =&gt; &#123;
-    ipcMain.on(&#39;counter-value&#39;, (_event, value) =&gt; &#123;
-      console.log(value) // will print value to Node console
-    &#125;)
-    createWindow()
-    app.on(&#39;activate&#39;, () =&gt; &#123;
-      if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    &#125;)
-  &#125;)
-
-  app.on(&#39;window-all-closed&#39;, () =&gt; &#123;
-    if (process.platform !== &#39;darwin&#39;) app.quit()
-  &#125;)
-</code></pre>
-<h5 id="2-通过预加载脚本暴露-ipcRenderer-on"><a href="#2-通过预加载脚本暴露-ipcRenderer-on" class="headerlink" title="(2)通过预加载脚本暴露 ipcRenderer.on"></a>(2)通过预加载脚本暴露 <code>ipcRenderer.on</code></h5><p>与前面的渲染器到主进程的示例一样，我们使用预加载脚本中的 <code>contextBridge</code> 和 <code>ipcRenderer</code> 模块向渲染器进程暴露 IPC 功能：</p>
-<pre><code class="javascript">//preload.js
-const &#123; contextBridge,ipcRenderer &#125; = require(&#39;electron&#39;)
-contextBridge.exposeInMainWorld(&#39;electronAPI&#39;, &#123;
-    handleCounter: (callback) =&gt; ipcRenderer.on(&#39;update-counter&#39;, callback)
-&#125;)
-</code></pre>
-<p>加载预加载脚本后，渲染器进程应有权访问 <code>window.electronAPI.handleCounter()</code> 监听器函数。</p>
-<h5 id="3-构建渲染器进程-UI-2"><a href="#3-构建渲染器进程-UI-2" class="headerlink" title="(3)构建渲染器进程 UI"></a>(3)构建渲染器进程 UI</h5><p>我们将在加载的 HTML 文件中创建一个接口，其中包含一个 <code>#counter</code>元素，我们将使用该元素来显示值：</p>
-<pre><code class="html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP --&gt;
-    &lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#39;self&#39;; script-src &#39;self&#39;&quot;&gt;
-    &lt;title&gt;Menu Counter&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    Current value: &lt;strong id=&quot;counter&quot;&gt;0&lt;/strong&gt;
-    &lt;script src=&#39;./renderer/app.js&#39;&gt;&lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<p>为了更新 HTML 文档中的值，我们将添加几行 DOM 操作的代码，以便在每次触发 <code>update-counter</code> 事件时更新 <code>#counter</code> 元素的值。</p>
-<pre><code class="javascript">//app.js
-const counter = document.getElementById(&#39;counter&#39;)
-window.electronAPI.handleCounter((event, value) =&gt; &#123;
-    const oldValue = Number(counter.innerText)
-    const newValue = oldValue + value
-    counter.innerText = newValue
-    event.sender.send(&#39;counter-value&#39;, newValue)
-&#125;)
-</code></pre>
-<p>在上面的代码中，我们将回调传递给从预加载脚本中暴露的 <code>window.electronAPI.onUpdateCounter</code> 函数。 第二个 <code>value</code> 参数对应于我们传入 <code>webContents.send</code> 函数的 <code>1</code> 或 <code>-1</code>，该函数是从原生菜单调用的。</p>
-<p>到目前的代码为止，我们的一个主进程到渲染器进程的进程通信就已经实现了，我们可以试一试我们的UI界面功能</p>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221124161644112.png"></p>
-<h5 id="总结：-2"><a href="#总结：-2" class="headerlink" title="总结："></a>总结：</h5><p>对于从主进程到渲染器进程的 IPC，没有与 <code>ipcRenderer.invoke</code> 等效的 API。 不过，可以从 <code>ipcRenderer.on</code> 回调中将回复发送回主进程。</p>
-<p>我们可以对前面例子的代码进行略微修改来演示这一点。 在渲染器进程中，使用 <code>event</code> 参数，通过 <code>counter-value</code> 通道将回复发送回主进程。</p>
-<pre><code class="javascript">//app.js
-const counter = document.getElementById(&#39;counter&#39;)
-window.electronAPI.handleCounter((event, value) =&gt; &#123;
-    const oldValue = Number(counter.innerText)
-    const newValue = oldValue + value
-    counter.innerText = newValue
-    event.sender.send(&#39;counter-value&#39;, newValue)
-&#125;)
-</code></pre>
-<p>在主进程中，监听 <code>counter-value</code> 事件并适当地处理它们。</p>
-<pre><code class="javascript">//main.js
-ipcMain.on(&#39;counter-value&#39;, (_event, value) =&gt; &#123;
-      console.log(value) // will print value to Node console
-  &#125;)
-</code></pre>
-<p><img src="/2022/11/24/Electron-d-1-0/image-20221124162116311.png"></p>
-<h4 id="4-渲染器进程到渲染器进程"><a href="#4-渲染器进程到渲染器进程" class="headerlink" title="4.渲染器进程到渲染器进程"></a>4.渲染器进程到渲染器进程</h4><p>没有直接的方法可以使用 <code>ipcMain</code> 和 <code>ipcRenderer</code> 模块在 Electron 中的渲染器进程之间发送消息。 为此，有两种选择：</p>
-<ul>
-<li>将主进程作为渲染器之间的消息代理。 这需要将消息从一个渲染器发送到主进程，然后主进程将消息转发到另一个渲染器。</li>
-<li>从主进程将一个 MessagePort 传递到两个渲染器。 这将允许在初始设置后渲染器之间直接进行通信。</li>
-</ul>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官网]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/zh/docs/latest/tutorial/quick-start">https://www.electronjs.org/zh/docs/latest/tutorial/quick-start</a> “</p>
  
       <!-- reward -->
       

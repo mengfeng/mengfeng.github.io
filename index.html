@@ -177,6 +177,233 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-Vue-eventBus"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/12/23/Vue-eventBus/"
+    >Vue-eventBus</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/23/Vue-eventBus/" class="article-date">
+  <time datetime="2022-12-23T01:13:58.000Z" itemprop="datePublished">2022-12-23</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/uniapp/">uniapp</a> / <a class="article-category-link" href="/categories/uniapp/Vue-eventBus/">Vue-eventBus</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="Vue-eventBus"><a href="#Vue-eventBus" class="headerlink" title="Vue-eventBus"></a>Vue-eventBus</h1><p>父子组件通信与兄弟组件通信</p>
+<p>vue组件非常常见的有父子组件通信，兄弟组件通信。</p>
+<pre><code>父子组件通信：方法有很多，比如：父组件通过 props 向下传数据给子组件，子组件通过 $emit 告诉父组件。
+兄弟组件通信：如果两个页面没有任何引入和被引入关系，需要额外的组件来通信，如：事件总线、Vuex。
+</code></pre>
+<h3 id="一、事件总线是什么"><a href="#一、事件总线是什么" class="headerlink" title="一、事件总线是什么"></a>一、事件总线是什么</h3><p>EventBus 又称为事件总线。在Vue中可以使用 EventBus 来作为沟通桥梁的概念，就像是所有组件共用相同的事件中心，可以向该中心注册发送事件或接收事件，所以组件都可以上下平行地通知其他组件。</p>
+<pre><code>EventBus若使用不慎，就会造成难以维护的“灾难”，因此才需要更完善的Vuex作为状态管理中心，将通知的概念上升到共享状态层次。 
+</code></pre>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>解决了多层组件之间繁琐的事件传播。<br>使用原理十分简单，代码量少</p>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>大家都知道vue是单页应用，如果你在某一个页面刷新了之后，与之相关的EventBus会被移除，这样就导致业务走不下去。<br>如果业务有反复操作的页面，EventBus在监听的时候就会触发很多次，也是一个非常大的隐患。这时候我们就需要好好处理EventBus在项目中的关系。通常在vue页面销毁时，同时移除EventBus事件监听。</p>
+<p>由于是都使用一个Vue实例，所以容易出现重复触发的情景：两个页面都定义了同一个事件名，并且没有用$off销毁（常出现在路由切换时）。</p>
+<h3 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h3><h4 id="1-创建事件"><a href="#1-创建事件" class="headerlink" title="1.创建事件"></a>1.创建事件</h4><p>首先需要创建事件总线并将其导出，以便其它模块可以使用或者监听它。</p>
+<p>方法1、非全局事件组件</p>
+<p> 新建EventBus.js</p>
+<pre><code class="javascript">import Vue from &#39;vue&#39;
+export const EventBus = new Vue()
+</code></pre>
+<p>法2、全局事件组件</p>
+<p>在项目中的 main.js 初始化 EventBus。在main.js添加如下一行：</p>
+<pre><code class="javascript">Vue.prototype.$EventBus = new Vue()
+</code></pre>
+<p>示例：</p>
+<pre><code class="vue">import Vue from &#39;vue&#39;
+import App from &#39;./App&#39;
+import router from &#39;./router&#39;
+
+Vue.config.productionTip = false
+
+Vue.prototype.$EventBus = new Vue();
+
+/* eslint-disable no-new */
+new Vue(&#123;
+  el: &#39;#app&#39;,
+  router,
+  components: &#123; App &#125;,
+  template: &#39;&lt;App/&gt;&#39;
+&#125;)
+</code></pre>
+<p>组件发送事件：this.$EventBus.$emit(…)</p>
+<p>组件接收事件：this.$EventBus.$on(…)</p>
+<p>移除事件</p>
+<p>一般在销毁组件（也就是离开组件）时移除事件。</p>
+<pre><code class="javascript">beforeDestroy()&#123;
+  EventBus.$off(&quot;eventName&quot;)
+&#125;
+</code></pre>
+<p>EventBus.$off()                           &#x2F;&#x2F;移除EventBus所有事件监听器</p>
+<p>EventBus.$off(‘eventName’)       &#x2F;&#x2F;移除’eventName’事件所有监听器</p>
+<p>EventBus.$off(‘eventName’, callback)    &#x2F;&#x2F;只移除这个回调的监听器。</p>
+<h4 id="2-事件运用"><a href="#2-事件运用" class="headerlink" title="2.事件运用"></a>2.事件运用</h4><p>本文父组件：CompA.vue，子组件1：ChildOne.vue，子组件2：ChildTwo.vue。子组件1发送事件给父组件和子组件2。</p>
+<pre><code class="javascript">router/index.js
+
+import Vue from &#39;vue&#39;
+import Router from &#39;vue-router&#39;
+import CompA from &quot;@/components/CompA&quot;;
+
+Vue.use(Router)
+
+export default new Router(&#123;
+  routes: [
+    &#123;
+      path: &#39;/compA&#39;,
+      name: &#39;compA&#39;,
+      component: CompA,
+    &#125;
+  ],
+&#125;)
+</code></pre>
+<p>1.创建EventBus</p>
+<p> 新建EventBus.js</p>
+<pre><code class="javascript">import Vue from &#39;vue&#39;
+export const EventBus = new Vue()
+</code></pre>
+<p>2.发送事件</p>
+<p> components&#x2F;ChildOne.vue</p>
+<pre><code class="javascript">&lt;template&gt;
+  &lt;div class=&quot;childOne&quot;&gt;
+    &lt;h1&gt;childOne&lt;/h1&gt;
+    &lt;button @click=&quot;sendEvent2CompA&quot;&gt;发送事件给父组件（CompA）&lt;/button&gt;
+    &lt;button @click=&quot;sendEvent2ChildTwo&quot;&gt;发送事件给兄弟组件（ChildTwo）&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import &#123;EventBus&#125; from &quot;./EventBus&quot;
+
+export default &#123;
+  data() &#123;
+    return &#123;
+      count1: 0,
+      count2: 0,
+    &#125;
+  &#125;,
+  methods:&#123;
+    sendEvent2CompA() &#123;
+      this.count1++;
+      EventBus.$emit(&quot;compA&quot;, &quot;compA事件触发次数：&quot; + this.count1)
+    &#125;,
+    sendEvent2ChildTwo() &#123;
+      this.count2++;
+      EventBus.$emit(&quot;childTwo&quot;, &quot;childTwo事件触发次数：&quot; + this.count2)
+    &#125;
+  &#125;
+&#125;
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+&lt;/style&gt;
+</code></pre>
+<p>3.接收事件</p>
+<p>父组件：components&#x2F;CompA.vue</p>
+<pre><code class="javascript">&lt;template&gt;
+  &lt;div class=&quot;compA&quot;&gt;
+    &lt;h1&gt;compA&lt;/h1&gt;
+    compA收到的事件内容：&#123;&#123;msg&#125;&#125;&lt;hr&gt;
+    &lt;child-one&gt;&lt;/child-one&gt;&lt;hr&gt;
+    &lt;child-two&gt;&lt;/child-two&gt;
+
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import &#123;EventBus&#125; from &quot;./EventBus&quot;
+import ChildOne from &quot;@/components/ChildOne&quot;;
+import ChildTwo from &quot;@/components/ChildTwo&quot;;
+
+export default &#123;
+  components: &#123;ChildOne, ChildTwo&#125;,
+  data() &#123;
+    return &#123;
+      msg: &quot;&quot;,
+    &#125;
+  &#125;,
+  mounted() &#123;
+    EventBus.$on(&quot;compA&quot;, (payload1)=&gt; &#123;
+      this.msg = payload1;
+    &#125;)
+  &#125;
+&#125;
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p>子组件2：components&#x2F;ChildTwo.vue</p>
+<pre><code class="javascript">&lt;template&gt;
+  &lt;div class=&quot;childTwo&quot;&gt;
+    &lt;h1&gt;childTwo&lt;/h1&gt;
+    childTwo收到的事件内容：&#123;&#123;msg&#125;&#125;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import &#123;EventBus&#125; from &quot;./EventBus&quot;
+
+export default &#123;
+  data() &#123;
+    return &#123;
+      msg: &quot;&quot;,
+    &#125;
+  &#125;,
+  mounted() &#123;
+    EventBus.$on(&quot;childTwo&quot;, (payload1)=&gt; &#123;
+      this.msg = payload1;
+    &#125;)
+  &#125;
+&#125;
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p>事物都有两面性，没有好坏之分，且全在于使用者，好钢用在刀刃上，不滥用即可。有其他更好的方式则优先使用。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/eventBus/" rel="tag">eventBus</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-uniapp生命周期"
   class="article article-type-post"
   itemscope
@@ -2192,85 +2419,6 @@ sudo chmod -R go-w /opt/homebrew
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c4d/" rel="tag">c4d</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oc/" rel="tag">oc</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-blender基本操作"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"
-    >blender基本操作</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" class="article-date">
-  <time datetime="2022-12-05T08:36:06.000Z" itemprop="datePublished">2022-12-05</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/blender/">blender</a> / <a class="article-category-link" href="/categories/Web3D/blender/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">blender基本操作</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Blender基本操作"><a href="#Blender基本操作" class="headerlink" title="Blender基本操作"></a>Blender基本操作</h1><blockquote>
-<p>虽然我们是程序员一枚，但是，既然学了3D那么我们就要拓展我们的技能</p>
-<p>那么这篇文章就来讲讲这款免费的3维软件<a target="_blank" rel="noopener" href="https://www.blender.org/">Blender</a>（英文版）</p>
-<p>你要问我C4d和Blender哪个好（Blender是免费的，不要钱）要是不差钱也可以玩玩oc渲染器（比较香）</p>
-<p>具体操作还得看视频，我今天就总结一些快捷键</p>
-</blockquote>
-<h3 id="一、安装软件"><a href="#一、安装软件" class="headerlink" title="一、安装软件"></a>一、安装软件</h3><p>下载—安装</p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205093244288.png" alt="image-20221205093244288"></p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094355133.png"></p>
-<h3 id="二、更改配置"><a href="#二、更改配置" class="headerlink" title="二、更改配置"></a>二、更改配置</h3><p>更改页面语言，如果需要更改为简体中文的话（如果找不到配置了，改为简体中文后就方便了）</p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094539463.png"></p>
-<h3 id="三、界面快捷键"><a href="#三、界面快捷键" class="headerlink" title="三、界面快捷键"></a>三、界面快捷键</h3><p>这些快捷键有点多，加油（当然，你也可以根据你的习惯去修改你的快捷键）</p>
-<p>具体步骤如图所示：</p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094948395.png"></p>
-<blockquote>
-<p>我建议，在你选择直接使用快捷键的时候，尽量先去了解界面，快捷键是提高工作效率的首选，但初学者还是要先熟悉软件的界面操作，再逐步的去熟悉我们大量的快捷键来提高我们的工作效率。</p>
-<p>在一些情况下，快捷键却会让你行云流水的操作变得生硬</p>
-</blockquote>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094730873.png"></p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205101434727.png"></p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205104621343.png"></p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205142035840.png"></p>
-<blockquote>
-<p>其他快捷键我们都可以去视频练习哦</p>
-<p>最后，一款双语切换插件给你们</p>
-</blockquote>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[blender基础操作]: 	“<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=prQj0xVwMeo&amp;list=PL3bztmH9zKvv4sjPb6PJyLgULvQYJ8e0f&amp;index=4&quot;">https://www.youtube.com/watch?v=prQj0xVwMeo&amp;list=PL3bztmH9zKvv4sjPb6PJyLgULvQYJ8e0f&amp;index=4&quot;</a><br>[双语切换]: 	“<a target="_blank" rel="noopener" href="https://github.com/Mister-Kin/ToggleLanguage/releases/tag/v1.1&quot;">https://github.com/Mister-Kin/ToggleLanguage/releases/tag/v1.1&quot;</a><br>[双语切换]: 	“<a target="_blank" rel="noopener" href="https://mister-kin.github.io/manuals/toggle-language/">https://mister-kin.github.io/manuals/toggle-language/</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blender/" rel="tag">blender</a></li></ul>
 
     </footer>
   </div>

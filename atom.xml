@@ -6,7 +6,7 @@
   <link href="https://mengfeng.github.io/atom.xml" rel="self"/>
   
   <link href="https://mengfeng.github.io/"/>
-  <updated>2022-12-25T02:19:21.450Z</updated>
+  <updated>2023-01-02T02:33:40.903Z</updated>
   <id>https://mengfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>umi-4.0</title>
+    <link href="https://mengfeng.github.io/2023/01/02/umi-4-0/"/>
+    <id>https://mengfeng.github.io/2023/01/02/umi-4-0/</id>
+    <published>2023-01-02T02:29:54.000Z</published>
+    <updated>2023-01-02T02:33:40.903Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="umi.js" scheme="https://mengfeng.github.io/categories/umi-js/"/>
+    
+    <category term="umi-4.0" scheme="https://mengfeng.github.io/categories/umi-js/umi-4-0/"/>
+    
+    
+    <category term="umi" scheme="https://mengfeng.github.io/tags/umi/"/>
+    
+  </entry>
   
   <entry>
     <title>Apifox和Leancloud</title>
@@ -544,35 +571,6 @@
     
     
     <category term="electron" scheme="https://mengfeng.github.io/tags/electron/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>threejs-d-1.0</title>
-    <link href="https://mengfeng.github.io/2022/11/27/threejs-d-1-0/"/>
-    <id>https://mengfeng.github.io/2022/11/27/threejs-d-1-0/</id>
-    <published>2022-11-27T09:51:37.000Z</published>
-    <updated>2022-12-03T06:22:48.593Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Web3D" scheme="https://mengfeng.github.io/categories/Web3D/"/>
-    
-    <category term="Three.js" scheme="https://mengfeng.github.io/categories/Web3D/Three-js/"/>
-    
-    <category term="threejs-d-1.0" scheme="https://mengfeng.github.io/categories/Web3D/Three-js/threejs-d-1-0/"/>
-    
-    
-    <category term="three.js" scheme="https://mengfeng.github.io/tags/three-js/"/>
     
   </entry>
   

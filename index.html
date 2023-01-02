@@ -177,6 +177,161 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-umi-4-0"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2023/01/02/umi-4-0/"
+    >umi-4.0</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/01/02/umi-4-0/" class="article-date">
+  <time datetime="2023-01-02T02:29:54.000Z" itemprop="datePublished">2023-01-02</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/umi-js/">umi.js</a> / <a class="article-category-link" href="/categories/umi-js/umi-4-0/">umi-4.0</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="umi-4-0"><a href="#umi-4-0" class="headerlink" title="umi 4.0"></a>umi 4.0</h1><h2 id="Umi-4-有什么新功能？"><a href="#Umi-4-有什么新功能？" class="headerlink" title="Umi 4 有什么新功能？"></a>Umi 4 有什么新功能？</h2><p><img src="/2023/01/02/umi-4-0/image-20230102100825501.png"></p>
+<h2 id="多构建引擎"><a href="#多构建引擎" class="headerlink" title="多构建引擎"></a>多构建引擎</h2><p> Umi 4 同时支持 Vite 和 Webpack 两种构建方式，并尽量确保他们之间功能的一致性，让开发者可以通过一行配置进行切换。可能有些同学会喜欢 dev 用 vite，build 用 webpack 这样的组合。同时我们也在探索包括 ESMi 在内的其他构建方案的探索。</p>
+<pre><code class="javascript">export default &#123;
+  vite: &#123;&#125;
+&#125;
+</code></pre>
+<h2 id="默认快"><a href="#默认快" class="headerlink" title="默认快"></a>默认快</h2><p>默认快是多维度的，我们通过 MFSU V3 + Webpack 5 缓存解 Dev 时编译慢的问题；内网还有通过 Webpack 5 物理缓存和 CD 平台结合解 Build 时编译慢的问题；有使用 esbuild 做 js 和 css 的压缩器、配置和 MOCK 文件的读取、jest 的 transformer，让除构建之外的其他环节也飞快；此外还有运行时速度也有考虑。</p>
+<h2 id="MFSU-V3"><a href="#MFSU-V3" class="headerlink" title="MFSU V3"></a>MFSU V3</h2><p>Umi 3 的 MFSU 大家可能多少有接触过，虽然有用，但 DX 不够好。用的时候会遇到一些坑，以至于很多同学都掌握了一项特殊技能，遇到问题时 rm -rf src&#x2F;.umi。大家可能会遇到 monorepo 不支持、热更新导致 Tab 卡死、请求多导致页面打开慢、一些语法不支持的问题。以上问题在 MFSU V3 中全解！基于此，我们非常有信心地在 Umi 4 中默认开启 MFSU 功能。当然，如果你不喜欢，会保留手动配置 mfsu: false 关闭的口子。同时，MFSU V3 还可脱离 Umi 独立使用。</p>
+<p><img src="/2023/01/02/umi-4-0/42ccadf17ce44ef48af14f70a9071303.png"></p>
+<h2 id="Umi-Max"><a href="#Umi-Max" class="headerlink" title="Umi Max"></a>Umi Max</h2><p>这是内部 Bigfish 框架的对外版本，解我们自己的问题，同时也给社区另一个集中化框架的选择，定位是中后台框架，包含了中后台相关的大量最佳实践的插件。如果有定制需求，大家可以参考他来实现内网框架的定制，比如快手团队就有基于 Umi 4 的框架定制，还有 Alita 也是基于 Umi 定制的面向移动端的框架。</p>
+<pre><code class="ini">$ npm i @umijs/max -D
+</code></pre>
+<h2 id="React-Router-6"><a href="#React-Router-6" class="headerlink" title="React Router 6"></a>React Router 6</h2><p>我们升级了路由方案到 React Router 6，喜忧参半。好消息是，React Router 6 是 Remix 的基础库，面向框架层做了很多优化，路由实现层更优雅，Umi 得以删除大量路由渲染的代码；坏消息是，带来不少 Break Change，比如之前父路由渲染子路由用 children，得换成 。</p>
+<pre><code class="javascript">- &#123; props.children &#125;
++ &lt;Outlet /&gt;
+</code></pre>
+<h2 id="支持-Vue"><a href="#支持-Vue" class="headerlink" title="支持 Vue"></a>支持 Vue</h2><p>Umi 4 中提供了 Vue 支持，记得我在 Umi 2 时画过一张架构图，其中就有 Vue 的一环，Umi 3 时也有过尝试，但那会 Vue 3 还不太成熟，接入时遇到不少坑，这个坑今天总算是补上了。此功能由社区同学操刀，只需装载一个 preset 即可切换到 Vue。</p>
+<pre><code class="javascript">export default &#123;
+  presets: [&#39;@umijs/preset-vue&#39;],
+&#125;;
+</code></pre>
+<h2 id="默认最快的-CSR-请求"><a href="#默认最快的-CSR-请求" class="headerlink" title="默认最快的 CSR 请求"></a>默认最快的 CSR 请求</h2><p>项目构建快解的是 DX 问题，但同时也应该关注 UX。Client Loader 的目的是让应用加载默认快，避免 React 项目经典的 Render-Then-Fetch 的加载瀑布流问题。效果见下图，示例项目的从 9s 降到 6s，这 6s 还是之前截的图，上了 Preload 功能之后其实已更快。</p>
+<pre><code class="javascript">export default function() &#123;
+  // 使用请求数据
+  useClientLoaderData()
+&#125;
+// 声明请求
+export function clientLoader() &#123;&#125;
+</code></pre>
+<p><img src="/2023/01/02/umi-4-0/96cb23f5545845f6bcd7430b9ddd35a7.png"></p>
+<h2 id="白盒文档的-Lint。"><a href="#白盒文档的-Lint。" class="headerlink" title="白盒文档的 Lint。"></a>白盒文档的 Lint。</h2><p> Umi 4 里内置了我们精挑细选的 lint 规则，只有质量类不开可能会导致项目问题的规则，不包含风格类的规则，不包含 TypeScript 中 type-aware 类的规则，这类规则需要跑整个项目，会导致性能问题；同时，我们通过 @rushstack&#x2F;eslint-pach 的方式锁定了 config 里找 plugin 的规则，确保规则是长期稳定的。</p>
+<h2 id="SSR。"><a href="#SSR。" class="headerlink" title="SSR。"></a>SSR。</h2><p> Umi 4 重写了 SSR 功能，目前此功能还在 beta 阶段，请勿将其用于生产环境。Umi 4 的 SSR 有以下特点，1）server 代码的构建基于 esbuild，所以极快，2）请求的处理类似 next.js 的 getServerSideProps 和 remix 的 loader，只在服务端跑，3）基于 react 18 的 suspense 和 renderToPipeableStream。实现原因，部署层目前仅实现了 vercel 的 adapter。这里有个简单的 Todos 示例：<a href="https://link.juejin.cn/?target=https://test-vercel-chencheng.vercel.app/">test-vercel-chencheng.vercel.app&#x2F;</a></p>
+<pre><code class="javascript">export default &#123;
+  ssr: &#123; platform: &#39;vercel&#39; &#125;
+&#125;
+</code></pre>
+<h2 id="API-路由"><a href="#API-路由" class="headerlink" title="API 路由"></a>API 路由</h2><p>Umi 4 约定 src&#x2F;api 目录下存放的 Serverless Function 格式的文件即为 API 路由。这部分路由会打包成不同平台支持的 Serverless Function 产物。场景比如带 token 的 API 调用、动态数据源、基于 Notion API 的 Blog、Hackernews Clone 等等。基于此，Umi 能做的事的边界就大了很多。不再只是写写中后台，实现静态页面。</p>
+<pre><code class="javascript">export default &#123;
+  apiRoute: &#123;&#125;,
+&#125;
+</code></pre>
+<h2 id="微生成器"><a href="#微生成器" class="headerlink" title="微生成器"></a>微生成器</h2><p>此概念来自 Modern.js。Modern.js 引入很多新概念，其中「微生成器」还是非常贴切的。他包含两个功能，1）小型脚手架，2）功能的开启与关闭。Umi 3 虽然也有 generate 命令，但只包含功能 1。Umi 4 拓展了下 generate（alias 为 g）命令。除了支持更多类型的小型脚手架生成，还支持功能的开启与关闭，以及比如 Monorepo、react 和 antd 版本等的功能切换。</p>
+<pre><code class="ini">$ npx umi g
+? Pick generator type › - Use arrow-keys. Return to submit.
+❯   创建页面 -- Create a umi page by page name
+    创建组件 -- .
+    创建 mock 代码 -- .
+    创建 model 代码 -- .
+    启用 Prettier -- Setup Prettier Configurations
+    启用 Jest -- Setup Jest Configuration
+    启用 E2E 测试 -- .
+    启用 Tailwind CSS -- Setup Tailwind CSS configuration
+    启用 SSR -- .
+    启用 Low Import 研发模式 -- .
+    启用权限方案 -- .
+    启用 Monaco 编辑器 -- .
+    关闭 Dva 数据流 -- Configuration, Dependencies, and Model Files for Dva
+    关闭 MFSU -- .
+    切换为 Monorepo 项目 -- .
+    切换 React 为 18 -- .
+    切换 Antd 为 5 -- .
+</code></pre>
+<p>除此之外，我们还有非常多小而美的 DX 改进。</p>
+<h2 id="自动-https"><a href="#自动-https" class="headerlink" title="自动 https"></a>自动 https</h2><p> Umi 4 的 https dev server 的实现基于 mkcert，启动过程中会基于 hosts 自动生成对应的 key 和 cert。开发者除了安装前置的 mkcert，其他无需关心。</p>
+<p><img src="/2023/01/02/umi-4-0/1dd8df4ee5a346818acba7bd6a0f3a47.png"></p>
+<h2 id="浏览器里的构建进度条。"><a href="#浏览器里的构建进度条。" class="headerlink" title="浏览器里的构建进度条。"></a>浏览器里的构建进度条。</h2><p>如果首次构建没有完成就在浏览器里打开，你会看到一个构建进度条，支持 webpack 多实例，支持 MFSU，完成初始构建后会自动跳转到项目页。</p>
+<p><img src="/2023/01/02/umi-4-0/ae6c76af39ae4dcbad21e186de7e1d29.png"></p>
+<h2 id="Terminal-中的日志"><a href="#Terminal-中的日志" class="headerlink" title="Terminal 中的日志"></a>Terminal 中的日志</h2><p>有些开发者会更希望在命令行里看到项目里通过 console 输出的日志，比如我。因为命令行日志不会随着刷新而失效，大家可能都经历过一些一闪而过的页面，想截屏都难；同时命令行日志还可以做物理存储，导出后可以方便他人排查。此功能复刻自 <a href="https://link.juejin.cn/?target=https://github.com/patak-dev/vite-plugin-terminal%E3%80%82">github.com&#x2F;patak-dev&#x2F;v…</a></p>
+<pre><code class="ini">import &#123; terminal &#125; from &#39;umi&#39;;
+terminal.log(`Some info from the app`);
+</code></pre>
+<p>然后就可以在命令行中看到日志，</p>
+<p><img src="/2023/01/02/umi-4-0/53371b8fabe340eaabc9b00abecd7623.png"></p>
+<h2 id="umi-js-产物调试"><a href="#umi-js-产物调试" class="headerlink" title="umi.js 产物调试"></a>umi.js 产物调试</h2><p>不知大家是否会有这样的需求，开发项目时发现一些比较复杂的问题时，需要调整构建产物的代码。而 Umi 基于 webpack-dev-server，在 dev 阶段所有文件都存于内存中，没有物理文件的形式，并不方便直接修改后验证效果。如果大家用 Umi 4，可以把 umi.js 等产物文件保存到项目根目录，然后可以直接修改即生效。</p>
+<p><img src="/2023/01/02/umi-4-0/e11af2c3f8cb4e5c84b697000c41e7c5.png"></p>
+<h2 id="项目级插件：plugin-ts"><a href="#项目级插件：plugin-ts" class="headerlink" title="项目级插件：plugin.ts"></a>项目级插件：plugin.ts</h2><p> 为进一步降低项目中使用插件的门槛，Umi 4 中约定项目根目录下的 plugin.ts 为插件，开发者可在此直接调用插件 API，无需注册，支持 TypeScript。有了这个文件，我们可以在项目级做很多事。比如，</p>
+<pre><code class="javascript">import &#123; IApi &#125; from &#39;umi&#39;;
+export default (api: IApi) =&gt; &#123;
+  // 比如修改 HTML
+  api.modifyHTML($ =&gt; &#123;
+    return $;
+  &#125;);
+  // 比如在入口的 umi.ts 中添加代码
+  api.addEntryCodeAhead(() =&gt; [`console.log(&#39;entry code ahead&#39;)`]);
+  api.addEntryCode(() =&gt; [`console.log(&#39;entry code&#39;)`]);
+  // 比如在构建完成时做额外的事
+  api.onBuildComplete((opts) =&gt; &#123;&#125;);
+  // 比如在启动阶段做额外的事
+  api.onStart((opts) =&gt; &#123;&#125;);
+  // 比如校验每个 JavaScript/TypeScript 代码
+  api.onCheckCode((args) =&gt; &#123;&#125;);
+  // 比如动态修改路由
+  api.modifyRoutes((routes) =&gt; &#123;&#125;);
+&#125;
+</code></pre>
+<h2 id="deadCode-检测"><a href="#deadCode-检测" class="headerlink" title="deadCode 检测"></a>deadCode 检测</h2><p> 项目中通常会有未使用的文件或导出，Umi 4 中通过配置 deadCode: {} 即可在 build 阶段做检测。如有发现，会有类似信息抛出。</p>
+<pre><code class="javascript">Warning: There are 3 unused files:
+ 1. /mock/a.ts
+ 2. /mock/b.ts
+ 3. /pages/index.module.less
+ Please be careful if you want to remove them (¬º-°)¬.
+</code></pre>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[umi仓库]: 	“<a target="_blank" rel="noopener" href="https://github.com/umijs/umi">https://github.com/umijs/umi</a> “</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/umi/" rel="tag">umi</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-Apifox和Leancloud"
   class="article article-type-post"
   itemscope
@@ -2314,114 +2469,6 @@ body &#123;
 </article>
 
     
-    <article
-  id="post-react-native环境搭建"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"
-    >react-native环境搭建</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="article-date">
-  <time datetime="2022-12-08T00:29:43.000Z" itemprop="datePublished">2022-12-08</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">react-native环境搭建</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="react-native环境搭建（Mac-M1）"><a href="#react-native环境搭建（Mac-M1）" class="headerlink" title="react-native环境搭建（Mac M1）"></a>react-native环境搭建（Mac M1）</h1><h3 id="一、本机安装环境"><a href="#一、本机安装环境" class="headerlink" title="一、本机安装环境"></a>一、本机安装环境</h3><p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221207175048319.png"></p>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221207175217956.png"></p>
-<p>安装官方的说法，需要具备的环境条件</p>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221207175323650.png"></p>
-<p>node和npm的安装就不说了</p>
-<p>下载yarn：</p>
-<pre><code class="ini">npm install -g yarn
-</code></pre>
-<p>react-native：</p>
-<pre><code class="ini">yarn add react-native --exact
-</code></pre>
-<pre><code class="ini">//Mac m1 安装 Homebrew
-/bin/bash -c &quot;$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)&quot;
-
-环境变量：
- echo &#39;eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;&#39; &gt;&gt; /Users/mengfeng/.zprofile
-   eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;
-</code></pre>
-<blockquote>
-<p>建议同学们早上去下载（网好），当然，不可避免的还是要出现一系列的问题，我们根据错误提示去查询相应的解决方案就行（因为每个同学的问题都不太一样）</p>
-</blockquote>
-<p>下载watchman：</p>
-<pre><code class="ini">brew install watchman
-</code></pre>
-<p>下载pod（cocoapods）：</p>
-<pre><code class="ini">brew install cocoapods
-</code></pre>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208082020782.png"></p>
-<p>到目前为止，我们已经安装了 Node、Homebrew、watchman、cocoapods</p>
-<p>下面我们来安装xcode</p>
-<h3 id="二、xcode安装模拟器"><a href="#二、xcode安装模拟器" class="headerlink" title="二、xcode安装模拟器"></a>二、xcode安装模拟器</h3><p>我们在app store下载就可以，当然版本历史记录可以查看以前的xcode版本</p>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208082606954.png"></p>
-<p>当我们创建了一个项目，点击小三角，模拟器完美运行</p>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208083302861.png"></p>
-<h3 id="三、react-native创建项目"><a href="#三、react-native创建项目" class="headerlink" title="三、react-native创建项目"></a>三、react-native创建项目</h3><p>创建项目</p>
-<pre><code class="ini">npx react-native init testapp
-</code></pre>
-<blockquote>
-<p>出现报错</p>
-</blockquote>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208084024802.png"></p>
-<blockquote>
-<p>解决以上问题的第一个error</p>
-<p>报了一个警告，大概意思是不安全的写权限，目录是 &#x2F;opt&#x2F;homebrew&#x2F;bin<br>于是我们把这个目录的写权限去掉</p>
-<pre><code class="ini">sudo chmod -R go-w /opt/homebrew/bin
-sudo chmod -R go-w /opt/homebrew
-</code></pre>
-</blockquote>
-<p><img src="/2022/12/08/react-native%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20221208085035978.png"></p>
-<blockquote>
-<p>解决第一个问题</p>
-<p>我们需要下载ruby 2.7.5并将ruby版本指向2.7.5</p>
-</blockquote>
-<p>如果你有条件的话请试试<a target="_blank" rel="noopener" href="https://www.rubyonmac.dev/?utm_campaign=install-ruby-guide">macruby</a>109美元终身，ruby不太友好</p>
-<p>下篇文章继续</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Mac下的环境搭建]: 	“<a target="_blank" rel="noopener" href="https://juejin.cn/post/7119039164074426375">https://juejin.cn/post/7119039164074426375</a> “<br>[rbenv下载缓慢解决]: 	“<a target="_blank" rel="noopener" href="https://blog.csdn.net/shine_a/article/details/103927374">https://blog.csdn.net/shine_a/article/details/103927374</a> “<br>[mac下载rbenv]: 	“<a target="_blank" rel="noopener" href="https://juejin.cn/post/6899650892313100302">https://juejin.cn/post/6899650892313100302</a> “<br>[CocoaPods安装方法]: 	“<a target="_blank" rel="noopener" href="https://blog.csdn.net/Wulitc/article/details/115682720&quot;">https://blog.csdn.net/Wulitc/article/details/115682720&quot;</a></p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">环境搭建</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
   </article>
   
 
@@ -2439,7 +2486,7 @@ sudo chmod -R go-w /opt/homebrew
     <ul>
       <li>
         Copyrights &copy;
-        2022
+        2022-2023
         <i class="ri-heart-fill heart_icon"></i> alan_mf
       </li>
     </ul>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>什么是性能优化 |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-什么是性能优化"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  什么是性能优化
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="article-date">
+  <time datetime="2023-01-06T03:46:03.000Z" itemprop="datePublished">2023-01-06</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">什么是性能优化</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">3.4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">11 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="什么是性能优化"><a href="#什么是性能优化" class="headerlink" title="什么是性能优化"></a>什么是性能优化</h1><h3 id="1-性能的起因"><a href="#1-性能的起因" class="headerlink" title="1.性能的起因"></a>1.性能的起因</h3><p>​		市场上的某个功能还没有能满足其需求的可选方案的时候，如果出来一个应用即使很难用，用户都要忍着用。如果这个功能确实能解决用户的某些痛点需求，且有其存在的价值，那么让用户忍受糟糕体验的背后，就存在 对产品优化和改进的空间。</p>
+<h3 id="2-性能的影响"><a href="#2-性能的影响" class="headerlink" title="2.性能的影响"></a>2.性能的影响</h3><p>​		大部分网站体现的价值都无外乎信息的载体、交互的工具或商品流通的渠道，这就要求它们需要与更多的用户建立联系，同时还要保持所建立的联系拥有绵延不绝的用户黏性，所以网站就不能只关注自我表达，而不顾及用户是否喜欢。</p>
+<h4 id="2-1用户的留存"><a href="#2-1用户的留存" class="headerlink" title="2.1用户的留存"></a>2.1用户的留存</h4><p>​		我们都希望用户访问网站所进行的交互，对网站构建的内容来讲是有意义的，比如，电商网站希望用户浏览并购买商品，社交网站希望用户之间进行互动，视频网站希望用户观看视频，而这些希望都是建立在网站用户留存的基础上的。网站用户的留存情况，一般指的是用户自登录注册之日起，经过一段时间后， 仍然还在使用该网站的用户数。统计出注册用户数与留存用户数后，就可以计算出用户留存率，这个指标对网站的运营有重要的指导意义。</p>
+<p>​		根据Google营销平台提供的调研发现，如果网站页面的加载时间超过3s,就会有53%的移动网站的访问遭到用户抛弃。同时他们还针对加载时间分别在4s内和20s内的网站进行比较，发现加载时间在5s内的网站，用户的停留时间相比会长70%，用户在一定时间内从该网站离开的跳出率会低35%，而网站上展示广告的可见率也会高25%。</p>
+<p>​		虽然影响用户留存的因素不止性能这一方面， 但从上述数据可知，通过优化性能来保证留存事是必要的措施。	</p>
+<h4 id="2-2网站的转化率"><a href="#2-2网站的转化率" class="headerlink" title="2.2网站的转化率"></a>2.2网站的转化率</h4><p>​		从运营角度来看，网站转化率是一个非常 重要的考量指标，网站转化率指的是用户进行了某项目标行为的访问次数与总访问次数的比率。某项目标行为可以是用户注册、资源下载、商品购买等一 系列用户行为，简言之，比如在电商网站上浏览了某个商品的用户中，有多少位用户最终购买了该商品，其所占的比例就可以看作访客到消费者的转化率。</p>
+<p>​		根据Mobify (一家著 名的电子商务优化平台)的调研，发现商品的结账页面加载时间每减少100ms,基于该商品购买访问的转化率就会增加1.55%， 这个比率对大型电商网站来讲，其所带来的年均收入增长将会是上千万元。Google 营销平台的调研也指出，加载时间在5s以内的网站会比在20s以内的网站的广告收入多一倍。</p>
+<p>​		目前大部分互联网广告营销都渐趋精准化，即广告商的广告费会根据经广告导流，产生确定的用户交易后再收取。如此看来网站性能不仅影响用户体验，对于广告主和广告商的经济利益也会带来实实在在的影响。</p>
+<h4 id="2-3体验与传播"><a href="#2-3体验与传播" class="headerlink" title="2.3体验与传播"></a>2.3体验与传播</h4><p>​		当用户通过手机、平板电脑等移动设备经运营商网络浏览网站时，所产生的流量数据通常是根据字节数进行收费的。虽然从2G、 3G 到4G,甚至5G,运营商所收取的流量费用单价一直在下滑，但与此同时，页面所承载的内容却在不断增大，并且这一趋势似乎将持续下去。 那么用户必将为过多的流量数据支付相应的费用，若所访问网站包含的资源文件过大、组织冗余，用户便会浪费过多的网络资费，同时过大的资源传输量也会延长请求响应的时间，最终降低用户的体验度。</p>
+<p>​		性能问题引起的所谓用户体验差，造成的影响并非单纯是用户觉得不喜欢就放弃了使用。用户还会拒绝向自己的周边网络推荐该网站或应用，更坏的情况是用户会对低性能进行差评。口碑是互联网时代t分可靠的通行证，如果我们不重视性能问题，经过网络口碑的放大效应，网站的发展不仅会遇到瓶颈，甚至还可能会日薄西山。</p>
+<h3 id="3-性能评估模型"><a href="#3-性能评估模型" class="headerlink" title="3.性能评估模型"></a>3.性能评估模型</h3><p>​		我们先来约定一个原则，以用户为中心，然后根据该原则引出指导后文涉及的各种优化策略，所参照的性能模型为RAIL性能模型。这个名字的由来是四个英文单词的首字母:响应( Response)、动画(Animation)、 空闲(Idle)、加载(Load)，这四个单词代表与网站或应用的生命周期相关的四个方面，这些方面会以不同的方式影响整个网站的性能。</p>
+<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106102130579.png"></p>
+<p>我们将用户作为之后性能优化的中心，首先需要了解用户对于延迟的反应。用户感知延迟的时间窗口。</p>
+<table>
+<thead>
+<tr>
+<th align="center">延迟</th>
+<th align="center">用户反应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0～16ms</td>
+<td align="center">人眼可以感知每秒60帧的动画转场，即每帧16ms，除了浏览器将每一帧画面绘制到屏幕上的时间，网站应用大约需要10ms来生成一帧</td>
+</tr>
+<tr>
+<td align="center">0～100ms</td>
+<td align="center">在该时间窗口内来响应用户的操作，才会是流畅的体验</td>
+</tr>
+<tr>
+<td align="center">100～300ms</td>
+<td align="center">用户能感知轻微的延迟</td>
+</tr>
+<tr>
+<td align="center">300～1000ms</td>
+<td align="center">所感知的延迟会被用户当作网站页面加载或更改视图过程的一部分</td>
+</tr>
+<tr>
+<td align="center">&gt;1s</td>
+<td align="center">用户的注意力将离开之前执行的任务</td>
+</tr>
+<tr>
+<td align="center">&gt;10s</td>
+<td align="center">用户感觉失望，可能会放弃任务</td>
+</tr>
+</tbody></table>
+<h4 id="3-1响应"><a href="#3-1响应" class="headerlink" title="3.1响应"></a>3.1响应</h4><p>​		网站性能对于响应方面的要求是，在用户感知延迟之前接收到操作的反馈。比如用户进行了文本输入，按钮单击、表单切换及启动动画等操作后，必须在100m内收到反馈，如果超过100ms的时间窗口，用户就会感知延迟。</p>
+<p>​		看似很基本的用户操作背后，可能会隐藏着复杂的业务逻辑处理及网络请求与数据计算。对此我们应当谨慎，将较大开销的工作放在后台异步执行，而即便后白处理要数百毫秒才能完成的操作，也应当给用户提供及时的阶段性反馈。</p>
+<p>​		比如在单击按钮向后台发起某项业务处理请求时，首先反馈给用户开始处理的提示，然后在处理完成的回调后反馈完成的提示。</p>
+<h4 id="3-2动画"><a href="#3-2动画" class="headerlink" title="3.2动画"></a>3.2动画</h4><p>​		前端所涉及的动画不仅有炫酷的UI特效，还包括滚动和触摸拖动等交互效果，而这一方面的性能要求就是流畅。 众所周知，人眼具有视觉暂留特性，就是当光对视网膜所产生的视觉在光停止作用后，仍能保留一段时间。</p>
+<p>​		研究表明这是由于视神经存在反应速度造成的， 其值是1&#x2F;24s，即当我们所见的物体移除后，该物体在我们眼中并不会立即消失，而会延续存在1&#x2F;24s 的时间。对动画来说，无论动画帧率有多高，最后我们仅能分辨其中的30帧，但越高的帧率会带来更好的流畅体验，因此动画要尽力达到60fps的帧率，每一帧画面的生成都需要经过若干步骤，根据60fps 帧率的计算，帧图像的生成预算为16ms ( 1000ms&#x2F;60 约等于 16.6ms)，除去浏览器绘制新帧的时间，留给执行代码的时间仅10ms 左右。关于这个维度的具体优化策略，会在后面优化谊染过程的相关章节中详细介绍。</p>
+<h4 id="3-3空闲"><a href="#3-3空闲" class="headerlink" title="3.3空闲"></a>3.3空闲</h4><p>​		要使网站响应迅速、动画流畅，通常都需要较长的处理时间，但以用户为中心来看待性能问题，就会发现并非所有工作都需要在响应和加载阶段完成，我们完全可以利用浏览器的空闲时间处理可延迟的任务，只要让用户感受不到延迟即可。利用空闲时间处理延迟，可减少预加载的数据大小，以保证网站或应用快速完成加载。</p>
+<p>​		为了更加合理地利用浏览器的空闲时间，最好将处理任务按50ms为单位分组。这么做就是保证用户在发生操作后的100ms 内给出响应。</p>
+<h4 id="3-4-加载"><a href="#3-4-加载" class="headerlink" title="3.4 加载"></a>3.4 加载</h4><p>​		用户感知要求我们尽量在1s内完成页面加载，如果没有完成，用户的注意力就会分散到其他事情上，并对当前处理的任务产生中断感。需要注意的是，这里在1s内完成加载井谊染出页面的要求，并非要完成所有页面资源的加载，从用户感如体验的角度来说，只要关键谊染路径完成，用户就会认为全部加载已完成。</p>
+<p>​		对于其他非关键资源的加载，延迟到浏览器空闲时段再进行，是比较常见的渐进式优化策略。</p>
+<h3 id="4-性能优化的步骤"><a href="#4-性能优化的步骤" class="headerlink" title="4.性能优化的步骤"></a>4.性能优化的步骤</h3><p>​		RAIL性能模型指出了用户对不同延迟时间的感知度，以用户为中心的原则，就是要让用户满意网站或应用的性能体验。</p>
+<p>​		不同类型的操作，需要在规定的时间窗口内完成，所以进行性能优化的步骤般是:首先可量化地评估出网站或应用的性能表现,然后立足于网站页面响应的生命周期，分析出造成较差性能表现的原因,最后进行技术改造、可行性分析等具体的优化实施。</p>
+<h4 id="4-1-性能测量"><a href="#4-1-性能测量" class="headerlink" title="4.1 性能测量"></a>4.1 性能测量</h4><p>​		如果把对网站的性能优化比作一场旅程， 它无疑会是漫长且可能还略带泥泞的，那么在开始之前我们有必要对网站进行性能测量，以知道优化的方向在何处。通常我们会借助.些工具来完成性能测量.</p>
+<p>1.Chrome浏览器的Performance功能</p>
+<p>​		通过Chrome浏览器访问我们要进行性能测量的网站，打开开发者工具的Performance选项卡。单击左上角的“开始评估”按钮后刷新网站，该工具便开始分析页面资源加载、渲染、请求响应等各环节耗费的时间线，据此便可分析定程度的性能问题， 比如JavaScript 的执行是否会触发大量视觉变化的计算，重绘和重排(或回流)是否会被多次触发等。</p>
+<p>2.灯塔(Lighthouse)</p>
+<p>​		Lighthouse是一个开源的自动化审查网站页面性能的工具，可根据所提供的网站URL从性能、可访问性、渐进式Web应用、SEO (搜索引擎优化)等多个方面进行自动化分析，最终给出一份具有指导意义的报告。它既可以当作Chrome的扩展插件来使用，又可以在开发者工具中直接使用。</p>
+<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106110717868.png"></p>
+<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106110753427.png"></p>
+<p>除此之外，还会经常用到的性能测试工具有PageSpeed Insights、WEBPAGETEST、Pingdom等。</p>
+<h4 id="4-2生命周期"><a href="#4-2生命周期" class="headerlink" title="4.2生命周期"></a>4.2生命周期</h4><pre><code>     网站页面的生命周期，通俗地讲就是从我们在浏览器的地址栏中输入一个URL后，到整个页面渲染出来的过程。整个过程包括域名解析，建立TCP连接，前后端通过HTTP进行会话，压缩与解压缩，以及前端的关键渲染路径等，把这些阶段拆解开来看，不仅能容易地获得优化性能的启发，而且也能为今后的前端工程师之路构建完整的知识框架。
+</code></pre>
+<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106113810661.png"></p>
+<h4 id="4-3优化方案"><a href="#4-3优化方案" class="headerlink" title="4.3优化方案"></a>4.3优化方案</h4><p>​		经过对网站页面性能的测量及渲染过程的了解，相信你对于糟糕性能体验的原因已经比较清楚了，那么接下来便是优化性能。</p>
+<p>(1)传输资源的优化，比如图像资源， 不同的格式类型会有不同的使用场景，在使用的过程中是否恰当。</p>
+<p>(2)加载过程的优化，比如延迟加载，是否有不需要在首屏展示的非关键信息，占用了页面加载的时间。</p>
+<p>(3) JavaScript 是现代大型网站中相当“昂贵”的资源，是否进行了压缩，书写是否规范，有无考虑内存泄漏等。</p>
+<p>(4)关键渲染路径优化，比如是否存在不必要的重绘和回流。</p>
+<p>(5)本地存储和浏览器缓存。</p>
+<h3 id="参考：Web前端性能优化"><a href="#参考：Web前端性能优化" class="headerlink" title="参考：Web前端性能优化"></a>参考：Web前端性能优化</h3> 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2023/01/05/%E9%9D%A2%E8%AF%95%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E5%90%88%E9%9B%86/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">面试手撕代码合集</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022-2023
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

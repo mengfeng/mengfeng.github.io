@@ -177,6 +177,2626 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-前端面试大全javaScript"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/10/27/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E5%A4%A7%E5%85%A8javaScript/"
+    >前端面试大全javaScript</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/10/27/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E5%A4%A7%E5%85%A8javaScript/" class="article-date">
+  <time datetime="2022-10-27T02:41:33.000Z" itemprop="datePublished">2022-10-27</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/">技术面试</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/javaScript/">javaScript</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="前端面试题大全（JavaScript）"><a href="#前端面试题大全（JavaScript）" class="headerlink" title="前端面试题大全（JavaScript）"></a>前端面试题大全（JavaScript）</h1><p>前端面试题类目分类</p>
+<ul>
+<li>HTML5 + CSS3</li>
+<li>JavaScript</li>
+<li>Vue + Vue3</li>
+<li>React</li>
+<li>Webpack</li>
+<li>服务端</li>
+</ul>
+<hr>
+<p>考点频率 ：♥︎ 、 ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎ ♥︎、 ♥︎ ♥︎ ♥︎ ♥︎ ♥︎</p>
+<h2 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h2><h3 id="♥︎-a-标签中，如何禁用-href-跳转页面或定位链接"><a href="#♥︎-a-标签中，如何禁用-href-跳转页面或定位链接" class="headerlink" title="♥︎ a 标签中，如何禁用 href 跳转页面或定位链接?"></a>♥︎ a 标签中，如何禁用 href 跳转页面或定位链接?</h3><p>在做页面时，如果想做一个链接点击后不做任何事情，或者响应点击而完成其他事情，可以设置其属性 href &#x3D; “#”，但是，这样会有一个问题，就是当页面有滚动条时，点击后会返回到页面顶端，用户体验不好。</p>
+<h4 id="一、阻止默认事件"><a href="#一、阻止默认事件" class="headerlink" title="一、阻止默认事件"></a>一、阻止默认事件</h4><p>阻止默认事件的发生有两个方法：</p>
+<pre><code class="javascript">return false
+e.preventDefault()
+</code></pre>
+<p>通过阻止a标签默认事件就可以禁止a标签跳转！</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;a href=&quot;http://www.baidu.com/&quot;&gt;去百度&lt;/a&gt;
+    &lt;!-- 阻止默认事件两种方法 --&gt;
+    &lt;a href=&quot;http://www.baidu.com/&quot; onclick=&quot;return false&quot;&gt;百度1&lt;/a&gt;
+    &lt;a href=&quot;http://www.baidu.com/&quot; id=&quot;go&quot;&gt;百度1&lt;/a&gt;
+    &lt;script&gt;
+        //获取元素节点
+        let go = document.querySelector(&quot;#go&quot;)
+        //点击事件
+        go.onclick = function(e)&#123;
+            //阻止默认事件
+            e.preventDefault();
+        &#125;
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4 id="二、javascript：void（0）少用"><a href="#二、javascript：void（0）少用" class="headerlink" title="二、javascript：void（0）少用"></a>二、javascript：void（0）少用</h4><p>javascript:void(0)这是一种伪协议，void(0)在IE中可能会引起一些问题，比如：造成gif动画停止播放等。</p>
+<p>void是javascipt自身的操作符，它表示的是只执行表达式，但没有返回值。</p>
+<pre><code class="html">//这两种写法都可以，都表示一个死链接，点击无效果
+&lt;a href=&quot;javascript:void(0)&quot;&gt;点击无法跳转(javascript:void(0))&lt;/a&gt;
+&lt;a href=&quot;javascript:void(null)&quot;&gt;点击无法跳转(javascript:void(null))&lt;/a&gt;
+</code></pre>
+<h4 id="三、javascript：；"><a href="#三、javascript：；" class="headerlink" title="三、javascript：；"></a>三、javascript：；</h4><p>javascript:; 执行一段空白的javascript语句，返回空或者false值，从而防止链接跳转</p>
+<p>javascript:; 写法比 javascript:void(0) 好，后者存在浏览器兼容bug</p>
+<pre><code class="html">&lt;a href=&quot;javascript:;&quot;&gt;点击无法跳转（javascript:;）&lt;/a&gt;
+</code></pre>
+<h3 id="四、href"><a href="#四、href" class="headerlink" title="四、href(####)"></a>四、href(####)</h3><blockquote>
+<p>使用2个到4个#，见的大多是”####”，也有使用”#all”等其他的。一个无意义的标签指定，不做任何处理。（这种方法会在浏览器地址栏上出现“####”）</p>
+</blockquote>
+<pre><code class="html">&lt;a href=&quot;####&quot;&gt;点击无法跳转&lt;/a&gt;
+</code></pre>
+<p>‼️注：制是用一个“#”是不行的，会默认刷新页面回到页面顶部</p>
+<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><pre><code class="html">&lt;a href=&quot;javascript:void(0)&quot;&gt;点击无法跳转(javascript:void(0))&lt;/a&gt;
+&lt;a href=&quot;javascript:void(null)&quot;&gt;点击无法跳转(javascript:void(null))&lt;/a&gt;
+&lt;a href=&quot;javascript:;&quot;&gt;点击无法跳转（javascript:;）&lt;/a&gt;
+&lt;a href=&quot;####&quot;&gt;点击无法跳转&lt;/a&gt;
+&lt;a href=&quot;http://www.baidu.com/&quot; onclick=&quot;return false&quot;&gt;百度1&lt;/a&gt;
+&lt;a href=&quot;http://www.baidu.com/&quot; id=&quot;go&quot;&gt;百度1&lt;/a&gt;
+</code></pre>
+<pre><code class="javascript">&lt;script&gt;
+        //获取元素节点
+        let go = document.querySelector(&quot;#go&quot;)
+        //点击事件
+        go.onclick = function(e)&#123;
+            //阻止默认事件
+            e.preventDefault();
+        &#125;
+&lt;/script&gt;
+</code></pre>
+<hr>
+<h3 id="♥︎♥︎-介绍一下JS的内置类型有哪些？"><a href="#♥︎♥︎-介绍一下JS的内置类型有哪些？" class="headerlink" title="♥︎♥︎ 介绍一下JS的内置类型有哪些？"></a>♥︎♥︎ 介绍一下JS的内置类型有哪些？</h3><p>JS中共有七种内置数据类型</p>
+<pre><code class="css">基本数据类型：null、undefined、boolean、string、number、symbol
+引用数据类型：object(function、regexp、array、date)
+</code></pre>
+<p>‼️注：<br>1.Js中的数字类型是浮点型，不是整型<br>2.NaN属于数字类型</p>
+<p>主要区别：存储位置不同。<br>1.基本数据类型存储在栈中，占据空间小，大小固定，可以被频繁使用；<br>2.引用数据类型存储在堆中，栈中存放指针，指针指向堆中该实体的起始地址，占据空间大，大小不固定，不适合被频繁使用。</p>
+<h3 id="♥︎♥︎-解释下-let-和-const-的块级作用域"><a href="#♥︎♥︎-解释下-let-和-const-的块级作用域" class="headerlink" title="♥︎♥︎ 解释下 let 和 const 的块级作用域?"></a>♥︎♥︎ 解释下 let 和 const 的块级作用域?</h3><h4 id="let"><a href="#let" class="headerlink" title="let"></a>let</h4><p>ES6中新增let关键字，用于声明变量。其用法类似var，但是所声明的变量只在let命令所在的块内有效。（块级作用域文章后面会进行讲解）</p>
+<pre><code class="css">//let的特点
+1.只作用于块级作用域。
+2.不存在变量提升。
+3.不允许重复声明。
+4.暂时性死区（TDZ）。
+</code></pre>
+<h4 id="1-只作用于块级作用域。"><a href="#1-只作用于块级作用域。" class="headerlink" title="1.只作用于块级作用域。"></a>1.只作用于块级作用域。</h4><pre><code class="javascript">&#123;
+    let a=10;
+    var b=5;
+    console.log(a,b) //输出a=10 b=5;
+&#125;
+console.log(b); //输出 b=5;
+console.log(a); //报错 a is not defined
+</code></pre>
+<p>上述代码let声明的变量在块级作用域{ }中是有效的，但是在最后一行的输出就会直接报错，因为没有在块作用域{}中，a就没有被定义。</p>
+<p>let命令更适合for循环</p>
+<pre><code class="javascript">&#123;
+    for(let i=0;i&lt;5;i++)&#123;
+        console.log(i); //输出  0，1，2，3，4
+    &#125;
+    console.log(i);//报错 i is not defined
+&#125;
+&#123;
+    for(var i=0;i&lt;5;i++)&#123;
+        console.log(i);  //输出  0，1，2，3，4
+    &#125;
+    console.log(i);  //输出 5
+&#125;
+</code></pre>
+<p>变量i是let声明的 当前i只在本轮循环有效，且只在本块级作用域有效，所以每一次循环的i其实都是一个新的变量。</p>
+<p>你可能会问：如果每一轮循环的变量都是重新声明的 那它怎么知道上一轮循环的值，从而计算出本轮的值呢？</p>
+<p>这是因为javascript 引擎内部会记住上一轮循环的值，初始化本轮的变量i时，就在上一轮循环的基础上进行计算</p>
+<p>另外，for循环还有一个特别之处，for一个整体算一个块级作用域，那么设置循环变量那部分是一个父级作用域，而循环体内部是一个单独的子作用域</p>
+<h4 id="2-不存在变量提升"><a href="#2-不存在变量提升" class="headerlink" title="2.不存在变量提升"></a>2.不存在变量提升</h4><p>let与var的区别，var存在变量提升，但是let不存在变量提升。<br>那么什么是变量提升呢？<br>变量提升：就是变量在声明前可以使用，而且不会报错，但是值为undefined。<br>意思是var声明的变量在其声明前使用是可以的不会报错，<br>但是let声明的变量一定要在其声明之后使用，否则就会报错。</p>
+<pre><code class="javascript">&#123;
+    console.log(a);//输出 undefined
+    var a=2;
+&#125;
+&#123;
+    console.log(b) //报错 Cannot access &#39;b&#39; before initialization
+    let b=5;
+&#125;
+</code></pre>
+<p>上诉代码用var声明的a会发生变量提升，那么值为undefined。<br>而有let声明的b就不发生变量提升，在声明前使用，b就是一个不存在的，那么就直接报错。</p>
+<h4 id="3-不允许重复声明"><a href="#3-不允许重复声明" class="headerlink" title="3.不允许重复声明"></a>3.不允许重复声明</h4><p>let不允许在相同的作用域内重复声明同一个变量</p>
+<pre><code class="javascript">&#123;
+    var a=10;
+    let a=5;//直接报错 Identifier &#39;a&#39; has already been declared
+&#125;
+&#123;
+    let b=10;
+    let b=5; //直接报错 Identifier &#39;b&#39; has already been declared
+&#125;
+&#123;
+    const c=10;
+    let c=5; //直接报错 Identifier &#39;c&#39; has already been declared
+&#125;
+&#123;
+    function f1(foo)&#123;
+    let foo; //报错  同时也不能在函数内部重新声明参数
+    &#125;
+&#125;
+</code></pre>
+<h4 id="4-暂时性死区"><a href="#4-暂时性死区" class="headerlink" title="4.暂时性死区"></a>4.暂时性死区</h4><p>只要用let声明的变量，那么这个变量就绑定这个块级作用域，不再受外部的影响;</p>
+<pre><code class="javascript">&#123;
+    var tmp=123;
+    if(true)&#123;
+        tmp=&quot;abc&quot;;//这里将会报错
+        let tmp;
+    &#125;
+&#125;
+</code></pre>
+<p>因为let存在暂时性死区，只要区块中存在let与const命令，就算在最开始用var定义了tmp，但是在if里又是一个块级作用域，在if这个区域就形成一个封闭作用域，然后在let声明前对tmp的使用就会报错。</p>
+<h4 id="const"><a href="#const" class="headerlink" title="const"></a>const</h4><p>const声明一个只读常量，一旦声明，常量的值就不能被改变。<br>const的与let的特点基本相同，同样不存在变量提升，存在暂时性死区，只能在声明后使用.</p>
+<pre><code class="javascript">&#123;
+    const p=8.12;
+    p=10;//报错 Assignment to constant variable.
+&#125;
+</code></pre>
+<p>const实际并不是变量的值不能改动，而是指向的那个内存地址所保存的数据不得改动；数据一半存储在堆中，<br>对于简单的基本数据类型（string number boolean null undefined）值保存在指向的那个内存地址，因此等同于常量。<br>但对于引用数据类型(object array ),变量指向的内存地址，保存的只是一个指向实际数据的指针，const只能保证这个指针是固定的(即指向另一个固定的地址)，至于它指向的数据结构是不是可变的，就完全不能够控制了。</p>
+<pre><code class="javascript">&#123;
+    const foo=&#123;&#125;;
+    foo.num=123;//这里就会成功不会报错，可以添加新的属性。
+&#125;
+</code></pre>
+<h4 id="块级作用域"><a href="#块级作用域" class="headerlink" title="块级作用域"></a>块级作用域</h4><p>ES5中只有全局作用域和函数作用域，没有块级作用域，ES6新增了块级作用域。</p>
+<pre><code class="javascript">&#123;
+    function f1()&#123;
+    let a=5;
+    if(true)&#123;
+        let a=10;
+        &#125;
+    console.log(a);//输出 a=5。
+&#125;
+</code></pre>
+<p>上述代码有2个代码块，f1是以个大的块作用域，里面嵌套了一个if小的块作用域，在if之外输出a是不会被影响的，从而输出a&#x3D;5。</p>
+<p>块级作用域是可以嵌套的。</p>
+<p>嵌套的作用域中外层的作用域不能访问内层作用域的变量，但是内层可以访问外层的.</p>
+<pre><code class="javascript">//例子1
+&#123;
+    function f1()&#123;
+        let a=10;
+        if(true)&#123;
+            console.log(a);
+        &#125;
+    &#125;
+    f1();//输出a=10;
+&#125;
+//例子2
+&#123;
+    function f1()&#123;
+        let b=0;
+        console.log(b);//输出b=0;
+        function f2()&#123;
+            let c=10;
+        &#125;
+        console.log(c);
+    &#125;
+    f1();//报错  c没有定义
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎-将-1-2-与-3-4-合并为-1-2-3-4"><a href="#♥︎♥︎-将-1-2-与-3-4-合并为-1-2-3-4" class="headerlink" title="♥︎♥︎  将 [1,2] 与 [3,[4]] 合并为 [1,2,3,[4]]"></a>♥︎♥︎  将 [1,2] 与 [3,[4]] 合并为 [1,2,3,[4]]</h3><p>JS数组合并方法:</p>
+<pre><code class="javascript">let arr3 = [1,2].concat([3,[4]]); //[1,2,3,[4]]
+</code></pre>
+<h3 id="♥︎♥︎-Array-forEach-与-Array-map-的区别，Array-slice-与-Array-splice-的区别？"><a href="#♥︎♥︎-Array-forEach-与-Array-map-的区别，Array-slice-与-Array-splice-的区别？" class="headerlink" title="♥︎♥︎ Array.forEach() 与 Array.map() 的区别，Array.slice() 与 Array.splice() 的区别？"></a>♥︎♥︎ Array.forEach() 与 Array.map() 的区别，Array.slice() 与 Array.splice() 的区别？</h3><h4 id="forEach"><a href="#forEach" class="headerlink" title="forEach"></a>forEach</h4><p>forEach不支持return (没有返回值),对原来的数组也没有影响。但是我们可以自己通过数组的索引来修改原来的数组</p>
+<pre><code class="javascript">var ary = [12,23,24,42,1];
+var res = ary.forEach(function (item,index,input) &#123;
+ input[index] = item10;
+&#125;)
+console.log(res); //--&gt;undefined;
+console.log(ary); //--&gt;会对原来的数组产生改变；
+</code></pre>
+<h4 id="map"><a href="#map" class="headerlink" title="map"></a>map</h4><p>map支持return返回值，也不影响原数组，但是会返回一个新的数组</p>
+<pre><code class="javascript">var ary = [12,23,24,42,1];
+var res = ary.map(function (item,index,input) &#123;
+ return item*10;
+&#125;)
+console.log(res);//--&gt;[120,230,240,420,10];
+console.log(ary);//--&gt;[12,23,24,42,1]；
+</code></pre>
+<h4 id="slice"><a href="#slice" class="headerlink" title="slice"></a>slice</h4><pre><code class="css">array.slice(start,end)函数是取array数组中指定的一些元素：
+根据数组下标start和end，两个参数为取值的开始和结束下标，取出的值不包括end位置的值，生成一个新数组作为返回值；
+这里end可以为空，为空则取从start位置到数组结尾的元素，生成新数组。
+</code></pre>
+<h4 id="splice"><a href="#splice" class="headerlink" title="splice"></a>splice</h4><pre><code class="css">array.splice(start,length,insert_one......)函数则是直接在原数组进行删除、添加、替换元素的操作：
+start为数组删除元素的开始下标，
+length为从start位置开始array删除元素的个数，
+后面参数为删除之后array重新插入的数据内容，插入位置为删除位置，而非数组开头或末尾，
+返回值为array删除的元素组成的数组。
+显而易见，splice函数可以用来对数组元素进行替换。由splice操作后的数组array，数组中内容如果已
+经改变，就再也找不回array在splice之前的模样。
+</code></pre>
+<h3 id="♥︎♥︎-将-1234567-转换为-1-234-567"><a href="#♥︎♥︎-将-1234567-转换为-1-234-567" class="headerlink" title="♥︎♥︎  将 1234567 转换为 1,234,567"></a>♥︎♥︎  将 1234567 转换为 1,234,567</h3><p>千位分割符方法有以下几种</p>
+<p>只适用整数</p>
+<pre><code class="javascript">function format (num) &#123;
+    var reg=/\d&#123;1,3&#125;(?=(\d&#123;3&#125;)+$)/g; 
+    return (num + &#39;&#39;).replace(reg, &#39;$&amp;,&#39;);
+&#125;
+console.log(format(1233453464)) //1,233,453,464
+</code></pre>
+<pre><code class="javascript">function format (num) &#123;
+    num=num+&#39;&#39;;//数字转字符串
+     var str=&quot;&quot;;//字符串累加
+     for(var i=num.length- 1,j=1;i&gt;=0;i--,j++)&#123;
+         if(j%3==0 &amp;&amp; i!=0)&#123;//每隔三位加逗号，过滤正好在第一个数字的情况
+             str+=num[i]+&quot;,&quot;;//加千分位逗号
+             continue;
+         &#125;
+         str+=num[i];//倒着累加数字
+     &#125;
+     return str.split(&#39;&#39;).reverse().join(&quot;&quot;);//字符串=&gt;数组=&gt;反转=&gt;字符串
+   &#125;
+console.log(format(12312432343543)) //12,312,432,343,543
+</code></pre>
+<p>整数部分加小数部分不动</p>
+<pre><code class="javascript">var format = (str) =&gt; str.replace(/\B(?=(\d&#123;3&#125;)+(?!\d))/g, &#39;,&#39;)
+console.log(format(&#39;12313453.63&#39;)) //12,313,453.63
+</code></pre>
+<p>一整套千分位转换</p>
+<pre><code class="javascript">    // 将金额类型转为数字类型
+    function toNum(str) &#123;
+        return str.replace(/\,|\￥/g, &quot;&quot;);
+    &#125;
+
+    // 保留两位小数（四舍五入）
+    function toPrice(num) &#123;
+        num = parseFloat(toNum(num)).toFixed(2).toString().split(&quot;.&quot;);
+        num[0] = num[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+        return &quot;￥&quot; + num.join(&quot;.&quot;);
+    &#125;
+    
+    // 保留两位小数（不四舍五入）
+    function toPrice1(num) &#123;
+        num = parseFloat(toNum(num).replace(/(\.\d&#123;2&#125;)\d+$/,&quot;$1&quot;)).toFixed(2).toString().split(&quot;.&quot;);
+        num[0] = num[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+        return &quot;￥&quot; + num.join(&quot;.&quot;);;
+    &#125;
+    
+    // 不处理小数部分
+    function toPrice2(num) &#123;
+        var source = toNum(num).split(&quot;.&quot;);
+        source[0] = source[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+        return &quot;￥&quot; + source.join(&quot;.&quot;);
+    &#125;
+    console.log(toNum(&#39;1,234,345.4&#39;)) //1234345.4
+    console.log(toPrice(&#39;12123213.43545&#39;)) //￥12,123,213.44
+    console.log(toPrice1(&#39;12312312.43645&#39;)) //￥12,312,312.43
+    console.log(toPrice2(&#39;12312345.324&#39;)) //￥12,312,345.324
+</code></pre>
+<h3 id="♥︎♥︎-Promise-resolve-Promise-resolve-1-then-console-log-输出？"><a href="#♥︎♥︎-Promise-resolve-Promise-resolve-1-then-console-log-输出？" class="headerlink" title="♥︎♥︎ Promise.resolve(Promise.resolve(1)).then(console.log) 输出？"></a>♥︎♥︎ Promise.resolve(Promise.resolve(1)).then(console.log) 输出？</h3><pre><code class="javascript">Promise.resolve(Promise.resolve(1)).then(console.log) //1
+</code></pre>
+<h3 id="♥︎♥︎-使用-setTimeout-模拟-setInterval-的功能做一个60秒的倒数计时"><a href="#♥︎♥︎-使用-setTimeout-模拟-setInterval-的功能做一个60秒的倒数计时" class="headerlink" title="♥︎♥︎ 使用 setTimeout 模拟 setInterval 的功能做一个60秒的倒数计时"></a>♥︎♥︎ 使用 setTimeout 模拟 setInterval 的功能做一个60秒的倒数计时</h3><pre><code class="javascript">var num=60;
+var max=0;
+function incrementNumber()&#123;
+  num--;
+  if(num&gt;max)&#123;
+      setTimeout(incrementNumber,1000);
+      console.log(num);
+  &#125;
+  else&#123;
+    console.log(&#39;Done&#39;);
+  &#125;
+&#125;
+setTimeout(incrementNumber,1000);
+</code></pre>
+<h3 id="♥︎♥︎-写一个-function，清除字符串前后的空格。（兼容所有的浏览器）"><a href="#♥︎♥︎-写一个-function，清除字符串前后的空格。（兼容所有的浏览器）" class="headerlink" title="♥︎♥︎ 写一个 function，清除字符串前后的空格。（兼容所有的浏览器）"></a>♥︎♥︎ 写一个 function，清除字符串前后的空格。（兼容所有的浏览器）</h3><pre><code class="javascript">function trim(str) &#123;
+    if (str &amp;&amp; typeof str === &quot;string&quot;) &#123;
+    return str.replace(/(^\s)|(\s)$/g,&quot;&quot;); //去除前后空白符
+    &#125;
+   &#125;
+console.log(&#39;  2342.4  &#39;)//  2342.4
+console.log(trim(&#39;  2342.4  &#39;))//2342.4
+</code></pre>
+<h3 id="♥︎♥︎-使用正则表达式验证邮箱格式。"><a href="#♥︎♥︎-使用正则表达式验证邮箱格式。" class="headerlink" title="♥︎♥︎  使用正则表达式验证邮箱格式。"></a>♥︎♥︎  使用正则表达式验证邮箱格式。</h3><pre><code class="javascript">var reg = /^(\w)+(\.\w+)*@(\w)+((\.\w&#123;2,3&#125;)&#123;1,3&#125;)$/;
+var email = &quot;1246815351@qq.com&quot;;
+console.log(reg.test(email)); //true
+</code></pre>
+<h3 id="♥︎♥︎-JavaScript-中-callee-和-caller-的作用"><a href="#♥︎♥︎-JavaScript-中-callee-和-caller-的作用" class="headerlink" title="♥︎♥︎ JavaScript 中 callee 和 caller 的作用"></a>♥︎♥︎ JavaScript 中 callee 和 caller 的作用</h3><h4 id="1-callee"><a href="#1-callee" class="headerlink" title="1.callee"></a>1.callee</h4><p>callee是对象的一个属性，该属性是一个指针，指向参数arguments对象的函数</p>
+<p>作用：就是用来指向当前对象</p>
+<p>返回正被执行的 Function 对象，也就是所指定的 Function 对象的正文. </p>
+<p>callee是arguments 的一个属性成员，它表示对函数对象本身的引用，这有利于匿名</p>
+<p>函数的递归或者保证函数的封装性</p>
+<h4 id="2-caller"><a href="#2-caller" class="headerlink" title="2.caller"></a>2.caller</h4><p>caller是函数对象的一个属性，该属性保存着调用当前函数的函数的引用（指向当前函数的直接父函数）</p>
+<p>返回一个对函数的引用，该函数调用了当前函数。</p>
+<p>functionName.caller</p>
+<p>functionName 对象是所执行函数的名称。</p>
+<p>‼️注意：</p>
+<p>对于函数来说，caller 属性只有在函数执行时才有定义。 如果函数是由 Javascript 程序的顶层调用的，</p>
+<p>那么 caller 包含的就是 null 。</p>
+<h3 id="♥︎♥︎-统计字符串中字母个数或统计最多的字母数。"><a href="#♥︎♥︎-统计字符串中字母个数或统计最多的字母数。" class="headerlink" title="♥︎♥︎ 统计字符串中字母个数或统计最多的字母数。"></a>♥︎♥︎ 统计字符串中字母个数或统计最多的字母数。</h3><pre><code class="javascript">function count()&#123;
+    var str=&quot;aaaabbbbsssseeeeqqaaasss&quot;;
+    var obj=&#123;&#125;;
+    for(var i=0;i&lt;str.length; i++)&#123;
+        if(obj[str.charAt(i)]==undefined)&#123;  
+        //对象初始化；如果key在对象中找不到，那么会返回undefined,反向思维
+            obj[str.charAt(i)]= 1;
+        &#125; else&#123;
+            obj[str.charAt(i)]++;
+        &#125;
+    &#125;
+    return obj;  //&#123; a: 7, b: 4, s: 7, e: 4, q: 2 &#125;
+    //取出各个字母和它的个数，作为一个新对象保存在obj对象;
+&#125;
+
+function numberCount(obj)&#123;
+    var mm=&quot;&quot;;
+    for(var m in obj)&#123;
+        if(mm==&quot;&quot;)&#123;
+            mm=new Object();
+            mm[m]=obj[m];
+        &#125;else&#123;
+            for(var j in mm)&#123;
+               if(mm[j]&lt;obj[m])&#123;
+                   //清空原来的内容
+                   mm=new Object();
+                   //放入新的内容
+                   mm[m]=obj[m];
+               &#125;
+            &#125;
+        &#125;
+    &#125;
+    console.log(mm); //&#123; a: 7 &#125;
+&#125;
+numberCount(count());
+</code></pre>
+<h3 id="♥︎♥︎-简述一下面象对象的六法则"><a href="#♥︎♥︎-简述一下面象对象的六法则" class="headerlink" title="♥︎♥︎ 简述一下面象对象的六法则"></a>♥︎♥︎ 简述一下面象对象的六法则</h3><ol>
+<li><p>单一职责原则：一个类只做它该做的事情</p>
+</li>
+<li><p>开闭原则：软件实体应当对扩展开放，对修改关闭</p>
+</li>
+<li><p>依赖倒转原则：面向接口编程</p>
+</li>
+<li><p>接口隔离原则：接口要小而专，绝不能大而全</p>
+</li>
+<li><p>合成聚合复用原则：优先使用聚合或合成关系复用代码</p>
+</li>
+<li><p>迪米特法则：迪米特法则又叫最少知识原则，一个对象应当对其他对象有尽可能少的了解(低耦合)</p>
+</li>
+</ol>
+<h3 id="♥︎♥︎-jQuery-优点和缺点"><a href="#♥︎♥︎-jQuery-优点和缺点" class="headerlink" title="♥︎♥︎  jQuery 优点和缺点"></a>♥︎♥︎  jQuery 优点和缺点</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><pre><code class="css">1.出色的浏览器兼容性
+2、出色的DOM操作的封装，使他具备强大的选择器，可以进行快速的DOM元素操作
+3、可靠的事件处理机制、jq在处理事件绑定的时候是相当的可靠
+4、完善的ajax（对ajax的封装非常好，不需要考虑复杂的浏览器的兼容和XMLhttprequest对象的创建
+和使用）
+5、支持链式操作（什么是链式操作？通过‘.’来操作）和隐士迭代
+6、减少服务器的压力和带宽并且加快了加载速度（为什么这么说？原因就是：当你打开网页之前打开了
+其他的网页，并且该网页也用了cdn的方式来
+// 调用父类原型push方法 return super.push(...args)
+加载相同版本的jq文件，那么，浏览器就不会加载第二次，为啥舍近求远呢，和生活中的道理一样一样
+的！）
+7、支持丰富的插件，当然你也可以自定义插件，再加上jq的文档也很丰富，对于程序员来说，是一件非常美好的事情
+</code></pre>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><pre><code class="css">1.不能向后兼容。
+每一个新版本不能兼容早期的版本。举例来说，有些新版本不再支持某些selector，新版jQuery却没有保留对它们的支持，而只是简单的将其移除。这可能会影响到开发者已经编写好的代码或插件。
+2.插件兼容性。
+与上一点类似，当新版jQuery推出后，如果开发者想升级的话，要看插件作者是否支持。通常情况下，在最新版jQuery版本下，现有插件可能无法正常使用。开发者使用的插件越多，这种情况发生的几率也越高。我有一次为了升级到jQuery 1.3，不得不自己动手修改了一个第三方插件。
+3.多个插件冲突。
+在同一页面上使用多个插件时，很容易碰到冲突现象，尤其是这些插件依赖相同事件或selector时最为明显。这虽然不是jQuery自身的问题，但却又确实是一个难于调试和解决的问题。
+4.jQuery的稳定性。
+jQuery没有让浏览器崩溃，这里指的是其版本发布策略。jQuery 1.3版发布后仅过数天，就发布了一个漏洞修正版1.3.1。他们还移除了对某些功能的支持，可能会影响许多代码的正常运行。我希望类似修改不要再出现。
+5.对动画和特效的支持差。
+在大型框架中，jQuery核心代码库对动画和特效的支持相对较差。但是实际上这不是一个问题。目前在这方面有一个单独的jQuery UI项目和众多插件来弥补此点。
+</code></pre>
+<h3 id="♥︎♥︎-AMD-怎么加载文件的"><a href="#♥︎♥︎-AMD-怎么加载文件的" class="headerlink" title="♥︎♥︎ AMD 怎么加载文件的?"></a>♥︎♥︎ AMD 怎么加载文件的?</h3><p>AMD 即Asynchronous Module Definition，中文名是异步模块定义的意思。它是一个在浏览器端模块化开发的规范</p>
+<p>由于不是JavaScript原生支持，使用AMD规范进行页面开发需要用到对应的库函数，也就是大名鼎鼎RequireJS，实际上AMD 是 RequireJS 在推广过程中对模块定义的规范化的产出</p>
+<p>requireJS主要解决两个问题</p>
+<p>1.多个js文件可能有依赖关系，被依赖的文件需要早于依赖它的文件加载到浏览器</p>
+<p>2.js加载的时候浏览器会停止页面渲染，加载文件越多，页面失去响应时间越长</p>
+<p>require()函数在加载依赖的函数的时候是异步加载的，这样浏览器不会失去响应，它指定的回调函数，只有前面的模块都加载成功后，才会运行，解决了依赖性的问题。</p>
+<h3 id="♥︎♥︎-jQuery-怎么找到事件源元素"><a href="#♥︎♥︎-jQuery-怎么找到事件源元素" class="headerlink" title="♥︎♥︎ jQuery 怎么找到事件源元素"></a>♥︎♥︎ jQuery 怎么找到事件源元素</h3><pre><code class="javascript">$(&quot;.btn&quot;).click(function(e)&#123;
+ // e 就是事件对象
+ e.target; // 事件的目标 dom
+ e.currentTarget; // 事件处理程序正在处理事件的那个元素
+ e.srcElement; // 事件的目标 ie
+&#125;);
+</code></pre>
+<h3 id="♥︎♥︎-2018-x2F-01-x2F-01-转换成-2018年-x2F-1月-x2F-1日"><a href="#♥︎♥︎-2018-x2F-01-x2F-01-转换成-2018年-x2F-1月-x2F-1日" class="headerlink" title="♥︎♥︎ 2018&#x2F;01&#x2F;01 转换成 2018年&#x2F;1月&#x2F;1日"></a>♥︎♥︎ 2018&#x2F;01&#x2F;01 转换成 2018年&#x2F;1月&#x2F;1日</h3><pre><code class="javascript">function fun(str)&#123;
+    var date = new Date(str)
+    return date.getFullYear()+&#39;年/&#39;+ date.getMonth()+&#39;月/&#39;+date.getDate()+&#39;日&#39; 
+&#125;
+console.log(fun(&#39;2018/03/01&#39;))//2018年/2月/1日
+</code></pre>
+<h3 id="♥︎♥︎-for-in-循环会遍历出原型上的属性吗？怎么避免遍历到原型上的属性"><a href="#♥︎♥︎-for-in-循环会遍历出原型上的属性吗？怎么避免遍历到原型上的属性" class="headerlink" title="♥︎♥︎ for-in 循环会遍历出原型上的属性吗？怎么避免遍历到原型上的属性"></a>♥︎♥︎ for-in 循环会遍历出原型上的属性吗？怎么避免遍历到原型上的属性</h3><p>使用 for in 循环遍历对象的属性时，原型链上的所有属性都将被访问</p>
+<p>只遍历对象自身的属性，而不遍历继承于原型链上的属性，需要使用hasOwnProperty 方法过滤一下。</p>
+<pre><code class="javascript">Object.prototype.say=&quot;cgl&quot;;
+ var person =&#123;
+ age: 18
+ &#125;;
+ for (var key in person) &#123;
+ if(person.hasOwnProperty(key))&#123;
+ console.log(key, eval(&quot;person.&quot;+key));//age 18
+ &#125;
+ &#125;
+</code></pre>
+<h3 id="♥︎♥︎-ES6-箭头函数和普通函数有什么差异？"><a href="#♥︎♥︎-ES6-箭头函数和普通函数有什么差异？" class="headerlink" title="♥︎♥︎  ES6 箭头函数和普通函数有什么差异？"></a>♥︎♥︎  ES6 箭头函数和普通函数有什么差异？</h3><ol>
+<li><p>相比普通函数更简洁的语法</p>
+</li>
+<li><p>没有this,捕获其所在上下文的 this 值，作为自己的 this 值 </p>
+</li>
+<li><p>不能使用new,箭头函数作为匿名函数,是不能作为构造函数的,不能使用new</p>
+</li>
+<li><p>不绑定arguments，用rest参数…解决</p>
+</li>
+<li><p>使用call()和apply()调用:由于 this 已经在词法层面完成了绑定，通过 call() 或 apply() 方法调用一个函数时，只是传入了参数而已，对 this 并没有什么影响：</p>
+</li>
+<li><p>箭头函数没有原型属性</p>
+</li>
+<li><p>不能简单返回对象字面量</p>
+</li>
+</ol>
+<p>let fun5 &#x3D; ()&#x3D;&gt;({ foo: x }) &#x2F;&#x2F;如果x &#x3D;&gt; { foo: x } &#x2F;&#x2F;则语法出错</p>
+<ol start="8">
+<li><p>箭头函数不能当做Generator函数,不能使用yield关键字</p>
+</li>
+<li><p>箭头函数不能换行</p>
+</li>
+</ol>
+<h3 id="♥︎♥︎-import-export-commonJS-对比区别"><a href="#♥︎♥︎-import-export-commonJS-对比区别" class="headerlink" title="♥︎♥︎  import export commonJS 对比区别"></a>♥︎♥︎  import export commonJS 对比区别</h3><p>ES6和commonJS的一些区别</p>
+<p>从语法的角度上看，ES6模块化的import 和 export 是一个内置的标识，而commonJS的</p>
+<p>module.exports 和 require 分别是js对象和方法。其ES6模块化和commonJS的实现方式不同。</p>
+<p>1.ES6是在编译的时候导入文件，而commonJS是编译完成后，在通过require方法导入，并读取文件导出的文件，并返回一个module.exports对象</p>
+<p>2.在ES6模块的内部this是问undefined，而commonJS的this为一个空对象</p>
+<p>3.ES6模块输出的是一个引用，而commonJS模块输出的是一个值的引用</p>
+<h3 id="♥︎♥︎-为什么-JavaScript-是单线程"><a href="#♥︎♥︎-为什么-JavaScript-是单线程" class="headerlink" title="♥︎♥︎ 为什么 JavaScript 是单线程"></a>♥︎♥︎ 为什么 JavaScript 是单线程</h3><p>js作为主要运行在浏览器的脚本语言，js主要用途之一是操作DOM。</p>
+<p>举一个栗子，如果js同时有两个线程，同时对同一个dom进行操作，这时浏览器应该听哪个线程的，如何判断优先级？</p>
+<p>为了避免这种问题，js必须是一门单线程语言</p>
+<h3 id="♥︎♥︎-JS的基本数据类型判断有什么方法？"><a href="#♥︎♥︎-JS的基本数据类型判断有什么方法？" class="headerlink" title="♥︎♥︎ JS的基本数据类型判断有什么方法？"></a>♥︎♥︎ JS的基本数据类型判断有什么方法？</h3><h4 id="1-typeof"><a href="#1-typeof" class="headerlink" title="1.typeof"></a>1.typeof</h4><pre><code class="css">typeof&#39;&#39;;// string 有效
+ typeof 1;// number 有效
+ typeof Symbol();// symbol 有效
+ typeof true;//boolean 有效
+ typeof undefined;//undefined 有效
+ typeof new Function();// function 有效
+ typeof null;//object 无效
+ typeof [] ;//object 无效
+ typeof new Date();//object 无效
+ typeof new RegExp();//object 无效
+</code></pre>
+<h4 id="2-instanceof"><a href="#2-instanceof" class="headerlink" title="2.instanceof"></a>2.instanceof</h4><pre><code class="css">instanceof 是用来判断 A 是否为 B 的实例，表达式为：A instanceof B，如果 A 是 B 的实例，则返回true,否则返回 false。 在这里需要特别注意的是：instanceof 检测的是原型
+</code></pre>
+<h4 id="3-constructor"><a href="#3-constructor" class="headerlink" title="3.constructor"></a>3.constructor</h4><pre><code class="css">当一个函数 F被定义时，JS引擎会为F添加 prototype 原型，然后再在 prototype上添加一个constructor 属性
+</code></pre>
+<h4 id="4-toString"><a href="#4-toString" class="headerlink" title="4.toString"></a>4.toString</h4><pre><code class="css">toString() 是 Object 的原型方法，调用该方法，默认返回当前对象的 [[Class]] 。这是一个内部属性，其格式为 [object Xxx] ，其中 Xxx 就是对象的类型。
+对于 Object 对象，直接调用 toString() 就能返回 [object Object] 。而对于其他对象，则需要通过 call / apply 来调用才能返回正确的类型信息。
+ Object.prototype.toString.call(&#39;&#39;) ; // [object String]
+ Object.prototype.toString.call(1) ; // [object Number]
+ Object.prototype.toString.call(true) ;// [object Boolean]
+ Object.prototype.toString.call(Symbol());//[object Symbol]
+ Object.prototype.toString.call(undefined) ;// [object Undefined]
+ Object.prototype.toString.call(null) ;// [object Null]
+ Object.prototype.toString.call(newFunction()) ;// [object Function]
+ Object.prototype.toString.call(newDate()) ;// [object Date]
+ Object.prototype.toString.call([]) ;// [object Array]
+ Object.prototype.toString.call(newRegExp()) ;// [object RegExp]
+ Object.prototype.toString.call(newError()) ;// [object Error]
+ Object.prototype.toString.call(document) ;// [object HTMLDocument]
+ Object.prototype.toString.call(window) ;//[object global] window 是全局对象 global 的引用
+</code></pre>
+<h3 id="♥︎♥︎-介绍下事件代理，主要解决什么问题"><a href="#♥︎♥︎-介绍下事件代理，主要解决什么问题" class="headerlink" title="♥︎♥︎ 介绍下事件代理，主要解决什么问题"></a>♥︎♥︎ 介绍下事件代理，主要解决什么问题</h3><ol>
+<li><p>绑定事件太多，浏览器占用内存变大，严重影响性能</p>
+</li>
+<li><p>Ajax出现，局部刷新盛行，每次加载完，都要重新绑定事件</p>
+</li>
+<li><p>部分浏览器移除元素时，绑定的事件没有被及时移除，导致内存泄漏，严重影响性能</p>
+</li>
+<li><p>Ajax中重复绑定，导致代码耦合性过大，影响后期维护</p>
+</li>
+</ol>
+<h3 id="♥︎♥︎-new-的原理是什么？通过-new-的方式创建对象和通过字面量创建有什么区别？"><a href="#♥︎♥︎-new-的原理是什么？通过-new-的方式创建对象和通过字面量创建有什么区别？" class="headerlink" title="♥︎♥︎ new 的原理是什么？通过 new 的方式创建对象和通过字面量创建有什么区别？"></a>♥︎♥︎ new 的原理是什么？通过 new 的方式创建对象和通过字面量创建有什么区别？</h3><p>new操作符的作用如下：</p>
+<p>1.创建一个空对象</p>
+<p>2.由this变量引用该对象</p>
+<p>3.该对象继承该函数的原型</p>
+<p>4.把属性和方法加入到this引用的对象中</p>
+<p>5.新创建的对象由this引用，最后隐式地返回this。</p>
+<p>区别:</p>
+<p>字面量创建不会调用 Object构造函数, 简洁且性能更好;</p>
+<h3 id="♥︎♥︎-数组去重的方法"><a href="#♥︎♥︎-数组去重的方法" class="headerlink" title="♥︎♥︎ 数组去重的方法"></a>♥︎♥︎ 数组去重的方法</h3><h4 id="方法一：双层循环，外层循环元素，内层循环时比较值"><a href="#方法一：双层循环，外层循环元素，内层循环时比较值" class="headerlink" title="方法一：双层循环，外层循环元素，内层循环时比较值"></a>方法一：双层循环，外层循环元素，内层循环时比较值</h4><p>如果有相同的值则跳过，不相同则push进数组</p>
+<pre><code class="javascript">Array.prototype.distinct = function()&#123;
+ var arr = this,
+ result = [],
+ i,
+ j,
+ len = arr.length;
+ for(i = 0; i &lt; len; i++)&#123;
+ for(j = i + 1; j &lt; len; j++)&#123;
+ if(arr[i] === arr[j])&#123;
+ j = ++i;
+ &#125;
+ &#125;
+ result.push(arr[i]);
+ &#125;
+ return result;
+&#125;
+var arra = [1,2,3,4,4,1,1,2,1,1,1];
+arra.distinct(); //返回[3,4,2,1]
+</code></pre>
+<h4 id="方法二：利用splice直接在原数组进行操作"><a href="#方法二：利用splice直接在原数组进行操作" class="headerlink" title="方法二：利用splice直接在原数组进行操作"></a>方法二：利用splice直接在原数组进行操作</h4><p>双层循环，外层循环元素，内层循环时比较值 值相同时，则删去这个值</p>
+<p>注意点:删除元素之后，需要将数组的长度也减1.</p>
+<p>优点：简单易懂</p>
+<p>缺点：占用内存高，速度慢</p>
+<pre><code class="javascript">Array.prototype.distinct = function ()&#123;
+ var arr = this,
+ i,
+ j,
+ len = arr.length;
+ for(i = 0; i &lt; len; i++)&#123;
+ for(j = i + 1; j &lt; len; j++)&#123;
+ if(arr[i] == arr[j])&#123;
+ arr.splice(j,1);
+ len--;
+ j--;
+ &#125;
+ &#125;
+ &#125;
+ return arr;
+&#125;;
+var a = [1,2,3,4,5,6,5,3,2,4,56,4,1,2,1,1,1,1,1,1,];
+var b = a.distinct();
+console.log(b.toString()); //1,2,3,4,5,6,56
+</code></pre>
+<h4 id="方法三：利用对象的属性不能相同的特点进行去重"><a href="#方法三：利用对象的属性不能相同的特点进行去重" class="headerlink" title="方法三：利用对象的属性不能相同的特点进行去重"></a>方法三：利用对象的属性不能相同的特点进行去重</h4><pre><code class="javascript">Array.prototype.distinct = function ()&#123;
+ var arr = this,
+ i,
+ obj = &#123;&#125;,
+ result = [],
+ len = arr.length;
+ for(i = 0; i&lt; arr.length; i++)&#123;
+ if(!obj[arr[i]])&#123; //如果能查找到，证明数组元素重复了
+ obj[arr[i]] = 1;
+ result.push(arr[i]);
+ &#125;
+ &#125;
+ return result;
+&#125;;
+var a = [1,2,3,4,5,6,5,3,2,4,56,4,1,2,1,1,1,1,1,1,];
+var b = a.distinct();
+console.log(b.toString()); //1,2,3,4,5,6,56
+</code></pre>
+<h4 id="方法四：数组递归去重"><a href="#方法四：数组递归去重" class="headerlink" title="方法四：数组递归去重"></a>方法四：数组递归去重</h4><p>运用递归的思想</p>
+<p>先排序，然后从最后开始比较，遇到相同，则删除</p>
+<pre><code class="javascript">Array.prototype.distinct = function ()&#123;
+ var arr = this,
+ len = arr.length;
+ arr.sort(function(a,b)&#123; //对数组进行排序才能方便比较
+ return a - b;
+ &#125;)
+ function loop(index)&#123;
+ if(index &gt;= 1)&#123;
+ if(arr[index] === arr[index-1])&#123;
+ arr.splice(index,1);
+ &#125;
+ loop(index - 1); //递归loop函数进行去重
+ &#125;
+ &#125;
+ loop(len-1);
+ return arr;
+&#125;;
+var a = [1,2,3,4,5,6,5,3,2,4,56,4,1,2,1,1,1,1,1,1,56,45,56];
+var b = a.distinct();
+console.log(b.toString()); //1,2,3,4,5,6,45,56
+</code></pre>
+<h4 id="方法五：利用indexOf以及forEach"><a href="#方法五：利用indexOf以及forEach" class="headerlink" title="方法五：利用indexOf以及forEach"></a>方法五：利用indexOf以及forEach</h4><pre><code class="javascript">Array.prototype.distinct = function ()&#123;
+ var arr = this,
+ result = [],
+ len = arr.length;
+ arr.forEach(function(v, i ,arr)&#123; //这里利用map，filter方法也可以实现
+ var bool = arr.indexOf(v,i+1); //从传入参数的下一个索引值开始寻找是否存在重复
+ if(bool === -1)&#123;
+ result.push(v);
+ &#125;
+ &#125;)
+ return result;
+&#125;;
+var a = [1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,3,2,3,3,2,2,1,23,1,23,2,3,2,3,2,3];
+var b = a.distinct();
+console.log(b.toString()); //1,23,2,3
+</code></pre>
+<h3 id="方法六：利用ES6的set"><a href="#方法六：利用ES6的set" class="headerlink" title="方法六：利用ES6的set"></a>方法六：利用ES6的set</h3><p>Set数据结构，它类似于数组，其成员的值都是唯一的。</p>
+<p>利用Array.from将Set结构转换成数组</p>
+<pre><code class="javascript">function dedupe(array)&#123;
+ return Array.from(new Set(array));
+&#125;
+dedupe([1,1,2,3]) //[1,2,3]
+//拓展运算符(...)内部使用for...of循环
+//123
+let arr = [1,2,3,3];
+let resultarr = [...new Set(arr)]; 
+console.log(resultarr); //[1,2,3]
+</code></pre>
+<h3 id="♥︎♥︎-并行和并发的区别是什么？"><a href="#♥︎♥︎-并行和并发的区别是什么？" class="headerlink" title="♥︎♥︎ 并行和并发的区别是什么？"></a>♥︎♥︎ 并行和并发的区别是什么？</h3><p>并行意味着可以同时取得多个任务，并同时去执行所取得的这些任务。并行模式相当于将长长的一条队列，划分成了多条短队列，所以并行缩短了任务队列的长度</p>
+<p>并发表示多个任务同时都要执行</p>
+<h3 id="♥︎♥︎-是否所有函数都有-prototype-一说？"><a href="#♥︎♥︎-是否所有函数都有-prototype-一说？" class="headerlink" title="♥︎♥︎ 是否所有函数都有 prototype 一说？"></a>♥︎♥︎ 是否所有函数都有 prototype 一说？</h3><pre><code class="css">1. 使用Function.prototype.bind创建的函数对象
+function abc()&#123;console.log(&#39;abc&#39;)&#125;
+var binded = abc.bind(null)
+binded() //abc
+console.log(binded.prototype) //undefined
+
+2. 箭头函数也没有
+var abc = ()=&gt;&#123;console.log(&#39;abc&#39;)&#125;
+abc() //abc
+console.log(abc.prototype) //undefined
+</code></pre>
+<h3 id="♥︎♥︎-为什么-await-在-forEach-中不生效？如何解决？"><a href="#♥︎♥︎-为什么-await-在-forEach-中不生效？如何解决？" class="headerlink" title="♥︎♥︎ 为什么 await 在 forEach 中不生效？如何解决？"></a>♥︎♥︎ 为什么 await 在 forEach 中不生效？如何解决？</h3><p>lodash的forEach和[].forEach不支持await, forEach 只支持同步代码。 </p>
+<p>解决方法1：使用 for…of</p>
+<p>解决方法2：使用 for循环</p>
+<p>解决方法3：让forEach支持async await</p>
+<p>forEach 在正常情况像下面这么写肯定是做不到同步的，程序不会等一个循环中的异步完成再进行下一个循环。原因很明显，在下面的模拟中，while 循环只是简单执行了 callback，所以尽管 callback 内使用了 await ，也只是影响到 callback 内部。</p>
+<pre><code class="javascript">arr.myforeach(async v =&gt; &#123;
+ await fetch(v);
+&#125;);
+</code></pre>
+<p>要支持上面这种写法，只要稍微改一下就好</p>
+<pre><code class="javascript">Array.prototype.myforeach = async function (fn, context = null) &#123;
+ let index = 0;
+ let arr = this;
+ if (typeof fn !== &#39;function&#39;) &#123;
+ throw new TypeError(fn + &#39; is not a function&#39;);
+ &#125;
+ while (index &lt; arr.length) &#123;
+ if (index in arr) &#123;
+ try &#123;
+ await fn.call(context, arr[index], index, arr);
+ &#125; catch (e) &#123;
+ console.log(e);
+ &#125;
+ &#125;
+ index ++;
+ &#125;
+&#125;;
+</code></pre>
+<h3 id="♥︎♥︎-请描述一下-cookies，sessionStorage-和-localStorage-的区别？"><a href="#♥︎♥︎-请描述一下-cookies，sessionStorage-和-localStorage-的区别？" class="headerlink" title="♥︎♥︎ 请描述一下 cookies，sessionStorage 和 localStorage 的区别？"></a>♥︎♥︎ 请描述一下 cookies，sessionStorage 和 localStorage 的区别？</h3><p>1.存储大小</p>
+<pre><code class="css">cookie数据大小不能超过4k。
+
+sessionStorage和localStorage 虽然也有存储大小的限制，但比cookie大得多，可以达到5M或更大。
+</code></pre>
+<p>2.有效时间</p>
+<pre><code class="css">localStorage 存储持久数据，浏览器关闭后数据不丢失除非主动删除数据；
+
+sessionStorage 数据在当前浏览器窗口关闭后自动删除。
+
+cookie 设置的cookie过期时间之前一直有效，即使窗口或浏览器关闭
+</code></pre>
+<ol start="3">
+<li>数据与服务器之间的交互方式</li>
+</ol>
+<pre><code class="css">cookie的数据会自动的传递到服务器，服务器端也可以写cookie到客户端
+
+sessionStorage和localStorage不会自动把数据发给服务器，仅在本地保存。
+</code></pre>
+<hr>
+<h3 id="♥︎♥︎♥︎-介绍一下类型转换"><a href="#♥︎♥︎♥︎-介绍一下类型转换" class="headerlink" title="♥︎♥︎♥︎ 介绍一下类型转换"></a>♥︎♥︎♥︎ 介绍一下类型转换</h3><p>&#x2F;<em>——————-<em>显式转换</em>———————</em>&#x2F; </p>
+<pre><code class="css">1. toString() // 转化为字符串，不可以转null和underfined
+2. Number() // 转换为数字，字符串中有一个不是数值的字符，返回NaN
+3. parseInt() // 转换为数字，第一个字符不是数字或者符号就返回NaN
+4. String() // 转换为字符串，
+5. Boolean() // 转换为布尔值
+</code></pre>
+<p>&#x2F;<em>——————-<em>隐式转换</em>(+-)———————</em>&#x2F; </p>
+<p>当 JavaScript 尝试操作一个 “错误” 的数据类型时，会自动转换为 “正确” 的数据类型</p>
+<pre><code class="css">1. num + &quot;&quot; -&gt; String
+2. num + bool -&gt; num
+// 当加号运算符时，String和其他类型时，其他类型都会转为 String；其他情况，都转化为Number类型
+3. string - num -&gt; num
+// 其他运算符时， 基本类型都转换为 Number，String类型的带有字符的比如：
+4. &#39;a1&#39; - num -&gt; NaN
+// 与undefined 一样。
+</code></pre>
+<p>&#x2F;<em>——————-<em>隐式转换</em>(<em>逻辑表达式</em>)———————</em>&#x2F; </p>
+<pre><code class="css">1. 对象和布尔值比较
+对象和布尔值进行比较时，对象先转换为字符串，然后再转换为数字，布尔值直接转换为数字
+[] == true; //false []转换为字符串&#39;&#39;,然后转换为数字0,true转换为数字1，所以为false
+2. 对象和字符串比较
+对象和字符串进行比较时，对象转换为字符串，然后两者进行比较。
+[1,2,3] == &#39;1,2,3&#39; // true [1,2,3]转化为&#39;1,2,3&#39;，然后和&#39;1,2,3&#39;， so结果为true;
+3. 对象和数字比较
+对象和数字进行比较时，对象先转换为字符串，然后转换为数字，再和数字进行比较。
+[1] == 1; // true `对象先转换为字符串再转换为数字，二者再比较 [1] =&gt; &#39;1&#39; =&gt; 1 所以结果为true
+4. 字符串和数字比较
+字符串和数字进行比较时，字符串转换成数字，二者再比较。
+&#39;1&#39; == 1 // true
+5. 字符串和布尔值比较
+字符串和布尔值进行比较时，二者全部转换成数值再比较。
+&#39;1&#39; == true; // true
+6. 布尔值和数字比较
+布尔值和数字进行比较时，布尔转换为数字，二者比较。
+true == 1 // true###
+</code></pre>
+<h3 id="♥︎♥︎♥︎-对闭包的看法，为什么要用闭包？说一下闭包的原理以及应用场景？闭包的-this-指向问题？"><a href="#♥︎♥︎♥︎-对闭包的看法，为什么要用闭包？说一下闭包的原理以及应用场景？闭包的-this-指向问题？" class="headerlink" title="♥︎♥︎♥︎ 对闭包的看法，为什么要用闭包？说一下闭包的原理以及应用场景？闭包的 this 指向问题？"></a>♥︎♥︎♥︎ 对闭包的看法，为什么要用闭包？说一下闭包的原理以及应用场景？闭包的 this 指向问题？</h3><p>闭包的作用：</p>
+<ol>
+<li><p>在外部访问函数内部的变量</p>
+</li>
+<li><p>让函数内的局部变量可以一直保存下去</p>
+</li>
+<li><p>模块化私有属性和公共属性</p>
+</li>
+</ol>
+<p>闭包的原理：</p>
+<p>全局变量生存周期是永久，局部变量生存周期随着函数的调用介绍而销毁。</p>
+<p>闭包就是 在函数中定义且成为该函数内部返回的函数的自由变量 的变量，该变量不会随着外部函数调用</p>
+<p>结束而销毁。</p>
+<p>（注：不光是变量，函数内声明的函数也可以形成闭包）</p>
+<p>当函数可以记住并访问所在的词法作用域，即使函数是在当前词法作用域之外执行，这时就产生了闭</p>
+<p>包。</p>
+<h3 id="♥︎♥︎♥︎-简述闭包的问题以及优化"><a href="#♥︎♥︎♥︎-简述闭包的问题以及优化" class="headerlink" title="♥︎♥︎♥︎ 简述闭包的问题以及优化"></a>♥︎♥︎♥︎ 简述闭包的问题以及优化</h3><p>闭包的缺点：占用内层空间 大量使用闭包会造成 栈溢出</p>
+<p>由于闭包会一直占用内存空间，直到页面销毁，我们可以主动将已使用的闭包销毁：</p>
+<p>将闭包函数赋值为null 可以销毁闭包。</p>
+<h3 id="♥︎♥︎♥︎-如何确定-this-指向？改变-this-指向的方式有哪些？"><a href="#♥︎♥︎♥︎-如何确定-this-指向？改变-this-指向的方式有哪些？" class="headerlink" title="♥︎♥︎♥︎ 如何确定 this 指向？改变 this 指向的方式有哪些？"></a>♥︎♥︎♥︎ 如何确定 this 指向？改变 this 指向的方式有哪些？</h3><h4 id="this-指向："><a href="#this-指向：" class="headerlink" title="this 指向："></a>this 指向：</h4><pre><code class="css">1. 全局上下文（函数外）
+无论是否为严格模式，均指向全局对象。注意:严格模式下全局对象为undifined
+
+2. 函数上下文（函数内）
+默认的，指向函数的调用对象，且是最直接的调用对象：
+简单调用，指向全局对象注意:严格模式下全局对象为undifined，某些浏览器未实现此标准也可能会是window
+</code></pre>
+<h4 id="改变this指向的方式："><a href="#改变this指向的方式：" class="headerlink" title="改变this指向的方式："></a>改变this指向的方式：</h4><pre><code class="javascript">1. 第一种： new关键字改变this指向
+//构造函数版this
+function Fn()&#123;
+ this.user = &quot;李某&quot;;
+&#125;
+var a = new Fn();
+console.log(a.user); //李某
+/----------------------------------------/ 
+
+2. 第二种： call()
+// 把b添加到第一个参数的环境中，简单来说，this就会指向那个对象
+var a = &#123;
+ user:&quot;李某&quot;,
+ fn:function()&#123;
+ console.log(this.user); //李某
+ &#125;
+&#125;
+var b = a.fn;
+b.call(a); //若不用call，则b()执行后this指的是Window对象
+/----------------------------------------/ 
+
+3. 第三种：apply()
+// apply方法和call方法有些相似，它也可以改变this的指向，也可以有多个参数，但是不同的是，第二个参数必须是一个数组
+var a = &#123;
+ user:&quot;李某&quot;,
+ fn:function()&#123;
+ console.log(this.user); //李某
+ &#125;
+&#125;
+var b = a.fn;
+b.apply(a);
+/----------------------------------------/ 
+
+4. 第四种：bind()
+// bind方法返回的是一个修改过后的函数,
+// bind也可以有多个参数，并且参数可以执行的时候再次添加，但是要注意的是，参数是按照形参的顺序进行的。
+var a = &#123;
+ user:&quot;李某&quot;,
+ fn:function()&#123;
+ console.log(this.user); //李某
+ &#125;
+&#125;
+var b = a.fn;
+var c = b.bind(a);
+c();
+</code></pre>
+<h3 id="♥︎♥︎♥︎-介绍箭头函数的-this"><a href="#♥︎♥︎♥︎-介绍箭头函数的-this" class="headerlink" title="♥︎♥︎♥︎ 介绍箭头函数的 this"></a>♥︎♥︎♥︎ 介绍箭头函数的 this</h3><p>由于箭头函数不绑定this， 它会捕获其所在（即定义的位置）上下文的this值， 作为自己的this值</p>
+<pre><code class="javascript">1. 所以 call() / apply() / bind() 方法对于箭头函数来说只是传入参数，对它的 this 毫无影响。
+2. 考虑到 this 是词法层面上的，严格模式中与 this 相关的规则都将被忽略
+</code></pre>
+<p>作为方法的箭头函数this指向全局window对象，而普通函数则指向调用它的对象</p>
+<h3 id="♥︎♥︎♥︎-谈一下你对原型链的理解，画一个经典的原型链图示"><a href="#♥︎♥︎♥︎-谈一下你对原型链的理解，画一个经典的原型链图示" class="headerlink" title="♥︎♥︎♥︎  谈一下你对原型链的理解，画一个经典的原型链图示"></a>♥︎♥︎♥︎  谈一下你对原型链的理解，画一个经典的原型链图示</h3><p>[原型及原型链]: 	“<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000021232132">https://segmentfault.com/a/1190000021232132</a> “</p>
+<h3 id="♥︎♥︎♥︎-ES5-x2F-ES6-的继承除写法以外还有什么区别？"><a href="#♥︎♥︎♥︎-ES5-x2F-ES6-的继承除写法以外还有什么区别？" class="headerlink" title="♥︎♥︎♥︎  ES5&#x2F;ES6 的继承除写法以外还有什么区别？"></a>♥︎♥︎♥︎  ES5&#x2F;ES6 的继承除写法以外还有什么区别？</h3><pre><code class="css">1. ES5 的继承实质上是先创建子类的实例对象，然后再将父类的方法添加 到 this 上
+(Parent.apply(this)).
+2. ES6 的继承机制完全不同，实质上是先创建父类的实例对象 this(所以必 须先调用父类的super()方 法)，然后再用子类的构造函数修改 this。 
+3. ES5 的继承时通过原型或构造函数机制来实现。
+4. ES6 通过 class 关键字定义类，里面有构造方法，类之间通过 extends 关 键字实现继承。
+5. 子类必须在 constructor 方法中调用 super 方法，否则新建实例报错。因 为子类没有自己的 this 对象，而是继承了父类的 this 对象，然后对其进行加工。 如果不调用 super 方法，子类得不到this 对象。
+6. 注意 super 关键字指代父类的实例，即父类的 this 对象。 注意:在子类构造函数中，调用 super 后，才可使用 this关键字，否则报错
+</code></pre>
+<h3 id="♥︎♥︎♥︎-异步解决方案有哪些？"><a href="#♥︎♥︎♥︎-异步解决方案有哪些？" class="headerlink" title="♥︎♥︎♥︎ 异步解决方案有哪些？"></a>♥︎♥︎♥︎ 异步解决方案有哪些？</h3><pre><code class="javascript">//---------1.回调函数callback：----------//
+被作为实参传入另一函数，并在该外部函数内被调用，用以来完成某些任务的函数。如setTimeOut，ajax请求，readFile等。
+例：
+function greeting(name) &#123;
+ alert(&#39;Hello &#39; + name);
+&#125;
+function processUserInput(callback) &#123;
+ var name = prompt(&#39;请输入你的名字。&#39;);
+ callback(name);
+&#125;
+processUserInput(greeting);
+优点：
+解决了异步的问题。
+缺点：
+回调地狱：多个回调函数嵌套的情况，使代码看起来很混乱，不易于维护。
+
+//---------2.事件发布订阅：---------//
+当一个任务执行完成后，会发布一个事件，当这个事件有一个或多个‘订阅者’的时候，会接收到这个事件的发布，执行相应的任务，这种模式叫发布订阅模式。如node的events,dom的事件绑定
+例：
+document.body.addEventListener(&#39;click&#39;,function()&#123;
+ alert(&#39;订阅了&#39;);
+&#125;,false);
+document.body.click(); 
+优点：
+时间对象上的解耦。
+缺点：
+消耗内存，过度使用会使代码难以维护和理解
+
+//---------3.Promise：---------//
+Promise是es6提出的异步编程的一种解决方案。
+Promise 对象有三种状态：
+pending: 初始状态，既不是成功，也不是失败状态。
+fulfilled: 意味着操作成功完成。
+rejected: 意味着操作失败。
+promise的状态只能从pending变成fulfilled，和pending变成rejected，状态一旦改变，就不会再改变，且只有异步操作的结果才能改变promise的状态。
+例：
+let promise = new Promise(function (resolve, reject) &#123;
+ fs.readFile(&#39;./1.txt&#39;, &#39;utf8&#39;, function (err, data) &#123;
+ resolve(data)
+ &#125;)
+&#125;)
+promise
+ .then(function (data) &#123;
+ console.log(data)
+ &#125;)
+优点：
+解决了回调地狱的问题，将异步操作以同步操作的流程表达出来。
+缺点：
+无法取消promise。如果不设置回调函数，Promise内部抛出的错误，不会反应到外部。当处于Pending状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）。当执行多个Promise时，一堆then看起来也很不友好。
+
+//---------4.Generator：---------//
+Generator是es6提出的另一种异步编程解决方案，需要在函数名之前加一个*号，函数内部使用yield语句。Generaotr函数会返回一个遍历器，可以进行遍历操作执行每个中断点yield。
+例：
+function * count() &#123;
+ yield 1
+ yield 2
+ return 3
+&#125;
+var c = count()
+console.log(c.next()) // &#123; value: 1, done: false &#125;
+console.log(c.next()) // &#123; value: 2, done: false &#125;
+console.log(c.next()) // &#123; value: 3, done: true &#125;
+console.log(c.next()) // &#123; value: undefined, done: true &#125;
+优点：
+没有了Promise的一堆then(),异步操作更像同步操作，代码更加清晰。
+缺点：
+不能自动执行异步操作，需要写多个next()方法，需要配合使用Thunk函数和Co模块才能做到自动执
+行。
+
+//---------5.async/await：---------//
+async是es2017引入的异步操作解决方案，可以理解为Generator的语法糖，async等同于Generator和co模块的封装，async 函数返回一个 Promise。
+例：
+async function read() &#123;
+ let readA = await readFile(&#39;data/a.txt&#39;)
+ let readB = await readFile(&#39;data/b.txt&#39;)
+ let readC = await readFile(&#39;data/c.txt&#39;)
+ console.log(readA)
+ console.log(readB)
+ console.log(readC)
+&#125;
+read()
+优点：
+内置执行器，比Generator操作更简单。async/await比*yield语义更清晰。返回值是Promise对象，可以用then指定下一步操作。代码更整洁。可以捕获同步和异步的错误。
+</code></pre>
+<h3 id="♥︎♥︎♥︎-async-和-await-、promise的区别-和-这两个的本质"><a href="#♥︎♥︎♥︎-async-和-await-、promise的区别-和-这两个的本质" class="headerlink" title="♥︎♥︎♥︎ async 和 await 、promise的区别 和 这两个的本质"></a>♥︎♥︎♥︎ async 和 await 、promise的区别 和 这两个的本质</h3><h4 id="Promise概念："><a href="#Promise概念：" class="headerlink" title="Promise概念："></a>Promise概念：</h4><pre><code class="css">Promise 是异步编程的一种解决方案，比传统的解决方案——回调函数和事件——更合理和更强大，简单地说，Promise好比容器，里面存放着一些未来才会执行完毕（异步）的事件的结果，而这些结果一旦生成是无法改变的
+</code></pre>
+<h4 id="async-await概念："><a href="#async-await概念：" class="headerlink" title="async await概念："></a>async await概念：</h4><pre><code class="css">async await也是异步编程的一种解决方案，他遵循的是Generator 函数的语法糖，他拥有内置执行器，不需要额外的调用直接会自动执行并输出结果，它返回的是一个Promise对象。
+
+两者的区别：
+Promise的出现解决了传统callback函数导致的“地域回调”问题，但它的语法导致了它向纵向发展行成了一个回调链，遇到复杂的业务场景，这样的语法显然也是不美观的。而async await代码看起来会简洁些，使得异步代码看起来像同步代码，await的本质是可以提供等同于”同步效果“的等待异步返回能力的语法糖，只有这一句代码执行完，才会执行下一句。
+async await与Promise一样，是非阻塞的。
+async await是基于Promise实现的，可以说是改良版的Promise，它不能用于普通的回调函数。
+</code></pre>
+<h3 id="♥︎♥︎♥︎-移动端点击事件-300ms-延迟如何去掉？原因是什么？"><a href="#♥︎♥︎♥︎-移动端点击事件-300ms-延迟如何去掉？原因是什么？" class="headerlink" title="♥︎♥︎♥︎ 移动端点击事件 300ms 延迟如何去掉？原因是什么？"></a>♥︎♥︎♥︎ 移动端点击事件 300ms 延迟如何去掉？原因是什么？</h3><p>300毫秒原因：</p>
+<p>当用户第一次点击屏幕后，需要判断用户是否要进行双击操作，于是手机会等待300毫秒。</p>
+<p>解决方法：FastClick.js</p>
+<p>FastClick 是 FT Labs 专门为解决移动端浏览器 300 毫秒点击延迟问题所开发的一个轻量级的库。</p>
+<p>FastClick的实现原理是在检测到touchend事件的时候，会通过DOM自定义事件立即出发模拟一个click</p>
+<p>事件，并把浏览器在300ms之后的click事件阻止掉。</p>
+<h3 id="♥︎♥︎♥︎-Cookie-有哪些属性？其中HttpOnly，Secure，Expire分别有什么作用？"><a href="#♥︎♥︎♥︎-Cookie-有哪些属性？其中HttpOnly，Secure，Expire分别有什么作用？" class="headerlink" title="♥︎♥︎♥︎ Cookie 有哪些属性？其中HttpOnly，Secure，Expire分别有什么作用？"></a>♥︎♥︎♥︎ Cookie 有哪些属性？其中HttpOnly，Secure，Expire分别有什么作用？</h3><table>
+<thead>
+<tr>
+<th align="center">属性</th>
+<th align="center">属性作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">name</td>
+<td align="center">字段为一个cookie的名称。</td>
+</tr>
+<tr>
+<td align="center">value</td>
+<td align="center">字段为一个cookie的值。</td>
+</tr>
+<tr>
+<td align="center">domain</td>
+<td align="center">字段为可以访问此cookie的域名。</td>
+</tr>
+<tr>
+<td align="center">path</td>
+<td align="center">字段为可以访问此cookie的页面路径。 比如domain是abc.com,path是&#x2F;test，那么只有&#x2F;test路径下的页面可以读取此cookie。</td>
+</tr>
+<tr>
+<td align="center">expires&#x2F;Max-Age</td>
+<td align="center">字段为此cookie超时时间。若设置其值为一个时间，那么当到达此时间后，此cookie失效。不设置的话默认值是Session，意思是cookie会和session一起失效。当浏览器关闭(不是浏览器标签页，而是整个浏览器) 后，此cookie失效。</td>
+</tr>
+<tr>
+<td align="center">Size</td>
+<td align="center">字段 此cookie大小。</td>
+</tr>
+<tr>
+<td align="center">http</td>
+<td align="center">字段 cookie的httponly属性。若此属性为true，则只有在http请求头中会带有此cookie的信息，而不能通过document.cookie来访问此cookie。</td>
+</tr>
+<tr>
+<td align="center">secure</td>
+<td align="center">字段 设置是否只能通过https来传递此条cookie</td>
+</tr>
+</tbody></table>
+<pre><code class="css">1、secure属性
+当设置为true时，表示创建的 Cookie 会被以安全的形式向服务器传输，也就是只能在 HTTPS 连接中被浏览器传递到服务器端进行会话验证，如果是 HTTP 连接则不会传递该信息，所以不会被窃取到Cookie
+的具体内容。
+2、HttpOnly属性
+如果在Cookie中设置了&quot;HttpOnly&quot;属性，那么通过程序(JS脚本、Applet等)将无法读取到Cookie信息，
+这样能有效的防止XSS攻击。
+3、Expire属性
+设置Cookie的失效时间：
+</code></pre>
+<h3 id="♥︎♥︎♥︎-var-let-const的区别"><a href="#♥︎♥︎♥︎-var-let-const的区别" class="headerlink" title="♥︎♥︎♥︎ var let const的区别"></a>♥︎♥︎♥︎ var let const的区别</h3><ol>
+<li><p>var声明的变量会挂载在window上，而let和const声明的变量不会</p>
+</li>
+<li><p>var声明变量存在变量提升，let和const不存在变量提升</p>
+</li>
+<li><p>let和const声明形成块作用域</p>
+</li>
+<li><p>同一作用域下let和const不能声明同名变量，而var可以</p>
+</li>
+<li><p>使用let&#x2F;const声明的变量在当前作用域存在暂存死区</p>
+</li>
+<li><p>const一旦声明必须赋值,不能使用null占位,声明后不能再修改,如果声明的是复合类型数据，可以修改其属性</p>
+</li>
+</ol>
+<h3 id="♥︎♥︎♥︎-document-load-和-documen-ready的区别"><a href="#♥︎♥︎♥︎-document-load-和-documen-ready的区别" class="headerlink" title="♥︎♥︎♥︎ document load 和 documen ready的区别"></a>♥︎♥︎♥︎ document load 和 documen ready的区别</h3><p>DOM文档解析：</p>
+<pre><code class="css">解析html结构
+加载脚本和样式文件
+解析并执行脚本
+构造html的DOM模型 //ready
+加载图片等外部资源文件
+页面加载完毕 //load
+</code></pre>
+<p>document load:</p>
+<pre><code class="css">load是当页面所有资源全部加载完成后（包括DOM文档树，css文件，js文件，图片资源等），执行一个函数，load方法就是onload事件。
+</code></pre>
+<p>documen ready:</p>
+<pre><code class="css">构造html的DOM模型加载完毕后触发
+</code></pre>
+<h3 id="♥︎♥︎♥︎-如何用-setTImeout-来实现-setInterval？"><a href="#♥︎♥︎♥︎-如何用-setTImeout-来实现-setInterval？" class="headerlink" title="♥︎♥︎♥︎ 如何用 setTImeout 来实现 setInterval？"></a>♥︎♥︎♥︎ 如何用 setTImeout 来实现 setInterval？</h3><h4 id="为什么要使用setTImeout-来实现-setInterval？"><a href="#为什么要使用setTImeout-来实现-setInterval？" class="headerlink" title="为什么要使用setTImeout 来实现 setInterval？"></a>为什么要使用setTImeout 来实现 setInterval？</h4><p>1.不去关心回调函数是否还在运行</p>
+<p>在某些情况下，函数可能需要比间隔时间更长的时间去完成执行。比如说是用setInterval每隔5秒对远端</p>
+<p>服务器进行轮询，网络延迟，服务器无响应以及其他因素将会阻止请求按时按成。结果会导致返回一串</p>
+<p>无必要的排成队列请求。</p>
+<p>2.忽视错误</p>
+<p>因为某些原因，setInterval调用的代码中会出现一个错误，但是代码并不会中止执行而是继续执行错误</p>
+<p>的代码。</p>
+<p>3.缺乏灵活性</p>
+<p>除了前面提到的缺点之外，我非常希望setInterval方法能有一个表明执行次数的参数而不是无休止的执</p>
+<p>行下去。</p>
+<pre><code class="javascript">function interval(func, w, t)&#123;
+ var interv = function()&#123;
+ if(typeof t === &quot;undefined&quot; || t-- &gt; 0)&#123;
+ setTimeout(interv, w);
+ try&#123;
+ func.call(null);
+ &#125;
+ catch(e)&#123;
+ t = 0;
+ throw e.toString();
+ &#125;
+ &#125;
+ &#125;;
+ setTimeout(interv, w);
+&#125;;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-如何判断-user-对象里有没有-a-这个属性？如果把user对象中所有的属性都输出出来？-var-user-x3D-‘a’-‘19’-‘b’-‘18’-‘c’-‘16’"><a href="#♥︎♥︎♥︎-如何判断-user-对象里有没有-a-这个属性？如果把user对象中所有的属性都输出出来？-var-user-x3D-‘a’-‘19’-‘b’-‘18’-‘c’-‘16’" class="headerlink" title="♥︎♥︎♥︎ 如何判断 user 对象里有没有 a 这个属性？如果把user对象中所有的属性都输出出来？(var user &#x3D;{‘a’: ‘19’, ‘b’: ‘18’, ‘c’: ‘16’})"></a>♥︎♥︎♥︎ 如何判断 user 对象里有没有 a 这个属性？如果把user对象中所有的属性都输出出来？(var user &#x3D;{‘a’: ‘19’, ‘b’: ‘18’, ‘c’: ‘16’})</h3><pre><code class="css">(var user = &#123;&#39;a&#39;: &#39;19&#39;, &#39;b&#39;: &#39;18&#39;, &#39;c&#39;: &#39;16&#39;&#125;)
+如何判断 user 对象里有没有 a 这个属性？
+
+1.js对象的Object.hasOwnProperty()方法
+返回一个布尔值，判断对象是否包含特定的自身（非继承）属性。
+let obj = new Object();
+obj.a = &quot;123&quot;;
+console.log(obj.hasOwnProperty(&#39;a&#39;)) // true
+console.log(obj.hasOwnProperty(&#39;b&#39;)) // false
+
+2.把user对象中所有的属性都输出出来
+for(item for user)&#123;
+ console.log(item)
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-实现一个函数-add"><a href="#♥︎♥︎♥︎-实现一个函数-add" class="headerlink" title="♥︎♥︎♥︎ 实现一个函数 add()"></a>♥︎♥︎♥︎ 实现一个函数 add()</h3><pre><code class="javascript">function curry(func) &#123;
+
+    return function curried(...args) &#123;
+      if (args.length &gt;= func.length) &#123;
+        return func.apply(this, args);
+      &#125; else &#123;
+        return function(...args2) &#123;
+          return curried.apply(this, args.concat(args2));
+        &#125;
+      &#125;
+    &#125;;
+  
+  &#125;
+
+  function sum(a, b, c) &#123;
+    return a + b + c;
+  &#125;
+  
+  let curriedSum = curry(sum);
+  
+  console.log(curriedSum(1, 2, 3)); // 6，仍然可以被正常调用
+  console.log( curriedSum(1)(2,3) ); // 6，对第一个参数的柯里化
+  console.log( curriedSum(1)(2)(3) ); // 6，全柯里化
+</code></pre>
+<h3 id="♥︎♥︎♥︎-如何避免回调地狱？"><a href="#♥︎♥︎♥︎-如何避免回调地狱？" class="headerlink" title="♥︎♥︎♥︎ 如何避免回调地狱？"></a>♥︎♥︎♥︎ 如何避免回调地狱？</h3><pre><code class="css">1. Promise 对象就是为了解决这个问题而提出的。它不是新的语法功能，而是一种新的写法，允许将
+回调函数的嵌套，改成链式调用。
+promise只有两个状态resolve和reject，当它触发任何一个状态后，它会将当前的值缓存起来，并在有
+回调函数添加进来的时候尝试调用回调函数，如果这个时候还没有触发resolve或者reject，那么回调函
+数会被缓存，等待调用，如果已经有了状态(resolve或者reject)，则立刻调用回调函数。并且所有回调函
+数在执行后都立即被销毁。
+
+2. ES6 co/yield方案
+yield: Generator 函数是协程在 ES6 的实现，而yield是 Generator关键字， 异步操作需要暂停的
+地方，都用yield语句注明。
+co: co 模块是著名程序员 TJ Holowaychuk 于 2013 年 6 月发布的一个小工具，用于 Generator 函
+数的自动执行。
+
+3. ES7 async/await 方案
+async/await是es7的新标准，并且在node7.0中已经得到支持。
+它就是 Generator 函数的语法糖，async函数就是将 Generator 函数的星号（*）替换成async， 将yield替换成await，仅此而已。可以理解官方对co和Generator 封装方案。
+</code></pre>
+<h3 id="♥︎♥︎♥︎-简述同步和异步的区别"><a href="#♥︎♥︎♥︎-简述同步和异步的区别" class="headerlink" title="♥︎♥︎♥︎ 简述同步和异步的区别"></a>♥︎♥︎♥︎ 简述同步和异步的区别</h3><h4 id="同步："><a href="#同步：" class="headerlink" title="同步："></a>同步：</h4><p>同步的思想是：所有的操作都做完，才返回给用户。这样用户在线等待的时间太长，给用户一种卡死了</p>
+<p>的感觉（就是系统迁移中，点击了迁移，界面就不动了，但是程序还在执行，卡死了的感觉）。这种情</p>
+<p>况下，用户不能关闭界面，如果关闭了，即迁移程序就中断了。</p>
+<h4 id="异步："><a href="#异步：" class="headerlink" title="异步："></a>异步：</h4><p>将用户请求放入消息队列，并反馈给用户，系统迁移程序已经启动，你可以关闭浏览器了。然后程序再</p>
+<p>慢慢地去写入数据库去。这就是异步。但是用户没有卡死的感觉，会告诉你，你的请求系统已经响应</p>
+<p>了。你可以关闭界面了。</p>
+<h4 id="同步和异步本身是相对的"><a href="#同步和异步本身是相对的" class="headerlink" title="同步和异步本身是相对的:"></a>同步和异步本身是相对的:</h4><p>同步就相当于是 当客户端发送请求给服务端，在等待服务端响应的请求时，客户端不做其他的事情。当</p>
+<p>服务端做完了才返回到客户端。这样的话客户端需要一直等待。用户使用起来会有不友好。</p>
+<p>异步就是，当客户端发送给服务端请求时，在等待服务端响应的时候，客户端可以做其他的事情，这样</p>
+<p>节约了时间，提高了效率。</p>
+<p>存在就有其道理 异步虽然好 但是有些问题是要用同步用来解决，比如有些东西我们需要的是拿到返回的</p>
+<p>数据在进行操作的。这些是异步所无法解决的。</p>
+<h3 id="♥︎♥︎♥︎-jQuery-的事件委托方法-on，live，delegate之间有区别？"><a href="#♥︎♥︎♥︎-jQuery-的事件委托方法-on，live，delegate之间有区别？" class="headerlink" title="♥︎♥︎♥︎ jQuery 的事件委托方法 on，live，delegate之间有区别？"></a>♥︎♥︎♥︎ jQuery 的事件委托方法 on，live，delegate之间有区别？</h3><pre><code class="css">live 把事件委托交给了document（根节点），document 向下去寻找符合条件的元素（）， 不用等待
+document加载结束也可以生效。
+delegate可指定事件委托对象，相比于live性能更优，直接锁定指定选择器；
+on事件委托对象选填，如果不填，即给对象自身注册事件，填了作用和delegate一致。
+</code></pre>
+<h3 id="♥︎♥︎♥︎-简述下-Promise-对象"><a href="#♥︎♥︎♥︎-简述下-Promise-对象" class="headerlink" title="♥︎♥︎♥︎ 简述下 Promise 对象"></a>♥︎♥︎♥︎ 简述下 Promise 对象</h3><pre><code class="css">Promise是异步编程的一种解决方案，比传统的解决方案（回调函数和事件）更合理更强大。
+所谓Promise，简单说就是一个容器，里面保存着某个未来才会结束的事件 (通常是一个异步操作)的结
+果。从语法上说，Promise是一个对象，从它可以获取异步操作的消息。
+Promise对象有以下2个特点：
+1.对象的状态不受外界影响。Promise对象代表一个异步操作，有三种状态：Pending(进行中)、
+Resolved(已完成)和Rejected(已失败)。只有异步操作的结果，可以决定当前是哪一种状态，任何其他操
+作都无法改变这个状态。这也是Promise这个名字的由来，它的英语意思就是“承诺”，表示其他手段无法
+改变。
+2.一旦状态改变，就不会再变，任何时候都可以得到这个结果。Promise对象的状态改变，只有两种可
+能：从Pending变为Resolved；从Pending变为Rejected。只要这两种情况发生，状态就凝固了，不会
+再变了，会一直保持这个结果。就算改变已经发生了，你再对Promise对象田静回调函数，也会立即得
+到这个结果。这与事件(Event)完全不同，事件的特点是，如果你错过了它，再去监听，是得不到结果
+的。
+有了Promise对象，就可以把异步操作以同步操作的流程表达出来，避免了层层嵌套的回调函数。此
+外，Promise对象提供了统一的接口，使得控制异步操作更加容易。
+</code></pre>
+<h3 id="♥︎♥︎♥︎-数组扁平化，不用-api"><a href="#♥︎♥︎♥︎-数组扁平化，不用-api" class="headerlink" title="♥︎♥︎♥︎ 数组扁平化，不用 api"></a>♥︎♥︎♥︎ 数组扁平化，不用 api</h3><pre><code class="javascript">function myFlat(arr)&#123;
+    let res = [];
+    for(let i=0; i&lt;arr.length; i++)&#123; 
+    if(arr[i] instanceof Array)&#123;
+    res = res.concat(myFlat(arr[i]));
+    &#125;else &#123;
+    res.push(arr[i]);
+    &#125;
+    &#125;
+    return res;
+   &#125;
+   let arr = [1,[2,3,[4,5]]];
+   console.log(myFlat(arr)) //[ 1, 2, 3, 4, 5 ]
+</code></pre>
+<h3 id="♥︎♥︎♥︎-用-JavaScript-实现观察者模式"><a href="#♥︎♥︎♥︎-用-JavaScript-实现观察者模式" class="headerlink" title="♥︎♥︎♥︎ 用 JavaScript 实现观察者模式"></a>♥︎♥︎♥︎ 用 JavaScript 实现观察者模式</h3><pre><code class="javascript">function BusinessOne(name)&#123;
+ this.name = name;
+ //订阅者的集合
+ this.subscribers = new Array();
+&#125;
+//订阅者的发送消息的方法(推模式)
+BusinessOne.prototype.delive = function(news)&#123;
+ var self = this;
+ //给每一个订阅者发送消息
+ this.subscribers.forEach(
+ function(fn)&#123;
+ //调用接受者处理信息的函数
+ fn(news,self);
+ &#125;
+ )
+&#125;
+//扩展公共订阅的函数,和取消订阅的函数
+Function.prototype.subscribe = function(publisher)&#123;
+ var that = this;
+ //some 访问数组度i型并且以参数的形式传回回调函数中
+ //只要至少有一次返回是true那么some就是true
+ var alreadyExists = publisher.subscribers.some(
+ function(el)&#123;
+ //处理不能重复订阅的功能
+ if(el == that)&#123;
+ return;
+ &#125;
+ &#125;
+ );
+ //没用订阅你就可以订阅
+ if(!alreadyExists)&#123;
+ publisher.subscribers.push(that);
+ &#125;
+ return this;
+&#125;
+//取消
+Function.prototype.unsubscribe = function(publisher)&#123;
+ var that = this;
+ publisher.subscribers = publisher.subscribers.filter(
+ function(el)&#123;
+ if(el !== that)&#123;
+ return el;
+ &#125;
+ &#125;
+ );
+ return this;
+&#125;;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-谈谈垃圾回收机制方法以及内存管理"><a href="#♥︎♥︎♥︎-谈谈垃圾回收机制方法以及内存管理" class="headerlink" title="♥︎♥︎♥︎ 谈谈垃圾回收机制方法以及内存管理"></a>♥︎♥︎♥︎ 谈谈垃圾回收机制方法以及内存管理</h3><h4 id="垃圾回收方式"><a href="#垃圾回收方式" class="headerlink" title="垃圾回收方式"></a>垃圾回收方式</h4><pre><code>① 标记清除
+工作原理：是当变量进入环境时，将这个变量标记为“进入环境”。当变量离开环境时，则将其标记为“离
+开环境”。标记“离开环境”的就回收内存。
+
+② 引用计数
+工作原理：跟踪记录每个值被引用的次数。一旦没有引用，内存就直接释放了。
+</code></pre>
+<h4 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h4><p>什么时候触发垃圾回收？</p>
+<p>垃圾回收器周期性运行，如果分配的内存非常多，那么回收工作也会很艰巨，确定垃圾回收时间间隔就</p>
+<p>变成了一个值得思考的问题。</p>
+<pre><code class="css">1、合理的GC方案：(1)、遍历所有可访问的对象; (2)、回收已不可访问的对象。
+
+2、GC缺陷： (1)、停止响应其他操作；
+
+3、GC优化策略： (1)、分代回收（Generation GC）;(2)、增量GC
+</code></pre>
+<h3 id="♥︎♥︎♥︎-开发过程中遇到内存泄漏的问题都有哪些？"><a href="#♥︎♥︎♥︎-开发过程中遇到内存泄漏的问题都有哪些？" class="headerlink" title="♥︎♥︎♥︎ 开发过程中遇到内存泄漏的问题都有哪些？"></a>♥︎♥︎♥︎ 开发过程中遇到内存泄漏的问题都有哪些？</h3><ol>
+<li>当页面中元素被移除或替换时，若元素绑定的事件仍没被移除，在IE中不会作出恰当处理，此时要</li>
+</ol>
+<p>先手工移除事件，不然会存在内存泄露。</p>
+<ol start="2">
+<li>由于是函数内定义函数，并且内部函数–事件回调的引用外暴了，形成了闭包。闭包可以维持函数</li>
+</ol>
+<p>内局部变量，使其得不到释放。</p>
+<h3 id="♥︎♥︎♥︎-请编写获取当前窗口地址中查询参数name的值，当前窗口地址为：https-foo-com-id-1-amp-name-tom"><a href="#♥︎♥︎♥︎-请编写获取当前窗口地址中查询参数name的值，当前窗口地址为：https-foo-com-id-1-amp-name-tom" class="headerlink" title="♥︎♥︎♥︎ 请编写获取当前窗口地址中查询参数name的值，当前窗口地址为：https://foo.com/?id=1&amp;name=tom"></a>♥︎♥︎♥︎ 请编写获取当前窗口地址中查询参数name的值，当前窗口地址为：<a target="_blank" rel="noopener" href="https://foo.com/?id=1&amp;name=tom">https://foo.com/?id=1&amp;name=tom</a></h3><pre><code class="javascript">function GetQueryString(name)&#123;
+ var reg = new RegExp(&quot;(^|&amp;)&quot;+ name +&quot;=([^&amp;]*)(&amp;|$)&quot;);
+ var r = window.location.search.substr(1).match(reg);
+ if(r!=null)
+ return unescape(r[2]); 
+ return null;
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-已知a，b两个构造函数，现在-let-c-x3D-new-a-，如何在c的存储地址不变的情况下，改变c的继承（c-gt-a-转为-c-gt-b）"><a href="#♥︎♥︎♥︎-已知a，b两个构造函数，现在-let-c-x3D-new-a-，如何在c的存储地址不变的情况下，改变c的继承（c-gt-a-转为-c-gt-b）" class="headerlink" title="♥︎♥︎♥︎ 已知a，b两个构造函数，现在 let c &#x3D; new a()，如何在c的存储地址不变的情况下，改变c的继承（c-&gt;a 转为 c-&gt;b）"></a>♥︎♥︎♥︎ 已知a，b两个构造函数，现在 let c &#x3D; new a()，如何在c的存储地址不变的情况下，改变c的继承（c-&gt;a 转为 c-&gt;b）</h3><p>改变原型链：通过改变C的prototype为b,实现内存地址不动，改变继承</p>
+<h3 id="♥︎♥︎♥︎-浏览器有哪些兼容问题，你封装过什么插件"><a href="#♥︎♥︎♥︎-浏览器有哪些兼容问题，你封装过什么插件" class="headerlink" title="♥︎♥︎♥︎ 浏览器有哪些兼容问题，你封装过什么插件"></a>♥︎♥︎♥︎ 浏览器有哪些兼容问题，你封装过什么插件</h3><pre><code class="javascript">//1.滚动条到顶端的距离（滚动高度）
+var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+
+//2.滚动条到左端的距离
+var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+
+//3. IE9以下byClassName
+function byClassName(obj,className)&#123;
+ //判断是否支持byClassName
+ if(obj.getElementsByClassName)&#123;
+ //支持
+ return obj.getElementsByClassName(className);
+ &#125;else&#123;
+ //不支持
+ var eles = obj.getElementsByTagName(&#39;*&#39;); //获取所有的标签
+ var arr = []; //空数组，准备放置找到的对象
+ //遍历所有的标签
+ for(var i = 0,len = eles.length;i &lt; len;i ++)&#123;
+ //找出与我指定class名相同的对象
+ if(eles[i].className === className)&#123;
+ arr.push(eles[i]); //存入数组
+ &#125;
+ &#125;
+ return arr; //返回
+ &#125;
+&#125;
+
+//4. 获取非行内样式兼容 IE:currentStyle 标准：getComputedStyle
+function getStyle(obj,attr)&#123;
+ return window.getComputedStyle ? getComputedStyle(obj,true)[attr] : obj.currentStyle[attr];
+&#125;
+//div.style.width = &#39;&#39;;设置样式
+//obj[&#39;属性&#39;]： 对象是变量时，必须用对象[&#39;属性&#39;]获取。
+
+//5. 获取事件对象的兼容
+evt = evt || window.event
+
+//6. 获取鼠标编码值的兼容
+function getButton(evt)&#123;
+ var e = evt || window.event;
+ if(evt)&#123;
+ return e.button;
+ &#125;else if(window.event)&#123;
+ switch(e.button)&#123;
+ case 1 : return 0;
+ case 4 : return 1;
+ case 2 : return 2;
+ &#125;
+ &#125;
+&#125;
+
+//7. 获取键盘按键编码值的兼容
+var key = evt.keyCode || evt.charCode || evt.which;
+
+//8. 阻止事件冒泡的兼容
+e.stopPropagation ? e.stopPropagation() : e.cancelBubble = true;
+
+//9. 阻止超链接的默认行为的兼容
+evt.preventDefault ? evt.preventDefault() : evt.returnValue = false;
+
+//10. 添加事件监听器的兼容
+function addEventListener(obj,event,fn,boo)&#123;
+ if(obj.addEventListener)&#123;
+ obj.addEventListener(event,fn,boo);
+ &#125;else if(obj.attachEvent)&#123;
+ obj.attachEvent(&#39;on&#39; + event,fn);
+ &#125;
+&#125;
+
+//11. 移除事件监听器的兼容
+function removeEventListener(obj,event,fn,boo)&#123;
+ if(obj.removeEventListener)&#123;
+ obj.removeEventListener(event,fn,boo);
+ &#125;else if(obj.detachEvent)&#123;
+ obj.detachEvent(&#39;on&#39; + event,fn);
+ &#125;
+&#125;
+
+//12. 获取事件源的兼容
+var target = event.target || event.srcElement;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-如何判断一个对象是否为数组，函数"><a href="#♥︎♥︎♥︎-如何判断一个对象是否为数组，函数" class="headerlink" title="♥︎♥︎♥︎ 如何判断一个对象是否为数组，函数"></a>♥︎♥︎♥︎ 如何判断一个对象是否为数组，函数</h3><pre><code class="css">方法一： instanceof:
+var arr=[];
+console.log(arr instanceof Array) //返回true
+
+方法二： constructor:
+console.log(arr.constructor == Array); //返回true
+
+方法三： Array.isArray()
+console.log(Array.isArray(arr)); //返回true
+</code></pre>
+<h3 id="♥︎♥︎♥︎-写一个函数，接受可变个数参数，且每个参数均为数字，返回参数的最大值。"><a href="#♥︎♥︎♥︎-写一个函数，接受可变个数参数，且每个参数均为数字，返回参数的最大值。" class="headerlink" title="♥︎♥︎♥︎ 写一个函数，接受可变个数参数，且每个参数均为数字，返回参数的最大值。"></a>♥︎♥︎♥︎ 写一个函数，接受可变个数参数，且每个参数均为数字，返回参数的最大值。</h3><pre><code class="javascript">function myMax()&#123;
+ return Math.max(arguments)
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-请写出-ES6-Array-isArray"><a href="#♥︎♥︎♥︎-请写出-ES6-Array-isArray" class="headerlink" title="♥︎♥︎♥︎ 请写出 ES6 Array.isArray()"></a>♥︎♥︎♥︎ 请写出 ES6 Array.isArray()</h3><pre><code class="javascript">if (!Array.isArray)&#123;
+ Array.isArray = function(arg)&#123;
+ return Object.prototype.toString.call(arg) === &#39;[object Array]&#39;;
+ &#125;;
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-实现一个函数-clone，可以对-JavaScript-中的5种主要数据类型进行值复制。"><a href="#♥︎♥︎♥︎-实现一个函数-clone，可以对-JavaScript-中的5种主要数据类型进行值复制。" class="headerlink" title="♥︎♥︎♥︎ 实现一个函数 clone，可以对 JavaScript 中的5种主要数据类型进行值复制。"></a>♥︎♥︎♥︎ 实现一个函数 clone，可以对 JavaScript 中的5种主要数据类型进行值复制。</h3><pre><code class="javascript">// 方法一：
+Object.prototype.clone = function() &#123;
+ var o = this.constructor === Array ? [] : &#123;&#125;;
+ for (var e in this) &#123;
+ o[e] = typeof this[e] === &quot;object&quot; ? this[e].clone() : this[e];
+ &#125;
+ return o;
+&#125;;
+
+//方法二：
+/**
+ * 克隆一个对象
+ * @param Obj
+ * @returns
+ */
+function clone(Obj) &#123;
+ var buf;
+ if (Obj instanceof Array) &#123;
+ buf = []; //创建一个空的数组
+ var i = Obj.length;
+ while (i--) &#123;
+ buf[i] = clone(Obj[i]);
+ &#125;
+ return buf;
+ &#125; else if (Obj instanceof Object) &#123;
+ buf = &#123;&#125;; //创建一个空对象
+ for (var k in Obj) &#123;
+ //为这个对象添加新的属性
+ buf[k] = clone(Obj[k]);
+ &#125;
+ return buf;
+ &#125; else &#123;
+ //普通变量直接赋值
+ return Obj;
+ &#125;
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-假如A页面我定义了一个定时器，然后跳到B页面如果让A页面的定时器暂停"><a href="#♥︎♥︎♥︎-假如A页面我定义了一个定时器，然后跳到B页面如果让A页面的定时器暂停" class="headerlink" title="♥︎♥︎♥︎ 假如A页面我定义了一个定时器，然后跳到B页面如果让A页面的定时器暂停"></a>♥︎♥︎♥︎ 假如A页面我定义了一个定时器，然后跳到B页面如果让A页面的定时器暂停</h3><pre><code class="javascript">方法1：在beforeDestroy()等生命周期结束阶段内清除定时器：
+beforeDestroy() &#123;
+ clearInterval(this.timer);
+ this.timer = null;
+&#125;
+
+方法2：通过$once这个事件侦听器器在定义完定时器之后的位置来清除定时器。
+const timer = setInterval(() =&gt;&#123;
+ // 某些定时器操作
+&#125;, 500);
+// 通过$once来监听定时器，在beforeDestroy钩子可以被清除。
+this.$once(&#39;hook:beforeDestroy&#39;, () =&gt; &#123;
+ clearInterval(timer);
+&#125;)
+</code></pre>
+<h3 id="♥︎♥︎♥︎-promise的实现原理，如果我现在向服务器发送一个请求，但是我后悔了，不想让服务器返回数据，去实现一个delay"><a href="#♥︎♥︎♥︎-promise的实现原理，如果我现在向服务器发送一个请求，但是我后悔了，不想让服务器返回数据，去实现一个delay" class="headerlink" title="♥︎♥︎♥︎ promise的实现原理，如果我现在向服务器发送一个请求，但是我后悔了，不想让服务器返回数据，去实现一个delay"></a>♥︎♥︎♥︎ promise的实现原理，如果我现在向服务器发送一个请求，但是我后悔了，不想让服务器返回数据，去实现一个delay</h3><h4 id="取消结束Promise的方法？"><a href="#取消结束Promise的方法？" class="headerlink" title="取消结束Promise的方法？"></a>取消结束Promise的方法？</h4><pre><code class="javascript">1. 返回一个pending状态的Promise，原Promise链会终止
+Promise.resolve().then(() =&gt; &#123;
+ console.log(&#39;ok1&#39;)
+ return new Promise(()=&gt;&#123;&#125;) // 返回“pending”状态的Promise对象
+&#125;).then(() =&gt; &#123;
+ // 后续的函数不会被调用
+ console.log(&#39;ok2&#39;)
+&#125;).catch(err =&gt; &#123;
+ console.log(&#39;err-&gt;&#39;, err)
+&#125;)
+
+2. Promise.race竞速方法
+let p1 = new Promise((resolve, reject) =&gt; &#123;
+ resolve(&#39;ok1&#39;)
+&#125;)
+let p2 = new Promise((resolve, reject) =&gt; &#123;
+ setTimeout(() =&gt; &#123;resolve(&#39;ok2&#39;)&#125;, 10)
+&#125;)
+Promise.race([p2, p1]).then((result) =&gt; &#123;
+ console.log(result) //ok1
+&#125;).catch((error) =&gt; &#123;
+ console.log(error)
+&#125;)
+
+3. 当Promise链中抛出错误时，错误信息沿着链路向后传递，直至捕获
+Promise.resolve().then(() =&gt; &#123;
+ console.log(&#39;ok1&#39;)
+ throw &#39;throw error1&#39;
+&#125;).then(() =&gt; &#123;
+ console.log(&#39;ok2&#39;)
+&#125;, err =&gt; &#123; 
+ // 捕获错误
+ console.log(&#39;err-&gt;&#39;, err)
+&#125;).then(() =&gt; &#123; 
+ // 该函数将被调用
+ console.log(&#39;ok3&#39;)
+ throw &#39;throw error3&#39;
+&#125;).then(() =&gt; &#123;
+ // 错误捕获前的函数不会被调用
+ console.log(&#39;ok4&#39;)
+&#125;).catch(err =&gt; &#123;
+ console.log(&#39;err-&gt;&#39;, err)
+</code></pre>
+<h4 id="Axios如何取消请求？"><a href="#Axios如何取消请求？" class="headerlink" title="Axios如何取消请求？"></a>Axios如何取消请求？</h4><pre><code class="javascript">//1.第一种通过CancelToken.source工厂方法创建cancel token
+var CancelToken = axios.CancelToken;
+var source = CancelToken.source();
+axios.get(&#39;/user/12345&#39;, &#123;
+ cancelToken: source.token
+&#125;).catch(function(thrown) &#123;
+ if (axios.isCancel(thrown)) &#123;
+ console.log(&#39;Request canceled&#39;, thrown.message);
+ &#125; else &#123;
+ // 处理错误
+ &#125;
+&#125;);
+// 取消请求（message 参数是可选的）
+source.cancel(&#39;Operation canceled by the user.&#39;);
+
+//2.第二种通过传递executor函数到CancelToken的构造函数来创建cancel token
+var CancelToken = axios.CancelToken;
+var cancel;
+axios.get(&#39;/user/12345&#39;, &#123;
+ cancelToken: new CancelToken(function executor(c) &#123;
+ // executor 函数接收一个 cancel 函数作为参数
+ cancel = c;
+ &#125;)
+&#125;);
+// 取消请求
+cancel();
+</code></pre>
+<h3 id="♥︎♥︎♥︎-CommonJS-和-RequireJS-的实现原理"><a href="#♥︎♥︎♥︎-CommonJS-和-RequireJS-的实现原理" class="headerlink" title="♥︎♥︎♥︎ CommonJS 和 RequireJS 的实现原理"></a>♥︎♥︎♥︎ CommonJS 和 RequireJS 的实现原理</h3><p>commonjs是通过module.exports导出模块,用require引入一个模块，原理：闭包</p>
+<p>requirejs是通过define定义导出模块，用require引入模块。</p>
+<h3 id="♥︎♥︎♥︎-面向对象编程与面向过程编程的区别？"><a href="#♥︎♥︎♥︎-面向对象编程与面向过程编程的区别？" class="headerlink" title="♥︎♥︎♥︎ 面向对象编程与面向过程编程的区别？"></a>♥︎♥︎♥︎ 面向对象编程与面向过程编程的区别？</h3><p>面向过程的程序设计把计算机程序视为一系列的命令集合，即一组函数的顺序执行。为了简化程序设</p>
+<p>计，面向过程把函数继续切分为子函数，即把大块函数通过切割成小块函数来降低系统的复杂度。</p>
+<p>而面向对象的程序设计把计算机程序视为一组对象的集合，而每个对象都可以接收其他对象发过来的消</p>
+<p>息，并处理这些消息，计算机程序的执行就是一系列消息在各个对象之间传递。</p>
+<h3 id="♥︎♥︎♥︎-eval-是做什么的？性能怎么样？安全如何？"><a href="#♥︎♥︎♥︎-eval-是做什么的？性能怎么样？安全如何？" class="headerlink" title="♥︎♥︎♥︎ eval 是做什么的？性能怎么样？安全如何？"></a>♥︎♥︎♥︎ eval 是做什么的？性能怎么样？安全如何？</h3><p>它的功能是把对应的字符串解析成js代码并运行，</p>
+<p>应该避免使用eval,因为不安全，非常耗性能（2次，一次解析成js语句，一次执行）</p>
+<p>‼️注意：在项目里写js代码的时候，禁止使用的，因为有安全因素。</p>
+<h3 id="♥︎♥︎♥︎-数据类型（判断，-x3D-x3D-和-x3D-x3D-x3D-）堆栈、内存泄漏及垃圾回收机制"><a href="#♥︎♥︎♥︎-数据类型（判断，-x3D-x3D-和-x3D-x3D-x3D-）堆栈、内存泄漏及垃圾回收机制" class="headerlink" title="♥︎♥︎♥︎ 数据类型（判断，&#x3D;&#x3D;和&#x3D;&#x3D;&#x3D;）堆栈、内存泄漏及垃圾回收机制"></a>♥︎♥︎♥︎ 数据类型（判断，&#x3D;&#x3D;和&#x3D;&#x3D;&#x3D;）堆栈、内存泄漏及垃圾回收机制</h3><p>1，&#x3D;&#x3D; 判断值是否相等； &#x3D;&#x3D;&#x3D; 判断值和数据类型是否严格相等</p>
+<p>2，Javascript堆栈和垃圾回收机制</p>
+<pre><code class="javascript">//堆栈溢出
+
+当储存的数据导到某一限制时就会造成堆栈溢出
+
+//内存泄漏
+
+当不断向堆中存储数据，而不进行清理，这就是内存泄漏
+
+//垃圾回收机制（清除孤儿机制）
+
+语言当中一般分两种，一种是自动清理，一种是手动清理（GC），js中只有自动清理
+
+垃圾回收机制就是将引用对中的地址的对象设置为null，并且将所有引用该地址的对象都设置为null，并且移除事件侦听,不会即时清除,垃圾回收车会根据内存的情况在适当的时候进行清除堆中的对象 内存到达一定程度了才会进行回收
+</code></pre>
+<h3 id="♥︎♥︎♥︎-swiper-插件从后台获取数据没问题，css-代码啥的也没问题，但是图片不动，应该怎么解决？"><a href="#♥︎♥︎♥︎-swiper-插件从后台获取数据没问题，css-代码啥的也没问题，但是图片不动，应该怎么解决？" class="headerlink" title="♥︎♥︎♥︎ swiper 插件从后台获取数据没问题，css 代码啥的也没问题，但是图片不动，应该怎么解决？"></a>♥︎♥︎♥︎ swiper 插件从后台获取数据没问题，css 代码啥的也没问题，但是图片不动，应该怎么解决？</h3><p>主要原因：</p>
+<p>swiper提前初始化了，而这个时候，数据还没有完全出来。</p>
+<p>解决方法</p>
+<p>从swiper 入手，在swiper中写 observer:true&#x2F;observeParents:true</p>
+<pre><code class="javascript"> let myswiper = new Swiper(&quot;.swiper-container&quot; , &#123;
+ autoplay: true,
+ loop: true,
+ // observer 修改swiper子元素时自动初始化swiper
+ observer:true,
+ // observeParents 包括当前父元素的swiper发生变更时也会初始化swiper
+ observeParents:true,
+ &#125;)
+</code></pre>
+<p>从 Vue 入手，vue中专门提供了提供了一个方法nextTick() 用于解决dom的先后执行问题。</p>
+<pre><code class="javascript"> mounted()&#123;
+ this.$nextTick(function()&#123;
+ // ...操作
+ let myswiper = new Swiper(&quot;.swiper-container&quot; , &#123;
+ autoplay: true,
+ loop: true
+ &#125;)
+ &#125;)
+ &#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-ES6-class-关键字原理跟-function-什么区别？"><a href="#♥︎♥︎♥︎-ES6-class-关键字原理跟-function-什么区别？" class="headerlink" title="♥︎♥︎♥︎ ES6 class 关键字原理跟 function 什么区别？"></a>♥︎♥︎♥︎ ES6 class 关键字原理跟 function 什么区别？</h3><pre><code class="css">function 可以用call apply bind 的方式 来改变他的执行上下文
+但是class 却不可以 class 虽然本质上也是一个函数 但是 其内（babel）部做了一层代理 来禁止了这种
+行为
+
+关于构造器constructor
+ 在function定义的构造函数中，其prototype.constructor属性指向构造器自身
+ 在class定义的类中，constructor其实也相当于定义在prototype属性上
+
+重复定义
+ function会覆盖之前定义的方法
+ class会报错
+
+原型或者类中方法的枚举
+ class中定义的方法不可用Object.keys(Point.prototype)枚举到
+ function构造器原型方法可被Object.keys(Point.prototype)枚举到，除过constructor
+ 所有原型方法属性都可用Object.getOwnPropertyNames(Point.prototype)访问到
+</code></pre>
+<h3 id="♥︎♥︎♥︎-iframe-跨域问题，页面之间怎么传值？"><a href="#♥︎♥︎♥︎-iframe-跨域问题，页面之间怎么传值？" class="headerlink" title="♥︎♥︎♥︎ iframe 跨域问题，页面之间怎么传值？"></a>♥︎♥︎♥︎ iframe 跨域问题，页面之间怎么传值？</h3><p>一般有两个解决方案，一个是建立一个代理页面，通过代理页面传值，</p>
+<p>另一个方法是通过H5的postMessage方法传值，今天用的是第二种。</p>
+<p>首先，在父页面A中建立一个iframe，其中src要写好子页面B的地址，然后在A页面中写如下方法：</p>
+<pre><code class="javascript">var iframe = document.getElementById(&quot;onemap&quot;); var msg = &#123;loginName:&#39;arcgis&#39;,loginPassword:&#39;Esri1234&#39;&#125;; var childDomain = &quot;https://geoplat.training.com&quot;; iframe.contentWindow.postMessage(msg,childDomain);
+</code></pre>
+<p>记住，childDomain与A的iframe的src地址不一样，childDomain是域，而src是域中的一个页面,msg是传输的信息，可以是字符串，也可以是对象。</p>
+<p>上面的方法一定要写在一个函数中，并通过点击事件调用，如果希望iframe开始为空，点击后在设置src，可以在设置src之后，通过setTimeout设置一定时间后在传输信息。</p>
+<p>在子页面B中，通过对window添加事件获取传输过来的信息：</p>
+<pre><code class="javascript">window.addEventListener(&quot;message&quot;,function(obj)&#123; 
+  var name = obj.data.loginName; 
+  var password = obj.data.loginPassword; login.iframeChildLogin(name,password); &#125;,false);
+</code></pre>
+<p>这样就完成了从不同域的父页面向子页面传值的过程</p>
+<h3 id="♥︎♥︎♥︎-简述-commonJS、AMD-和-CMD"><a href="#♥︎♥︎♥︎-简述-commonJS、AMD-和-CMD" class="headerlink" title="♥︎♥︎♥︎ 简述 commonJS、AMD 和 CMD"></a>♥︎♥︎♥︎ 简述 commonJS、AMD 和 CMD</h3><pre><code class="css">CommonJS导出模块的方法是exports，导入模块的是require，具体规范如下
+1）如果一个JS文件中存在exports或require，该JS文件是一个模块
+2）模块内的所有代码均为隐藏代码，包括全局变量、全局函数，这些全局的内容均不应该对全局变量造成任何污染
+3）如果一个模块需要暴露一些API提供给外部使用，需要通过exports导出，exports是一个空的对象，你可以为该对象添加任何需要导出的内容
+4）如果一个模块需要导入其他模块，通过require实现，require是一个函数，传入模块的路径即可返回该模块导出的整个内容
+
+【注】CommonJS只是一个规范，相当于告诉你按什么标准制造汽车，但是具体怎么制造还是得看生产商。因此，有了规范以后，nodejs就去实现模块化了
+
+AMD
+AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。
+AMD 推崇依赖前置。
+
+CMD
+CMD 是 SeaJS 在推广过程中对模块定义的规范化产出。
+CMD 推崇依赖就近
+</code></pre>
+<h3 id="♥︎♥︎♥︎-require-js-源码看过吗？怎么做到异步加载的"><a href="#♥︎♥︎♥︎-require-js-源码看过吗？怎么做到异步加载的" class="headerlink" title="♥︎♥︎♥︎ require.js 源码看过吗？怎么做到异步加载的"></a>♥︎♥︎♥︎ require.js 源码看过吗？怎么做到异步加载的</h3><pre><code class="javascript">/*
+Creates the node for the load command. Only used in browser envs.
+*/
+req.createNode = function (config, moduleName, url) &#123;
+var node = config.xhtml ?
+ document.createElementNS(&#39;http://www.w3.org/1999/xhtml&#39;, &#39;html:script&#39;) :
+document.createElement(&#39;script&#39;);
+node.type = config.scriptType || &#39;text/javascript&#39;;
+node.charset = &#39;utf-8&#39;;
+node.async = true;
+return node;
+&#125;;
+</code></pre>
+<p>　requirejs 导入模块的方式实际就是创建脚本标签，一切的模块都需要经过这个方法创建。requirejs使用 onload 事件来处理回调函数：</p>
+<h3 id="♥︎♥︎♥︎-0-1-0-2-等不等于-0-3？自己封装一个让他们相等的方法"><a href="#♥︎♥︎♥︎-0-1-0-2-等不等于-0-3？自己封装一个让他们相等的方法" class="headerlink" title="♥︎♥︎♥︎ 0.1+0.2 等不等于 0.3？自己封装一个让他们相等的方法"></a>♥︎♥︎♥︎ 0.1+0.2 等不等于 0.3？自己封装一个让他们相等的方法</h3><p>在正常的数学逻辑思维中，0.1+0.2&#x3D;0.3这个逻辑是正确的，但是在JavaScript中0.1+0.2！&#x3D;&#x3D;0.3，这是</p>
+<p>为什么呢？这个问题也会偶尔被用来当做面试题来考查面试者对JavaScript的数值的理解程度。</p>
+<p>在JavaScript中的二进制的浮点数0.1和0.2并不是十分精确，在他们相加的结果并非正好等于0.3，</p>
+<p>而是一个比较接近的数字 0.30000000000000004 ，所以条件判断结果为false。</p>
+<pre><code class="css">方法1：设置一个误差范围值，通常称为”机器精度“，而对于Javascript来说，这个值通常是2^-52,而在
+ES6中，已经为我们提供了这样一个属性：Number.EPSILON，而这个值正等于2^-52。这个值非常非常
+小，在底层计算机已经帮我们运算好，并且无限接近0，但不等于0,。这个时候我们只要判断
+(0.1+0.2)-0.3小于Number.EPSILON，在这个误差的范围内就可以判定0.1+0.2===0.3为true。
+function numbersequal(a,b)&#123; 
+ return Math.abs(a-b)&lt;Number.EPSILON;
+&#125;
+
+方法2：转为整数运算
+</code></pre>
+<h3 id="♥︎♥︎♥︎-跨域是什么？有哪些解决跨域的方法和方案？"><a href="#♥︎♥︎♥︎-跨域是什么？有哪些解决跨域的方法和方案？" class="headerlink" title="♥︎♥︎♥︎ 跨域是什么？有哪些解决跨域的方法和方案？"></a>♥︎♥︎♥︎ 跨域是什么？有哪些解决跨域的方法和方案？</h3><h4 id="什么是跨域"><a href="#什么是跨域" class="headerlink" title="什么是跨域?"></a>什么是跨域?</h4><p>所谓的同源是指，域名、协议、端口均为相同。<br>所谓的跨域，不同的域名、协议、端口皆为不同域<br>一个域与另一个域名、协议或者端口不同的域的之间访问都叫跨域</p>
+<h4 id="解决跨域的方法和方案："><a href="#解决跨域的方法和方案：" class="headerlink" title="解决跨域的方法和方案："></a>解决跨域的方法和方案：</h4><pre><code class="css">1：通过服务端代理请求。如PHP，服务端语言php是没有跨域限制的，让服务器去别的网站获取内容然
+后返回给页面。
+
+2：第二种：jsonp跨域
+ 1. jsonp跨域就是利用script标签的跨域能力请求资源
+ 2. jsonp与ajax没有半毛钱关系！！
+ 3. 浏览器的同源策略限制了js的跨域能力，但没有限制link img iframe script 的跨域行为
+ 实现方式：
+ 1. 利用js创建一个script标签，把json的url赋给script的scr属性，
+ 2. 把这个script插入到页面里，让浏览器去跨域获取资源
+ 3. JS先声明好回调函数，插入页面后会代为执行该函数，并且传入json对象为其参数。
+ 注意：
+ 1. jsonp只针对get请求
+ 2. script标签加载回来的资源会被当成js在全局执行
+
+3：CORS 跨域资源共享(xhr2)
+ CORS是一个W3C标准，全称是&quot;跨域资源共享&quot;（Cross-origin resource sharing）
+ 它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制
+ 整个CORS通信过程，都是浏览器自动完成，不需要用户参与
+ 对于开发者来说，CORS通信与同源的AJAX通信没有差别，代码完全一样
+ 实现CORS通信的关键是服务器，只要服务器实现了CORS接口，就可以跨源通信
+
+4：nginx代理跨域
+ 通过nginx服务器转发跨域请求，达到跨域的目的
+</code></pre>
+<h3 id="♥︎♥︎♥︎-什么是函数式编程？什么的声明式编程？"><a href="#♥︎♥︎♥︎-什么是函数式编程？什么的声明式编程？" class="headerlink" title="♥︎♥︎♥︎ 什么是函数式编程？什么的声明式编程？"></a>♥︎♥︎♥︎ 什么是函数式编程？什么的声明式编程？</h3><h4 id="函数式编程："><a href="#函数式编程：" class="headerlink" title="函数式编程："></a>函数式编程：</h4><p>函数式编程和声明式编程是有所关联的，因为他们思想是一致的：即只关注做什么而不是怎么做。但函数式编程不仅仅局限于声明式编程。</p>
+<p>函数式编程最重要的特点是“函数第一位”，即函数可以出现在任何地方，比如你可以把函数作为参数传递给另一个函数，不仅如此你还可以将函数作为返回值。</p>
+<h4 id="声明式编程："><a href="#声明式编程：" class="headerlink" title="声明式编程："></a>声明式编程：</h4><p>声明式编程是以数据结构的形式来表达程序执行的逻辑。它的主要思想是告诉计算机应该做什么，但不指定具体要怎么做。</p>
+<p>SQL 语句就是最明显的一种声明式编程的例子，例如：</p>
+<p>SELECT * FROM collection WHERE num &gt; 5</p>
+<p>除了 SQL，网页编程中用到的 HTML 和 CSS 也都属于声明式编程。</p>
+<p>特点：</p>
+<p>1：是它不需要创建变量用来存储数据。</p>
+<p>2：不包含循环控制的代码如 for， while。</p>
+<h3 id="♥︎♥︎♥︎-super-是否必须执行？不执行怎么让它不报错？"><a href="#♥︎♥︎♥︎-super-是否必须执行？不执行怎么让它不报错？" class="headerlink" title="♥︎♥︎♥︎ super() 是否必须执行？不执行怎么让它不报错？"></a>♥︎♥︎♥︎ super() 是否必须执行？不执行怎么让它不报错？</h3><p>非必须，</p>
+<p>在 JavaScript 中，super 指的是父类的构造函数</p>
+<p>如果想在构造函数中使用this，你必须首先调用super。 先让父类做完自己的事不执行无法使用this.</p>
+<p> 不报错的方法：</p>
+<p> 1：不使用this</p>
+<p> 2：手动修正this</p>
+<h3 id="♥︎♥︎♥︎-eventloop-渲染在哪一步？"><a href="#♥︎♥︎♥︎-eventloop-渲染在哪一步？" class="headerlink" title="♥︎♥︎♥︎ eventloop 渲染在哪一步？"></a>♥︎♥︎♥︎ eventloop 渲染在哪一步？</h3><pre><code class="css">任务队列
+所有的任务可以分为同步任务和异步任务，同步任务，顾名思义，就是立即执行的任务，同步任务一般会直接进入到主线程中执行；而异步任务，就是异步执行的任务，比如ajax网络请求，setTimeout 定时函数等都属于异步任务，异步任务会通过任务队列( Event Queue )的机制来进行协调。
+
+同步和异步任务分别进入不同的执行环境，同步的进入主线程，即主执行栈，异步的进入 Event Queue。主线程内的任务执行完毕为空，会去 Event Queue 读取对应的任务，推入主线程执行。 上述过程的不断重复就是我们说的 Event Loop (事件循环)。
+
+在事件循环中，每进行一次循环操作称为tick，通过阅读规范可知，每一次 tick 的任务处理模型是比较复杂的，其关键的步骤可以总结如下：
+在此次 tick 中选择最先进入队列的任务( oldest task )，如果有则执行(一次)检查是否存在 Microtasks ，如果存在则不停地执行，直至清空Microtask Queue更新 render
+主线程重复执行上述步骤
+</code></pre>
+<p>那么，什么是 microtasks ?规范中规定，task分为两大类, 分别是 Macro Task （宏任务）和 Micro Task</p>
+<p>（微任务）, 并且每个宏任务结束后, 都要清空所有的微任务,这里的 Macro Task也是我们常说的 task 。</p>
+<table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="center">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">(macro)task</td>
+<td align="center">script( 整体代码)、setTimeout、setInterval、I&#x2F;O、UI 交互事件、setImmediate(Node.js 环境)</td>
+</tr>
+<tr>
+<td align="center">microtask</td>
+<td align="center">Promise、MutaionObserver、process.nextTick(Node.js 环境)</td>
+</tr>
+</tbody></table>
+<pre><code class="css">整体 script 作为第一个宏任务进入主线程，遇到 console.log，输出 script start
+遇到 setTimeout，其回调函数被分发到宏任务 Event Queue 中
+遇到 Promise，其 then函数被分到到微任务 Event Queue 中,记为 then1，之后又遇到了 then 函数，
+将其分到微任务 Event Queue 中，记为 then2
+遇到 console.log，输出 script end
+至此，Event Queue 中存在三个任务，如下表：
+宏任务 微任务
+setTimeout then1
+then2
+执行微任务，首先执行then1，输出 promise1, 然后执行 then2，输出 promise2，这样就清空了
+所有微任务
+此时，所有的mircotask执行完毕，本轮事件循环结束，UI 开始 render，当 UI render 完毕，开始
+下一轮事件循环.
+执行 setTimeout 任务，输出 setTimeout, 至此，输出的顺序是：script start, script end,
+promise1, promise2, setTimeout
+</code></pre>
+<p>UI渲染</p>
+<p>根据HTML Standard，一轮事件循环执行结束之后，下轮事件循环执行之前开始进行 UI render。即：macro-task任务执行完毕，接着执行完所有的micro-task任务后，此时本轮循环结束，开始执行UIrender。UI render完毕之后接着下一轮循环。</p>
+<h3 id="♥︎♥︎♥︎-简述call、apply、bind，call-和-apply哪个性能更好？"><a href="#♥︎♥︎♥︎-简述call、apply、bind，call-和-apply哪个性能更好？" class="headerlink" title="♥︎♥︎♥︎ 简述call、apply、bind，call 和 apply哪个性能更好？"></a>♥︎♥︎♥︎ 简述call、apply、bind，call 和 apply哪个性能更好？</h3><h4 id="1、call"><a href="#1、call" class="headerlink" title="1、call()"></a>1、call()</h4><pre><code class="css">call() 方法调用一个函数, 其具有一个指定的 this值和分别地提供的参数(参数的列表)。 第一个参数：在
+fun 函数运行时指定的 this 值;如果指定了 null 或者 undefined 则内部 this 指向 window，后面的参
+数：指定的参数列表
+var fn = function(arg1, arg2) &#123; 
+&#125;;
+fn.call(this, arg1, arg2);
+var numbers = [5, 458 , 120 , -215 ]; 
+var maxInNumbers = Math.max.call(Math,5, 458 , 120 , -215); //获取数组中的最大值458
+</code></pre>
+<h4 id="2、apply"><a href="#2、apply" class="headerlink" title="2、apply()"></a>2、apply()</h4><pre><code class="css">apply()方法调用一个函数, 其具有一个指定的 this 值，以及作为一个数组（或类似数组的对象）提供的
+参数。apply() 与 call() 非常相似，不同之处在于提供参数的方式。apply() 使用参数数组而不是一组参数
+列表。
+var fn = function(arg1, arg2) &#123; 
+&#125;;
+fn.apply(this, [arg1, arg2])
+var numbers = [5, 458 , 120 , -215 ]; 
+//umber 本身没有 max 方法，但是 Math 有，我们就可以借助 call 或者 apply 使用其方法。
+var maxInNumbers = Math.max.apply(Math, numbers), //获取数组中的最大值458
+</code></pre>
+<h4 id="3、bind"><a href="#3、bind" class="headerlink" title="3、bind()"></a>3、bind()</h4><pre><code class="css">bind() 函数会创建一个新函数（称为绑定函数），新函数与被调函数（绑定函数的目标函数）具有相的函数体（在 ECMAScript 5 规范中内置的call属性）。
+当目标函数被调用时 this 值绑定到 bind() 的第一个参数，该参数不能被重写。绑定函数被调用时，bind() 也接受预设的参数提供给原函数。
+一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器。提供的 this 值被忽略，同时调用时的参数被提供给模拟函数
+</code></pre>
+<p>&#x2F;* ——call 和 apply哪个性能更好？—— *&#x2F;</p>
+<p>call的性能要比apply好一些，尤其是传递给函数的参数超过3个时所以后期开发的时候，可以使用call多一些</p>
+<p>（传参数3个以内的话，call和apply性能差不多，超过3个以上call更好一些）</p>
+<h3 id="♥︎♥︎♥︎-Promise-避免回调地狱的语法糖–实现链式调用的核心点是什么？"><a href="#♥︎♥︎♥︎-Promise-避免回调地狱的语法糖–实现链式调用的核心点是什么？" class="headerlink" title="♥︎♥︎♥︎ Promise 避免回调地狱的语法糖–实现链式调用的核心点是什么？"></a>♥︎♥︎♥︎ Promise 避免回调地狱的语法糖–实现链式调用的核心点是什么？</h3><pre><code class="css">解决回调地狱的终极方法 async/await ES7的语法，可以通过 async/await让代码看起来像同步的async异步 await等待
+await 等待 就是当后面跟的是promise对象，就让他停止 ，先让里面的异步事情做完，在把结果返回给
+前面的新变量，在继续向后执行
+他只生效当前作用域内部，也就是async函数内部。
+
+实现链式调用的核心点: 在 then 中新创建的 Promise，它的状态变为 fulfilled 的节点是在上一个 Promise的回调执行完毕的时候。也就是说当一个 Promise 的状态被 fulfilled 之后，会执行其回调函数，而回调函数返回的结果会被当作 value，返回给下一个 Promise(也就是then 中产生的 Promise)，同时下一个 Promise的状态也会
+被改变(执行 resolve 或 reject)，然后再去执行其回调,以此类推下去…
+</code></pre>
+<h3 id="♥︎♥︎♥︎-进程线程区别是什么？"><a href="#♥︎♥︎♥︎-进程线程区别是什么？" class="headerlink" title="♥︎♥︎♥︎ 进程线程区别是什么？"></a>♥︎♥︎♥︎ 进程线程区别是什么？</h3><h4 id="什么是进程？什么是线程？"><a href="#什么是进程？什么是线程？" class="headerlink" title="什么是进程？什么是线程？"></a>什么是进程？什么是线程？</h4><p>进程是系统中正在运行的一个程序，程序一旦运行就是进程。</p>
+<p>进程可以看成程序执行的一个实例。进程是系统资源分配的独立实体，每个进程都拥有独立的地址空</p>
+<p>间。一个进程无法访问另一个进程的变量和数据结构，如果想让一个进程访问另一个进程的资源，需要</p>
+<p>使用进程间通信，比如管道，文件，套接字等。</p>
+<p>一个进程可以拥有多个线程，每个线程使用其所属进程的栈空间。线程与进程的一个主要区别是，统一</p>
+<p>进程内的一个主要区别是，同一进程内的多个线程会共享部分状态，多个线程可以读写同一块内存（一</p>
+<p>个进程无法直接访问另一进程的内存）。同时，每个线程还拥有自己的寄存器和栈，其他线程可以读写</p>
+<p>这些栈内存。</p>
+<p>线程是进程的一个实体，是进程的一条执行路径。</p>
+<p>线程是进程的一个特定执行路径。当一个线程修改了进程的资源，它的兄弟线程可以立即看到这种变</p>
+<p>化。</p>
+<h4 id="进程和线程的区别体现在以下几个方面："><a href="#进程和线程的区别体现在以下几个方面：" class="headerlink" title="进程和线程的区别体现在以下几个方面："></a>进程和线程的区别体现在以下几个方面：</h4><p>1.地址空间和其他资源（如打开文件）：进程间相互独立，同一进程的各线程间共享。某进程内的线程</p>
+<p>在其他进程内不可见。</p>
+<p>2.通信：进程间通信IPC（管道，信号量，共享内存，消息队列），线程间可以直接独写进程数据段（如</p>
+<p>全局变量）来进程通信——需要进程同步和互斥手段的辅助，以保证数据的一致性。</p>
+<p>3.调度和切换：线程上下文切换比进程上下文切换快得多。</p>
+<p>4.在多线程OS中，进程不是一个可执行的实体。</p>
+<h3 id="♥︎♥︎♥︎-禁止事件冒泡，禁止默认事件"><a href="#♥︎♥︎♥︎-禁止事件冒泡，禁止默认事件" class="headerlink" title="♥︎♥︎♥︎ 禁止事件冒泡，禁止默认事件"></a>♥︎♥︎♥︎ 禁止事件冒泡，禁止默认事件</h3><pre><code class="css">/-----禁止事件冒泡:-----/
+function stopBubble(e) &#123;
+//如果提供了事件对象，则这是一个非IE浏览器
+if ( e &amp;&amp; e.stopPropagation )
+ //因此它支持W3C的stopPropagation()方法
+ e.stopPropagation();
+else
+ //否则，我们需要使用IE的方式来取消事件冒泡
+ window.event.cancelBubble = true;
+&#125;
+
+/-----阻止浏览器的默认行为-----/
+function stopDefault( e ) &#123;
+ //阻止默认浏览器动作(W3C)
+ if ( e &amp;&amp; e.preventDefault )
+ e.preventDefault();
+ //IE中阻止函数器默认动作的方式
+ else
+ window.event.returnValue = false;
+ return false;
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-使用箭头函数应该注意什么？"><a href="#♥︎♥︎♥︎-使用箭头函数应该注意什么？" class="headerlink" title="♥︎♥︎♥︎ 使用箭头函数应该注意什么？"></a>♥︎♥︎♥︎ 使用箭头函数应该注意什么？</h3><ol>
+<li><p>不要在对象里面定义函数，对象里面的行数应该用传统的函数方法</p>
+</li>
+<li><p>不要在对原型对象上定义函数，在对象原型上定义函数也是遵循着一样的规则</p>
+</li>
+<li><p>不要用箭头定义构造函数</p>
+</li>
+<li><p>不要用箭头定义事件回调函数</p>
+</li>
+</ol>
+<h3 id="♥︎♥︎♥︎-你知道-ES6-中的-Generator-和-yiled-吗？在实际开发中使用过吗？"><a href="#♥︎♥︎♥︎-你知道-ES6-中的-Generator-和-yiled-吗？在实际开发中使用过吗？" class="headerlink" title="♥︎♥︎♥︎ 你知道 ES6 中的 Generator 和 yiled 吗？在实际开发中使用过吗？"></a>♥︎♥︎♥︎ 你知道 ES6 中的 Generator 和 yiled 吗？在实际开发中使用过吗？</h3><p>Generator 函数是 ES6 提供的一种异步编程解决方案</p>
+<p>执行 Generator 函数会返回一个遍历器对象，可以依次遍历 Generator 函数内部的每一个状态</p>
+<p>形式上，Generator函数是一个普通函数，但是有两个特征：</p>
+<pre><code class="javascript">1. function关键字与函数名之间有一个星号
+2. 函数体内部使用yield表达式，定义不同的内部状态
+//-----利用Generator函数，在对象上实现Iterator接口-----//
+function* iterEntries(obj) &#123;
+ let keys = Object.keys(obj);
+ for (let i=0; i &lt; keys.length; i++) &#123;
+ let key = keys[i];
+ yield [key, obj[key]];
+ &#125;
+&#125;
+let myObj = &#123; foo: 3, bar: 7 &#125;;
+for (let [key, value] of iterEntries(myObj)) &#123;
+ console.log(key, value);
+&#125;
+</code></pre>
+<h3 id="♥︎♥︎♥︎-Cookie、storage-的区别？什么时候使用？"><a href="#♥︎♥︎♥︎-Cookie、storage-的区别？什么时候使用？" class="headerlink" title="♥︎♥︎♥︎ Cookie、storage 的区别？什么时候使用？"></a>♥︎♥︎♥︎ Cookie、storage 的区别？什么时候使用？</h3><h4 id="区别："><a href="#区别：" class="headerlink" title="区别："></a>区别：</h4><pre><code class="css">1. cookie数据始终在同源的http请求中携带（即使不需要），即cookie在浏览器和服务器间来回传递。localStorage不会自动把数据发给服务器，仅在本地保存。
+2. cookie数据还有路径（path）的概念，可以限制cookie只属于某个路径下。
+3. 存储大小限制也不同，cookie数据不能超过4k，同时因为每次http请求都会携带cookie，所以cookie只适合保存很小的数据，如会话标识。localStorage 虽然也有存储大小的限制，但比cookie大得多，可以达到5M或更大。
+4. 数据有效期不同，
+localStorage：始终有效，窗口或浏览器关闭也一直保存，因此用作持久数据；
+cookie只在设置的cookie过期时间之前一直有效，即使窗口或浏览器关闭。
+5. WebStorage 支持事件通知机制，可以将数据更新的通知发送给监听者。
+6. WebStorage 的 api 接口使用更方便。
+</code></pre>
+<h4 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h4><p>localStorage可以用来统计页面访问次数。</p>
+<p>cookie一般存储用户名密码相关信息，一般使用escape转义编码后存储。</p>
+<h3 id="♥︎♥︎♥︎-map、fillter、reduce-各自有什么作用？"><a href="#♥︎♥︎♥︎-map、fillter、reduce-各自有什么作用？" class="headerlink" title="♥︎♥︎♥︎ map、fillter、reduce 各自有什么作用？"></a>♥︎♥︎♥︎ map、fillter、reduce 各自有什么作用？</h3><pre><code class="css">1：map 作用是生成一个新数组，遍历原数组，将每个元素拿出来做一些变换然后放入到新的数组中。
+另外 map 的回调函数接受三个参数，分别是当前索引元素，索引，原数组
+2：filter 的作用也是生成一个新数组，在遍历数组的时候将返回值为 true 的元素放入新数组，我们可以
+利用这个函数删除一些不需要的元素,和 map 一样，filter 的回调函数也接受三个参数，用处也相同。
+3：reduce 可以将数组中的元素通过回调函数最终转换为一个值。
+它接受两个参数，分别是回调函数和初始值，接下来我们来分解上述代码中 reduce 的过程
+首先初始值为 0，该值会在执行第一次回调函数时作为第一个参数传入
+回调函数接受四个参数，分别为累计值、当前元素、当前索引、原数组，后三者想必大家都可以明白作
+用，这里着重分析第一个参数
+</code></pre>
+<h3 id="♥︎♥︎♥︎-promise-常见方法和-all-和-race的应用场景"><a href="#♥︎♥︎♥︎-promise-常见方法和-all-和-race的应用场景" class="headerlink" title="♥︎♥︎♥︎ promise 常见方法和 all 和 race的应用场景"></a>♥︎♥︎♥︎ promise 常见方法和 all 和 race的应用场景</h3><h4 id="Promise-race（）："><a href="#Promise-race（）：" class="headerlink" title="Promise.race（）："></a>Promise.race（）：</h4><p>race的用法：谁跑的快，以谁为准执行回调。</p>
+<p>race的使用场景：比如我们可以用race给某个异步请求设置超时时间，并且在超时后执行相应的操作</p>
+<h4 id="Promise-all"><a href="#Promise-all" class="headerlink" title="Promise.all():"></a>Promise.all():</h4><p>all的用法：谁跑的慢，以谁为准执行回调。</p>
+<p>在前端的开发实践中，我们有时会遇到需要发送多个请求并根据请求顺序返回数据的需求</p>
+<h3 id="♥︎♥︎♥︎-介绍一下-ES6-中-Set-Map的区别？"><a href="#♥︎♥︎♥︎-介绍一下-ES6-中-Set-Map的区别？" class="headerlink" title="♥︎♥︎♥︎ 介绍一下 ES6 中 Set, Map的区别？"></a>♥︎♥︎♥︎ 介绍一下 ES6 中 Set, Map的区别？</h3><pre><code class="css">Map
+在JS中的默认对象的表示方式为&#123;&#125;，即一组键值对，但是键必须是字符串。
+为了使用Number或者其他数据类型作为键，ES6规范引入了新的数据类型Map。
+Map是一组键值对的结构，具有极快的查找速度。初始化Map需要一个二维数组，或者直接初始化一个
+空Map。
+Map 对象是键值对集合，和 JSON 对象类似，但是 key 不仅可以是字符串还可以是其他各种类型的值包
+括对象都可以成为Map的键
+
+
+Set
+Set也是一组key的集合，与Map类似。但是区别是Set不存储value，并且它的key不能重复。
+创建一个Set，需要提供一个Array作为输入，或者直接创建一个空Set：
+重复元素会在Set中自动被过滤
+Set 对象类似于数组，且成员的值都是唯一的
+</code></pre>
+<h3 id="♥︎♥︎♥︎-为什么操作-dom-慢？"><a href="#♥︎♥︎♥︎-为什么操作-dom-慢？" class="headerlink" title="♥︎♥︎♥︎ 为什么操作 dom 慢？"></a>♥︎♥︎♥︎ 为什么操作 dom 慢？</h3><p>DOM对象本身也是一个js对象，所以严格来说，并不是操作这个对象慢，而是说操作了这个对象后，需</p>
+<p>要经过跨流程通信和渲染线程触发的重新渲染，导致DOM操作慢</p>
+<p>JS引擎和和渲染引擎的模块化设计，使得它们可以独立优化，运行速度更快，但是这种设计带来的后果</p>
+<p>就是DOM操作会越来越慢</p>
+<h3 id="♥︎♥︎♥︎-js中的常用事件绑定方法"><a href="#♥︎♥︎♥︎-js中的常用事件绑定方法" class="headerlink" title="♥︎♥︎♥︎ js中的常用事件绑定方法"></a>♥︎♥︎♥︎ js中的常用事件绑定方法</h3><ol>
+<li><p>在DOM元素中直接绑定</p>
+</li>
+<li><p>在JavaScript代码中绑定</p>
+</li>
+<li><p>绑定事件监听函数</p>
+</li>
+</ol>
+<h3 id="♥︎♥︎♥︎-ts-和-js-的区别"><a href="#♥︎♥︎♥︎-ts-和-js-的区别" class="headerlink" title="♥︎♥︎♥︎ ts 和 js 的区别"></a>♥︎♥︎♥︎ ts 和 js 的区别</h3><pre><code class="css">1.ts是静态类语言，可以做到声明即文档，js是动态类语言相对更灵活。
+2.如用ts写一个button组件可以清晰的知道，ButtonProps如是否必传，可选，style是什么类型，
+disabled是什么类型，较js，ts更易于维护和拓展，可以做到代码即注释，避免一个月不见3，代码自己
+都忘记自己写了什么的尴尬，
+4.ts对比js基础类型上，增加了 void/never/any/元组/枚举/以及一些高级类型
+5.js没有重载概念，ts有可以重载
+6.vscode/ide对ts有很友好的提示
+7.ts更利于重构
+</code></pre>
+<h3 id="♥︎♥︎♥︎-简述原生-js-发-ajax-的步骤"><a href="#♥︎♥︎♥︎-简述原生-js-发-ajax-的步骤" class="headerlink" title="♥︎♥︎♥︎ 简述原生 js 发 ajax 的步骤"></a>♥︎♥︎♥︎ 简述原生 js 发 ajax 的步骤</h3><p>1.创建XMLHTTPRequest对象</p>
+<p>2.使用open方法设置和服务器的交互信息</p>
+<p>3.设置发送的数据，开始和服务器端交互</p>
+<p>4.注册事件</p>
+<p>5.更新界面</p>
+<h3 id="♥︎♥︎♥︎-instanceof的原理是什么？"><a href="#♥︎♥︎♥︎-instanceof的原理是什么？" class="headerlink" title="♥︎♥︎♥︎  instanceof的原理是什么？"></a>♥︎♥︎♥︎  instanceof的原理是什么？</h3><pre><code class="javascript">// instanceof 可以正确的判断对象的类型，是通过判断对象的原型链中是不是能找到类型的prototype。
+function fn(left, right) &#123;
+ let prototype = right.prototype;
+ left = left.proto;
+ while (true) &#123;
+ if (left === undefined || left === null) &#123;
+ return false;
+ &#125;
+ if (left === prototype) &#123;
+ return true;
+ &#125;
+ left = left.proto;
+ &#125;
+&#125;
+</code></pre>
+<hr>
+<h3 id="♥︎♥︎♥︎♥︎-介绍一下-typeof-区分类型的原理"><a href="#♥︎♥︎♥︎♥︎-介绍一下-typeof-区分类型的原理" class="headerlink" title="♥︎♥︎♥︎♥︎ 介绍一下 typeof 区分类型的原理"></a>♥︎♥︎♥︎♥︎ 介绍一下 typeof 区分类型的原理</h3><pre><code class="javascript">typeof原理： 不同的对象在底层都表示为二进制，在Javascript中二进制前（低）三位存储其类型信
+息。
+000: 对象
+010: 浮点数
+100:字符串
+110: 布尔
+1: 整数
+/----------------------------------------------/
+typeof null 为&quot;object&quot;, 原因是因为 不同的对象在底层都表示为二进制，在Javascript中二进制前（低）
+三位都为0的话会被判断为Object类型，null的二进制表示全为0，自然前三位也是0，所以执行typeof时
+会返回&quot;object&quot;###
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎-说说你对-JavaScript-的作用域的理解。什么是作用域链？"><a href="#♥︎♥︎♥︎♥︎-说说你对-JavaScript-的作用域的理解。什么是作用域链？" class="headerlink" title="♥︎♥︎♥︎♥︎ 说说你对 JavaScript 的作用域的理解。什么是作用域链？"></a>♥︎♥︎♥︎♥︎ 说说你对 JavaScript 的作用域的理解。什么是作用域链？</h3><p>在 JavaScript 中有两种作用域类型：</p>
+<ol>
+<li><p>局部作用域:只能在函数内部访问它们</p>
+</li>
+<li><p>全局作用域:网页的所有脚本和函数都能够访问它</p>
+</li>
+</ol>
+<p>JavaScript 拥有函数作用域：每个函数创建一个新的作用域。</p>
+<p>作用域决定了这些变量的可访问性（可见性）。</p>
+<p>函数内部定义的变量从函数外部是不可访问的（不可见的）。</p>
+<p>作用域链：</p>
+<p>当查找变量的时候，会先从当前上下文的变量对象中查找，</p>
+<p>如果没有找到，就会从父级(词法层面上的父级)执行上下文的变量对象中查找，一直找到全局上下文的变</p>
+<p>量对象，也就是全局对象。</p>
+<p>这样由多个执行上下文的变量对象构成的链表就叫做作用域链</p>
+<h3 id="♥︎♥︎♥︎♥︎-说说你对执行上下文的理解"><a href="#♥︎♥︎♥︎♥︎-说说你对执行上下文的理解" class="headerlink" title="♥︎♥︎♥︎♥︎ 说说你对执行上下文的理解"></a>♥︎♥︎♥︎♥︎ 说说你对执行上下文的理解</h3><pre><code class="css">执行上下文有且只有三类，全局执行上下文，函数上下文，与eval上下文(eval一般不会使用) 
+1. 全局执行上下文：
+全局执行上下文只有一个，也就是我们熟知的window对象，我们能在全局作用域中通过this直接访问到它
+2. 函数执行上下文
+函数执行上下文可存在无数个，每当一个函数被调用时都会创建一个函数上下文；
+需要注意的是，同一个函数被多次调用，都会创建一个新的上下文。
+3. 执行上下文栈(下文简称执行栈)也叫调用栈，
+执行栈用于存储代码执行期间创建的所有上下文，具有LIFO（Last In First Out后进先出，也就是
+先进后出）的特性。
+
+JS代码首次运行，都会先创建一个全局执行上下文并压入到执行栈中，之后每当有函数被调用，都会创
+建一个新的函数执行上下文并压入栈内；由于执行栈LIFO的特性，所以可以理解为，JS代码执行完毕前
+在执行栈底部永远有个全局执行上下文。###
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎-你对事件循环有了解吗？说说看！"><a href="#♥︎♥︎♥︎♥︎-你对事件循环有了解吗？说说看！" class="headerlink" title="♥︎♥︎♥︎♥︎ 你对事件循环有了解吗？说说看！"></a>♥︎♥︎♥︎♥︎ 你对事件循环有了解吗？说说看！</h3><p>Event Loop(事件循环)中，每一次循环称为 tick, 每一次tick的任务如下：</p>
+<p>执行栈选择最先进入队列的宏任务(通常是script整体代码)，如果有则执行</p>
+<p>检查是否存在 Microtask，如果存在则不停的执行，直至清空 microtask 队列</p>
+<p>更新render(每一次事件循环，浏览器都可能会去更新渲染)</p>
+<p>重复以上步骤</p>
+<p>宏任务 &gt; 所有微任务 &gt; 宏任务</p>
+<ol>
+<li><p>将所有任务看成两个队列：执行队列与事件队列。</p>
+</li>
+<li><p>执行队列是同步的，事件队列是异步的，宏任务放入事件列表，微任务放入执行队列之后，事件队</p>
+</li>
+</ol>
+<p>列之前。</p>
+<ol start="3">
+<li>当执行完同步代码之后，就会执行位于执行列表之后的微任务，然后再执行事件列表中的宏任务</li>
+</ol>
+<h3 id="♥︎♥︎♥︎♥︎-微任务和宏任务有什么区别？"><a href="#♥︎♥︎♥︎♥︎-微任务和宏任务有什么区别？" class="headerlink" title="♥︎♥︎♥︎♥︎ 微任务和宏任务有什么区别？"></a>♥︎♥︎♥︎♥︎ 微任务和宏任务有什么区别？</h3><table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">宏任务（macrotask）</th>
+<th align="center">微任务（microtask）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">谁发起的宿主</td>
+<td align="center">（Node、浏览器）</td>
+<td align="center">JS引擎</td>
+</tr>
+<tr>
+<td align="center">具体事件</td>
+<td align="center">1. script (可以理解为外层同步代码) 2. setTimeout&#x2F;setInterval 3. UI rendering&#x2F;UI事件 4.postMessage，MessageChannel 5. setImmediate，I&#x2F;O（Node.js）</td>
+<td align="center">1. Promise 2.MutaionObserver 3. Object.observe（已废弃；Proxy 对象替代） 4. process.nextTick（Node.js）</td>
+</tr>
+<tr>
+<td align="center">谁先运行</td>
+<td align="center">后运行</td>
+<td align="center">先运行</td>
+</tr>
+<tr>
+<td align="center">会触发新一轮Tick吗</td>
+<td align="center">会</td>
+<td align="center">不会</td>
+</tr>
+</tbody></table>
+<h3 id="♥︎♥︎♥︎♥︎-如何实现函数的柯里化？比如-add-1-2-3"><a href="#♥︎♥︎♥︎♥︎-如何实现函数的柯里化？比如-add-1-2-3" class="headerlink" title="♥︎♥︎♥︎♥︎ 如何实现函数的柯里化？比如 add(1)(2)(3)"></a>♥︎♥︎♥︎♥︎ 如何实现函数的柯里化？比如 add(1)(2)(3)</h3><pre><code class="javascript">/-----解决方法1：-----/
+function add () &#123;
+ var args = Array.prototype.slice.call(arguments);
+ var fn = function () &#123;
+ var sub_arg = Array.prototype.slice.call(arguments);
+　　 // 把全部的参数聚集到参数的入口为一个参数： args.concat(sub_arg)
+ return add.apply(null, args.concat(sub_arg));
+ &#125;
+ fn.valueOf = function () &#123;
+ return args.reduce(function(a, b) &#123;
+ return a + b;
+ &#125;)
+ &#125;
+ return fn;
+&#125;
+console.log(add(1,2)) // 3
+console.log(add(1)(2)) // 3
+console.log(add(1)(2)(3)) // 6
+console.log(add(1,2,3)(4)) // 10
+</code></pre>
+<pre><code class="javascript">/-----解决方法2：-----/
+function add () &#123;
+ var args = Array.prototype.slice.call(arguments);
+  var fn = function () &#123; 
+    // 把参数都放在一个相当于全局变量的 args 里面 args.push(...arguments) 
+    return fn; &#125;
+  fn.valueOf = function () &#123; 
+    return args.reduce(function(a, b) &#123; 
+      return a + b; &#125;) 
+  &#125;return fn;
+&#125;
+console.log(add(1,2)) // 3
+console.log(add(1)(2)) // 3
+console.log(add(1)(2)(3)) // 6
+console.log(add(1,2,3)(4)) // 10
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎-什么是反柯里化"><a href="#♥︎♥︎♥︎♥︎-什么是反柯里化" class="headerlink" title="♥︎♥︎♥︎♥︎ 什么是反柯里化"></a>♥︎♥︎♥︎♥︎ 什么是反柯里化</h3><p>在JavaScript中，当我们调用对象的某个方法时，其实不用去关心该对象原本是否被设计为拥有这个方法，这是动态类型语言的特点。可以通过反柯里化(uncurrying)函数实现，让一个对象去借用一个原本不属于他的方法。</p>
+<h3 id="♥︎♥︎♥︎♥︎-了解-ES6-的-Proxy-吗？"><a href="#♥︎♥︎♥︎♥︎-了解-ES6-的-Proxy-吗？" class="headerlink" title="♥︎♥︎♥︎♥︎ 了解 ES6 的 Proxy 吗？"></a>♥︎♥︎♥︎♥︎ 了解 ES6 的 Proxy 吗？</h3><pre><code class="css">Proxy，代理，是ES6新增的功能，可以理解为代理器（即由它代理某些操作）。
+Proxy 对象用于定义或修改某些操作的自定义行为，可以在外界对目标对象进行访问前，对外界的访问
+进行改写。
+new Proxy()表示生成一个 Proxy 实例
+ -target：目标对象
+ -handler：一个对象，其属性是当执行一个操作时定义代理的行为的函数。
+注意：要实现拦截操作，必须是对 Proxy 实例进行操作，而不是针对目标对象 target 进行操作
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎-深拷贝是什么？项目哪里是用到了深拷贝？"><a href="#♥︎♥︎♥︎♥︎-深拷贝是什么？项目哪里是用到了深拷贝？" class="headerlink" title="♥︎♥︎♥︎♥︎ 深拷贝是什么？项目哪里是用到了深拷贝？"></a>♥︎♥︎♥︎♥︎ 深拷贝是什么？项目哪里是用到了深拷贝？</h3><p>1，在拷贝构造函数中假如只完成了数据成员本身的赋值则称为“浅拷贝”；编译器提供的默认拷贝构造函</p>
+<p>数就已经可以完成这个任务。</p>
+<p>而假如要复制的数据除了属性值本身以外，还要复制附加在数据属性值上的额外内容，那就要自己来写</p>
+<p>拷贝构造函数了，来完成所谓的“深拷贝”。</p>
+<p>举个例子：</p>
+<p>若在构造函数中new了一个新的空间存放数据，并且用指针记录了首地址；若是浅拷贝，则在拷贝构造</p>
+<p>函数中指针值将复制给另一个数据成员，这样就会有两个指针指向同一个空间；这样的话在析构函数里</p>
+<p>将会对指针所指向的空间进行释放，由于两个指针指向的是同一个空间，在释放第一个指针指向的空间</p>
+<p>时不会出现什么问题，而释放第二个指针指向的空间时就会因为空间已经被解析过而导致解析的空间不</p>
+<p>存在的情况，就会造成程序无法终止。</p>
+<p>而解决上面这种情况的办法就是使用“深拷贝”，深拷贝是在拷贝构造函数里再new一个新的空间。将数</p>
+<p>据复制在新空间里，并将拷贝的指针记录这个新空间的首地址，这样在析构函数里就不会有问题了。</p>
+<p>2，在某些引用类型值不更新的情况下用深拷贝</p>
+<h3 id="♥︎♥︎♥︎♥︎-ES6-中，数组监测怎么实现的（代理）"><a href="#♥︎♥︎♥︎♥︎-ES6-中，数组监测怎么实现的（代理）" class="headerlink" title="♥︎♥︎♥︎♥︎ ES6 中，数组监测怎么实现的（代理）"></a>♥︎♥︎♥︎♥︎ ES6 中，数组监测怎么实现的（代理）</h3><pre><code class="javascript">// 通过ES6的关键字extends实现继承完成Array原型方法的重写
+class NewArray extends Array &#123;
+ constructor(...args) &#123;
+ // 调用父类Array的constructor()
+ super(...args)
+ &#125;
+ push (...args) &#123;
+ console.log(&#39;监听到数组的变化啦！&#39;);
+   // 调用父类原型push方法 
+   return super.push(...args)
+ &#125;
+ // ...
+&#125;
+let list3 = [1, 2];
+let arr = new NewArray(...list3);
+console.log(arr)
+// (2) [1, 2]
+arr.push(3);
+// 监听到数组的变化啦！
+console.log(arr)
+// (3) [1, 2, 3]
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎-模板引擎原理"><a href="#♥︎♥︎♥︎♥︎-模板引擎原理" class="headerlink" title="♥︎♥︎♥︎♥︎ 模板引擎原理"></a>♥︎♥︎♥︎♥︎ 模板引擎原理</h3><pre><code class="javascript">//模板引擎是通过字符串拼接得到的
+let template = &#39;hello &lt;% name %&gt;!&#39;
+let template = &#39;hello &#39; + name + &#39;!&#39;
+字符串是通过new Function执行的
+let name = &#39;world&#39;
+let template = let str = &#39;hello &#39; + name + &#39;!&#39; return str
+let fn = new Function(&#39;name&#39;, template)
+console.log(fn(name)) // hello world!
+
+//将模板转换为字符串并通过函数执行返回
+let template = &#39;hello &lt;% name %&gt;!&#39;
+let name = &#39;world&#39;
+function compile (template) &#123;
+ let html = template.replace(/&lt;%([\s\S]+?)%&gt;/g, (match, code) =&gt; &#123;
+ return &#39; + $&#123;code&#125; + &#39;
+ &#125;)
+ html = let str = &#39;$&#123;html&#125;&#39;; return str
+ return new Function(&#39;name&#39;, html)
+&#125;
+let str = compile(template)
+console.log(str(name)) // hello world!
+
+//函数只能接收一个name变量作为参数，功能太单一了，一般会通过对象来传参，with来减少变量访
+问。
+with功能
+let params = &#123;
+ name: &#39;张三&#39;,
+ age: 18
+&#125;
+let str = &#39;&#39;
+with (params) &#123;
+ str = 用户$&#123;name&#125;的年龄是$&#123;age&#125;岁 &#125;
+console.log(str) // 用户张三的年龄是18岁
+
+//实现简单的模板引擎
+let template = &#39;hello &lt;% name %&gt;!&#39;
+let name = &#39;world&#39;
+function compile (template) &#123;
+ let html = template.replace(/&lt;%([\s\S]+?)%&gt;/g, (match, code) =&gt; &#123;
+ return &#39; + $&#123;code.trim()&#125; + &#39;
+ &#125;)
+ html = &#39;$&#123;html&#125;&#39;
+ html = let str = &#39;&#39;; with (params) &#123; str = $&#123;html&#125;; &#125; return str
+ return new Function(&#39;params&#39;, html)
+&#125;
+let str = compile(template)
+console.log(str(&#123; name &#125;)) // hello world!
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎-ES6-的新特性"><a href="#♥︎♥︎♥︎♥︎-ES6-的新特性" class="headerlink" title="♥︎♥︎♥︎♥︎ ES6 的新特性"></a>♥︎♥︎♥︎♥︎ ES6 的新特性</h3><ol>
+<li><p>const与let</p>
+</li>
+<li><p>模板字符串</p>
+</li>
+<li><p>解构赋值</p>
+</li>
+<li><p>对象简写法</p>
+</li>
+<li><p>for…of循环</p>
+</li>
+<li><p>展开运算符</p>
+</li>
+<li><p>剩余参数(可变参数) </p>
+</li>
+<li><p>ES6箭头函数</p>
+</li>
+<li><p>参数默认值</p>
+</li>
+<li><p>类和继承</p>
+</li>
+<li><p>模块化规范</p>
+</li>
+</ol>
+<h3 id="♥︎♥︎♥︎♥︎-图片懒加载怎么实现？"><a href="#♥︎♥︎♥︎♥︎-图片懒加载怎么实现？" class="headerlink" title="♥︎♥︎♥︎♥︎ 图片懒加载怎么实现？"></a>♥︎♥︎♥︎♥︎ 图片懒加载怎么实现？</h3><p>原理：随着滚轮滚动，底部的图片会被不断地加载，从而显示在页面上，按需加载，当页面需要显示图片的时候才进行加载，否则不加载</p>
+<ol>
+<li><p>页面加载完成时记录每个img标签的src值的字符串，</p>
+</li>
+<li><p>用鼠标滚轮判断图片是否出现在屏幕，如果是，则把记录的src值赋值给src属性</p>
+</li>
+<li><p>然后让image的src来发起请求，获取对应的图片放置到DOM树的这个位置上，从而实现图片的页面渲染！</p>
+</li>
+</ol>
+<p>于是就可以知道，当进入页面的时候，其实我们已经把所有的图片的这个地址信息拿到了，图片懒加载的作用就是让这个图片的src按需发起请求，获取图片。</p>
+<h3 id="♥︎♥︎♥︎♥︎-异步的解决方案有哪些？"><a href="#♥︎♥︎♥︎♥︎-异步的解决方案有哪些？" class="headerlink" title="♥︎♥︎♥︎♥︎ 异步的解决方案有哪些？"></a>♥︎♥︎♥︎♥︎ 异步的解决方案有哪些？</h3><p>1.回调函数callback</p>
+<p>2.事件发布订阅</p>
+<p>3.Promise</p>
+<p>4.Generator</p>
+<p>5.async&#x2F;await</p>
+<h3 id="♥︎♥︎♥︎♥︎-常见内存泄漏"><a href="#♥︎♥︎♥︎♥︎-常见内存泄漏" class="headerlink" title="♥︎♥︎♥︎♥︎ 常见内存泄漏"></a>♥︎♥︎♥︎♥︎ 常见内存泄漏</h3><p>1、静态集合类，如HashMap、LinkedList等等。如果这些容器为静态的，那么它们的生命周期与程序一致，则容器中的对象在程序结束之前将不能被释放，从而造成内存泄漏。简单而言，长生命周期的对象持有短生命周期对象的引用，尽管短生命周期的对象不再使用，但是因为长生命周期对象持有它的引用而导致不能被回收。</p>
+<p>2、各种连接，如数据库连接、网络连接和IO连接等。在对数据库进行操作的过程中，首先需要建立与数据库的连接，当不再使用时，需要调用close方法来释放与数据库的连接。只有连接被关闭后，垃圾回收器才会回收对应的对象。否则，如果在访问数据库的过程中，对Connection、Statement或ResultSet不显性地关闭，将会造成大量的对象无法被回收，从而引起内存泄漏。</p>
+<p>3、变量不合理的作用域。一般而言，一个变量的定义的作用范围大于其使用范围，很有可能会造成内存泄漏。另一方面，如果没有及时地把对象设置为null，很有可能导致内存泄漏的发生。</p>
+<p>4、内部类持有外部类，如果一个外部类的实例对象的方法返回了一个内部类的实例对象，这个内部类对象被长期引用了，即使那个外部类实例对象不再被使用，但由于内部类持有外部类的实例对象，这个外部类对象将不会被垃圾回收，这也会造成内存泄露。</p>
+<p>5、改变哈希值，当一个对象被存储进HashSet集合中以后，就不能修改这个对象中的那些参与计算哈希值的字段了，否则，对象修改后的哈希值与最初存储进HashSet集合中时的哈希值就不同了，在这种情况下，即使在contains方法使用该对象的当前引用作为的参数去HashSet集合中检索对象，也将返回找不到对象的结果，这也会导致无法从HashSet集合中单独删除当前对象，造成内存泄露</p>
+<p>6、缓存泄漏</p>
+<p>内存泄漏的另一个常见来源是缓存，一旦你把对象引用放入到缓存中，他就很容易遗忘，对于这个问题，可以使用WeakHashMap代表缓存，此种Map的特点是，当除了自身有对key的引用外，此key没有其他引用那么此map会自动丢弃此值</p>
+<p>7、监听器和回调</p>
+<p>内存泄漏第三个常见来源是监听器和其他回调，如果客户端在你实现的API中注册回调，却没有显示的取消，那么就会积聚。需要确保回调立即被当作垃圾回收的最佳方法是只保存他的若引用，例如将他们保存成为WeakHashMap中的键。</p>
+<h3 id="♥︎♥︎♥︎♥︎-插入几万个-dom-，如何实现页面不卡顿？"><a href="#♥︎♥︎♥︎♥︎-插入几万个-dom-，如何实现页面不卡顿？" class="headerlink" title="♥︎♥︎♥︎♥︎ 插入几万个 dom ，如何实现页面不卡顿？"></a>♥︎♥︎♥︎♥︎ 插入几万个 dom ，如何实现页面不卡顿？</h3><pre><code class="javascript">让创建插入节点的工作分批进行：
+setTimeout(() =&gt; &#123;
+ // 插入十万条数据
+ const total = 100000;
+ // 一次插入 20 条，如果觉得性能不好就减少
+ const once = 20;
+ // 渲染数据总共需要几次
+ const loopCount = total / once;
+ let countOfRender = 0
+ let ul = document.querySelector(&quot;ul&quot;);
+ function add() &#123;
+ // 优化性能，插入不会造成回流
+ const fragment = document.createDocumentFragment();
+ for (let i = 0; i &lt; once; i++) &#123;
+ const li = document.createElement(&quot;li&quot;);
+ li.innerText = Math.floor(Math.random() * total);
+ fragment.appendChild(li);
+ &#125;
+ ul.appendChild(fragment);
+ countOfRender += 1;
+ loop();
+ &#125;
+ function loop() &#123;
+ if (countOfRender &lt; loopCount) &#123;
+ window.requestAnimationFrame(add);
+ &#125;
+ &#125;
+ loop();
+&#125;, 0);
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎-你知道什么是原型吗？我们为什么要用原型呢？或者说原型为我们提供了什么？"><a href="#♥︎♥︎♥︎♥︎-你知道什么是原型吗？我们为什么要用原型呢？或者说原型为我们提供了什么？" class="headerlink" title="♥︎♥︎♥︎♥︎ 你知道什么是原型吗？我们为什么要用原型呢？或者说原型为我们提供了什么？"></a>♥︎♥︎♥︎♥︎ 你知道什么是原型吗？我们为什么要用原型呢？或者说原型为我们提供了什么？</h3><p>什么是原型：</p>
+<p>Javascript规定，每一个函数都有一个prototype对象属性，指向另一个对象（原型链上面的）。</p>
+<p>prototype(对象属性)的所有属性和方法，都会被构造函数的实例继承。这意味着，我们可以把那些不变(公用)的属性和方法，直接定义在prototype对象属性上。</p>
+<p>prototype就是调用构造函数所创建的那个实例对象的原型（proto）。</p>
+<p>prototype可以让所有对象实例共享它所包含的属性和方法。也就是说，不必在构造函数中定义对象信息，而是可以直接将这些信息添加到原型中。</p>
+<p>为什么要用原型：使用原型对象解决浪费内存</p>
+<hr>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-浏览器和-Node-事件循环的区别？"><a href="#♥︎♥︎♥︎♥︎♥︎-浏览器和-Node-事件循环的区别？" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 浏览器和 Node 事件循环的区别？"></a>♥︎♥︎♥︎♥︎♥︎ 浏览器和 Node 事件循环的区别？</h3><h4 id="Node中的事件循环："><a href="#Node中的事件循环：" class="headerlink" title="Node中的事件循环："></a>Node中的事件循环：</h4><p>Node 中的 Event Loop 和浏览器中的是完全不相同的东西。Node.js 采用 V8 作为 js 的解析引擎，而</p>
+<p>I&#x2F;O 处理方面使用了自己设计的 libuv，libuv 是一个基于事件驱动的跨平台抽象层，封装了不同操作系</p>
+<p>统一些底层特性，对外提供统一的 API，事件循环机制也是它里面的实现（下文会详细介绍）。</p>
+<h4 id="Node-js-的运行机制如下"><a href="#Node-js-的运行机制如下" class="headerlink" title="Node.js 的运行机制如下:"></a>Node.js 的运行机制如下:</h4><p>V8 引擎解析 JavaScript 脚本。</p>
+<p>解析后的代码，调用 Node API。</p>
+<p>libuv 库负责 Node API 的执行。它将不同的任务分配给不同的线程，形成一个 Event Loop（事件循</p>
+<p>环），以异步的方式将任务的执行结果返回给 V8 引擎。</p>
+<p>V8 引擎再将结果返回给用户。</p>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-函数节流、防抖。scroll-resize-使用函数节流实现不要频繁触发事件的需求。"><a href="#♥︎♥︎♥︎♥︎♥︎-函数节流、防抖。scroll-resize-使用函数节流实现不要频繁触发事件的需求。" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 函数节流、防抖。scroll resize 使用函数节流实现不要频繁触发事件的需求。"></a>♥︎♥︎♥︎♥︎♥︎ 函数节流、防抖。scroll resize 使用函数节流实现不要频繁触发事件的需求。</h3><pre><code class="javascript">防抖：
+//scroll方法中的do somthing至少间隔500毫秒执行一次
+ window.addEventListener(&#39;scroll&#39;,function()&#123;
+ var timer;//使用闭包，缓存变量
+ return function()&#123;
+ if(timer) clearTimeout(timer);
+ timer = setTimeout(function()&#123;
+ console.log(&#39;do somthing&#39;)
+ &#125;,500)
+ &#125;
+ &#125;());//此处()作用 - 立即调用return后面函数，形成闭包
+</code></pre>
+<pre><code class="javascript">节流：
+//scroll方法中当间隔时间大于2s，do somthing执行一次
+ window.addEventListener(&#39;scroll&#39;,function()&#123;
+ var timer ;//使用闭包，缓存变量
+ var startTime = new Date();
+ return function()&#123;
+ var curTime = new Date();
+ if(curTime - startTime &gt;= 2000)&#123;
+ timer = setTimeout(function()&#123;
+ console.log(&#39;do somthing&#39;)
+ &#125;,500);
+ startTime = curTime;
+ &#125;
+   &#125; &#125;());//此处()作用 - 立即调用return后面函数，形成闭包
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-JS中的常见设计模式以及应用场景？"><a href="#♥︎♥︎♥︎♥︎♥︎-JS中的常见设计模式以及应用场景？" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ JS中的常见设计模式以及应用场景？"></a>♥︎♥︎♥︎♥︎♥︎ JS中的常见设计模式以及应用场景？</h3><p>1、单例模式</p>
+<p>单例模式就是一个实例在整个网页的生命周期里只创建一次，后续再调用实例创建函数的时候，返回的</p>
+<p>仍是之前创建的实例。在实际开发中应用十分广泛，例如页面中的登录框，显示消息的提示窗</p>
+<p>2、策略模式</p>
+<p>策略模式是指将策略（算法）封装起来，策略的目的是将算法和使用分离开。</p>
+<p>3、代理模式</p>
+<p>代理模式很好理解，我们不能直接使用目标函数，而是通过调用代理函数来实现对目标函数的使用。</p>
+<p>4、发布订阅模式</p>
+<p>发布订阅模式在实际应用中非常常见，例如，我们在微信App上关注了某个公众号，当该公众号有新文</p>
+<p>章发布时，就会通知我们。</p>
+<p>发布订阅模式定义了一种一对多的依赖关系，当“一”发生变化，通知多个依赖。</p>
+<p>5、命令模式</p>
+<p>所谓命令模式就是将下要执行的业务逻辑封装到一个函数或类中，不需要具体谁来执行该命令的</p>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-用多种方法实现JavaScript继承"><a href="#♥︎♥︎♥︎♥︎♥︎-用多种方法实现JavaScript继承" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 用多种方法实现JavaScript继承"></a>♥︎♥︎♥︎♥︎♥︎ 用多种方法实现JavaScript继承</h3><h4 id="1-借用构造函数-经典继承"><a href="#1-借用构造函数-经典继承" class="headerlink" title="1.借用构造函数(经典继承)"></a>1.借用构造函数(经典继承)</h4><pre><code class="css">function Cat(name,age)&#123;
+    Animal.call(this,name)
+    this.age=age
+&#125;
+let cat=new Cat(&quot;妙妙&quot;,1)
+cat.sayname()
+console.log(cat instanceof Animal)  //false
+console.log(cat instanceof Cat)    //true
+
+核心：使用父类的构造函数来增强子类实例，等于是复制父类的实例属性给子类。
+优点：
+1.构造函数，优点是可以多重继承。
+2.创建子类实例时，可以向父类传递参数。
+缺点：
+1.实例并不是父类的实例，只是子类的实例。
+2.只能继承构造函数内的，原型上的东西不能继承。
+3.无法实现函数复用，每个子类都有父类实例函数的副本，影响性能。
+</code></pre>
+<h4 id="2-原型链继承"><a href="#2-原型链继承" class="headerlink" title="2.原型链继承"></a>2.原型链继承</h4><pre><code class="css">function Dog(name)&#123;
+    this.name=name
+&#125;
+Dog.prototype=new Animal()
+let dog =new Dog(&#39;旺财&#39;)
+dog.sayname();dog.eat(&#39;bone&#39;)
+console.log(dog instanceof Animal)  //true
+console.log(dog instanceof Dog)    //true
+
+核心：将父类的实例作为子类的原型。
+优点：
+1.非常纯粹的继承关系，实例是子类的实例，也是父类的实例。
+2.简单，父类上新增的方法属性子类都能访问的到。
+3.简单，易于实现。
+缺点：
+1.要想为子类新增属性和方法，必须在 new Animal这样语句后，不能放到构造器内。
+2.无法多重继承。
+3.创建子类实例的时候，无法向父类构造函数传参。
+</code></pre>
+<h4 id="3-实例继承"><a href="#3-实例继承" class="headerlink" title="3.实例继承"></a>3.实例继承</h4><pre><code class="css">function Bird(name)&#123;
+    let instance= new Animal()
+    instance.name= name || &#39;bird&#39;
+    return instance
+&#125;
+let bird =new Bird(&quot;飞飞&quot;)
+bird.sayname();bird.eat(&quot;虫子&quot;)
+console.log(bird instanceof Animal)  //true
+console.log(bird instanceof Bird)    //false
+
+核心：为父类实例添加新特性，作为子类实例返回。
+优点：不限制调用方式，不管是new子类（）还是子类（），返回的对象具有相同的效果。
+缺点：就是实例是父类的实例，不是子类的实例，不支持多继承。
+</code></pre>
+<h4 id="4-拷贝继承"><a href="#4-拷贝继承" class="headerlink" title="4.拷贝继承"></a>4.拷贝继承</h4><pre><code class="css">function Cow(name)&#123;
+    let animal=new Animal()
+    for (let key in animal)&#123;
+        console.log(&quot;key&quot;,key)
+        Cow.prototype[key]=animal[key]
+    &#125;
+    Cow.prototype.name=name || &#39;cow&#39;
+&#125;
+let cow =new Cow(&quot;哞～&quot;)
+cow.sayname();cow.eat(&quot;草&quot;)
+console.log(cow instanceof Animal)  //false
+console.log(cow instanceof Cow)    //true 
+
+优点：支持多继承
+缺点：
+1.效率较低，内存占用高（因为要拷贝父亲的属性）
+2.无法获取父亲不可枚举的方法（不可枚举方法，不能用for in 访问到）
+</code></pre>
+<h4 id="5-组合继承（原型链和构造函数）"><a href="#5-组合继承（原型链和构造函数）" class="headerlink" title="5.组合继承（原型链和构造函数）"></a>5.组合继承（原型链和构造函数）</h4><pre><code class="css">function Sheep(name)&#123;
+    Animal.call(this)
+    this.name=name || &quot;羊&quot;
+&#125;
+Sheep.prototype=new Animal()
+let sheep=new Sheep(&quot;喜洋洋&quot;)
+sheep.sayname();sheep.eat(&quot;草&quot;)
+console.log(sheep instanceof Animal)  //true
+console.log(sheep instanceof Sheep)    //true 
+
+核心：通过调用父类构造，继承父类的属性并保留传参的优点，然后通过将父类实例做为子类原型，实现函数复用。
+优点：
+1.弥补了构造继承的缺陷，可以继承实例属性/方法，也可以继承原型属性/方法。
+2.即是子类的实例，也是父类的实例。
+3.不存在引用属性共享问题。
+4.可传参。
+5.函数可复用。
+缺点：调用了两次父类构造函数，生成了两份实例（子类实例将子类原型上的那份屏蔽了）
+</code></pre>
+<h4 id="6-寄生式组合继承"><a href="#6-寄生式组合继承" class="headerlink" title="6.寄生式组合继承"></a>6.寄生式组合继承</h4><pre><code class="css">function Horse(name)&#123;
+    Animal.call(this)
+    this.name = name || &#39;马&#39;
+&#125;
+(function()&#123;
+    var Super = function()&#123;&#125; //创建一个没有实例的方法类
+    Super.prototype =Animal.prototype
+    Horse.prototype=new Super() //将实例作为子类的原型
+&#125;)()
+let horse = new Horse(&#39;白龙马&#39;)
+horse.sayname()
+console.log(horse instanceof Animal)  //true
+console.log(horse instanceof Horse)    //true 
+
+核心：通过寄生方式，砍掉父类的实例属性，这样，在调用两次父类的构造的时候，就不会初始化两次实例方法/属性，避免的组合继承的缺点。
+优点：堪称完美
+缺点：实现较为复杂
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-SSR和CSR优势劣势"><a href="#♥︎♥︎♥︎♥︎♥︎-SSR和CSR优势劣势" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ SSR和CSR优势劣势"></a>♥︎♥︎♥︎♥︎♥︎ SSR和CSR优势劣势</h3><ul>
+<li><p>SSR更有利于首屏渲染，CSR更有利于页面交互</p>
+</li>
+<li><p>SSR：</p>
+<p>优势：</p>
+<ul>
+<li>搜索引擎可以抓取网站以获取更好的SEO</li>
+<li>初始页面加载速度更快</li>
+<li>非常适合静态网站</li>
+</ul>
+<p>劣势：</p>
+<ul>
+<li>频繁的服务器请求</li>
+<li>整体缓慢的页面渲染</li>
+<li>整页重新加载</li>
+<li>不擅长于网站交互</li>
+</ul>
+</li>
+<li><p>CSR：</p>
+<p>优势：</p>
+<ul>
+<li>擅于网站交互</li>
+<li>初始加载网站渲染速度快</li>
+<li>非常适合Web应用程序</li>
+<li>强大的JS选择</li>
+</ul>
+<p>劣势：</p>
+<ul>
+<li>不利于SEO</li>
+<li>初始加载可能需要更多时间</li>
+</ul>
+</li>
+</ul>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-for…in-和-for-of"><a href="#♥︎♥︎♥︎♥︎♥︎-for…in-和-for-of" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ for…in 和 for of"></a>♥︎♥︎♥︎♥︎♥︎ for…in 和 for of</h3><ul>
+<li>for…in 循环：只能获得对象的key，不能获得value，主要是为了遍历对象而生，不适用于遍历数组。for…in 循环不仅遍历数字键名，还会遍历手动添加的其它键，包括原型链上的键。for…of 则不会这样。</li>
+</ul>
+<p>​	    for…of 循环：允许遍历获得键值，可以用来遍历数组、类数组对象，字符串、Set、Map 以及 Generator 对象</p>
+<ul>
+<li>对于普通对象，没有部署原生的 iterator 接口，直接使用 for…of 会报错</li>
+</ul>
+<p>​		可以使用 for…in 循环遍历键名</p>
+<ul>
+<li>forEach 循环无法中途跳出，break 命令或 return 命令都不能奏效</li>
+</ul>
+<p>​		for…of 循环可以与break、continue 和 return 配合使用，跳出循环</p>
+<ul>
+<li>无论是 for…in 还是 for…of 都不能遍历出 Symbol 类型的值，遍历 Symbol 类型的值需要用 Object.getOwnPropertySymbols() 方法</li>
+</ul>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-获取对象的所有key值"><a href="#♥︎♥︎♥︎♥︎♥︎-获取对象的所有key值" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 获取对象的所有key值"></a>♥︎♥︎♥︎♥︎♥︎ 获取对象的所有key值</h3><ul>
+<li>object.keys ：</li>
+</ul>
+<p>​		排序方式：index 、字符串的key创建事件、symbol</p>
+<ul>
+<li><p>for … in ：它能够额外遍历继承来的可枚举的属性</p>
+</li>
+<li><p>object.getOwnPropertyName   &#x3D;&gt;  获取key值</p>
+</li>
+<li><p>Object.getOwnPropertySymbols  &#x3D;&gt;  获取 symbol key，获取在对象上定义的符号数组</p>
+</li>
+<li><p>reflect.ownkeys：返回一个由目标对象自身的属性键组成的数组。</p>
+</li>
+</ul>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-null和undefined的区别"><a href="#♥︎♥︎♥︎♥︎♥︎-null和undefined的区别" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ null和undefined的区别"></a>♥︎♥︎♥︎♥︎♥︎ null和undefined的区别</h3><p>（1）Number转换的值不同，Number(null)输出为0, Number(undefined)输出为NaN</p>
+<p>（2）null表示一个值被定义了，但是这个值是空值</p>
+<ul>
+<li><p>作为函数的参数，表示函数的参数不是对象</p>
+</li>
+<li><p>作为对象原型链的终点 （Object.getPrototypeOf(Object.prototype)）</p>
+</li>
+<li><p>定义一个值为null是合理的，但定义为undefined不合理（var name &#x3D; null）</p>
+</li>
+</ul>
+<p>　　</p>
+<p>（3）undefined表示缺少值，即此处应该有值，但是还没有定义</p>
+<ul>
+<li><p>变量被声明了还没有赋值，就为undefined</p>
+</li>
+<li><p>调用函数时应该提供的参数还没有提供，该参数就等于undefined</p>
+</li>
+<li><p>对象没有赋值的属性，该属性的值就等于undefined</p>
+</li>
+<li><p>函数没有返回值，默认返回undefined</p>
+</li>
+</ul>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-判断对象为空"><a href="#♥︎♥︎♥︎♥︎♥︎-判断对象为空" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 判断对象为空"></a>♥︎♥︎♥︎♥︎♥︎ 判断对象为空</h3><pre><code class="javascript">Object.keys(obj).length = = = 0  // true 则为空对象(有缺陷)
+Object.keys(obj).length = = = 0 &amp;&amp; obj.constructor = = = Object
+</code></pre>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-对象的可冻结性"><a href="#♥︎♥︎♥︎♥︎♥︎-对象的可冻结性" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 对象的可冻结性"></a>♥︎♥︎♥︎♥︎♥︎ 对象的可冻结性</h3><p>本质都是Object.defineProperty去配置对象（去看看第三个参数那几个配置的参数）</p>
+<p>初级冰冻：对key值进行只读，不可更改</p>
+<p>中级冰冻：对key值进行不可读，不可枚举</p>
+<p>高级冰冻：对key值不可配置</p>
+<h3 id="♥︎♥︎♥︎♥︎♥︎-对象冻结"><a href="#♥︎♥︎♥︎♥︎♥︎-对象冻结" class="headerlink" title="♥︎♥︎♥︎♥︎♥︎ 对象冻结"></a>♥︎♥︎♥︎♥︎♥︎ 对象冻结</h3><h4 id="Object-Seal"><a href="#Object-Seal" class="headerlink" title="Object.Seal"></a>Object.Seal</h4><p>当你听到 “seal” 这个词时，你会想到什么？ “seal” 的第一个意思是印章或者蜜蜡之类封信件的东西。在 JavaScript 中 <code>Object.seal</code> 的作用与 “密封” 相同。</p>
+<p><code>Object.seal</code> 使传入对象的所有属性都不可配置。来举个例子。</p>
+<pre><code class="js">const obj = &#123; a: 100 &#125;;
+Object.getOwnPropertyDescriptors(obj);
+
+/* &#123;
+ *   a: &#123;
+ *        configurable: true,
+ *        enumerable: true,
+ *        value: 100,
+ *        writable: true
+ *      &#125;
+ * &#125;
+ *
+ */
+
+Object.seal(obj);
+Object.getOwnPropertyDescriptors(obj);
+
+/* &#123;
+ *   a: &#123;
+ *        configurable: false,
+ *        enumerable: true,
+ *        value: 100,
+ *        writable: true
+ *      &#125;
+ * &#125;
+ *
+ */
+
+obj.a = 200;
+console.log(obj.a);
+// 输出：200
+
+delete obj.a;
+console.log(obj.a);
+// 输出：200
+
+obj.b = 500;
+console.log(obj.b);
+// 输出：undefined
+</code></pre>
+<p>对象 <code>obj</code> 只有一个值为 100 的属性。<code>obj</code> 的基本属性就像上面一样，<code>configurable</code>, <code>enumerable</code> 和 <code>writable</code> 都是 <code>true</code>。然后我用 <code>Object.seal</code> 把它封起来，想要看看哪些基本属性被修改了，哪些没有。结果是，只有 <code>configurable</code> 被改成了 <code>false</code>。</p>
+<pre><code class="js">obj.a = 200;
+</code></pre>
+<p>即使被密封对象的基本属性 <code>configurable</code> 现在为 false，但属性值也被更改为 200。如前所述，将 <code>configurable</code>设置为 <code>false</code> 将使属性不可写，但如果 <code>writable</code> 已经写明为 <code>true</code> 时，<code>configurable</code>设置为 <code>false</code> 将不会生效。当你创建一个对象并添加一个新属性时，默认情况下它是 <code>writable: true</code> 。</p>
+<pre><code class="js">delete obj.a;
+</code></pre>
+<p>封装对象使每个属性变为不可配置，从而使属性不可删除。</p>
+<pre><code class="js">obj.b = 500;
+</code></pre>
+<p>Object.seal 后删除属性失败了是为什么呢？因为当调用 <code>Object.seal</code> 或 <code>Object.freeze</code> 时，传递给这些方法的对象变成不可扩展的对象，这意味着不能删除其中的任何属性或向其中添加任何属性。</p>
+<h4 id="Object-freeze"><a href="#Object-freeze" class="headerlink" title="Object.freeze"></a>Object.freeze</h4><p><code>Object.freeze</code> 对传递的对象的限制比 <code>Object.seal</code> 更多。让我们再举一个例子。</p>
+<pre><code class="js">const obj = &#123; a: 100 &#125;;
+Object.getOwnPropertyDescriptors(obj);
+
+/* &#123;
+ *   a: &#123;
+ *        configurable: true,
+ *        enumerable: true,
+ *        value: 100,
+ *        writable: true
+ *      &#125;
+ * &#125;
+ *
+ */
+
+Object.freeze(obj);
+Object.getOwnPropertyDescriptors(obj);
+
+/* &#123;
+ *   a: &#123;
+ *        configurable: false,
+ *        enumerable: true,
+ *        value: 100,
+ *        writable: false
+ *      &#125;
+ * &#125;
+ *
+ */
+
+obj.a = 200;
+console.log(obj.a);
+// 输出：100
+
+delete obj.a;
+console.log(obj.a);
+// 输出：100
+
+obj.b = 500;
+console.log(obj.b);
+// 输出：undefined
+</code></pre>
+<p>所以， <code>Object.freeze</code> 和 <code>Object.seal</code> 的区别是在使用后，<code>Object.freeze</code> 的 <code>writable</code> 会被设置为 <code>false</code> 而 <code>Object.seal</code> 仍然为 <code>true</code> 。</p>
+<pre><code class="js">obj.a = 200;
+</code></pre>
+<p>因此，修改现有属性总是失败。</p>
+<pre><code class="js">delete obj.a;
+</code></pre>
+<p>就像 <code>Object.seal</code> 一样， <code>Object.freeze</code> 也使得传递的对象不可配置，这使得其中的每个属性都不可删除。</p>
+<pre><code class="js">obj.b = 500;
+</code></pre>
+<p>冻结对象也会使对象不可扩展。</p>
+<h4 id="共同点"><a href="#共同点" class="headerlink" title="共同点"></a>共同点</h4><ol>
+<li>作用的对象变得不可扩展，这意味着不能再添加新属性。</li>
+<li>作用的对象中的每个元素都变得不可配置，这意味着不能删除属性。</li>
+<li>如果在 ‘use strict’ 模式下使用，这两个方法都可能抛出错误，例如在严格模式下修改 <code>obj.a = 500</code>。</li>
+</ol>
+<h4 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h4><p><code>Object.seal</code> 能让你修改属性的值，但 <code>Object.freeze</code> 不能.</p>
+<h4 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h4><p><code>Object.freeze</code> 和 <code>Object.seal</code> 在 “实用性” 方面都有 “缺陷”，他们只冻结&#x2F;封印对象的第一深度。</p>
+<p>这里有一个简单的比较。</p>
+<pre><code class="js">const obj = &#123;
+  foo: &#123;
+    bar: 10
+  &#125;
+&#125;;
+</code></pre>
+<p>现在 <code>obj</code> 内部嵌套了一个对象 <code>foo</code>。 它内部有一个 <code>bar</code> 属性.</p>
+<pre><code class="js">Object.getOwnPropertyDescriptors(obj);
+/* &#123;
+ *   foo: &#123;
+ *        configurable: true,
+ *        enumerable: true,
+ *        value: &#123;bar: 10&#125;,
+ *        writable: true
+ *      &#125;
+ * &#125;
+ */
+
+Object.getOwnPropertyDescriptors(obj.foo);
+/* &#123;
+ *   bar: &#123;
+ *        configurable: true,
+ *        enumerable: true,
+ *        value: 10,
+ *        writable: true
+ *      &#125;
+ * &#125;
+ */
+</code></pre>
+<p>使用 <code>Object.freeze</code> 和 <code>Object.seal</code> 之后，</p>
+<pre><code class="js">Object.seal(obj);
+Object.freeze(obj);
+
+// 这两种方法都会导致相同结果
+</code></pre>
+<p>让我们看看基础属性是如何变化的。</p>
+<pre><code class="js">Object.getOwnPropertyDescriptors(obj);
+/* &#123;
+ *   foo: &#123;
+ *        configurable: false,
+ *        enumerable: true,
+ *        value: &#123;bar: 10&#125;,
+ *        writable: false
+ *      &#125;
+ * &#125;
+ */
+
+Object.getOwnPropertyDescriptors(obj.foo);
+/* &#123;
+ *   bar: &#123;
+ *        configurable: true,
+ *        enumerable: true,
+ *        value: 10,
+ *        writable: true
+ *      &#125;
+ * &#125;
+ */
+</code></pre>
+<p><code>foo</code> 的基础属性已经改变但嵌套的 <code>obj.foo</code> 基础属性并没有变。这意味着嵌套的第二层仍然是可修改的。</p>
+<pre><code class="js">obj.foo = &#123; bar: 50 &#125;;
+// 没有生效
+</code></pre>
+<p>Since <code>obj.foo</code> doesn’t let you change its value because it’s frozen, 因为 <code>obj</code> 被冻结了，所以 <code>obj.foo</code> 不允许改变它的值，</p>
+<pre><code class="js">obj.foo.bar = 50;
+// 生效了
+</code></pre>
+<p>但 <code>obj.foo.bar</code> 仍然允许你改变它的值，因为它没有被冻结。</p>
+<p>那么如何将对象冻结&#x2F;密封到最深层的嵌套对象呢？在 MDN 上可以查看到解决方案</p>
+<pre><code class="js">function deepFreeze(object) &#123;
+
+  // 检索在对象上定义的属性名
+  var propNames = Object.getOwnPropertyNames(object);
+
+  // 在冻结自己之前先冻结属性
+
+  for (let name of propNames) &#123;
+    let value = object[name];
+
+    if(value &amp;&amp; typeof value === &quot;object&quot;) &#123; 
+      deepFreeze(value);
+    &#125;
+  &#125;
+
+  return Object.freeze(object);
+&#125;
+</code></pre>
+<p>测试结果如下。</p>
+<pre><code class="js">const obj = &#123; foo: &#123; bar: 10 &#125; &#125;;
+deepFreeze(obj);
+
+obj.foo = &#123; bar: 50 &#125;;
+// 不会生效
+
+obj.foo.bar = 50;
+// 不会生效
+</code></pre>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><code>Object.freeze</code> 和 <code>Object.seal</code> 肯定是有用的方法。但是你应该考虑使用 <code>deepFreeze</code> 来冻结嵌套对象。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-前端面试题大全之HTML5-CSS3"
   class="article article-type-post"
   itemscope

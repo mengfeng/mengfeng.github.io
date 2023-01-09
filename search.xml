@@ -1,6 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Docker部署Drone</title>
+    <url>/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Docker部署Drone"><a href="#Docker部署Drone" class="headerlink" title="Docker部署Drone"></a>Docker部署Drone</h1><h3 id="一、新建-GitHub-应用"><a href="#一、新建-GitHub-应用" class="headerlink" title="一、新建 GitHub 应用"></a>一、新建 GitHub 应用</h3><p>具体顺序Settings-&gt;Developer settings-&gt;OAuth Apps-&gt;New OAuth App</p>
+<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155624239.png"></p>
+<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155447805.png" alt="image-20221113155447805"></p>
+<p>新建完成后记住Client ID和Client secrets，后面配置需要</p>
+<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155825926.png"></p>
+<h3 id="二、下载drone"><a href="#二、下载drone" class="headerlink" title="二、下载drone"></a>二、下载drone</h3><pre><code class="ini">docker pull drone/drone //下载drone
+</code></pre>
+<h3 id="三、配置-Drone"><a href="#三、配置-Drone" class="headerlink" title="三、配置 Drone"></a>三、配置 Drone</h3><p>通过使用 <code>Docker Compose</code> 来启动 <code>Drone</code>，编写 <code>docker-compose.yml</code> 文件（这个文件直接新建就可以了）</p>
+<pre><code class="ini">touch docker-compose.yml //新建文件
+vim docker-compose.yml  //配置文件
+</code></pre>
+<pre><code class="javascript">//docker-compose.yml 文件不用修改
+version: &#39;3&#39;
+
+services:
+
+  drone-server:
+    image: drone/drone:2.3.1
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - drone-data:/data:rw
+      - ./ssl:/etc/certs
+    restart: always
+    environment:
+      - DRONE_SERVER_HOST=$&#123;DRONE_SERVER_HOST:-https://drone.yeasy.com&#125;
+      - DRONE_SERVER_PROTO=$&#123;DRONE_SERVER_PROTO:-https&#125;
+      - DRONE_RPC_SECRET=$&#123;DRONE_RPC_SECRET:-secret&#125;
+      - DRONE_GITHUB_SERVER=https://github.com
+      - DRONE_GITHUB_CLIENT_ID=$&#123;DRONE_GITHUB_CLIENT_ID&#125;
+      - DRONE_GITHUB_CLIENT_SECRET=$&#123;DRONE_GITHUB_CLIENT_SECRET&#125;
+
+  drone-agent:
+    image: drone/drone-runner-docker:1
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    environment:
+      - DRONE_RPC_PROTO=http
+      - DRONE_RPC_HOST=drone-server
+      - DRONE_RPC_SECRET=$&#123;DRONE_RPC_SECRET:-secret&#125;
+      - DRONE_RUNNER_NAME=$&#123;HOSTNAME:-demo&#125;
+      - DRONE_RUNNER_CAPACITY=2
+    dns: 114.114.114.114
+
+volumes:
+  drone-data:
+</code></pre>
+<p>新建 <code>.env</code> 文件，输入变量及其值（上面docker-compose.yml文件配置会默认读取 .env 文件变量）</p>
+<pre><code class="ini">touch .env //新建文件
+</code></pre>
+<pre><code class="ini">//.env
+# 必填 服务器地址，例如 drone.domain.com
+DRONE_SERVER_HOST=
+DRONE_SERVER_PROTO=https
+DRONE_RPC_SECRET=secret
+HOSTNAME=demo
+# 必填 在 GitHub 应用页面查看
+DRONE_GITHUB_CLIENT_ID=
+# 必填 在 GitHub 应用页面查看
+DRONE_GITHUB_CLIENT_SECRET=
+</code></pre>
+<pre><code class="ini">#我的配置（参考）
+# 必填 服务器地址，例如 drone.domain.com
+DRONE_SERVER_HOST=localhost
+DRONE_SERVER_PROTO=http
+DRONE_RPC_SECRET=secret
+HOSTNAME=demo
+# 必填 在 GitHub 应用页面查看
+DRONE_GITHUB_CLIENT_ID=
+# 必填 在 GitHub 应用页面查看
+DRONE_GITHUB_CLIENT_SECRET=
+</code></pre>
+<h3 id="四、启动Drone"><a href="#四、启动Drone" class="headerlink" title="四、启动Drone"></a>四、启动Drone</h3><pre><code class="ini">docker-compose up -d
+</code></pre>
+<p>访问http:localhost:80（我配置的，你和我配置一样就可以打开）就成功了</p>
+<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113161124001.png"></p>
+<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155240845-8325994.png"></p>
+<p>等到验证完成就可以了（如果出现错误，关机重启，重新配置就可以了）</p>
+<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113165243948.png"></p>
+<h3 id="五、激活仓库-具体看下一篇"><a href="#五、激活仓库-具体看下一篇" class="headerlink" title="五、激活仓库(具体看下一篇)"></a>五、激活仓库(具体看下一篇)</h3><p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113171114692.png"></p>
+]]></content>
+      <categories>
+        <category>CI/CD</category>
+        <category>Docker部署Drone</category>
+      </categories>
+      <tags>
+        <tag>drone ci</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Apifox和Leancloud</title>
     <url>/2022/12/25/Apifox%E5%92%8CLeancloud/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Apifox和Leancloud"><a href="#Apifox和Leancloud" class="headerlink" title="Apifox和Leancloud"></a>Apifox和Leancloud</h1><blockquote>
@@ -163,102 +259,6 @@ DRONE_GITHUB_CLIENT_SECRET=
       </categories>
       <tags>
         <tag>CI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Docker部署Drone</title>
-    <url>/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Docker部署Drone"><a href="#Docker部署Drone" class="headerlink" title="Docker部署Drone"></a>Docker部署Drone</h1><h3 id="一、新建-GitHub-应用"><a href="#一、新建-GitHub-应用" class="headerlink" title="一、新建 GitHub 应用"></a>一、新建 GitHub 应用</h3><p>具体顺序Settings-&gt;Developer settings-&gt;OAuth Apps-&gt;New OAuth App</p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155624239.png"></p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155447805.png" alt="image-20221113155447805"></p>
-<p>新建完成后记住Client ID和Client secrets，后面配置需要</p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155825926.png"></p>
-<h3 id="二、下载drone"><a href="#二、下载drone" class="headerlink" title="二、下载drone"></a>二、下载drone</h3><pre><code class="ini">docker pull drone/drone //下载drone
-</code></pre>
-<h3 id="三、配置-Drone"><a href="#三、配置-Drone" class="headerlink" title="三、配置 Drone"></a>三、配置 Drone</h3><p>通过使用 <code>Docker Compose</code> 来启动 <code>Drone</code>，编写 <code>docker-compose.yml</code> 文件（这个文件直接新建就可以了）</p>
-<pre><code class="ini">touch docker-compose.yml //新建文件
-vim docker-compose.yml  //配置文件
-</code></pre>
-<pre><code class="javascript">//docker-compose.yml 文件不用修改
-version: &#39;3&#39;
-
-services:
-
-  drone-server:
-    image: drone/drone:2.3.1
-    ports:
-      - 443:443
-      - 80:80
-    volumes:
-      - drone-data:/data:rw
-      - ./ssl:/etc/certs
-    restart: always
-    environment:
-      - DRONE_SERVER_HOST=$&#123;DRONE_SERVER_HOST:-https://drone.yeasy.com&#125;
-      - DRONE_SERVER_PROTO=$&#123;DRONE_SERVER_PROTO:-https&#125;
-      - DRONE_RPC_SECRET=$&#123;DRONE_RPC_SECRET:-secret&#125;
-      - DRONE_GITHUB_SERVER=https://github.com
-      - DRONE_GITHUB_CLIENT_ID=$&#123;DRONE_GITHUB_CLIENT_ID&#125;
-      - DRONE_GITHUB_CLIENT_SECRET=$&#123;DRONE_GITHUB_CLIENT_SECRET&#125;
-
-  drone-agent:
-    image: drone/drone-runner-docker:1
-    restart: always
-    depends_on:
-      - drone-server
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:rw
-    environment:
-      - DRONE_RPC_PROTO=http
-      - DRONE_RPC_HOST=drone-server
-      - DRONE_RPC_SECRET=$&#123;DRONE_RPC_SECRET:-secret&#125;
-      - DRONE_RUNNER_NAME=$&#123;HOSTNAME:-demo&#125;
-      - DRONE_RUNNER_CAPACITY=2
-    dns: 114.114.114.114
-
-volumes:
-  drone-data:
-</code></pre>
-<p>新建 <code>.env</code> 文件，输入变量及其值（上面docker-compose.yml文件配置会默认读取 .env 文件变量）</p>
-<pre><code class="ini">touch .env //新建文件
-</code></pre>
-<pre><code class="ini">//.env
-# 必填 服务器地址，例如 drone.domain.com
-DRONE_SERVER_HOST=
-DRONE_SERVER_PROTO=https
-DRONE_RPC_SECRET=secret
-HOSTNAME=demo
-# 必填 在 GitHub 应用页面查看
-DRONE_GITHUB_CLIENT_ID=
-# 必填 在 GitHub 应用页面查看
-DRONE_GITHUB_CLIENT_SECRET=
-</code></pre>
-<pre><code class="ini">#我的配置（参考）
-# 必填 服务器地址，例如 drone.domain.com
-DRONE_SERVER_HOST=localhost
-DRONE_SERVER_PROTO=http
-DRONE_RPC_SECRET=secret
-HOSTNAME=demo
-# 必填 在 GitHub 应用页面查看
-DRONE_GITHUB_CLIENT_ID=
-# 必填 在 GitHub 应用页面查看
-DRONE_GITHUB_CLIENT_SECRET=
-</code></pre>
-<h3 id="四、启动Drone"><a href="#四、启动Drone" class="headerlink" title="四、启动Drone"></a>四、启动Drone</h3><pre><code class="ini">docker-compose up -d
-</code></pre>
-<p>访问http:localhost:80（我配置的，你和我配置一样就可以打开）就成功了</p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113161124001.png"></p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155240845-8325994.png"></p>
-<p>等到验证完成就可以了（如果出现错误，关机重启，重新配置就可以了）</p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113165243948.png"></p>
-<h3 id="五、激活仓库-具体看下一篇"><a href="#五、激活仓库-具体看下一篇" class="headerlink" title="五、激活仓库(具体看下一篇)"></a>五、激活仓库(具体看下一篇)</h3><p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113171114692.png"></p>
-]]></content>
-      <categories>
-        <category>CI/CD</category>
-        <category>Docker部署Drone</category>
-      </categories>
-      <tags>
-        <tag>drone ci</tag>
       </tags>
   </entry>
   <entry>
@@ -503,268 +503,6 @@ console.log(appIcon)
       </categories>
       <tags>
         <tag>electron</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Vite+Vue3+Ts搭建私有组件库2</title>
-    <url>/2022/11/21/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vite-Vue3-Ts搭建私有组件库2"><a href="#Vite-Vue3-Ts搭建私有组件库2" class="headerlink" title="Vite+Vue3+Ts搭建私有组件库2"></a>Vite+Vue3+Ts搭建私有组件库2</h1><p>本文章只供参考，具体实现可能会有出入（会尽快完善）</p>
-<h3 id="一、vite打包"><a href="#一、vite打包" class="headerlink" title="一、vite打包"></a>一、vite打包</h3><p>上一篇末尾的打包还是有缺陷的，打包的组件库只能给js项目使用,在ts项目下运行会出现一些错误，而且使用的时候还会失去代码提示功能，这样的话我们就失去了用ts开发组件库的意义了。所以我们需要在打包的库里加入声明文件(.d.ts)。</p>
-<p>那么如何向打包后的库里加入声明文件呢？ 其实很简单，只需要引入 vite-plugin-dts</p>
-<pre><code class="css">pnpm i vite-plugin-dts -D -w
-</code></pre>
-<p>如果pnpm命令一直error，用其他命令下载安装也是一样的（下载到根目录）</p>
-<p>然后修改一下我们的vite.config.ts引入这个插件</p>
-<pre><code class="javascript">//components/vite.config.ts
-import &#123; defineConfig &#125; from &quot;vite&quot;;
-import vue from &quot;@vitejs/plugin-vue&quot;
-import dts from &#39;vite-plugin-dts&#39;
-
-export default defineConfig(
-    &#123;
-        build: &#123;...&#125;,
-        plugins: [
-            vue(),
-            dts(&#123;
-                //指定使用的tsconfig.json为我们整个项目根目录下掉,如果不配置,你也可以在components下新建tsconfig.json
-                tsConfigFilePath: &#39;../../tsconfig.json&#39;
-            &#125;),
-            //因为这个插件默认打包到es下，我们想让lib目录下也生成声明文件需要再配置一个
-            dts(&#123;
-                outputDir:&#39;lib&#39;,
-                tsConfigFilePath: &#39;../../tsconfig.json&#39;
-            &#125;)
-
-        ]
-    &#125;
-)
-</code></pre>
-<p>执行pnpm run build你就会发现你的es和lib下就有了声明文件</p>
-<h3 id="二、组件样式"><a href="#二、组件样式" class="headerlink" title="二、组件样式"></a>二、组件样式</h3><p>首先我们需要做的是将less打包成css然后放到打包后对应的文件目录下,我们在components下新建build文件夹来存放我们的一些打包工具,然后新建buildLess.ts,首先我们需要先安装一些工具cpy和fast-glob</p>
-<pre><code class="css">pnpm i cpy fast-glob -D -w
-</code></pre>
-<p>它可以直接复制我们规定的文件并将我们的文件copy到指定目录,比如buildLess.ts:</p>
-<pre><code class="javascript">//build/buildLess.ts
-import cpy from &#39;cpy&#39;
-import &#123; resolve &#125; from &#39;path&#39;
-
-const sourceDir = resolve(__dirname, &#39;../src&#39;)
-//lib文件
-const targetLib = resolve(__dirname, &#39;../lib&#39;)
-//es文件
-const targetEs = resolve(__dirname, &#39;../es&#39;)
-console.log(sourceDir);
-const buildLess = async () =&gt; &#123;
-    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetLib)
-    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetEs)
-&#125;
-buildLess()
-</code></pre>
-<p>然后在package.json中新增命令</p>
-<pre><code class="erlang">...
-&quot;scripts&quot;: &#123;
-    &quot;build&quot;: &quot;vite build&quot;,
-    &quot;build:less&quot;: &quot;esno build/buildLess&quot;
-  &#125;,
-...
-</code></pre>
-<p>终端执行 pnpm run build:less 你就会发现lib和es文件对应目录下就出现了less文件.(如果error，切换node版本)</p>
-<p>但是我们最终要的并不是less文件而是css文件,所以我们要将less打包成css,所以我们需要用的less模块.在ts中引入less因为它本身没有声明文件所以会出现类型错误,所以我们要先安装它的 @types&#x2F;less</p>
-<pre><code class="css">pnpm i --save-dev @types/less -D -w
-</code></pre>
-<p>buildLess.ts如下(详细注释都在代码中)</p>
-<pre><code class="javascript">import cpy from &#39;cpy&#39;
-import &#123; resolve &#125; from &#39;path&#39;
-import &#123; promises as fs &#125; from &quot;fs&quot;
-import less from &quot;less&quot;
-import glob from &quot;fast-glob&quot;
-const sourceDir = resolve(__dirname, &#39;../src&#39;)
-//lib文件目录
-const targetLib = resolve(__dirname, &#39;../lib&#39;)
-//es文件目录
-const targetEs = resolve(__dirname, &#39;../es&#39;)
-
-
-
-const buildLess = async () =&gt; &#123;
-    //直接将less文件复制到打包后目录
-    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetLib)
-    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetEs)
-
-    //获取打包后.less文件目录(lib和es一样)
-    const lessFils = await glob(&quot;**/*.less&quot;, &#123; cwd: targetLib, onlyFiles: true &#125;)
-
-    //遍历含有less的目录
-    for (let path in lessFils) &#123;
-        const lessPathLib = `$&#123;targetLib&#125;/$&#123;lessFils[path]&#125;`
-        const lessPathEs = `$&#123;targetEs&#125;/$&#123;lessFils[path]&#125;`
-
-        //获取less文件字符串
-        const lessCode = await fs.readFile(lessPathLib, &#39;utf-8&#39;)
-        //将less解析成css
-        const code = await less.render(lessCode)
-
-        //拿到.css后缀path
-        const cssPathLib = lessPathLib.replace(&#39;.less&#39;, &#39;.css&#39;)
-        const cssPathEs = lessPathEs.replace(&#39;.less&#39;, &#39;.css&#39;)
-
-        //将css写入对应目录
-        await fs.writeFile(cssPathLib, code.css)
-        await fs.writeFile(cssPathEs, code.css)
-    &#125;
-
-
-
-&#125;
-buildLess()
-</code></pre>
-<p>执行打包命令之后你会发现对应文件夹下多了.css文件</p>
-<p><img src="/2022/11/21/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/image-20221121092003205.png"></p>
-<p>现在我已经将css文件放入对应的目录下了,但是我们的相关组件并没有引入这个css文件;所以我们需要的是每个打包后组件的index.js中出现如:</p>
-<pre><code class="cpp">import &quot;xxx/xxx.css&quot;
-</code></pre>
-<p>之类的代码我们的css才会生效;所以我们需要对vite.config.ts进行相关配置</p>
-<p>首先我们先将.less文件忽略external: [‘vue’, &#x2F;.less&#x2F;],这时候打包后的文件中如button&#x2F;index.js就会出现</p>
-<pre><code class="cpp">import &quot;./style/index.less&quot;;
-</code></pre>
-<p>然后我们再将打包后代码的.less换成.css就大功告成了</p>
-<pre><code class="typescript">...
-plugins: [
-            ...
-
-            &#123;
-                name: &#39;style&#39;,
-                generateBundle(config, bundle) &#123;
-                    //这里可以获取打包后的文件目录以及代码code
-                    const keys = Object.keys(bundle)
-
-                    for (const key of keys) &#123;
-                        const bundler: any = bundle[key as any]
-                        //rollup内置方法,将所有输出文件code中的.less换成.css,因为我们当时没有打包less文件
-
-                        this.emitFile(&#123;
-                            type: &#39;asset&#39;,
-                            fileName: key,//文件名名不变
-                            source: bundler.code.replace(/\.less/g, &#39;.css&#39;)
-                        &#125;)
-                    &#125;
-                &#125;
-            &#125;
-        ...
-        ]
-...
-</code></pre>
-<p>我们最终的vite.config.ts如下</p>
-<pre><code class="typescript">import &#123; defineConfig &#125; from &quot;vite&quot;;
-import vue from &quot;@vitejs/plugin-vue&quot;
-import dts from &#39;vite-plugin-dts&#39;
-
-export default defineConfig(
-    &#123;
-        build: &#123;
-            target: &#39;modules&#39;,
-            //打包文件目录
-            outDir: &quot;es&quot;,
-            //压缩
-            minify: false,
-            //css分离
-            //cssCodeSplit: true,
-            rollupOptions: &#123;
-                //忽略打包vue和.less文件
-                external: [&#39;vue&#39;, /\.less/],
-                input: [&#39;src/index.ts&#39;],
-                output: [
-                    &#123;
-                        format: &#39;es&#39;,
-                        //不用打包成.es.js,这里我们想把它打包成.js
-                        entryFileNames: &#39;[name].js&#39;,
-                        //让打包目录和我们目录对应
-                        preserveModules: true,
-                        //配置打包根目录
-                        dir: &#39;es&#39;,
-                        preserveModulesRoot: &#39;src&#39;
-                    &#125;,
-                    &#123;
-                        format: &#39;cjs&#39;,
-                        //不用打包成.mjs
-                        entryFileNames: &#39;[name].js&#39;,
-                        //让打包目录和我们目录对应
-                        preserveModules: true,
-                        //配置打包根目录
-                        dir: &#39;lib&#39;,
-                        preserveModulesRoot: &#39;src&#39;
-                    &#125;
-                ]
-            &#125;,
-            lib: &#123;
-                entry: &#39;./index.ts&#39;,
-                formats: [&#39;es&#39;, &#39;cjs&#39;]
-            &#125;
-        &#125;,
-
-
-
-
-        plugins: [
-            vue(),
-            dts(&#123;
-                //指定使用的tsconfig.json为我们整个项目根目录下掉,如果不配置,你也可以在components下新建tsconfig.json
-                tsConfigFilePath: &#39;../../tsconfig.json&#39;
-            &#125;),
-            //因为这个插件默认打包到es下，我们想让lib目录下也生成声明文件需要再配置一个
-            dts(&#123;
-                outputDir: &#39;lib&#39;,
-                tsConfigFilePath: &#39;../../tsconfig.json&#39;
-            &#125;),
-
-            &#123;
-                name: &#39;style&#39;,
-                generateBundle(config, bundle) &#123;
-                    //这里可以获取打包后的文件目录以及代码code
-                    const keys = Object.keys(bundle)
-
-                    for (const key of keys) &#123;
-                        const bundler: any = bundle[key as any]
-                        //rollup内置方法,将所有输出文件code中的.less换成.css,因为我们当时没有打包less文件
-
-                        this.emitFile(&#123;
-                            type: &#39;asset&#39;,
-                            fileName: key,//文件名名不变
-                            source: bundler.code.replace(/\.less/g, &#39;.css&#39;)
-                        &#125;)
-                    &#125;
-                &#125;
-            &#125;
-
-        ]
-    &#125;
-)
-</code></pre>
-<p>最后我们将打包less与打包组件合成一个命令(package.json):</p>
-<pre><code class="erlang">...
-&quot;scripts&quot;: &#123;
-     &quot;build&quot;:&quot;vite build&quot;,
-    &quot;build:less&quot;: &quot;esno build/buildLess&quot;
-  &#125;,
-...
-</code></pre>
-<p>后续直接执行pnpm run build 即可完成所有打包啦</p>
-<h3 id="三、引用ui包"><a href="#三、引用ui包" class="headerlink" title="三、引用ui包"></a>三、引用ui包</h3><p>做了那么多终于到发布的阶段了；其实npm发包是很容易的，就拿我们的组件alanmf举例吧</p>
-<p>发布之前记得到<a href="https://www.npmjs.com/">npm</a>官网注册个账户,如果你要发布@xx&#x2F;xx这种包的话需要在npm新建个组织组织组织名就是@后面的，比如我建的组织就是kitty-ui,注册完之后你就可以发布了</p>
-<p>首先要将我们代码提交到git仓库，不然pnpm发布无法通过，后面每次发版记得在对应包下执行 <strong>pnpm version patch</strong>你就会发现这个包的版本号patch(版本号第三个数) +1 了</p>
-<p>如果你发布的是公共包的话，在对应包下执行</p>
-<pre><code class="cpp">pnpm publish --access public
-</code></pre>
-<p>输入你的账户和密码（记得输入密码的时候是不显示的，不要以为卡了）正常情况下应该是发布成功了</p>
-<p><strong>注意</strong></p>
-<p>发布的时候要将npm的源切换到npm的官方地址(<a href="https://registry.npmjs.org/">https://registry.npmjs.org/</a>); 如果你使用了其它镜像源的话</p>
-]]></content>
-      <categories>
-        <category>工程技术</category>
-        <category>Vite+Vue3+Ts搭建私有组件库2</category>
-      </categories>
-      <tags>
-        <tag>私有组件库</tag>
       </tags>
   </entry>
   <entry>
@@ -1108,6 +846,268 @@ export default defineConfig(
       </categories>
       <tags>
         <tag>组件库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Vite+Vue3+Ts搭建私有组件库2</title>
+    <url>/2022/11/21/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vite-Vue3-Ts搭建私有组件库2"><a href="#Vite-Vue3-Ts搭建私有组件库2" class="headerlink" title="Vite+Vue3+Ts搭建私有组件库2"></a>Vite+Vue3+Ts搭建私有组件库2</h1><p>本文章只供参考，具体实现可能会有出入（会尽快完善）</p>
+<h3 id="一、vite打包"><a href="#一、vite打包" class="headerlink" title="一、vite打包"></a>一、vite打包</h3><p>上一篇末尾的打包还是有缺陷的，打包的组件库只能给js项目使用,在ts项目下运行会出现一些错误，而且使用的时候还会失去代码提示功能，这样的话我们就失去了用ts开发组件库的意义了。所以我们需要在打包的库里加入声明文件(.d.ts)。</p>
+<p>那么如何向打包后的库里加入声明文件呢？ 其实很简单，只需要引入 vite-plugin-dts</p>
+<pre><code class="css">pnpm i vite-plugin-dts -D -w
+</code></pre>
+<p>如果pnpm命令一直error，用其他命令下载安装也是一样的（下载到根目录）</p>
+<p>然后修改一下我们的vite.config.ts引入这个插件</p>
+<pre><code class="javascript">//components/vite.config.ts
+import &#123; defineConfig &#125; from &quot;vite&quot;;
+import vue from &quot;@vitejs/plugin-vue&quot;
+import dts from &#39;vite-plugin-dts&#39;
+
+export default defineConfig(
+    &#123;
+        build: &#123;...&#125;,
+        plugins: [
+            vue(),
+            dts(&#123;
+                //指定使用的tsconfig.json为我们整个项目根目录下掉,如果不配置,你也可以在components下新建tsconfig.json
+                tsConfigFilePath: &#39;../../tsconfig.json&#39;
+            &#125;),
+            //因为这个插件默认打包到es下，我们想让lib目录下也生成声明文件需要再配置一个
+            dts(&#123;
+                outputDir:&#39;lib&#39;,
+                tsConfigFilePath: &#39;../../tsconfig.json&#39;
+            &#125;)
+
+        ]
+    &#125;
+)
+</code></pre>
+<p>执行pnpm run build你就会发现你的es和lib下就有了声明文件</p>
+<h3 id="二、组件样式"><a href="#二、组件样式" class="headerlink" title="二、组件样式"></a>二、组件样式</h3><p>首先我们需要做的是将less打包成css然后放到打包后对应的文件目录下,我们在components下新建build文件夹来存放我们的一些打包工具,然后新建buildLess.ts,首先我们需要先安装一些工具cpy和fast-glob</p>
+<pre><code class="css">pnpm i cpy fast-glob -D -w
+</code></pre>
+<p>它可以直接复制我们规定的文件并将我们的文件copy到指定目录,比如buildLess.ts:</p>
+<pre><code class="javascript">//build/buildLess.ts
+import cpy from &#39;cpy&#39;
+import &#123; resolve &#125; from &#39;path&#39;
+
+const sourceDir = resolve(__dirname, &#39;../src&#39;)
+//lib文件
+const targetLib = resolve(__dirname, &#39;../lib&#39;)
+//es文件
+const targetEs = resolve(__dirname, &#39;../es&#39;)
+console.log(sourceDir);
+const buildLess = async () =&gt; &#123;
+    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetLib)
+    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetEs)
+&#125;
+buildLess()
+</code></pre>
+<p>然后在package.json中新增命令</p>
+<pre><code class="erlang">...
+&quot;scripts&quot;: &#123;
+    &quot;build&quot;: &quot;vite build&quot;,
+    &quot;build:less&quot;: &quot;esno build/buildLess&quot;
+  &#125;,
+...
+</code></pre>
+<p>终端执行 pnpm run build:less 你就会发现lib和es文件对应目录下就出现了less文件.(如果error，切换node版本)</p>
+<p>但是我们最终要的并不是less文件而是css文件,所以我们要将less打包成css,所以我们需要用的less模块.在ts中引入less因为它本身没有声明文件所以会出现类型错误,所以我们要先安装它的 @types&#x2F;less</p>
+<pre><code class="css">pnpm i --save-dev @types/less -D -w
+</code></pre>
+<p>buildLess.ts如下(详细注释都在代码中)</p>
+<pre><code class="javascript">import cpy from &#39;cpy&#39;
+import &#123; resolve &#125; from &#39;path&#39;
+import &#123; promises as fs &#125; from &quot;fs&quot;
+import less from &quot;less&quot;
+import glob from &quot;fast-glob&quot;
+const sourceDir = resolve(__dirname, &#39;../src&#39;)
+//lib文件目录
+const targetLib = resolve(__dirname, &#39;../lib&#39;)
+//es文件目录
+const targetEs = resolve(__dirname, &#39;../es&#39;)
+
+
+
+const buildLess = async () =&gt; &#123;
+    //直接将less文件复制到打包后目录
+    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetLib)
+    await cpy(`$&#123;sourceDir&#125;/**/*.less`, targetEs)
+
+    //获取打包后.less文件目录(lib和es一样)
+    const lessFils = await glob(&quot;**/*.less&quot;, &#123; cwd: targetLib, onlyFiles: true &#125;)
+
+    //遍历含有less的目录
+    for (let path in lessFils) &#123;
+        const lessPathLib = `$&#123;targetLib&#125;/$&#123;lessFils[path]&#125;`
+        const lessPathEs = `$&#123;targetEs&#125;/$&#123;lessFils[path]&#125;`
+
+        //获取less文件字符串
+        const lessCode = await fs.readFile(lessPathLib, &#39;utf-8&#39;)
+        //将less解析成css
+        const code = await less.render(lessCode)
+
+        //拿到.css后缀path
+        const cssPathLib = lessPathLib.replace(&#39;.less&#39;, &#39;.css&#39;)
+        const cssPathEs = lessPathEs.replace(&#39;.less&#39;, &#39;.css&#39;)
+
+        //将css写入对应目录
+        await fs.writeFile(cssPathLib, code.css)
+        await fs.writeFile(cssPathEs, code.css)
+    &#125;
+
+
+
+&#125;
+buildLess()
+</code></pre>
+<p>执行打包命令之后你会发现对应文件夹下多了.css文件</p>
+<p><img src="/2022/11/21/Vite-Vue3-Ts%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%BB%84%E4%BB%B6%E5%BA%932/image-20221121092003205.png"></p>
+<p>现在我已经将css文件放入对应的目录下了,但是我们的相关组件并没有引入这个css文件;所以我们需要的是每个打包后组件的index.js中出现如:</p>
+<pre><code class="cpp">import &quot;xxx/xxx.css&quot;
+</code></pre>
+<p>之类的代码我们的css才会生效;所以我们需要对vite.config.ts进行相关配置</p>
+<p>首先我们先将.less文件忽略external: [‘vue’, &#x2F;.less&#x2F;],这时候打包后的文件中如button&#x2F;index.js就会出现</p>
+<pre><code class="cpp">import &quot;./style/index.less&quot;;
+</code></pre>
+<p>然后我们再将打包后代码的.less换成.css就大功告成了</p>
+<pre><code class="typescript">...
+plugins: [
+            ...
+
+            &#123;
+                name: &#39;style&#39;,
+                generateBundle(config, bundle) &#123;
+                    //这里可以获取打包后的文件目录以及代码code
+                    const keys = Object.keys(bundle)
+
+                    for (const key of keys) &#123;
+                        const bundler: any = bundle[key as any]
+                        //rollup内置方法,将所有输出文件code中的.less换成.css,因为我们当时没有打包less文件
+
+                        this.emitFile(&#123;
+                            type: &#39;asset&#39;,
+                            fileName: key,//文件名名不变
+                            source: bundler.code.replace(/\.less/g, &#39;.css&#39;)
+                        &#125;)
+                    &#125;
+                &#125;
+            &#125;
+        ...
+        ]
+...
+</code></pre>
+<p>我们最终的vite.config.ts如下</p>
+<pre><code class="typescript">import &#123; defineConfig &#125; from &quot;vite&quot;;
+import vue from &quot;@vitejs/plugin-vue&quot;
+import dts from &#39;vite-plugin-dts&#39;
+
+export default defineConfig(
+    &#123;
+        build: &#123;
+            target: &#39;modules&#39;,
+            //打包文件目录
+            outDir: &quot;es&quot;,
+            //压缩
+            minify: false,
+            //css分离
+            //cssCodeSplit: true,
+            rollupOptions: &#123;
+                //忽略打包vue和.less文件
+                external: [&#39;vue&#39;, /\.less/],
+                input: [&#39;src/index.ts&#39;],
+                output: [
+                    &#123;
+                        format: &#39;es&#39;,
+                        //不用打包成.es.js,这里我们想把它打包成.js
+                        entryFileNames: &#39;[name].js&#39;,
+                        //让打包目录和我们目录对应
+                        preserveModules: true,
+                        //配置打包根目录
+                        dir: &#39;es&#39;,
+                        preserveModulesRoot: &#39;src&#39;
+                    &#125;,
+                    &#123;
+                        format: &#39;cjs&#39;,
+                        //不用打包成.mjs
+                        entryFileNames: &#39;[name].js&#39;,
+                        //让打包目录和我们目录对应
+                        preserveModules: true,
+                        //配置打包根目录
+                        dir: &#39;lib&#39;,
+                        preserveModulesRoot: &#39;src&#39;
+                    &#125;
+                ]
+            &#125;,
+            lib: &#123;
+                entry: &#39;./index.ts&#39;,
+                formats: [&#39;es&#39;, &#39;cjs&#39;]
+            &#125;
+        &#125;,
+
+
+
+
+        plugins: [
+            vue(),
+            dts(&#123;
+                //指定使用的tsconfig.json为我们整个项目根目录下掉,如果不配置,你也可以在components下新建tsconfig.json
+                tsConfigFilePath: &#39;../../tsconfig.json&#39;
+            &#125;),
+            //因为这个插件默认打包到es下，我们想让lib目录下也生成声明文件需要再配置一个
+            dts(&#123;
+                outputDir: &#39;lib&#39;,
+                tsConfigFilePath: &#39;../../tsconfig.json&#39;
+            &#125;),
+
+            &#123;
+                name: &#39;style&#39;,
+                generateBundle(config, bundle) &#123;
+                    //这里可以获取打包后的文件目录以及代码code
+                    const keys = Object.keys(bundle)
+
+                    for (const key of keys) &#123;
+                        const bundler: any = bundle[key as any]
+                        //rollup内置方法,将所有输出文件code中的.less换成.css,因为我们当时没有打包less文件
+
+                        this.emitFile(&#123;
+                            type: &#39;asset&#39;,
+                            fileName: key,//文件名名不变
+                            source: bundler.code.replace(/\.less/g, &#39;.css&#39;)
+                        &#125;)
+                    &#125;
+                &#125;
+            &#125;
+
+        ]
+    &#125;
+)
+</code></pre>
+<p>最后我们将打包less与打包组件合成一个命令(package.json):</p>
+<pre><code class="erlang">...
+&quot;scripts&quot;: &#123;
+     &quot;build&quot;:&quot;vite build&quot;,
+    &quot;build:less&quot;: &quot;esno build/buildLess&quot;
+  &#125;,
+...
+</code></pre>
+<p>后续直接执行pnpm run build 即可完成所有打包啦</p>
+<h3 id="三、引用ui包"><a href="#三、引用ui包" class="headerlink" title="三、引用ui包"></a>三、引用ui包</h3><p>做了那么多终于到发布的阶段了；其实npm发包是很容易的，就拿我们的组件alanmf举例吧</p>
+<p>发布之前记得到<a href="https://www.npmjs.com/">npm</a>官网注册个账户,如果你要发布@xx&#x2F;xx这种包的话需要在npm新建个组织组织组织名就是@后面的，比如我建的组织就是kitty-ui,注册完之后你就可以发布了</p>
+<p>首先要将我们代码提交到git仓库，不然pnpm发布无法通过，后面每次发版记得在对应包下执行 <strong>pnpm version patch</strong>你就会发现这个包的版本号patch(版本号第三个数) +1 了</p>
+<p>如果你发布的是公共包的话，在对应包下执行</p>
+<pre><code class="cpp">pnpm publish --access public
+</code></pre>
+<p>输入你的账户和密码（记得输入密码的时候是不显示的，不要以为卡了）正常情况下应该是发布成功了</p>
+<p><strong>注意</strong></p>
+<p>发布的时候要将npm的源切换到npm的官方地址(<a href="https://registry.npmjs.org/">https://registry.npmjs.org/</a>); 如果你使用了其它镜像源的话</p>
+]]></content>
+      <categories>
+        <category>工程技术</category>
+        <category>Vite+Vue3+Ts搭建私有组件库2</category>
+      </categories>
+      <tags>
+        <tag>私有组件库</tag>
       </tags>
   </entry>
   <entry>
@@ -2879,6 +2879,199 @@ npm run build //打包项目
       </tags>
   </entry>
   <entry>
+    <title>threejs-d-2.0</title>
+    <url>/2022/11/29/threejs-d-2-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-2-0"><a href="#threejs-d-2-0" class="headerlink" title="threejs-d-2.0"></a>threejs-d-2.0</h1><h3 id="一、创建第一个threejs应用"><a href="#一、创建第一个threejs应用" class="headerlink" title="一、创建第一个threejs应用"></a>一、创建第一个threejs应用</h3><p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+
+const scene = new THREE.Scene();//创建场景
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//创建透视相机（相机中的一种）
+const renderer = new THREE.WebGLRenderer();//创建渲染器
+renderer.setSize( window.innerWidth, window.innerHeight );//将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小
+document.body.appendChild( renderer.domElement );//将renderer（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中
+
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );//创建几何体
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );//创建基础网格材质
+const cube = new THREE.Mesh( geometry, material );//使用构造器
+scene.add( cube );//将几何体添加到场景
+camera.position.z = 5;//调整相机位置（默认0，0，0）
+
+//几何体循环旋转动画
+function animate() &#123;
+    requestAnimationFrame( animate );
+  //旋转坐标变换
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+  //重新渲染几何体
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<h4 id="1-创建场景、相机、渲染器"><a href="#1-创建场景、相机、渲染器" class="headerlink" title="1.创建场景、相机、渲染器"></a>1.创建场景、相机、渲染器</h4><blockquote>
+<p>如果我们有玩过三维软件的同学应该不会陌生这几个概念</p>
+<p>我们下面以三维软件C4D来简单认识一下吧</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129085326176.png"></p>
+<p>我们花一点点时间来解释一下这里发生了什么。我们现在建立了场景、相机和渲染器。</p>
+<pre><code class="javascript">const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>three.js里有几种不同的相机，在这里，我们使用的是<strong>PerspectiveCamera</strong>（透视摄像机）。</p>
+<p>第一个参数是<strong>视野角度（FOV）</strong>。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的单位是角度(与弧度区分开)。</p>
+<p>第二个参数是<strong>长宽比（aspect ratio）</strong>。 也就是你用一个物体的宽除以它的高的值。比如说，当你在一个宽屏电视上播放老电影时，可以看到图像仿佛是被压扁的。</p>
+<p>接下来的两个参数是<strong>近截面</strong>（near）和<strong>远截面</strong>（far）。 当物体某些部分比摄像机的<strong>远截面</strong>远或者比<strong>近截面</strong>近的时候，该这些部分将不会被渲染到场景中。或许现在你不用担心这个值的影响，但未来为了获得更好的渲染性能，你将可以在你的应用程序里去设置它。</p>
+<p>接下来是渲染器。这里是施展魔法的地方。除了我们在这里用到的WebGLRenderer渲染器之外，Three.js同时提供了其他几种渲染器，当用户所使用的浏览器过于老旧，或者由于其他原因不支持WebGL时，可以使用这几种渲染器进行降级。</p>
+<p>除了创建一个渲染器的实例之外，我们还需要在我们的应用程序里设置一个渲染器的尺寸。比如说，我们可以使用所需要的渲染区域的宽高，来让渲染器渲染出的场景填充满我们的应用程序。因此，我们可以将渲染器宽高设置为浏览器窗口宽高。对于性能比较敏感的应用程序来说，你可以使用<strong>setSize</strong>传入一个较小的值，例如<strong>window.innerWidth&#x2F;2</strong>和<strong>window.innerHeight&#x2F;2</strong>，这将使得应用程序在渲染时，以一半的长宽尺寸渲染场景。</p>
+<p>如果你希望保持你的应用程序的尺寸，但是以较低的分辨率来渲染，你可以在调用<strong>setSize</strong>时，将<strong>updateStyle</strong>（第三个参数）设为false。例如，假设你的<canvas> 标签现在已经具有了100%的宽和高，调用**setSize(window.innerWidth&#x2F;2, window.innerHeight&#x2F;2, false)**将使得你的应用程序以一半的分辨率来进行渲染。</p>
+<pre><code class="javascript">document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>最后一步很重要，我们将<strong>renderer</strong>（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中。这就是渲染器用来显示场景给我们看的<canvas>元素。</p>
+<h4 id="2-创建几何体、材质"><a href="#2-创建几何体、材质" class="headerlink" title="2.创建几何体、材质"></a>2.创建几何体、材质</h4><blockquote>
+<p>对于材质这块，就是给一个没有任何属性的物体添加属性，玻璃、金属、玉、有颜色的立方体。</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129090339038.png"></p>
+<p>要创建一个立方体，我们需要一个<strong>BoxGeometry</strong>（立方体）对象. 这个对象包含了一个立方体中所有的顶点（<strong>vertices</strong>）和面（<strong>faces</strong>）。未来我们将在这方面进行更多的探索。</p>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+camera.position.z = 5;
+</code></pre>
+<p>接下来，对于这个立方体，我们需要给它一个材质，来让它有颜色。Three.js自带了几种材质，在这里我们使用的是<strong>MeshBasicMaterial</strong>。所有的材质都存有应用于他们的属性的对象。在这里为了简单起见，我们只设置一个color属性，值为<strong>0x00ff00</strong>，也就是绿色。这里所做的事情，和在CSS或者Photoshop中使用十六进制(<strong>hex colors</strong>)颜色格式来设置颜色的方式一致。</p>
+<p>第三步，我们需要一个<strong>Mesh</strong>（网格）。 网格包含一个几何体以及作用在此几何体上的材质，我们可以直接将网格对象放入到我们的场景中，并让它在场景中自由移动。</p>
+<p>默认情况下，当我们调用**scene.add()<strong>的时候，物体将会被添加到</strong>(0,0,0)**坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。</p>
+<h4 id="3-创建渲染"><a href="#3-创建渲染" class="headerlink" title="3.创建渲染"></a>3.创建渲染</h4><blockquote>
+<p>这个就比较好理解了，添加x，y，z方向的位置变化</p>
+</blockquote>
+<p>现在，如果将之前写好的代码复制到HTML文件中，你不会在页面中看到任何东西。这是因为我们还没有对它进行真正的渲染。为此，我们需要使用一个被叫做“<strong>渲染循环</strong>”（render loop）或者“<strong>动画循环</strong>”（animate loop）的东西。</p>
+<pre><code class="javascript">function animate() &#123; 
+requestAnimationFrame( animate ); 
+renderer.render( scene, camera ); 
+&#125; 
+animate();
+</code></pre>
+<p>在这里我们创建了一个使渲染器能够在每次屏幕刷新时对场景进行绘制的循环（在大多数屏幕上，刷新率一般是60次&#x2F;秒）。如果你是一个浏览器游戏开发的新手，你或许会说<em>“为什么我们不直接用setInterval来实现刷新的功能呢？”</em>当然啦，我们的确可以用setInterval，但是，<strong>requestAnimationFrame</strong>有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。</p>
+<p>在开始之前，如果你已经将上面的代码写入到了你所创建的文件中，你可以看到一个绿色的方块。让我们来做一些更加有趣的事 —— 让它旋转起来。</p>
+<p>将下列代码添加到animate()函数中<strong>renderer.render</strong>调用的上方：</p>
+<pre><code class="javascript">cube.rotation.x += 0.01; 
+cube.rotation.y += 0.01;
+</code></pre>
+<p>这段代码每帧都会执行（正常情况下是60次&#x2F;秒），这就让立方体有了一个看起来很不错的旋转动画。基本上来说，当应用程序运行时，如果你想要移动或者改变任何场景中的东西，都必须要经过这个动画循环。当然，你可以在这个动画循环里调用别的函数，这样你就不会写出有上百行代码的<strong>animate</strong>函数。</p>
+<h4 id="效果演示："><a href="#效果演示：" class="headerlink" title="效果演示："></a>效果演示：</h4><p><img src="/2022/11/29/threejs-d-2-0/image-20221129090831716.png"></p>
+<h3 id="二、控制器（轨道控制器）"><a href="#二、控制器（轨道控制器）" class="headerlink" title="二、控制器（轨道控制器）"></a>二、控制器（轨道控制器）</h3><blockquote>
+<p>控制器有许多，我们这先说这一种</p>
+<p>轨道控制器是以物体为中心，对物体做环绕运动</p>
+</blockquote>
+<p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; //导入轨道控制器
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+const controls = new OrbitControls( camera,renderer.domElement  );
+camera.position.set(0,20,100);
+controls.update();//更新控制器。必须在摄像机的变换发生任何手动改变后调用
+function animate() &#123;
+    requestAnimationFrame( animate );
+    controls.update();//循环更新轨道控制器
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<p>OrbitControls( object : Camera, domElement : HTMLDOMElement )</p>
+<p>object: （必须）将要被控制的相机。该相机不允许是其他任何对象的子级，除非该对象是场景自身。</p>
+<p>domElement: 用于事件监听的HTML元素。</p>
+<p>那我们现在就可以移动我们的相机来观察我们的物体了。</p>
+<h3 id="三、添加辅助器"><a href="#三、添加辅助器" class="headerlink" title="三、添加辅助器"></a>三、添加辅助器</h3><blockquote>
+<p>这个来自与我们help里面的东西，文档里查就可以了</p>
+<p>添加辅助器的用处是为了更好的去开发</p>
+</blockquote>
+<h4 id="1-坐标辅助器"><a href="#1-坐标辅助器" class="headerlink" title="1.坐标辅助器"></a>1.坐标辅助器</h4><blockquote>
+<p>用于简单模拟3个坐标轴的对象.<br>红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.</p>
+</blockquote>
+<pre><code class="javascript">const axesHelper = new THREE.AxesHelper( 5 );//轴的线段长度. 默认为 1.
+scene.add( axesHelper );//添加到场景
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155031932.png"></p>
+<h4 id="2-相机辅助器"><a href="#2-相机辅助器" class="headerlink" title="2.相机辅助器"></a>2.相机辅助器</h4><blockquote>
+<p>用于模拟相机视锥体的辅助对象.<br>它使用 LineSegments 来模拟相机视锥体.</p>
+</blockquote>
+<pre><code class="javascript">const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const helper = new THREE.CameraHelper( camera );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155852737.png"></p>
+<p>CameraHelper( camera : Camera )</p>
+<p>camera – 被模拟的相机.</p>
+<p>为指定相机创建一个新的相机辅助对象 CameraHelper .</p>
+<h4 id="3-平面辅助器"><a href="#3-平面辅助器" class="headerlink" title="3.平面辅助器"></a>3.平面辅助器</h4><blockquote>
+<p>用于模拟平面 Plane 的辅助对象.</p>
+</blockquote>
+<pre><code class="javascript">const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
+const helper = new THREE.PlaneHelper( plane, 100, 0xffff00 );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160213446.png"></p>
+<p>PlaneHelper( plane : Plane, size : Float, hex : Color )</p>
+<p>plane – 被模拟的平面.<br>size – (可选的) 辅助对象的单边长度. 默认为 1.<br>color – (可选的) 辅助对象的颜色. 默认为 0xffff00.</p>
+<p>创建一个线框辅助对象来表示指定平面.</p>
+<h4 id="终结："><a href="#终结：" class="headerlink" title="终结："></a>终结：</h4><p>其他的辅助器，我们就自己按照需求去加吧，这个就是做一个参照</p>
+<h3 id="四、物体的属性"><a href="#四、物体的属性" class="headerlink" title="四、物体的属性"></a>四、物体的属性</h3><blockquote>
+<p>物体的属性，那我们要看一下cube是什么了</p>
+<p>根据控制台打印，它是个Mesh类，下面有许多属性</p>
+</blockquote>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160944920.png"></p>
+<h4 id="1-物体的位移"><a href="#1-物体的位移" class="headerlink" title="1.物体的位移"></a>1.物体的位移</h4><blockquote>
+<p>控制物体的位置</p>
+</blockquote>
+<pre><code class="javascript">cube.position.set(10,0,0)//默认为x，y，z方向
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161420179.png"></p>
+<h4 id="2-物体的旋转"><a href="#2-物体的旋转" class="headerlink" title="2.物体的旋转"></a>2.物体的旋转</h4><blockquote>
+<p>控制问题的旋转角度</p>
+<p>这个不是单纯的三维向量了</p>
+<p>是一个Euler类</p>
+</blockquote>
+<pre><code class="javascript">cube.rotation.set(Math.PI/4,0,0,&#39;XYZ&#39;)//默认为‘xyz’
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129162730828.png"></p>
+<p>Euler( x : Float, y : Float, z : Float, order : String )</p>
+<p>x - (optional) 用弧度表示x轴旋转量。 默认值是 <strong>0</strong>。<br>y - (optional) 用弧度表示y轴旋转量。 默认值是 <strong>0</strong>。<br>z - (optional) 用弧度表示z轴旋转量。 默认值是 <strong>0</strong>。<br>order - (optional) 表示旋转顺序的字符串，默认为’XYZ’（必须是大写）。</p>
+<h4 id="3-物体的缩放"><a href="#3-物体的缩放" class="headerlink" title="3.物体的缩放"></a>3.物体的缩放</h4><blockquote>
+<p>控制物体缩放</p>
+</blockquote>
+<pre><code class="javascript">cube.scale.set(3,2,1)
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161943968.png"></p>
+]]></content>
+      <categories>
+        <category>Web3D</category>
+        <category>Three.js</category>
+        <category>threejs-d-2.0</category>
+      </categories>
+      <tags>
+        <tag>threejs</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>threejs-d-3.0</title>
     <url>/2022/11/30/threejs-d-3-0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-3-0"><a href="#threejs-d-3-0" class="headerlink" title="threejs-d-3.0"></a>threejs-d-3.0</h1><h3 id="一、通过Clock跟踪时间处理动画"><a href="#一、通过Clock跟踪时间处理动画" class="headerlink" title="一、通过Clock跟踪时间处理动画"></a>一、通过Clock跟踪时间处理动画</h3><blockquote>
@@ -3096,199 +3289,6 @@ window.addEventListener(&#39;resize&#39;,()=&gt;&#123;
       </tags>
   </entry>
   <entry>
-    <title>threejs-d-2.0</title>
-    <url>/2022/11/29/threejs-d-2-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-2-0"><a href="#threejs-d-2-0" class="headerlink" title="threejs-d-2.0"></a>threejs-d-2.0</h1><h3 id="一、创建第一个threejs应用"><a href="#一、创建第一个threejs应用" class="headerlink" title="一、创建第一个threejs应用"></a>一、创建第一个threejs应用</h3><p>代码汇总：</p>
-<pre><code class="javascript">//main.js
-import * as THREE from &#39;three&#39;
-
-const scene = new THREE.Scene();//创建场景
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//创建透视相机（相机中的一种）
-const renderer = new THREE.WebGLRenderer();//创建渲染器
-renderer.setSize( window.innerWidth, window.innerHeight );//将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小
-document.body.appendChild( renderer.domElement );//将renderer（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中
-
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );//创建几何体
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );//创建基础网格材质
-const cube = new THREE.Mesh( geometry, material );//使用构造器
-scene.add( cube );//将几何体添加到场景
-camera.position.z = 5;//调整相机位置（默认0，0，0）
-
-//几何体循环旋转动画
-function animate() &#123;
-    requestAnimationFrame( animate );
-  //旋转坐标变换
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-  //重新渲染几何体
-    renderer.render( scene, camera );
-&#125;
-animate();
-</code></pre>
-<h4 id="1-创建场景、相机、渲染器"><a href="#1-创建场景、相机、渲染器" class="headerlink" title="1.创建场景、相机、渲染器"></a>1.创建场景、相机、渲染器</h4><blockquote>
-<p>如果我们有玩过三维软件的同学应该不会陌生这几个概念</p>
-<p>我们下面以三维软件C4D来简单认识一下吧</p>
-</blockquote>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129085326176.png"></p>
-<p>我们花一点点时间来解释一下这里发生了什么。我们现在建立了场景、相机和渲染器。</p>
-<pre><code class="javascript">const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-</code></pre>
-<p>three.js里有几种不同的相机，在这里，我们使用的是<strong>PerspectiveCamera</strong>（透视摄像机）。</p>
-<p>第一个参数是<strong>视野角度（FOV）</strong>。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的单位是角度(与弧度区分开)。</p>
-<p>第二个参数是<strong>长宽比（aspect ratio）</strong>。 也就是你用一个物体的宽除以它的高的值。比如说，当你在一个宽屏电视上播放老电影时，可以看到图像仿佛是被压扁的。</p>
-<p>接下来的两个参数是<strong>近截面</strong>（near）和<strong>远截面</strong>（far）。 当物体某些部分比摄像机的<strong>远截面</strong>远或者比<strong>近截面</strong>近的时候，该这些部分将不会被渲染到场景中。或许现在你不用担心这个值的影响，但未来为了获得更好的渲染性能，你将可以在你的应用程序里去设置它。</p>
-<p>接下来是渲染器。这里是施展魔法的地方。除了我们在这里用到的WebGLRenderer渲染器之外，Three.js同时提供了其他几种渲染器，当用户所使用的浏览器过于老旧，或者由于其他原因不支持WebGL时，可以使用这几种渲染器进行降级。</p>
-<p>除了创建一个渲染器的实例之外，我们还需要在我们的应用程序里设置一个渲染器的尺寸。比如说，我们可以使用所需要的渲染区域的宽高，来让渲染器渲染出的场景填充满我们的应用程序。因此，我们可以将渲染器宽高设置为浏览器窗口宽高。对于性能比较敏感的应用程序来说，你可以使用<strong>setSize</strong>传入一个较小的值，例如<strong>window.innerWidth&#x2F;2</strong>和<strong>window.innerHeight&#x2F;2</strong>，这将使得应用程序在渲染时，以一半的长宽尺寸渲染场景。</p>
-<p>如果你希望保持你的应用程序的尺寸，但是以较低的分辨率来渲染，你可以在调用<strong>setSize</strong>时，将<strong>updateStyle</strong>（第三个参数）设为false。例如，假设你的<canvas> 标签现在已经具有了100%的宽和高，调用**setSize(window.innerWidth&#x2F;2, window.innerHeight&#x2F;2, false)**将使得你的应用程序以一半的分辨率来进行渲染。</p>
-<pre><code class="javascript">document.body.appendChild( renderer.domElement );
-</code></pre>
-<p>最后一步很重要，我们将<strong>renderer</strong>（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中。这就是渲染器用来显示场景给我们看的<canvas>元素。</p>
-<h4 id="2-创建几何体、材质"><a href="#2-创建几何体、材质" class="headerlink" title="2.创建几何体、材质"></a>2.创建几何体、材质</h4><blockquote>
-<p>对于材质这块，就是给一个没有任何属性的物体添加属性，玻璃、金属、玉、有颜色的立方体。</p>
-</blockquote>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129090339038.png"></p>
-<p>要创建一个立方体，我们需要一个<strong>BoxGeometry</strong>（立方体）对象. 这个对象包含了一个立方体中所有的顶点（<strong>vertices</strong>）和面（<strong>faces</strong>）。未来我们将在这方面进行更多的探索。</p>
-<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-camera.position.z = 5;
-</code></pre>
-<p>接下来，对于这个立方体，我们需要给它一个材质，来让它有颜色。Three.js自带了几种材质，在这里我们使用的是<strong>MeshBasicMaterial</strong>。所有的材质都存有应用于他们的属性的对象。在这里为了简单起见，我们只设置一个color属性，值为<strong>0x00ff00</strong>，也就是绿色。这里所做的事情，和在CSS或者Photoshop中使用十六进制(<strong>hex colors</strong>)颜色格式来设置颜色的方式一致。</p>
-<p>第三步，我们需要一个<strong>Mesh</strong>（网格）。 网格包含一个几何体以及作用在此几何体上的材质，我们可以直接将网格对象放入到我们的场景中，并让它在场景中自由移动。</p>
-<p>默认情况下，当我们调用**scene.add()<strong>的时候，物体将会被添加到</strong>(0,0,0)**坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。</p>
-<h4 id="3-创建渲染"><a href="#3-创建渲染" class="headerlink" title="3.创建渲染"></a>3.创建渲染</h4><blockquote>
-<p>这个就比较好理解了，添加x，y，z方向的位置变化</p>
-</blockquote>
-<p>现在，如果将之前写好的代码复制到HTML文件中，你不会在页面中看到任何东西。这是因为我们还没有对它进行真正的渲染。为此，我们需要使用一个被叫做“<strong>渲染循环</strong>”（render loop）或者“<strong>动画循环</strong>”（animate loop）的东西。</p>
-<pre><code class="javascript">function animate() &#123; 
-requestAnimationFrame( animate ); 
-renderer.render( scene, camera ); 
-&#125; 
-animate();
-</code></pre>
-<p>在这里我们创建了一个使渲染器能够在每次屏幕刷新时对场景进行绘制的循环（在大多数屏幕上，刷新率一般是60次&#x2F;秒）。如果你是一个浏览器游戏开发的新手，你或许会说<em>“为什么我们不直接用setInterval来实现刷新的功能呢？”</em>当然啦，我们的确可以用setInterval，但是，<strong>requestAnimationFrame</strong>有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。</p>
-<p>在开始之前，如果你已经将上面的代码写入到了你所创建的文件中，你可以看到一个绿色的方块。让我们来做一些更加有趣的事 —— 让它旋转起来。</p>
-<p>将下列代码添加到animate()函数中<strong>renderer.render</strong>调用的上方：</p>
-<pre><code class="javascript">cube.rotation.x += 0.01; 
-cube.rotation.y += 0.01;
-</code></pre>
-<p>这段代码每帧都会执行（正常情况下是60次&#x2F;秒），这就让立方体有了一个看起来很不错的旋转动画。基本上来说，当应用程序运行时，如果你想要移动或者改变任何场景中的东西，都必须要经过这个动画循环。当然，你可以在这个动画循环里调用别的函数，这样你就不会写出有上百行代码的<strong>animate</strong>函数。</p>
-<h4 id="效果演示："><a href="#效果演示：" class="headerlink" title="效果演示："></a>效果演示：</h4><p><img src="/2022/11/29/threejs-d-2-0/image-20221129090831716.png"></p>
-<h3 id="二、控制器（轨道控制器）"><a href="#二、控制器（轨道控制器）" class="headerlink" title="二、控制器（轨道控制器）"></a>二、控制器（轨道控制器）</h3><blockquote>
-<p>控制器有许多，我们这先说这一种</p>
-<p>轨道控制器是以物体为中心，对物体做环绕运动</p>
-</blockquote>
-<p>代码汇总：</p>
-<pre><code class="javascript">//main.js
-import * as THREE from &#39;three&#39;
-import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; //导入轨道控制器
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-
-const geometry = new THREE.BoxGeometry( 5, 5, 5 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-const controls = new OrbitControls( camera,renderer.domElement  );
-camera.position.set(0,20,100);
-controls.update();//更新控制器。必须在摄像机的变换发生任何手动改变后调用
-function animate() &#123;
-    requestAnimationFrame( animate );
-    controls.update();//循环更新轨道控制器
-    renderer.render( scene, camera );
-&#125;
-animate();
-</code></pre>
-<p>OrbitControls( object : Camera, domElement : HTMLDOMElement )</p>
-<p>object: （必须）将要被控制的相机。该相机不允许是其他任何对象的子级，除非该对象是场景自身。</p>
-<p>domElement: 用于事件监听的HTML元素。</p>
-<p>那我们现在就可以移动我们的相机来观察我们的物体了。</p>
-<h3 id="三、添加辅助器"><a href="#三、添加辅助器" class="headerlink" title="三、添加辅助器"></a>三、添加辅助器</h3><blockquote>
-<p>这个来自与我们help里面的东西，文档里查就可以了</p>
-<p>添加辅助器的用处是为了更好的去开发</p>
-</blockquote>
-<h4 id="1-坐标辅助器"><a href="#1-坐标辅助器" class="headerlink" title="1.坐标辅助器"></a>1.坐标辅助器</h4><blockquote>
-<p>用于简单模拟3个坐标轴的对象.<br>红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.</p>
-</blockquote>
-<pre><code class="javascript">const axesHelper = new THREE.AxesHelper( 5 );//轴的线段长度. 默认为 1.
-scene.add( axesHelper );//添加到场景
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155031932.png"></p>
-<h4 id="2-相机辅助器"><a href="#2-相机辅助器" class="headerlink" title="2.相机辅助器"></a>2.相机辅助器</h4><blockquote>
-<p>用于模拟相机视锥体的辅助对象.<br>它使用 LineSegments 来模拟相机视锥体.</p>
-</blockquote>
-<pre><code class="javascript">const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const helper = new THREE.CameraHelper( camera );
-scene.add( helper );
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155852737.png"></p>
-<p>CameraHelper( camera : Camera )</p>
-<p>camera – 被模拟的相机.</p>
-<p>为指定相机创建一个新的相机辅助对象 CameraHelper .</p>
-<h4 id="3-平面辅助器"><a href="#3-平面辅助器" class="headerlink" title="3.平面辅助器"></a>3.平面辅助器</h4><blockquote>
-<p>用于模拟平面 Plane 的辅助对象.</p>
-</blockquote>
-<pre><code class="javascript">const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
-const helper = new THREE.PlaneHelper( plane, 100, 0xffff00 );
-scene.add( helper );
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160213446.png"></p>
-<p>PlaneHelper( plane : Plane, size : Float, hex : Color )</p>
-<p>plane – 被模拟的平面.<br>size – (可选的) 辅助对象的单边长度. 默认为 1.<br>color – (可选的) 辅助对象的颜色. 默认为 0xffff00.</p>
-<p>创建一个线框辅助对象来表示指定平面.</p>
-<h4 id="终结："><a href="#终结：" class="headerlink" title="终结："></a>终结：</h4><p>其他的辅助器，我们就自己按照需求去加吧，这个就是做一个参照</p>
-<h3 id="四、物体的属性"><a href="#四、物体的属性" class="headerlink" title="四、物体的属性"></a>四、物体的属性</h3><blockquote>
-<p>物体的属性，那我们要看一下cube是什么了</p>
-<p>根据控制台打印，它是个Mesh类，下面有许多属性</p>
-</blockquote>
-<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 5, 5, 5 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160944920.png"></p>
-<h4 id="1-物体的位移"><a href="#1-物体的位移" class="headerlink" title="1.物体的位移"></a>1.物体的位移</h4><blockquote>
-<p>控制物体的位置</p>
-</blockquote>
-<pre><code class="javascript">cube.position.set(10,0,0)//默认为x，y，z方向
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161420179.png"></p>
-<h4 id="2-物体的旋转"><a href="#2-物体的旋转" class="headerlink" title="2.物体的旋转"></a>2.物体的旋转</h4><blockquote>
-<p>控制问题的旋转角度</p>
-<p>这个不是单纯的三维向量了</p>
-<p>是一个Euler类</p>
-</blockquote>
-<pre><code class="javascript">cube.rotation.set(Math.PI/4,0,0,&#39;XYZ&#39;)//默认为‘xyz’
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129162730828.png"></p>
-<p>Euler( x : Float, y : Float, z : Float, order : String )</p>
-<p>x - (optional) 用弧度表示x轴旋转量。 默认值是 <strong>0</strong>。<br>y - (optional) 用弧度表示y轴旋转量。 默认值是 <strong>0</strong>。<br>z - (optional) 用弧度表示z轴旋转量。 默认值是 <strong>0</strong>。<br>order - (optional) 表示旋转顺序的字符串，默认为’XYZ’（必须是大写）。</p>
-<h4 id="3-物体的缩放"><a href="#3-物体的缩放" class="headerlink" title="3.物体的缩放"></a>3.物体的缩放</h4><blockquote>
-<p>控制物体缩放</p>
-</blockquote>
-<pre><code class="javascript">cube.scale.set(3,2,1)
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161943968.png"></p>
-]]></content>
-      <categories>
-        <category>Web3D</category>
-        <category>Three.js</category>
-        <category>threejs-d-2.0</category>
-      </categories>
-      <tags>
-        <tag>threejs</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>umi-4.0</title>
     <url>/2023/01/02/umi-4-0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="umi-4-0"><a href="#umi-4-0" class="headerlink" title="umi 4.0"></a>umi 4.0</h1><h2 id="Umi-4-有什么新功能？"><a href="#Umi-4-有什么新功能？" class="headerlink" title="Umi 4 有什么新功能？"></a>Umi 4 有什么新功能？</h2><p><img src="/2023/01/02/umi-4-0/image-20230102100825501.png"></p>
@@ -3472,107 +3472,6 @@ export default (api: IApi) =&gt; &#123;
       </categories>
       <tags>
         <tag>uniapp</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>vite配置</title>
-    <url>/2022/11/22/vite%E9%85%8D%E7%BD%AE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="vite配置"><a href="#vite配置" class="headerlink" title="vite配置"></a>vite配置</h1><p>最直观的体验是“快速”、“清爽”，开发效率也得到明显提升（解决掉了webpack开发服务器存在的痛点）。</p>
-<p>初始化完成后，工程目录如下：</p>
-<p><img src="/2022/11/22/vite%E9%85%8D%E7%BD%AE/image-20221122094453903.png"></p>
-<p>VS Code插件：Vite</p>
-<p>配置详情：</p>
-<p>vite.config.ts</p>
-<pre><code class="javascript">import &#123; defineConfig, loadEnv &#125; from &#39;vite&#39;;
-import vue from &#39;@vitejs/plugin-vue&#39;;
-import vueJSX from &#39;@vitejs/plugin-vue-jsx&#39;;
-import Components from &#39;unplugin-vue-components/vite&#39;;
-import &#123; AntDesignVueResolver &#125; from &#39;unplugin-vue-components/resolvers&#39;;
-import &#123; resolve &#125; from &#39;path&#39;;
-import &#123; initDevProxy &#125; from &#39;./http-proxy&#39;;
-
-// https://vitejs.dev/config/
-export default defineConfig((&#123; mode &#125;) =&gt; &#123;
-  const env = loadEnv(mode, process.cwd(), &#39;&#39;);
-  return &#123;
-    // 自定义公共基础路径（取自 .env(.*) 文件）
-    base: env.VITE_BASE_PATH,
-    // 定义全局常量替换方式
-    define: &#123;
-      // 取消启用Vue.2x中选项式api（这部分不会被打包）
-      &#39;__VUE_OPTIONS_API__&#39;: false,
-    &#125;,
-    // 配置vite插件
-    plugins: [
-      vue(),
-      vueJSX(),
-      // 自动化的组件按需引入配置
-      Components(&#123;
-        extensions: [&#39;vue&#39;, &#39;tsx&#39;],
-        resolvers: [
-          AntDesignVueResolver(&#123; resolveIcons: true &#125;),
-        ],
-        include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/],
-      &#125;),
-    ],
-    // 配置解析项
-    resolve: &#123;
-      // 路径别名
-      alias: &#123;
-        &#39;@/&#39;: resolve(__dirname, &#39;src&#39;) + &#39;/&#39;,
-      &#125;,
-    &#125;,
-    // 样式处理配置项
-    css: &#123;
-      // CSS module
-      modules: &#123;
-        generateScopedName: `_[name]_[local]_[hash:base64:6]_`,
-      &#125;,
-      // 传递给特定css样式预处理器的配置
-      preprocessorOptions: &#123;
-        less: &#123;
-          javascriptEnabled: true,
-        &#125;,
-      &#125;,
-    &#125;,
-    // 配置开发服务器
-    server: &#123;
-      open: true,
-      proxy: initDevProxy(),
-    &#125;,
-    // 自定义打包项配置
-    build: &#123;
-      // 大文件告警阈值(kb)
-      chunkSizeWarningLimit: 400,
-    &#125;,
-  &#125;;
-&#125;);
-</code></pre>
-<p>http-proxy.ts</p>
-<pre><code class="javascript">import type &#123; ProxyOptions &#125; from &#39;vite&#39;;
-
-/**
- * 初始化开发服务器代理
- */
-export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt; &#123;
-  return &#123;
-    // 临时示例
-    &#39;/api&#39;: &#123;
-      target: &#39;&#39;,
-      changeOrigin: true,
-    &#125;,
-  &#125;;
-&#125;;
-</code></pre>
-<p>以上的配置是项目配置的一部分，其他所需要的配置按照自己的需要去官网查询就可以，官网基于没个配置都有详细讲解。</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Vite中文官网]: 	“<a href="https://cn.vitejs.dev/guide/">https://cn.vitejs.dev/guide/</a> “</p>
-]]></content>
-      <categories>
-        <category>工程技术</category>
-        <category>vite配置</category>
-      </categories>
-      <tags>
-        <tag>vite</tag>
       </tags>
   </entry>
   <entry>
@@ -3895,6 +3794,107 @@ export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt
       </categories>
       <tags>
         <tag>uniapp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vite配置</title>
+    <url>/2022/11/22/vite%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="vite配置"><a href="#vite配置" class="headerlink" title="vite配置"></a>vite配置</h1><p>最直观的体验是“快速”、“清爽”，开发效率也得到明显提升（解决掉了webpack开发服务器存在的痛点）。</p>
+<p>初始化完成后，工程目录如下：</p>
+<p><img src="/2022/11/22/vite%E9%85%8D%E7%BD%AE/image-20221122094453903.png"></p>
+<p>VS Code插件：Vite</p>
+<p>配置详情：</p>
+<p>vite.config.ts</p>
+<pre><code class="javascript">import &#123; defineConfig, loadEnv &#125; from &#39;vite&#39;;
+import vue from &#39;@vitejs/plugin-vue&#39;;
+import vueJSX from &#39;@vitejs/plugin-vue-jsx&#39;;
+import Components from &#39;unplugin-vue-components/vite&#39;;
+import &#123; AntDesignVueResolver &#125; from &#39;unplugin-vue-components/resolvers&#39;;
+import &#123; resolve &#125; from &#39;path&#39;;
+import &#123; initDevProxy &#125; from &#39;./http-proxy&#39;;
+
+// https://vitejs.dev/config/
+export default defineConfig((&#123; mode &#125;) =&gt; &#123;
+  const env = loadEnv(mode, process.cwd(), &#39;&#39;);
+  return &#123;
+    // 自定义公共基础路径（取自 .env(.*) 文件）
+    base: env.VITE_BASE_PATH,
+    // 定义全局常量替换方式
+    define: &#123;
+      // 取消启用Vue.2x中选项式api（这部分不会被打包）
+      &#39;__VUE_OPTIONS_API__&#39;: false,
+    &#125;,
+    // 配置vite插件
+    plugins: [
+      vue(),
+      vueJSX(),
+      // 自动化的组件按需引入配置
+      Components(&#123;
+        extensions: [&#39;vue&#39;, &#39;tsx&#39;],
+        resolvers: [
+          AntDesignVueResolver(&#123; resolveIcons: true &#125;),
+        ],
+        include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/],
+      &#125;),
+    ],
+    // 配置解析项
+    resolve: &#123;
+      // 路径别名
+      alias: &#123;
+        &#39;@/&#39;: resolve(__dirname, &#39;src&#39;) + &#39;/&#39;,
+      &#125;,
+    &#125;,
+    // 样式处理配置项
+    css: &#123;
+      // CSS module
+      modules: &#123;
+        generateScopedName: `_[name]_[local]_[hash:base64:6]_`,
+      &#125;,
+      // 传递给特定css样式预处理器的配置
+      preprocessorOptions: &#123;
+        less: &#123;
+          javascriptEnabled: true,
+        &#125;,
+      &#125;,
+    &#125;,
+    // 配置开发服务器
+    server: &#123;
+      open: true,
+      proxy: initDevProxy(),
+    &#125;,
+    // 自定义打包项配置
+    build: &#123;
+      // 大文件告警阈值(kb)
+      chunkSizeWarningLimit: 400,
+    &#125;,
+  &#125;;
+&#125;);
+</code></pre>
+<p>http-proxy.ts</p>
+<pre><code class="javascript">import type &#123; ProxyOptions &#125; from &#39;vite&#39;;
+
+/**
+ * 初始化开发服务器代理
+ */
+export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt; &#123;
+  return &#123;
+    // 临时示例
+    &#39;/api&#39;: &#123;
+      target: &#39;&#39;,
+      changeOrigin: true,
+    &#125;,
+  &#125;;
+&#125;;
+</code></pre>
+<p>以上的配置是项目配置的一部分，其他所需要的配置按照自己的需要去官网查询就可以，官网基于没个配置都有详细讲解。</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Vite中文官网]: 	“<a href="https://cn.vitejs.dev/guide/">https://cn.vitejs.dev/guide/</a> “</p>
+]]></content>
+      <categories>
+        <category>工程技术</category>
+        <category>vite配置</category>
+      </categories>
+      <tags>
+        <tag>vite</tag>
       </tags>
   </entry>
   <entry>
@@ -4303,6 +4303,118 @@ gl.drawArrays(gl.TRIANGLES,0,3);
       </tags>
   </entry>
   <entry>
+    <title>什么是CI/CD</title>
+    <url>/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署"><a href="#CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署" class="headerlink" title="CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署"></a>CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署</h1><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>CI&#x2F;CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。CI&#x2F;CD 的核心概念是持续集成、持续交付和持续部署。作为一个面向开发和运营团队的解决方案，CI&#x2F;CD 主要针对在集成新代码时所引发的问题（亦称：”集成地狱”）。</p>
+<p>具体而言，CI&#x2F;CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为”CI&#x2F;CD 管道”，由开发和运维团队以敏捷方式协同支持。</p>
+<h3 id="CI-是什么？CI-和-CD-有什么区别？"><a href="#CI-是什么？CI-和-CD-有什么区别？" class="headerlink" title="CI 是什么？CI 和 CD 有什么区别？"></a>CI 是什么？CI 和 CD 有什么区别？</h3><p>缩略词 CI &#x2F; CD 具有几个不同的含义。CI&#x2F;CD 中的”CI”始终指持续集成，它属于开发人员的自动化流程。成功的 CI 意味着应用代码的新更改会定期构建、测试并合并到共享存储库中。该解决方案可以解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</p>
+<p>CI&#x2F;CD 中的”CD”指的是持续交付和&#x2F;或持续部署，这些相关概念有时会交叉使用。两者都事关管道后续阶段的自动化，但它们有时也会单独使用，用于说明自动化程度。</p>
+<p>持续<em>交付</em>通常是指开发人员对应用的更改会自动进行错误测试并上传到存储库（如 GitHub或容器注册表），然后由运维团队将其部署到实时生产环境中。这旨在解决开发和运维团队之间可见性及沟通较差的问题。因此，持续交付的目的就是确保尽可能减少部署新代码时所需的工作量。</p>
+<p>持续<em>部署</em>（另一种”CD”）指的是自动将开发人员的更改从存储库发布到生产环境，以供客户使用。它主要为了解决因手动流程降低应用交付速度，从而使运维团队超负荷的问题。持续部署以持续交付的优势为根基，实现了管道后续阶段的自动化。</p>
+<p><img src="/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/ci-cd-flow-desktop_edited_0.png" alt="CI/CD flow"></p>
+<p>CI&#x2F;CD 既可能仅指持续集成和持续交付构成的关联环节，也可以指持续集成、持续交付和持续部署这三项构成的关联环节。更为复杂的是，有时”持续交付”也包含了持续部署流程。</p>
+<p>归根结底，我们没必要纠结于这些语义，您只需记得 CI&#x2F;CD 其实就是一个流程（通常形象地表述为管道），用于实现应用开发中的高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于 CI&#x2F;CD 管道的自动化程度。许多企业最开始先添加 CI，然后逐步实现交付和部署的自动化（例如作为云原生应用的一部分）。</p>
+<h3 id="CI-持续集成（Continuous-Integration）"><a href="#CI-持续集成（Continuous-Integration）" class="headerlink" title="CI 持续集成（Continuous Integration）"></a>CI 持续集成（Continuous Integration）</h3><p>现代应用开发的目标是让多位开发人员同时处理同一应用的不同功能。但是，如果企业安排在一天内将所有分支源代码合并在一起（称为”合并日”），最终可能造成工作繁琐、耗时，而且需要手动完成。这是因为当一位独立工作的开发人员对应用进行更改时，有可能会与其他开发人员同时进行的更改发生冲突。如果每个开发人员都自定义自己的本地集成开发环境（IDE），而不是让团队就一个基于云的 IDE 达成一致，那么就会让问题更加雪上加霜。</p>
+<p>持续集成（CI）可以帮助开发人员更加频繁地（有时甚至每天）将代码更改合并到共享分支或”主干”中。一旦开发人员对应用所做的更改被合并，系统就会通过自动构建应用并运行不同级别的自动化测试（通常是单元测试和集成测试）来验证这些更改，确保这些更改没有对应用造成破坏。这意味着测试内容涵盖了从类和函数到构成整个应用的不同模块。如果自动化测试发现新代码和现有代码之间存在冲突，CI 可以更加轻松地快速修复这些错误。</p>
+<h3 id="CD-持续交付（Continuous-Delivery）"><a href="#CD-持续交付（Continuous-Delivery）" class="headerlink" title="CD 持续交付（Continuous Delivery）"></a>CD 持续交付（Continuous Delivery）</h3><p>完成 CI 中构建及单元测试和集成测试的自动化流程后，持续交付可自动将已验证的代码发布到存储库。为了实现高效的持续交付流程，务必要确保 CI 已内置于开发管道。持续交付的目标是拥有一个可随时部署到生产环境的代码库。</p>
+<p>在持续交付中，每个阶段（从代码更改的合并，到生产就绪型构建版本的交付）都涉及测试自动化和代码发布自动化。在流程结束时，运维团队可以快速、轻松地将应用部署到生产环境中。</p>
+<h3 id="CD-持续部署（Continuous-Deployment）"><a href="#CD-持续部署（Continuous-Deployment）" class="headerlink" title="CD 持续部署（Continuous Deployment）"></a>CD 持续部署（Continuous Deployment）</h3><p>对于一个成熟的 CI&#x2F;CD 管道来说，最后的阶段是持续部署。作为持续交付——自动将生产就绪型构建版本发布到代码存储库——的延伸，持续部署可以自动将应用发布到生产环境。由于在生产之前的管道阶段没有手动门控，因此持续部署在很大程度上都得依赖精心设计的测试自动化。</p>
+<p>实际上，持续部署意味着开发人员对应用的更改在编写后的几分钟内就能生效（假设它通过了自动化测试）。这更加便于持续接收和整合用户反馈。总而言之，所有这些 CI&#x2F;CD 的关联步骤都有助于降低应用的部署风险，因此更便于以小件的方式（而非一次性）发布对应用的更改。不过，由于还需要编写自动化测试以适应 CI&#x2F;CD 管道中的各种测试和发布阶段，因此前期投资还是会很大。</p>
+]]></content>
+      <categories>
+        <category>CI/CD</category>
+        <category>什么是CI/CD</category>
+      </categories>
+      <tags>
+        <tag>CI/CD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>什么是性能优化</title>
+    <url>/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="什么是性能优化"><a href="#什么是性能优化" class="headerlink" title="什么是性能优化"></a>什么是性能优化</h1><h3 id="1-性能的起因"><a href="#1-性能的起因" class="headerlink" title="1.性能的起因"></a>1.性能的起因</h3><p>​		市场上的某个功能还没有能满足其需求的可选方案的时候，如果出来一个应用即使很难用，用户都要忍着用。如果这个功能确实能解决用户的某些痛点需求，且有其存在的价值，那么让用户忍受糟糕体验的背后，就存在 对产品优化和改进的空间。</p>
+<h3 id="2-性能的影响"><a href="#2-性能的影响" class="headerlink" title="2.性能的影响"></a>2.性能的影响</h3><p>​		大部分网站体现的价值都无外乎信息的载体、交互的工具或商品流通的渠道，这就要求它们需要与更多的用户建立联系，同时还要保持所建立的联系拥有绵延不绝的用户黏性，所以网站就不能只关注自我表达，而不顾及用户是否喜欢。</p>
+<h4 id="2-1用户的留存"><a href="#2-1用户的留存" class="headerlink" title="2.1用户的留存"></a>2.1用户的留存</h4><p>​		我们都希望用户访问网站所进行的交互，对网站构建的内容来讲是有意义的，比如，电商网站希望用户浏览并购买商品，社交网站希望用户之间进行互动，视频网站希望用户观看视频，而这些希望都是建立在网站用户留存的基础上的。网站用户的留存情况，一般指的是用户自登录注册之日起，经过一段时间后， 仍然还在使用该网站的用户数。统计出注册用户数与留存用户数后，就可以计算出用户留存率，这个指标对网站的运营有重要的指导意义。</p>
+<p>​		根据Google营销平台提供的调研发现，如果网站页面的加载时间超过3s,就会有53%的移动网站的访问遭到用户抛弃。同时他们还针对加载时间分别在4s内和20s内的网站进行比较，发现加载时间在5s内的网站，用户的停留时间相比会长70%，用户在一定时间内从该网站离开的跳出率会低35%，而网站上展示广告的可见率也会高25%。</p>
+<p>​		虽然影响用户留存的因素不止性能这一方面， 但从上述数据可知，通过优化性能来保证留存事是必要的措施。	</p>
+<h4 id="2-2网站的转化率"><a href="#2-2网站的转化率" class="headerlink" title="2.2网站的转化率"></a>2.2网站的转化率</h4><p>​		从运营角度来看，网站转化率是一个非常 重要的考量指标，网站转化率指的是用户进行了某项目标行为的访问次数与总访问次数的比率。某项目标行为可以是用户注册、资源下载、商品购买等一 系列用户行为，简言之，比如在电商网站上浏览了某个商品的用户中，有多少位用户最终购买了该商品，其所占的比例就可以看作访客到消费者的转化率。</p>
+<p>​		根据Mobify (一家著 名的电子商务优化平台)的调研，发现商品的结账页面加载时间每减少100ms,基于该商品购买访问的转化率就会增加1.55%， 这个比率对大型电商网站来讲，其所带来的年均收入增长将会是上千万元。Google 营销平台的调研也指出，加载时间在5s以内的网站会比在20s以内的网站的广告收入多一倍。</p>
+<p>​		目前大部分互联网广告营销都渐趋精准化，即广告商的广告费会根据经广告导流，产生确定的用户交易后再收取。如此看来网站性能不仅影响用户体验，对于广告主和广告商的经济利益也会带来实实在在的影响。</p>
+<h4 id="2-3体验与传播"><a href="#2-3体验与传播" class="headerlink" title="2.3体验与传播"></a>2.3体验与传播</h4><p>​		当用户通过手机、平板电脑等移动设备经运营商网络浏览网站时，所产生的流量数据通常是根据字节数进行收费的。虽然从2G、 3G 到4G,甚至5G,运营商所收取的流量费用单价一直在下滑，但与此同时，页面所承载的内容却在不断增大，并且这一趋势似乎将持续下去。 那么用户必将为过多的流量数据支付相应的费用，若所访问网站包含的资源文件过大、组织冗余，用户便会浪费过多的网络资费，同时过大的资源传输量也会延长请求响应的时间，最终降低用户的体验度。</p>
+<p>​		性能问题引起的所谓用户体验差，造成的影响并非单纯是用户觉得不喜欢就放弃了使用。用户还会拒绝向自己的周边网络推荐该网站或应用，更坏的情况是用户会对低性能进行差评。口碑是互联网时代t分可靠的通行证，如果我们不重视性能问题，经过网络口碑的放大效应，网站的发展不仅会遇到瓶颈，甚至还可能会日薄西山。</p>
+<h3 id="3-性能评估模型"><a href="#3-性能评估模型" class="headerlink" title="3.性能评估模型"></a>3.性能评估模型</h3><p>​		我们先来约定一个原则，以用户为中心，然后根据该原则引出指导后文涉及的各种优化策略，所参照的性能模型为RAIL性能模型。这个名字的由来是四个英文单词的首字母:响应( Response)、动画(Animation)、 空闲(Idle)、加载(Load)，这四个单词代表与网站或应用的生命周期相关的四个方面，这些方面会以不同的方式影响整个网站的性能。</p>
+<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106102130579.png"></p>
+<p>我们将用户作为之后性能优化的中心，首先需要了解用户对于延迟的反应。用户感知延迟的时间窗口。</p>
+<table>
+<thead>
+<tr>
+<th align="center">延迟</th>
+<th align="center">用户反应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0～16ms</td>
+<td align="center">人眼可以感知每秒60帧的动画转场，即每帧16ms，除了浏览器将每一帧画面绘制到屏幕上的时间，网站应用大约需要10ms来生成一帧</td>
+</tr>
+<tr>
+<td align="center">0～100ms</td>
+<td align="center">在该时间窗口内来响应用户的操作，才会是流畅的体验</td>
+</tr>
+<tr>
+<td align="center">100～300ms</td>
+<td align="center">用户能感知轻微的延迟</td>
+</tr>
+<tr>
+<td align="center">300～1000ms</td>
+<td align="center">所感知的延迟会被用户当作网站页面加载或更改视图过程的一部分</td>
+</tr>
+<tr>
+<td align="center">&gt;1s</td>
+<td align="center">用户的注意力将离开之前执行的任务</td>
+</tr>
+<tr>
+<td align="center">&gt;10s</td>
+<td align="center">用户感觉失望，可能会放弃任务</td>
+</tr>
+</tbody></table>
+<h4 id="3-1响应"><a href="#3-1响应" class="headerlink" title="3.1响应"></a>3.1响应</h4><p>​		网站性能对于响应方面的要求是，在用户感知延迟之前接收到操作的反馈。比如用户进行了文本输入，按钮单击、表单切换及启动动画等操作后，必须在100m内收到反馈，如果超过100ms的时间窗口，用户就会感知延迟。</p>
+<p>​		看似很基本的用户操作背后，可能会隐藏着复杂的业务逻辑处理及网络请求与数据计算。对此我们应当谨慎，将较大开销的工作放在后台异步执行，而即便后白处理要数百毫秒才能完成的操作，也应当给用户提供及时的阶段性反馈。</p>
+<p>​		比如在单击按钮向后台发起某项业务处理请求时，首先反馈给用户开始处理的提示，然后在处理完成的回调后反馈完成的提示。</p>
+<h4 id="3-2动画"><a href="#3-2动画" class="headerlink" title="3.2动画"></a>3.2动画</h4><p>​		前端所涉及的动画不仅有炫酷的UI特效，还包括滚动和触摸拖动等交互效果，而这一方面的性能要求就是流畅。 众所周知，人眼具有视觉暂留特性，就是当光对视网膜所产生的视觉在光停止作用后，仍能保留一段时间。</p>
+<p>​		研究表明这是由于视神经存在反应速度造成的， 其值是1&#x2F;24s，即当我们所见的物体移除后，该物体在我们眼中并不会立即消失，而会延续存在1&#x2F;24s 的时间。对动画来说，无论动画帧率有多高，最后我们仅能分辨其中的30帧，但越高的帧率会带来更好的流畅体验，因此动画要尽力达到60fps的帧率，每一帧画面的生成都需要经过若干步骤，根据60fps 帧率的计算，帧图像的生成预算为16ms ( 1000ms&#x2F;60 约等于 16.6ms)，除去浏览器绘制新帧的时间，留给执行代码的时间仅10ms 左右。关于这个维度的具体优化策略，会在后面优化谊染过程的相关章节中详细介绍。</p>
+<h4 id="3-3空闲"><a href="#3-3空闲" class="headerlink" title="3.3空闲"></a>3.3空闲</h4><p>​		要使网站响应迅速、动画流畅，通常都需要较长的处理时间，但以用户为中心来看待性能问题，就会发现并非所有工作都需要在响应和加载阶段完成，我们完全可以利用浏览器的空闲时间处理可延迟的任务，只要让用户感受不到延迟即可。利用空闲时间处理延迟，可减少预加载的数据大小，以保证网站或应用快速完成加载。</p>
+<p>​		为了更加合理地利用浏览器的空闲时间，最好将处理任务按50ms为单位分组。这么做就是保证用户在发生操作后的100ms 内给出响应。</p>
+<h4 id="3-4-加载"><a href="#3-4-加载" class="headerlink" title="3.4 加载"></a>3.4 加载</h4><p>​		用户感知要求我们尽量在1s内完成页面加载，如果没有完成，用户的注意力就会分散到其他事情上，并对当前处理的任务产生中断感。需要注意的是，这里在1s内完成加载井谊染出页面的要求，并非要完成所有页面资源的加载，从用户感如体验的角度来说，只要关键谊染路径完成，用户就会认为全部加载已完成。</p>
+<p>​		对于其他非关键资源的加载，延迟到浏览器空闲时段再进行，是比较常见的渐进式优化策略。</p>
+<h3 id="4-性能优化的步骤"><a href="#4-性能优化的步骤" class="headerlink" title="4.性能优化的步骤"></a>4.性能优化的步骤</h3><p>​		RAIL性能模型指出了用户对不同延迟时间的感知度，以用户为中心的原则，就是要让用户满意网站或应用的性能体验。</p>
+<p>​		不同类型的操作，需要在规定的时间窗口内完成，所以进行性能优化的步骤般是:首先可量化地评估出网站或应用的性能表现,然后立足于网站页面响应的生命周期，分析出造成较差性能表现的原因,最后进行技术改造、可行性分析等具体的优化实施。</p>
+<h4 id="4-1-性能测量"><a href="#4-1-性能测量" class="headerlink" title="4.1 性能测量"></a>4.1 性能测量</h4><p>​		如果把对网站的性能优化比作一场旅程， 它无疑会是漫长且可能还略带泥泞的，那么在开始之前我们有必要对网站进行性能测量，以知道优化的方向在何处。通常我们会借助.些工具来完成性能测量.</p>
+<p>1.Chrome浏览器的Performance功能</p>
+<p>​		通过Chrome浏览器访问我们要进行性能测量的网站，打开开发者工具的Performance选项卡。单击左上角的“开始评估”按钮后刷新网站，该工具便开始分析页面资源加载、渲染、请求响应等各环节耗费的时间线，据此便可分析定程度的性能问题， 比如JavaScript 的执行是否会触发大量视觉变化的计算，重绘和重排(或回流)是否会被多次触发等。</p>
+<p>2.灯塔(Lighthouse)</p>
+<p>​		Lighthouse是一个开源的自动化审查网站页面性能的工具，可根据所提供的网站URL从性能、可访问性、渐进式Web应用、SEO (搜索引擎优化)等多个方面进行自动化分析，最终给出一份具有指导意义的报告。它既可以当作Chrome的扩展插件来使用，又可以在开发者工具中直接使用。</p>
+<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106110717868.png"></p>
+<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106110753427.png"></p>
+<p>除此之外，还会经常用到的性能测试工具有PageSpeed Insights、WEBPAGETEST、Pingdom等。</p>
+<h4 id="4-2生命周期"><a href="#4-2生命周期" class="headerlink" title="4.2生命周期"></a>4.2生命周期</h4><pre><code>     网站页面的生命周期，通俗地讲就是从我们在浏览器的地址栏中输入一个URL后，到整个页面渲染出来的过程。整个过程包括域名解析，建立TCP连接，前后端通过HTTP进行会话，压缩与解压缩，以及前端的关键渲染路径等，把这些阶段拆解开来看，不仅能容易地获得优化性能的启发，而且也能为今后的前端工程师之路构建完整的知识框架。
+</code></pre>
+<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106113810661.png"></p>
+<h4 id="4-3优化方案"><a href="#4-3优化方案" class="headerlink" title="4.3优化方案"></a>4.3优化方案</h4><p>​		经过对网站页面性能的测量及渲染过程的了解，相信你对于糟糕性能体验的原因已经比较清楚了，那么接下来便是优化性能。</p>
+<p>(1)传输资源的优化，比如图像资源， 不同的格式类型会有不同的使用场景，在使用的过程中是否恰当。</p>
+<p>(2)加载过程的优化，比如延迟加载，是否有不需要在首屏展示的非关键信息，占用了页面加载的时间。</p>
+<p>(3) JavaScript 是现代大型网站中相当“昂贵”的资源，是否进行了压缩，书写是否规范，有无考虑内存泄漏等。</p>
+<p>(4)关键渲染路径优化，比如是否存在不必要的重绘和回流。</p>
+<p>(5)本地存储和浏览器缓存。</p>
+<h3 id="参考：Web前端性能优化"><a href="#参考：Web前端性能优化" class="headerlink" title="参考：Web前端性能优化"></a>参考：Web前端性能优化</h3>]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>什么是性能优化</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>yarn命令详解</title>
     <url>/2022/11/09/yarn%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="yarn命令详解"><a href="#yarn命令详解" class="headerlink" title="yarn命令详解"></a>yarn命令详解</h1><h3 id="一、yarn安装初始化"><a href="#一、yarn安装初始化" class="headerlink" title="一、yarn安装初始化"></a>一、yarn安装初始化</h3><pre><code class="css">npm i yarn -g #yarn安装
@@ -4354,33 +4466,6 @@ sudo yarn cache clean # 清除缓存
       </categories>
       <tags>
         <tag>yarn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>什么是CI/CD</title>
-    <url>/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署"><a href="#CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署" class="headerlink" title="CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署"></a>CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署</h1><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>CI&#x2F;CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。CI&#x2F;CD 的核心概念是持续集成、持续交付和持续部署。作为一个面向开发和运营团队的解决方案，CI&#x2F;CD 主要针对在集成新代码时所引发的问题（亦称：”集成地狱”）。</p>
-<p>具体而言，CI&#x2F;CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为”CI&#x2F;CD 管道”，由开发和运维团队以敏捷方式协同支持。</p>
-<h3 id="CI-是什么？CI-和-CD-有什么区别？"><a href="#CI-是什么？CI-和-CD-有什么区别？" class="headerlink" title="CI 是什么？CI 和 CD 有什么区别？"></a>CI 是什么？CI 和 CD 有什么区别？</h3><p>缩略词 CI &#x2F; CD 具有几个不同的含义。CI&#x2F;CD 中的”CI”始终指持续集成，它属于开发人员的自动化流程。成功的 CI 意味着应用代码的新更改会定期构建、测试并合并到共享存储库中。该解决方案可以解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</p>
-<p>CI&#x2F;CD 中的”CD”指的是持续交付和&#x2F;或持续部署，这些相关概念有时会交叉使用。两者都事关管道后续阶段的自动化，但它们有时也会单独使用，用于说明自动化程度。</p>
-<p>持续<em>交付</em>通常是指开发人员对应用的更改会自动进行错误测试并上传到存储库（如 GitHub或容器注册表），然后由运维团队将其部署到实时生产环境中。这旨在解决开发和运维团队之间可见性及沟通较差的问题。因此，持续交付的目的就是确保尽可能减少部署新代码时所需的工作量。</p>
-<p>持续<em>部署</em>（另一种”CD”）指的是自动将开发人员的更改从存储库发布到生产环境，以供客户使用。它主要为了解决因手动流程降低应用交付速度，从而使运维团队超负荷的问题。持续部署以持续交付的优势为根基，实现了管道后续阶段的自动化。</p>
-<p><img src="/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/ci-cd-flow-desktop_edited_0.png" alt="CI/CD flow"></p>
-<p>CI&#x2F;CD 既可能仅指持续集成和持续交付构成的关联环节，也可以指持续集成、持续交付和持续部署这三项构成的关联环节。更为复杂的是，有时”持续交付”也包含了持续部署流程。</p>
-<p>归根结底，我们没必要纠结于这些语义，您只需记得 CI&#x2F;CD 其实就是一个流程（通常形象地表述为管道），用于实现应用开发中的高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于 CI&#x2F;CD 管道的自动化程度。许多企业最开始先添加 CI，然后逐步实现交付和部署的自动化（例如作为云原生应用的一部分）。</p>
-<h3 id="CI-持续集成（Continuous-Integration）"><a href="#CI-持续集成（Continuous-Integration）" class="headerlink" title="CI 持续集成（Continuous Integration）"></a>CI 持续集成（Continuous Integration）</h3><p>现代应用开发的目标是让多位开发人员同时处理同一应用的不同功能。但是，如果企业安排在一天内将所有分支源代码合并在一起（称为”合并日”），最终可能造成工作繁琐、耗时，而且需要手动完成。这是因为当一位独立工作的开发人员对应用进行更改时，有可能会与其他开发人员同时进行的更改发生冲突。如果每个开发人员都自定义自己的本地集成开发环境（IDE），而不是让团队就一个基于云的 IDE 达成一致，那么就会让问题更加雪上加霜。</p>
-<p>持续集成（CI）可以帮助开发人员更加频繁地（有时甚至每天）将代码更改合并到共享分支或”主干”中。一旦开发人员对应用所做的更改被合并，系统就会通过自动构建应用并运行不同级别的自动化测试（通常是单元测试和集成测试）来验证这些更改，确保这些更改没有对应用造成破坏。这意味着测试内容涵盖了从类和函数到构成整个应用的不同模块。如果自动化测试发现新代码和现有代码之间存在冲突，CI 可以更加轻松地快速修复这些错误。</p>
-<h3 id="CD-持续交付（Continuous-Delivery）"><a href="#CD-持续交付（Continuous-Delivery）" class="headerlink" title="CD 持续交付（Continuous Delivery）"></a>CD 持续交付（Continuous Delivery）</h3><p>完成 CI 中构建及单元测试和集成测试的自动化流程后，持续交付可自动将已验证的代码发布到存储库。为了实现高效的持续交付流程，务必要确保 CI 已内置于开发管道。持续交付的目标是拥有一个可随时部署到生产环境的代码库。</p>
-<p>在持续交付中，每个阶段（从代码更改的合并，到生产就绪型构建版本的交付）都涉及测试自动化和代码发布自动化。在流程结束时，运维团队可以快速、轻松地将应用部署到生产环境中。</p>
-<h3 id="CD-持续部署（Continuous-Deployment）"><a href="#CD-持续部署（Continuous-Deployment）" class="headerlink" title="CD 持续部署（Continuous Deployment）"></a>CD 持续部署（Continuous Deployment）</h3><p>对于一个成熟的 CI&#x2F;CD 管道来说，最后的阶段是持续部署。作为持续交付——自动将生产就绪型构建版本发布到代码存储库——的延伸，持续部署可以自动将应用发布到生产环境。由于在生产之前的管道阶段没有手动门控，因此持续部署在很大程度上都得依赖精心设计的测试自动化。</p>
-<p>实际上，持续部署意味着开发人员对应用的更改在编写后的几分钟内就能生效（假设它通过了自动化测试）。这更加便于持续接收和整合用户反馈。总而言之，所有这些 CI&#x2F;CD 的关联步骤都有助于降低应用的部署风险，因此更便于以小件的方式（而非一次性）发布对应用的更改。不过，由于还需要编写自动化测试以适应 CI&#x2F;CD 管道中的各种测试和发布阶段，因此前期投资还是会很大。</p>
-]]></content>
-      <categories>
-        <category>CI/CD</category>
-        <category>什么是CI/CD</category>
-      </categories>
-      <tags>
-        <tag>CI/CD</tag>
       </tags>
   </entry>
   <entry>
@@ -5001,91 +5086,6 @@ test();
       </categories>
       <tags>
         <tag>面试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>什么是性能优化</title>
-    <url>/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="什么是性能优化"><a href="#什么是性能优化" class="headerlink" title="什么是性能优化"></a>什么是性能优化</h1><h3 id="1-性能的起因"><a href="#1-性能的起因" class="headerlink" title="1.性能的起因"></a>1.性能的起因</h3><p>​		市场上的某个功能还没有能满足其需求的可选方案的时候，如果出来一个应用即使很难用，用户都要忍着用。如果这个功能确实能解决用户的某些痛点需求，且有其存在的价值，那么让用户忍受糟糕体验的背后，就存在 对产品优化和改进的空间。</p>
-<h3 id="2-性能的影响"><a href="#2-性能的影响" class="headerlink" title="2.性能的影响"></a>2.性能的影响</h3><p>​		大部分网站体现的价值都无外乎信息的载体、交互的工具或商品流通的渠道，这就要求它们需要与更多的用户建立联系，同时还要保持所建立的联系拥有绵延不绝的用户黏性，所以网站就不能只关注自我表达，而不顾及用户是否喜欢。</p>
-<h4 id="2-1用户的留存"><a href="#2-1用户的留存" class="headerlink" title="2.1用户的留存"></a>2.1用户的留存</h4><p>​		我们都希望用户访问网站所进行的交互，对网站构建的内容来讲是有意义的，比如，电商网站希望用户浏览并购买商品，社交网站希望用户之间进行互动，视频网站希望用户观看视频，而这些希望都是建立在网站用户留存的基础上的。网站用户的留存情况，一般指的是用户自登录注册之日起，经过一段时间后， 仍然还在使用该网站的用户数。统计出注册用户数与留存用户数后，就可以计算出用户留存率，这个指标对网站的运营有重要的指导意义。</p>
-<p>​		根据Google营销平台提供的调研发现，如果网站页面的加载时间超过3s,就会有53%的移动网站的访问遭到用户抛弃。同时他们还针对加载时间分别在4s内和20s内的网站进行比较，发现加载时间在5s内的网站，用户的停留时间相比会长70%，用户在一定时间内从该网站离开的跳出率会低35%，而网站上展示广告的可见率也会高25%。</p>
-<p>​		虽然影响用户留存的因素不止性能这一方面， 但从上述数据可知，通过优化性能来保证留存事是必要的措施。	</p>
-<h4 id="2-2网站的转化率"><a href="#2-2网站的转化率" class="headerlink" title="2.2网站的转化率"></a>2.2网站的转化率</h4><p>​		从运营角度来看，网站转化率是一个非常 重要的考量指标，网站转化率指的是用户进行了某项目标行为的访问次数与总访问次数的比率。某项目标行为可以是用户注册、资源下载、商品购买等一 系列用户行为，简言之，比如在电商网站上浏览了某个商品的用户中，有多少位用户最终购买了该商品，其所占的比例就可以看作访客到消费者的转化率。</p>
-<p>​		根据Mobify (一家著 名的电子商务优化平台)的调研，发现商品的结账页面加载时间每减少100ms,基于该商品购买访问的转化率就会增加1.55%， 这个比率对大型电商网站来讲，其所带来的年均收入增长将会是上千万元。Google 营销平台的调研也指出，加载时间在5s以内的网站会比在20s以内的网站的广告收入多一倍。</p>
-<p>​		目前大部分互联网广告营销都渐趋精准化，即广告商的广告费会根据经广告导流，产生确定的用户交易后再收取。如此看来网站性能不仅影响用户体验，对于广告主和广告商的经济利益也会带来实实在在的影响。</p>
-<h4 id="2-3体验与传播"><a href="#2-3体验与传播" class="headerlink" title="2.3体验与传播"></a>2.3体验与传播</h4><p>​		当用户通过手机、平板电脑等移动设备经运营商网络浏览网站时，所产生的流量数据通常是根据字节数进行收费的。虽然从2G、 3G 到4G,甚至5G,运营商所收取的流量费用单价一直在下滑，但与此同时，页面所承载的内容却在不断增大，并且这一趋势似乎将持续下去。 那么用户必将为过多的流量数据支付相应的费用，若所访问网站包含的资源文件过大、组织冗余，用户便会浪费过多的网络资费，同时过大的资源传输量也会延长请求响应的时间，最终降低用户的体验度。</p>
-<p>​		性能问题引起的所谓用户体验差，造成的影响并非单纯是用户觉得不喜欢就放弃了使用。用户还会拒绝向自己的周边网络推荐该网站或应用，更坏的情况是用户会对低性能进行差评。口碑是互联网时代t分可靠的通行证，如果我们不重视性能问题，经过网络口碑的放大效应，网站的发展不仅会遇到瓶颈，甚至还可能会日薄西山。</p>
-<h3 id="3-性能评估模型"><a href="#3-性能评估模型" class="headerlink" title="3.性能评估模型"></a>3.性能评估模型</h3><p>​		我们先来约定一个原则，以用户为中心，然后根据该原则引出指导后文涉及的各种优化策略，所参照的性能模型为RAIL性能模型。这个名字的由来是四个英文单词的首字母:响应( Response)、动画(Animation)、 空闲(Idle)、加载(Load)，这四个单词代表与网站或应用的生命周期相关的四个方面，这些方面会以不同的方式影响整个网站的性能。</p>
-<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106102130579.png"></p>
-<p>我们将用户作为之后性能优化的中心，首先需要了解用户对于延迟的反应。用户感知延迟的时间窗口。</p>
-<table>
-<thead>
-<tr>
-<th align="center">延迟</th>
-<th align="center">用户反应</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">0～16ms</td>
-<td align="center">人眼可以感知每秒60帧的动画转场，即每帧16ms，除了浏览器将每一帧画面绘制到屏幕上的时间，网站应用大约需要10ms来生成一帧</td>
-</tr>
-<tr>
-<td align="center">0～100ms</td>
-<td align="center">在该时间窗口内来响应用户的操作，才会是流畅的体验</td>
-</tr>
-<tr>
-<td align="center">100～300ms</td>
-<td align="center">用户能感知轻微的延迟</td>
-</tr>
-<tr>
-<td align="center">300～1000ms</td>
-<td align="center">所感知的延迟会被用户当作网站页面加载或更改视图过程的一部分</td>
-</tr>
-<tr>
-<td align="center">&gt;1s</td>
-<td align="center">用户的注意力将离开之前执行的任务</td>
-</tr>
-<tr>
-<td align="center">&gt;10s</td>
-<td align="center">用户感觉失望，可能会放弃任务</td>
-</tr>
-</tbody></table>
-<h4 id="3-1响应"><a href="#3-1响应" class="headerlink" title="3.1响应"></a>3.1响应</h4><p>​		网站性能对于响应方面的要求是，在用户感知延迟之前接收到操作的反馈。比如用户进行了文本输入，按钮单击、表单切换及启动动画等操作后，必须在100m内收到反馈，如果超过100ms的时间窗口，用户就会感知延迟。</p>
-<p>​		看似很基本的用户操作背后，可能会隐藏着复杂的业务逻辑处理及网络请求与数据计算。对此我们应当谨慎，将较大开销的工作放在后台异步执行，而即便后白处理要数百毫秒才能完成的操作，也应当给用户提供及时的阶段性反馈。</p>
-<p>​		比如在单击按钮向后台发起某项业务处理请求时，首先反馈给用户开始处理的提示，然后在处理完成的回调后反馈完成的提示。</p>
-<h4 id="3-2动画"><a href="#3-2动画" class="headerlink" title="3.2动画"></a>3.2动画</h4><p>​		前端所涉及的动画不仅有炫酷的UI特效，还包括滚动和触摸拖动等交互效果，而这一方面的性能要求就是流畅。 众所周知，人眼具有视觉暂留特性，就是当光对视网膜所产生的视觉在光停止作用后，仍能保留一段时间。</p>
-<p>​		研究表明这是由于视神经存在反应速度造成的， 其值是1&#x2F;24s，即当我们所见的物体移除后，该物体在我们眼中并不会立即消失，而会延续存在1&#x2F;24s 的时间。对动画来说，无论动画帧率有多高，最后我们仅能分辨其中的30帧，但越高的帧率会带来更好的流畅体验，因此动画要尽力达到60fps的帧率，每一帧画面的生成都需要经过若干步骤，根据60fps 帧率的计算，帧图像的生成预算为16ms ( 1000ms&#x2F;60 约等于 16.6ms)，除去浏览器绘制新帧的时间，留给执行代码的时间仅10ms 左右。关于这个维度的具体优化策略，会在后面优化谊染过程的相关章节中详细介绍。</p>
-<h4 id="3-3空闲"><a href="#3-3空闲" class="headerlink" title="3.3空闲"></a>3.3空闲</h4><p>​		要使网站响应迅速、动画流畅，通常都需要较长的处理时间，但以用户为中心来看待性能问题，就会发现并非所有工作都需要在响应和加载阶段完成，我们完全可以利用浏览器的空闲时间处理可延迟的任务，只要让用户感受不到延迟即可。利用空闲时间处理延迟，可减少预加载的数据大小，以保证网站或应用快速完成加载。</p>
-<p>​		为了更加合理地利用浏览器的空闲时间，最好将处理任务按50ms为单位分组。这么做就是保证用户在发生操作后的100ms 内给出响应。</p>
-<h4 id="3-4-加载"><a href="#3-4-加载" class="headerlink" title="3.4 加载"></a>3.4 加载</h4><p>​		用户感知要求我们尽量在1s内完成页面加载，如果没有完成，用户的注意力就会分散到其他事情上，并对当前处理的任务产生中断感。需要注意的是，这里在1s内完成加载井谊染出页面的要求，并非要完成所有页面资源的加载，从用户感如体验的角度来说，只要关键谊染路径完成，用户就会认为全部加载已完成。</p>
-<p>​		对于其他非关键资源的加载，延迟到浏览器空闲时段再进行，是比较常见的渐进式优化策略。</p>
-<h3 id="4-性能优化的步骤"><a href="#4-性能优化的步骤" class="headerlink" title="4.性能优化的步骤"></a>4.性能优化的步骤</h3><p>​		RAIL性能模型指出了用户对不同延迟时间的感知度，以用户为中心的原则，就是要让用户满意网站或应用的性能体验。</p>
-<p>​		不同类型的操作，需要在规定的时间窗口内完成，所以进行性能优化的步骤般是:首先可量化地评估出网站或应用的性能表现,然后立足于网站页面响应的生命周期，分析出造成较差性能表现的原因,最后进行技术改造、可行性分析等具体的优化实施。</p>
-<h4 id="4-1-性能测量"><a href="#4-1-性能测量" class="headerlink" title="4.1 性能测量"></a>4.1 性能测量</h4><p>​		如果把对网站的性能优化比作一场旅程， 它无疑会是漫长且可能还略带泥泞的，那么在开始之前我们有必要对网站进行性能测量，以知道优化的方向在何处。通常我们会借助.些工具来完成性能测量.</p>
-<p>1.Chrome浏览器的Performance功能</p>
-<p>​		通过Chrome浏览器访问我们要进行性能测量的网站，打开开发者工具的Performance选项卡。单击左上角的“开始评估”按钮后刷新网站，该工具便开始分析页面资源加载、渲染、请求响应等各环节耗费的时间线，据此便可分析定程度的性能问题， 比如JavaScript 的执行是否会触发大量视觉变化的计算，重绘和重排(或回流)是否会被多次触发等。</p>
-<p>2.灯塔(Lighthouse)</p>
-<p>​		Lighthouse是一个开源的自动化审查网站页面性能的工具，可根据所提供的网站URL从性能、可访问性、渐进式Web应用、SEO (搜索引擎优化)等多个方面进行自动化分析，最终给出一份具有指导意义的报告。它既可以当作Chrome的扩展插件来使用，又可以在开发者工具中直接使用。</p>
-<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106110717868.png"></p>
-<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106110753427.png"></p>
-<p>除此之外，还会经常用到的性能测试工具有PageSpeed Insights、WEBPAGETEST、Pingdom等。</p>
-<h4 id="4-2生命周期"><a href="#4-2生命周期" class="headerlink" title="4.2生命周期"></a>4.2生命周期</h4><pre><code>     网站页面的生命周期，通俗地讲就是从我们在浏览器的地址栏中输入一个URL后，到整个页面渲染出来的过程。整个过程包括域名解析，建立TCP连接，前后端通过HTTP进行会话，压缩与解压缩，以及前端的关键渲染路径等，把这些阶段拆解开来看，不仅能容易地获得优化性能的启发，而且也能为今后的前端工程师之路构建完整的知识框架。
-</code></pre>
-<p><img src="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/image-20230106113810661.png"></p>
-<h4 id="4-3优化方案"><a href="#4-3优化方案" class="headerlink" title="4.3优化方案"></a>4.3优化方案</h4><p>​		经过对网站页面性能的测量及渲染过程的了解，相信你对于糟糕性能体验的原因已经比较清楚了，那么接下来便是优化性能。</p>
-<p>(1)传输资源的优化，比如图像资源， 不同的格式类型会有不同的使用场景，在使用的过程中是否恰当。</p>
-<p>(2)加载过程的优化，比如延迟加载，是否有不需要在首屏展示的非关键信息，占用了页面加载的时间。</p>
-<p>(3) JavaScript 是现代大型网站中相当“昂贵”的资源，是否进行了压缩，书写是否规范，有无考虑内存泄漏等。</p>
-<p>(4)关键渲染路径优化，比如是否存在不必要的重绘和回流。</p>
-<p>(5)本地存储和浏览器缓存。</p>
-<h3 id="参考：Web前端性能优化"><a href="#参考：Web前端性能优化" class="headerlink" title="参考：Web前端性能优化"></a>参考：Web前端性能优化</h3>]]></content>
-      <categories>
-        <category>前端性能优化</category>
-        <category>什么是性能优化</category>
-      </categories>
-      <tags>
-        <tag>性能优化</tag>
       </tags>
   </entry>
   <entry>
@@ -5774,84 +5774,6 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
       </tags>
   </entry>
   <entry>
-    <title>搭建私有的npm仓库</title>
-    <url>/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="使用docker和verdaccio搭建npm私有库"><a href="#使用docker和verdaccio搭建npm私有库" class="headerlink" title="使用docker和verdaccio搭建npm私有库"></a>使用docker和verdaccio搭建npm私有库</h1><p>本文章docker环境为macos</p>
-<h3 id="1-使用-docker-镜像安装verdaccio"><a href="#1-使用-docker-镜像安装verdaccio" class="headerlink" title="1.使用 docker 镜像安装verdaccio"></a>1.使用 docker 镜像安装verdaccio</h3><pre><code class="ini">docker pull verdaccio/verdaccio //安装verdaccio镜像
-</code></pre>
-<h3 id="2-启动端口映射verdaccio容器"><a href="#2-启动端口映射verdaccio容器" class="headerlink" title="2.启动端口映射verdaccio容器"></a>2.启动端口映射verdaccio容器</h3><pre><code class="ini">docker run -it --name verdaccio -p 4873:4873 verdaccio/verdaccio //运行 verdaccio，使用 docker 命令运行镜像，创建 verdaccio 容器 ，端口4873
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095140709.png"></p>
-<h3 id="3-私有部署npm仓库成功"><a href="#3-私有部署npm仓库成功" class="headerlink" title="3.私有部署npm仓库成功"></a>3.私有部署npm仓库成功</h3><p>访问<a href="http://localhost:4873/">http://localhost:4873/</a></p>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095258155.png"></p>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095230480.png"></p>
-<h3 id="4-添加权限用户"><a href="#4-添加权限用户" class="headerlink" title="4.添加权限用户"></a>4.添加权限用户</h3><pre><code class="ini">npm adduser --registry http://localhost:4873/ //根据提示添加用户
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095338495.png"></p>
-<h3 id="5-登陆"><a href="#5-登陆" class="headerlink" title="5.登陆"></a>5.登陆</h3><p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095621194.png"></p>
-<h3 id="6-发布npm包"><a href="#6-发布npm包" class="headerlink" title="6.发布npm包"></a>6.发布npm包</h3><p>当我们的私有仓库搭建好之后，那么我们就可以向仓库发布npm包了，到我们npm包目录下上传就可以了</p>
-<pre><code class="css">1.创建npm-me包目录
-2.npm init 初始化目录
-3.编写功能文件
-4.如果是改版发布，更新版本号
-5.登陆私有仓库
-6.向私有仓库发布npm包
-</code></pre>
-<pre><code class="javascript">//ifYes.js
-exports.ifYes = function() &#123;
-    return &quot;If you&#39;re late, your wages will be docked version new（registry）&quot;
-&#125;
-</code></pre>
-<pre><code class="json">//package.json
-&#123;
-  &quot;name&quot;: &quot;alan-npm-me&quot;,
-  &quot;version&quot;: &quot;1.0.3&quot;,
-  &quot;description&quot;: &quot;If you&#39;re late, your wages will be docked&quot;,
-  &quot;main&quot;: &quot;ifYes.js&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
-  &#125;,
-  &quot;keywords&quot;: [
-    &quot;ifYes&quot;
-  ],
-  &quot;author&quot;: &quot;alan_mf&quot;,
-  &quot;license&quot;: &quot;ISC&quot;
-&#125;
-</code></pre>
-<pre><code class="ini">npm version patch  //补丁版本更新
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112101529827.png"></p>
-<pre><code class="ini">npm-me % npm publish --registry http://localhost:4873/ //发布
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112102102928.png"></p>
-<p>这时候刷新我们的私有仓库页面就可以看到了<a href="http://localhost:4873/">http://localhost:4873/</a></p>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112102228314.png"></p>
-<h3 id="7-下载私有仓库的包"><a href="#7-下载私有仓库的包" class="headerlink" title="7.下载私有仓库的包"></a>7.下载私有仓库的包</h3><pre><code class="css">1.创建一个文件目录
-2.初始化 npm init -y
-3.编辑测试代码
-4. npm install --registry http://localhost:4873 alan-npm-me //下载私有仓库npm包
-5.执行测试代码
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112105324344.png"></p>
-<h3 id="8-修改verdaccio权限"><a href="#8-修改verdaccio权限" class="headerlink" title="8.修改verdaccio权限"></a>8.修改verdaccio权限</h3><p>因为我是docker安装的verdaccio，所以查找配置文件路径是这样的</p>
-<pre><code class="ini">1. docker exec --user root -it verdaccio sh
-2. cd /verdaccio
-3. cd conf
-4. vi config.yaml
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112125337815.png"></p>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112125352787.png"></p>
-<p>里面就可以配置你们的文件了，重启容器就生效了</p>
-]]></content>
-      <categories>
-        <category>npm&amp;yarn</category>
-        <category>搭建私有的npm仓库</category>
-      </categories>
-      <tags>
-        <tag>npm</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>数据埋点监控系统设计</title>
     <url>/2022/11/06/%E6%95%B0%E6%8D%AE%E5%9F%8B%E7%82%B9%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="数据监控和数据埋点"><a href="#数据监控和数据埋点" class="headerlink" title="数据监控和数据埋点"></a>数据监控和数据埋点</h1><h3 id="一、数据监控分类"><a href="#一、数据监控分类" class="headerlink" title="一、数据监控分类"></a>一、数据监控分类</h3><h4 id="1-数据监控"><a href="#1-数据监控" class="headerlink" title="(1)数据监控"></a>(1)数据监控</h4><p>数据监控，顾名思义就是监听用户的行为。常见的数据监控包括：</p>
@@ -6144,6 +6066,99 @@ class ErrorBoundary extends React.Component &#123;
       </tags>
   </entry>
   <entry>
+    <title>搭建私有的npm仓库</title>
+    <url>/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="使用docker和verdaccio搭建npm私有库"><a href="#使用docker和verdaccio搭建npm私有库" class="headerlink" title="使用docker和verdaccio搭建npm私有库"></a>使用docker和verdaccio搭建npm私有库</h1><p>本文章docker环境为macos</p>
+<h3 id="1-使用-docker-镜像安装verdaccio"><a href="#1-使用-docker-镜像安装verdaccio" class="headerlink" title="1.使用 docker 镜像安装verdaccio"></a>1.使用 docker 镜像安装verdaccio</h3><pre><code class="ini">docker pull verdaccio/verdaccio //安装verdaccio镜像
+</code></pre>
+<h3 id="2-启动端口映射verdaccio容器"><a href="#2-启动端口映射verdaccio容器" class="headerlink" title="2.启动端口映射verdaccio容器"></a>2.启动端口映射verdaccio容器</h3><pre><code class="ini">docker run -it --name verdaccio -p 4873:4873 verdaccio/verdaccio //运行 verdaccio，使用 docker 命令运行镜像，创建 verdaccio 容器 ，端口4873
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095140709.png"></p>
+<h3 id="3-私有部署npm仓库成功"><a href="#3-私有部署npm仓库成功" class="headerlink" title="3.私有部署npm仓库成功"></a>3.私有部署npm仓库成功</h3><p>访问<a href="http://localhost:4873/">http://localhost:4873/</a></p>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095258155.png"></p>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095230480.png"></p>
+<h3 id="4-添加权限用户"><a href="#4-添加权限用户" class="headerlink" title="4.添加权限用户"></a>4.添加权限用户</h3><pre><code class="ini">npm adduser --registry http://localhost:4873/ //根据提示添加用户
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095338495.png"></p>
+<h3 id="5-登陆"><a href="#5-登陆" class="headerlink" title="5.登陆"></a>5.登陆</h3><p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095621194.png"></p>
+<h3 id="6-发布npm包"><a href="#6-发布npm包" class="headerlink" title="6.发布npm包"></a>6.发布npm包</h3><p>当我们的私有仓库搭建好之后，那么我们就可以向仓库发布npm包了，到我们npm包目录下上传就可以了</p>
+<pre><code class="css">1.创建npm-me包目录
+2.npm init 初始化目录
+3.编写功能文件
+4.如果是改版发布，更新版本号
+5.登陆私有仓库
+6.向私有仓库发布npm包
+</code></pre>
+<pre><code class="javascript">//ifYes.js
+exports.ifYes = function() &#123;
+    return &quot;If you&#39;re late, your wages will be docked version new（registry）&quot;
+&#125;
+</code></pre>
+<pre><code class="json">//package.json
+&#123;
+  &quot;name&quot;: &quot;alan-npm-me&quot;,
+  &quot;version&quot;: &quot;1.0.3&quot;,
+  &quot;description&quot;: &quot;If you&#39;re late, your wages will be docked&quot;,
+  &quot;main&quot;: &quot;ifYes.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  &#125;,
+  &quot;keywords&quot;: [
+    &quot;ifYes&quot;
+  ],
+  &quot;author&quot;: &quot;alan_mf&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+&#125;
+</code></pre>
+<pre><code class="ini">npm version patch  //补丁版本更新
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112101529827.png"></p>
+<pre><code class="ini">npm-me % npm publish --registry http://localhost:4873/ //发布
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112102102928.png"></p>
+<p>这时候刷新我们的私有仓库页面就可以看到了<a href="http://localhost:4873/">http://localhost:4873/</a></p>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112102228314.png"></p>
+<h3 id="7-下载私有仓库的包"><a href="#7-下载私有仓库的包" class="headerlink" title="7.下载私有仓库的包"></a>7.下载私有仓库的包</h3><pre><code class="css">1.创建一个文件目录
+2.初始化 npm init -y
+3.编辑测试代码
+4. npm install --registry http://localhost:4873 alan-npm-me //下载私有仓库npm包
+5.执行测试代码
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112105324344.png"></p>
+<h3 id="8-修改verdaccio权限"><a href="#8-修改verdaccio权限" class="headerlink" title="8.修改verdaccio权限"></a>8.修改verdaccio权限</h3><p>因为我是docker安装的verdaccio，所以查找配置文件路径是这样的</p>
+<pre><code class="ini">1. docker exec --user root -it verdaccio sh
+2. cd /verdaccio
+3. cd conf
+4. vi config.yaml
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112125337815.png"></p>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112125352787.png"></p>
+<p>里面就可以配置你们的文件了，重启容器就生效了</p>
+]]></content>
+      <categories>
+        <category>npm&amp;yarn</category>
+        <category>搭建私有的npm仓库</category>
+      </categories>
+      <tags>
+        <tag>npm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>秋天的第一个烤红薯</title>
+    <url>/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="秋天的第一个烤红薯"><a href="#秋天的第一个烤红薯" class="headerlink" title="秋天的第一个烤红薯"></a>秋天的第一个烤红薯</h1><h2 id="美丽的不只是风景"><a href="#美丽的不只是风景" class="headerlink" title="美丽的不只是风景"></a>美丽的不只是风景</h2><p><img src="/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/IMG_20220923_174805.jpg"></p>
+]]></content>
+      <categories>
+        <category>旅行</category>
+        <category>秋天</category>
+      </categories>
+      <tags>
+        <tag>旅行</tag>
+        <tag>秋天</tag>
+        <tag>季节</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>表白爱心biu</title>
     <url>/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="爱心代码（canvas）"><a href="#爱心代码（canvas）" class="headerlink" title="爱心代码（canvas）"></a>爱心代码（canvas）</h1><p>每天浪漫一点点</p>
@@ -6432,454 +6447,6 @@ class ErrorBoundary extends React.Component &#123;
       </categories>
       <tags>
         <tag>浪漫代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>秋天的第一个烤红薯</title>
-    <url>/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="秋天的第一个烤红薯"><a href="#秋天的第一个烤红薯" class="headerlink" title="秋天的第一个烤红薯"></a>秋天的第一个烤红薯</h1><h2 id="美丽的不只是风景"><a href="#美丽的不只是风景" class="headerlink" title="美丽的不只是风景"></a>美丽的不只是风景</h2><p><img src="/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/IMG_20220923_174805.jpg"></p>
-]]></content>
-      <categories>
-        <category>旅行</category>
-        <category>秋天</category>
-      </categories>
-      <tags>
-        <tag>旅行</tag>
-        <tag>秋天</tag>
-        <tag>季节</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Electron-d-2.0</title>
-    <url>/2022/11/25/Electron-d-2-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><p>本篇文章接上一篇文章，详细讲解主进程和渲染进程一些常用的API</p>
-<h3 id="主进程API"><a href="#主进程API" class="headerlink" title="主进程API"></a>主进程API</h3><h4 id="1-App-BrowserWindow"><a href="#1-App-BrowserWindow" class="headerlink" title="1.App+BrowserWindow"></a>1.App+BrowserWindow</h4><h5 id="App事件："><a href="#App事件：" class="headerlink" title="App事件："></a>App事件：</h5><h6 id="（1）Before-quit"><a href="#（1）Before-quit" class="headerlink" title="（1）Before-quit"></a>（1）Before-quit</h6><ul>
-<li><code>event</code> Event #返回</li>
-</ul>
-<p> 在程序关闭窗口前触发（macOS不是关闭窗口触发，而是关闭程序）</p>
-<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125085755781.png"></p>
-<h6 id="（2）browser-window-blur"><a href="#（2）browser-window-blur" class="headerlink" title="（2）browser-window-blur"></a>（2）browser-window-blur</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>window</code> BrowserWindow #返回</li>
-</ul>
-<p>当一个 browserWindow （窗口）失去焦点时触发。当我们鼠标点击窗口以外的地方就会失焦。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090204480.png"></p>
-<h6 id="（3）browser-window-focus"><a href="#（3）browser-window-focus" class="headerlink" title="（3）browser-window-focus"></a>（3）browser-window-focus</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>window</code> BrowserWindow #返回</li>
-</ul>
-<p>当一个 browserWindow 获得焦点时触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090450485.png"></p>
-<h6 id="（4）quit"><a href="#（4）quit" class="headerlink" title="（4）quit"></a>（4）quit</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>exitCode</code> Integer #返回</li>
-</ul>
-<p>在应用程序退出时发出。</p>
-<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090654139.png"></p>
-<h6 id="（5）window-all-closed"><a href="#（5）window-all-closed" class="headerlink" title="（5）window-all-closed"></a>（5）window-all-closed</h6><p>当所有的窗口都被关闭时触发。</p>
-<p>如果你没有监听此事件并且所有窗口都关闭了，默认的行为是控制退出程序；但如果你监听了此事件，你可以控制是否退出程序。 如果用户按下了 <code>Cmd + Q</code>，或者开发者调用了 <code>app.quit()</code>，Electron 会首先关闭所有的窗口然后触发 <code>will-quit</code> 事件，在这种情况下 <code>window-all-closed</code>事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090909458.png"></p>
-<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><p>由于各种app.方法使用频率都差不多，那么我们根据需要看官方文档吧（也比较容易看懂）</p>
-<p>[App.方法 文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app#%E6%96%B9%E6%B3%95">https://www.electronjs.org/zh/docs/latest/api/app#方法</a> “</p>
-<h5 id="BrowserWindow："><a href="#BrowserWindow：" class="headerlink" title="BrowserWindow："></a>BrowserWindow：</h5><p><code>BrowserWindow</code> 类暴露了各种方法来修改应用窗口的外观和行为</p>
-<h6 id="（1）优雅的打开窗口"><a href="#（1）优雅的打开窗口" class="headerlink" title="（1）优雅的打开窗口"></a>（1）优雅的打开窗口</h6><p><code>ready-to-show</code> 事件</p>
-<p>在加载页面时，渲染进程第一次完成绘制时，如果窗口还没有被显示，渲染进程会发出 <code>ready-to-show</code> 事件 。 在此事件后显示窗口将没有视觉闪烁：（不会有白屏出现，但如果绘制没有完成，窗口出现的时间也会延长，根据业务需求来选择是否要选择这种优雅的打开窗口方式）</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093133167.png"></p>
-<p>这个事件通常在 <code>did-finish-load</code> 事件之后发出，但是页面有许多远程资源时，它可能会在 <code>did-finish-load</code>之前发出事件。</p>
-<p><code>backgroundColor</code>属性</p>
-<p>对于一个复杂的应用，<code>ready-to-show</code> 可能发出的太晚，会让应用感觉缓慢。 在这种情况下，建议立刻显示窗口，并使用接近应用程序背景的 <code>backgroundColor</code></p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093813389.png"></p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093827541.png"></p>
-<p>建议 设置 <code>backgroundColor</code>和 <code>ready-to-show</code> 事件一起用，以使应用感觉更接近原生。</p>
-<pre><code class="javascript">//backgroundColor有效值
-const win = new BrowserWindow()
-win.setBackgroundColor(&#39;hsl(230, 100%, 50%)&#39;)
-win.setBackgroundColor(&#39;rgb(255, 145, 145)&#39;)
-win.setBackgroundColor(&#39;#ff00a3&#39;)
-win.setBackgroundColor(&#39;blueviolet&#39;)
-</code></pre>
-<h6 id="（2）父子窗口-amp-amp-模态窗口"><a href="#（2）父子窗口-amp-amp-模态窗口" class="headerlink" title="（2）父子窗口&amp;&amp;模态窗口"></a>（2）父子窗口&amp;&amp;模态窗口</h6><p>父子窗口：</p>
-<p>通过使用 <code>parent</code> 选项，你可以创建子窗口：</p>
-<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const top = new BrowserWindow()
-const child = new BrowserWindow(&#123; parent: top &#125;)
-child.show()
-top.show()
-</code></pre>
-<p><code>child</code> 窗口将总是显示在 <code>top</code> 窗口的顶部.</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125094829288.png"></p>
-<p>模态窗口</p>
-<p>模态窗口是禁用父窗口的子窗口，创建模态窗口必须设置 <code>parent</code> 和 <code>modal</code> 选项：</p>
-<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const child = new BrowserWindow(&#123; parent: top, modal: true, show: false &#125;)
-child.loadURL(&#39;https://github.com&#39;)
-child.once(&#39;ready-to-show&#39;, () =&gt; &#123;
-  child.show()
-&#125;)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125095057232.png"></p>
-<h6 id="（3）BrowserWindow属性"><a href="#（3）BrowserWindow属性" class="headerlink" title="（3）BrowserWindow属性"></a>（3）BrowserWindow属性</h6><p>这个BrowserWindow属性 比较多，而且都是设置窗口的一些属性，也是不难理解，我们就对照我们的官方文档来学习吧！</p>
-<p>[BrowserWindow属性]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions">https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions</a> “</p>
-<h6 id="（4）webContents"><a href="#（4）webContents" class="headerlink" title="（4）webContents"></a>（4）webContents</h6><p><code>did-finish-load</code> 事件</p>
-<p>导航完成时触发，即选项卡的旋转器将停止旋转，并指派<code>onload</code>事件后。</p>
-<p>[webContents类实例事件]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/web-contents#%E7%B1%BB-webcontents">https://www.electronjs.org/zh/docs/latest/api/web-contents#类-webcontents</a> “</p>
-<h6 id="（5）保存窗口状态"><a href="#（5）保存窗口状态" class="headerlink" title="（5）保存窗口状态"></a>（5）保存窗口状态</h6><p>当我们使用桌面程序的时候，那么我们有时候希望我们关闭程序再次打开程序的时候，程序的界面和状态能够是我们关闭前的样子，不希望再去重新设置。那我们就需要一个包<code>electron-win-state</code> </p>
-<p>安装这个包</p>
-<pre><code class="ini">npm i electron-win-state -S
-</code></pre>
-<p>我们可以在npmjs官网上找到这个包，去看它的说明文档</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101014250.png"></p>
-<p>根据使用说明，我们代码如下：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101245297.png"></p>
-<p>我们发现报错了，WinState is not a constructor</p>
-<p>当我们打印一下WinState看看什么情况</p>
-<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;)
-console.log(WinState)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101446532.png"></p>
-<p>发现没有直接引入WinState，我们修改一下</p>
-<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;).default 
-</code></pre>
-<p>现在就没报错了。</p>
-<p>但是我们发现，虽然安装了这个包，但是我们程序的状态还是没有改变，这就很奇怪了，其实，是我们自己已经给窗口设置了自定义宽高，覆盖了。我们也缺了一句代码；</p>
-<pre><code class="javascript"> winState.manage(win)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125102737449.png"></p>
-<p>现在我们的状态保存就没问题了。当我们关闭窗口再次打开的时候就是关闭之前的样子了。</p>
-<h4 id="2-dialog"><a href="#2-dialog" class="headerlink" title="2.dialog"></a>2.dialog</h4><p>这些具体参数请看官方文档，下面几个方法返回一个promise对象</p>
-<h6 id="（1）dialog-showOpenDialog-browserWindow-options"><a href="#（1）dialog-showOpenDialog-browserWindow-options" class="headerlink" title="（1）dialog.showOpenDialog([browserWindow, ]options)"></a>（1）<code>dialog.showOpenDialog([browserWindow, ]options)</code></h6><h6 id="（2）dialog-showSaveDialog-browserWindow-options"><a href="#（2）dialog-showSaveDialog-browserWindow-options" class="headerlink" title="（2）dialog.showSaveDialog([browserWindow, ]options)"></a>（2）<code>dialog.showSaveDialog([browserWindow, ]options)</code></h6><h6 id="（3）dialog-showMessageBox-browserWindow-options"><a href="#（3）dialog-showMessageBox-browserWindow-options" class="headerlink" title="（3）dialog.showMessageBox([browserWindow, ]options)"></a>（3）<code>dialog.showMessageBox([browserWindow, ]options)</code></h6><p>[dialog文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options">https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options</a> “</p>
-<h4 id="3-快捷键（globalShortcut）"><a href="#3-快捷键（globalShortcut）" class="headerlink" title="3.快捷键（globalShortcut）"></a>3.快捷键（globalShortcut）</h4><blockquote>
-<p>在应用程序没有键盘焦点时，监听键盘事件。</p>
-</blockquote>
-<p><code>globalShortcut</code> 模块可以在操作系统中注册&#x2F;注销全局快捷键, 以便可以为操作定制各种快捷键。</p>
-<p><strong>注意:</strong> 快捷方式是全局的; 即使应用程序没有键盘焦点, 它也仍然在持续监听键盘事件。 在 app 模块的 <code>ready</code> 事件就绪之前，这个模块不能使用。</p>
-<pre><code class="javascript">const &#123; app, globalShortcut &#125; = require(&#39;electron&#39;)
-
-app.whenReady().then(() =&gt; &#123;
-  // 注册一个&#39;CommandOrControl+X&#39; 快捷键监听器
-  const ret = globalShortcut.register(&#39;CommandOrControl+X&#39;, () =&gt; &#123;
-    console.log(&#39;CommandOrControl+X is pressed&#39;)
-  &#125;)
-
-  if (!ret) &#123;
-    console.log(&#39;registration failed&#39;)
-  &#125;
-
-  // 检查快捷键是否注册成功
-  console.log(globalShortcut.isRegistered(&#39;CommandOrControl+X&#39;))
-&#125;)
-
-app.on(&#39;will-quit&#39;, () =&gt; &#123;
-  // 注销快捷键
-  globalShortcut.unregister(&#39;CommandOrControl+X&#39;)
-
-  // 注销所有快捷键
-  globalShortcut.unregisterAll()
-&#125;)
-</code></pre>
-<p>方法</p>
-<p><code>globalShortcut</code> 模块具有以下方法:</p>
-<h6 id="（1）globalShortcut-register-accelerator-callback"><a href="#（1）globalShortcut-register-accelerator-callback" class="headerlink" title="（1）globalShortcut.register(accelerator, callback)"></a>（1）<code>globalShortcut.register(accelerator, callback)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-<li><code>callback</code> Function</li>
-</ul>
-<p>返回<code>boolean</code> - 快捷键注册是否成功</p>
-<p>注册 <code>accelerator</code> 的全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
-<p>如果指定的快捷键已经被其他应用程序注册掉, 调用会默默失败。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
-<ul>
-<li>“Media Play&#x2F;Pause”</li>
-<li>“Media Next Track”</li>
-<li>“Media Previous Track”</li>
-<li>“Media Stop”</li>
-</ul>
-<h6 id="（2）globalShortcut-registerAll-accelerators-callback"><a href="#（2）globalShortcut-registerAll-accelerators-callback" class="headerlink" title="（2）globalShortcut.registerAll(accelerators, callback)"></a>（2）<code>globalShortcut.registerAll(accelerators, callback)</code></h6><ul>
-<li><code>accelerators</code> string[] - an array of Accelerators.</li>
-<li><code>callback</code> Function</li>
-</ul>
-<p>注册多个全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
-<p>如果定义的快捷键已经被其他应用占用，这个调用会失效。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
-<ul>
-<li>“Media Play&#x2F;Pause”</li>
-<li>“Media Next Track”</li>
-<li>“Media Previous Track”</li>
-<li>“Media Stop”</li>
-</ul>
-<h6 id="（3）globalShortcut-isRegistered-accelerator"><a href="#（3）globalShortcut-isRegistered-accelerator" class="headerlink" title="（3）globalShortcut.isRegistered(accelerator)"></a>（3）<code>globalShortcut.isRegistered(accelerator)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-</ul>
-<p>Returns <code>boolean</code> - 表示 <code>accelerator</code> 全局快捷键是否注册成功</p>
-<p>当快捷键已经被其他应用程序注册时, 此调用依然将返回 <code>false</code>。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<h6 id="（4）globalShortcut-unregister-accelerator"><a href="#（4）globalShortcut-unregister-accelerator" class="headerlink" title="（4）globalShortcut.unregister(accelerator)"></a>（4）<code>globalShortcut.unregister(accelerator)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-</ul>
-<p>注销 <code>accelerator</code> 的全局快捷键。</p>
-<h6 id="（5）globalShortcut-unregisterAll"><a href="#（5）globalShortcut-unregisterAll" class="headerlink" title="（5）globalShortcut.unregisterAll()"></a>（5）<code>globalShortcut.unregisterAll()</code></h6><p>注销所有的全局快捷键（清空该应用程序的所有全局快捷键）。</p>
-<h4 id="4-菜单（Menu）"><a href="#4-菜单（Menu）" class="headerlink" title="4.菜单（Menu）"></a>4.菜单（Menu）</h4><p>我们这举个例子：</p>
-<pre><code class="javascript">//一个简单的菜单模板
-const &#123; app, Menu &#125; = require(&#39;electron&#39;)
-
-const isMac = process.platform === &#39;darwin&#39;//判断是不是macOS
-//role：菜单选项
-const template = [
-  // &#123; role: &#39;appMenu&#39; &#125;
-  ...(isMac ? [&#123;
-    label: app.name,//我们程序名称
-    submenu: [
-      &#123; role: &#39;about&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;services&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;hide&#39; &#125;,
-      &#123; role: &#39;hideOthers&#39; &#125;,
-      &#123; role: &#39;unhide&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;quit&#39; &#125;
-    ]
-  &#125;] : []),
-  // &#123; role: &#39;fileMenu&#39; &#125;
-  &#123;
-    label: &#39;File&#39;,
-    submenu: [
-      isMac ? &#123; role: &#39;close&#39; &#125; : &#123; role: &#39;quit&#39; &#125;
-    ]
-  &#125;,
-  // &#123; role: &#39;editMenu&#39; &#125;
-  &#123;
-    label: &#39;Edit&#39;,
-    submenu: [
-      &#123; role: &#39;undo&#39; &#125;,
-      &#123; role: &#39;redo&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;cut&#39; &#125;,
-      &#123; role: &#39;copy&#39; &#125;,
-      &#123; role: &#39;paste&#39; &#125;,
-      ...(isMac ? [
-        &#123; role: &#39;pasteAndMatchStyle&#39; &#125;,
-        &#123; role: &#39;delete&#39; &#125;,
-        &#123; role: &#39;selectAll&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123;
-          label: &#39;Speech&#39;,
-          submenu: [
-            &#123; role: &#39;startSpeaking&#39; &#125;,
-            &#123; role: &#39;stopSpeaking&#39; &#125;
-          ]
-        &#125;
-      ] : [
-        &#123; role: &#39;delete&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;selectAll&#39; &#125;
-      ])
-    ]
-  &#125;,
-  // &#123; role: &#39;viewMenu&#39; &#125;
-  &#123;
-    label: &#39;View&#39;,
-    submenu: [
-      &#123; role: &#39;reload&#39; &#125;,
-      &#123; role: &#39;forceReload&#39; &#125;,
-      &#123; role: &#39;toggleDevTools&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;resetZoom&#39; &#125;,
-      &#123; role: &#39;zoomIn&#39; &#125;,
-      &#123; role: &#39;zoomOut&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;togglefullscreen&#39; &#125;
-    ]
-  &#125;,
-  // &#123; role: &#39;windowMenu&#39; &#125;
-  &#123;
-    label: &#39;Window&#39;,
-    submenu: [
-      &#123; role: &#39;minimize&#39; &#125;,
-      &#123; role: &#39;zoom&#39; &#125;,
-      ...(isMac ? [
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;front&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;window&#39; &#125;
-      ] : [
-        &#123; role: &#39;close&#39; &#125;
-      ])
-    ]
-  &#125;,
-  &#123;
-    role: &#39;help&#39;,
-    submenu: [
-      &#123;
-        label: &#39;Learn More&#39;,
-        click: async () =&gt; &#123;
-          //定义自己的菜单方法
-          const &#123; shell &#125; = require(&#39;electron&#39;)
-          await shell.openExternal(&#39;https://electronjs.org&#39;)
-        &#125;
-      &#125;,
-      &#123;
-        label:&#39;alanmf&#39;,
-          click:()=&gt;&#123;console.log(&#39;shift+G&#39;)&#125;,
-          accelerator:&#39;shift+G&#39;//定义快捷键
-      &#125;
-    ]
-  &#125;
-]
-
-const menu = Menu.buildFromTemplate(template)//一般来说， template是一个options类型的数组，用于构建MenuItem。 使用方法可参考前文。还可以将其他字段附加到template，它们将成为菜单项的属性。
-Menu.setApplicationMenu(menu)//在macOS上将 menu设置成应用内菜单 在windows和Linux上，menu 将会被设置成窗口顶部菜单在Windows和Linux中
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125155603331.png"></p>
-<p>[Menu菜单文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu">https://www.electronjs.org/zh/docs/latest/api/menu</a> “<br>[role的属性值]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu-item#%E8%A7%92%E8%89%B2">https://www.electronjs.org/zh/docs/latest/api/menu-item#角色</a> “</p>
-<h4 id="5-系统托盘（Tray）"><a href="#5-系统托盘（Tray）" class="headerlink" title="5.系统托盘（Tray）"></a>5.系统托盘（Tray）</h4><blockquote>
-<p>添加图标和上下文菜单到系统通知区</p>
-</blockquote>
-<pre><code class="javascript">const &#123; app, Menu, Tray &#125; = require(&#39;electron&#39;)
-
-let tray = null
-app.whenReady().then(() =&gt; &#123;
-  tray = new Tray(&#39;/path/to/my/icon&#39;) //定义icon的路径
-  const contextMenu = Menu.buildFromTemplate([
-    &#123; label: &#39;Item1&#39;, type: &#39;radio&#39; &#125;,
-    &#123; label: &#39;Item2&#39;, type: &#39;radio&#39; &#125;,
-    &#123; label: &#39;Item3&#39;, type: &#39;radio&#39;, checked: true &#125;,
-    &#123; label: &#39;Item4&#39;, type: &#39;radio&#39; &#125;
-  ])
-  tray.setToolTip(&#39;This is my application.&#39;)//设置鼠标指针在托盘图标上悬停时显示的文本
-  tray.setContextMenu(contextMenu)//设置上下文菜单到托盘
-&#125;)
-</code></pre>
-<p>其实这个Tray跟Menu是布局差不太多的，所以学习起来也不是很难理解了。具体事件和方法也不是特别多，我们就直接看官方API文档吧！</p>
-<p>[Tray文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/tray">https://www.electronjs.org/zh/docs/latest/api/tray</a> “</p>
-<h4 id="6-触控板（TouchBar）"><a href="#6-触控板（TouchBar）" class="headerlink" title="6.触控板（TouchBar）"></a>6.触控板（TouchBar）</h4><p><strong>注意:</strong> TouchBar API目前为实验性质，可能会更改或删除。</p>
-<p>如果官网推荐的TouchBar模拟器下载失败，自己搜索一下即可。（如果下载的打不开，那就在应用程序-&gt;右键显示包内容-&gt;如下）执行就可以了</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172856290.png"></p>
-<pre><code class="javascript">//touchbar.js
-const &#123; app, BrowserWindow, TouchBar &#125; = require(&#39;electron&#39;)
-
-const &#123; TouchBarLabel, TouchBarButton, TouchBarSpacer &#125; = TouchBar
-
-let spinning = false
-
-// 类似老虎机的滚轴标签
-const reel1 = new TouchBarLabel()
-const reel2 = new TouchBarLabel()
-const reel3 = new TouchBarLabel()
-
-// 旋转结果标签
-const result = new TouchBarLabel()
-
-// 旋转按钮
-const spin = new TouchBarButton(&#123;
-  label: &#39;🎰 Spin&#39;,
-  backgroundColor: &#39;#7851A9&#39;,
-  click: () =&gt; &#123;
-    // Ignore clicks if already spinning
-    if (spinning) &#123;
-      return
-    &#125;
-
-    spinning = true
-    result.label = &#39;&#39;
-
-    let timeout = 10
-    const spinLength = 4 * 1000 // 4 seconds
-    const startTime = Date.now()
-
-    const spinReels = () =&gt; &#123;
-      updateReels()
-
-      if ((Date.now() - startTime) &gt;= spinLength) &#123;
-        finishSpin()
-      &#125; else &#123;
-        // Slow down a bit on each spin
-        timeout *= 1.1
-        setTimeout(spinReels, timeout)
-      &#125;
-    &#125;
-
-    spinReels()
-  &#125;
-&#125;)
-
-const getRandomValue = () =&gt; &#123;
-  const values = [&#39;🍒&#39;, &#39;💎&#39;, &#39;7️⃣&#39;, &#39;🍊&#39;, &#39;🔔&#39;, &#39;⭐&#39;, &#39;🍇&#39;, &#39;🍀&#39;]
-  return values[Math.floor(Math.random() * values.length)]
-&#125;
-
-const updateReels = () =&gt; &#123;
-  reel1.label = getRandomValue()
-  reel2.label = getRandomValue()
-  reel3.label = getRandomValue()
-&#125;
-
-const finishSpin = () =&gt; &#123;
-  const uniqueValues = new Set([reel1.label, reel2.label, reel3.label]).size
-  if (uniqueValues === 1) &#123;
-    // All 3 values are the same
-    result.label = &#39;💰 Jackpot!&#39;
-    result.textColor = &#39;#FDFF00&#39;
-  &#125; else if (uniqueValues === 2) &#123;
-    // 2个值相同
-    result.label = &#39;😍 Winner!&#39;
-    result.textColor = &#39;#FDFF00&#39;
-  &#125; else &#123;
-    // 没有值相同
-    result.label = &#39;🙁 Spin Again&#39;
-    result.textColor = null
-  &#125;
-  spinning = false
-&#125;
-
-const touchBar = new TouchBar(&#123;
-  items: [
-    spin,
-    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
-    reel1,
-    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
-    reel2,
-    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
-    reel3,
-    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
-    result
-  ]
-&#125;)
-
-let window
-
-app.whenReady().then(() =&gt; &#123;
-  window = new BrowserWindow(&#123;
-    frame: false,
-    titleBarStyle: &#39;hiddenInset&#39;,
-    width: 200,
-    height: 200,
-    backgroundColor: &#39;#000&#39;
-  &#125;)
-  window.loadURL(&#39;about:blank&#39;)
-  window.setTouchBar(touchBar)
-&#125;)
-</code></pre>
-<p>运行命令：</p>
-<pre><code class="ini">./node_modules/.bin/electron touchbar.js
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
-<p>[TouchBar文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
-]]></content>
-      <categories>
-        <category>Electron</category>
-        <category>Electron-d-2.0</category>
-      </categories>
-      <tags>
-        <tag>electron</tag>
       </tags>
   </entry>
   <entry>
@@ -7349,6 +6916,439 @@ ipcMain.on(&#39;counter-value&#39;, (_event, value) =&gt; &#123;
       <categories>
         <category>Electron</category>
         <category>Electron-d-1.0</category>
+      </categories>
+      <tags>
+        <tag>electron</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Electron-d-2.0</title>
+    <url>/2022/11/25/Electron-d-2-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><p>本篇文章接上一篇文章，详细讲解主进程和渲染进程一些常用的API</p>
+<h3 id="主进程API"><a href="#主进程API" class="headerlink" title="主进程API"></a>主进程API</h3><h4 id="1-App-BrowserWindow"><a href="#1-App-BrowserWindow" class="headerlink" title="1.App+BrowserWindow"></a>1.App+BrowserWindow</h4><h5 id="App事件："><a href="#App事件：" class="headerlink" title="App事件："></a>App事件：</h5><h6 id="（1）Before-quit"><a href="#（1）Before-quit" class="headerlink" title="（1）Before-quit"></a>（1）Before-quit</h6><ul>
+<li><code>event</code> Event #返回</li>
+</ul>
+<p> 在程序关闭窗口前触发（macOS不是关闭窗口触发，而是关闭程序）</p>
+<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125085755781.png"></p>
+<h6 id="（2）browser-window-blur"><a href="#（2）browser-window-blur" class="headerlink" title="（2）browser-window-blur"></a>（2）browser-window-blur</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>window</code> BrowserWindow #返回</li>
+</ul>
+<p>当一个 browserWindow （窗口）失去焦点时触发。当我们鼠标点击窗口以外的地方就会失焦。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090204480.png"></p>
+<h6 id="（3）browser-window-focus"><a href="#（3）browser-window-focus" class="headerlink" title="（3）browser-window-focus"></a>（3）browser-window-focus</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>window</code> BrowserWindow #返回</li>
+</ul>
+<p>当一个 browserWindow 获得焦点时触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090450485.png"></p>
+<h6 id="（4）quit"><a href="#（4）quit" class="headerlink" title="（4）quit"></a>（4）quit</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>exitCode</code> Integer #返回</li>
+</ul>
+<p>在应用程序退出时发出。</p>
+<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090654139.png"></p>
+<h6 id="（5）window-all-closed"><a href="#（5）window-all-closed" class="headerlink" title="（5）window-all-closed"></a>（5）window-all-closed</h6><p>当所有的窗口都被关闭时触发。</p>
+<p>如果你没有监听此事件并且所有窗口都关闭了，默认的行为是控制退出程序；但如果你监听了此事件，你可以控制是否退出程序。 如果用户按下了 <code>Cmd + Q</code>，或者开发者调用了 <code>app.quit()</code>，Electron 会首先关闭所有的窗口然后触发 <code>will-quit</code> 事件，在这种情况下 <code>window-all-closed</code>事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090909458.png"></p>
+<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><p>由于各种app.方法使用频率都差不多，那么我们根据需要看官方文档吧（也比较容易看懂）</p>
+<p>[App.方法 文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app#%E6%96%B9%E6%B3%95">https://www.electronjs.org/zh/docs/latest/api/app#方法</a> “</p>
+<h5 id="BrowserWindow："><a href="#BrowserWindow：" class="headerlink" title="BrowserWindow："></a>BrowserWindow：</h5><p><code>BrowserWindow</code> 类暴露了各种方法来修改应用窗口的外观和行为</p>
+<h6 id="（1）优雅的打开窗口"><a href="#（1）优雅的打开窗口" class="headerlink" title="（1）优雅的打开窗口"></a>（1）优雅的打开窗口</h6><p><code>ready-to-show</code> 事件</p>
+<p>在加载页面时，渲染进程第一次完成绘制时，如果窗口还没有被显示，渲染进程会发出 <code>ready-to-show</code> 事件 。 在此事件后显示窗口将没有视觉闪烁：（不会有白屏出现，但如果绘制没有完成，窗口出现的时间也会延长，根据业务需求来选择是否要选择这种优雅的打开窗口方式）</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093133167.png"></p>
+<p>这个事件通常在 <code>did-finish-load</code> 事件之后发出，但是页面有许多远程资源时，它可能会在 <code>did-finish-load</code>之前发出事件。</p>
+<p><code>backgroundColor</code>属性</p>
+<p>对于一个复杂的应用，<code>ready-to-show</code> 可能发出的太晚，会让应用感觉缓慢。 在这种情况下，建议立刻显示窗口，并使用接近应用程序背景的 <code>backgroundColor</code></p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093813389.png"></p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093827541.png"></p>
+<p>建议 设置 <code>backgroundColor</code>和 <code>ready-to-show</code> 事件一起用，以使应用感觉更接近原生。</p>
+<pre><code class="javascript">//backgroundColor有效值
+const win = new BrowserWindow()
+win.setBackgroundColor(&#39;hsl(230, 100%, 50%)&#39;)
+win.setBackgroundColor(&#39;rgb(255, 145, 145)&#39;)
+win.setBackgroundColor(&#39;#ff00a3&#39;)
+win.setBackgroundColor(&#39;blueviolet&#39;)
+</code></pre>
+<h6 id="（2）父子窗口-amp-amp-模态窗口"><a href="#（2）父子窗口-amp-amp-模态窗口" class="headerlink" title="（2）父子窗口&amp;&amp;模态窗口"></a>（2）父子窗口&amp;&amp;模态窗口</h6><p>父子窗口：</p>
+<p>通过使用 <code>parent</code> 选项，你可以创建子窗口：</p>
+<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
+
+const top = new BrowserWindow()
+const child = new BrowserWindow(&#123; parent: top &#125;)
+child.show()
+top.show()
+</code></pre>
+<p><code>child</code> 窗口将总是显示在 <code>top</code> 窗口的顶部.</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125094829288.png"></p>
+<p>模态窗口</p>
+<p>模态窗口是禁用父窗口的子窗口，创建模态窗口必须设置 <code>parent</code> 和 <code>modal</code> 选项：</p>
+<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
+
+const child = new BrowserWindow(&#123; parent: top, modal: true, show: false &#125;)
+child.loadURL(&#39;https://github.com&#39;)
+child.once(&#39;ready-to-show&#39;, () =&gt; &#123;
+  child.show()
+&#125;)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125095057232.png"></p>
+<h6 id="（3）BrowserWindow属性"><a href="#（3）BrowserWindow属性" class="headerlink" title="（3）BrowserWindow属性"></a>（3）BrowserWindow属性</h6><p>这个BrowserWindow属性 比较多，而且都是设置窗口的一些属性，也是不难理解，我们就对照我们的官方文档来学习吧！</p>
+<p>[BrowserWindow属性]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions">https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions</a> “</p>
+<h6 id="（4）webContents"><a href="#（4）webContents" class="headerlink" title="（4）webContents"></a>（4）webContents</h6><p><code>did-finish-load</code> 事件</p>
+<p>导航完成时触发，即选项卡的旋转器将停止旋转，并指派<code>onload</code>事件后。</p>
+<p>[webContents类实例事件]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/web-contents#%E7%B1%BB-webcontents">https://www.electronjs.org/zh/docs/latest/api/web-contents#类-webcontents</a> “</p>
+<h6 id="（5）保存窗口状态"><a href="#（5）保存窗口状态" class="headerlink" title="（5）保存窗口状态"></a>（5）保存窗口状态</h6><p>当我们使用桌面程序的时候，那么我们有时候希望我们关闭程序再次打开程序的时候，程序的界面和状态能够是我们关闭前的样子，不希望再去重新设置。那我们就需要一个包<code>electron-win-state</code> </p>
+<p>安装这个包</p>
+<pre><code class="ini">npm i electron-win-state -S
+</code></pre>
+<p>我们可以在npmjs官网上找到这个包，去看它的说明文档</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101014250.png"></p>
+<p>根据使用说明，我们代码如下：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101245297.png"></p>
+<p>我们发现报错了，WinState is not a constructor</p>
+<p>当我们打印一下WinState看看什么情况</p>
+<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;)
+console.log(WinState)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101446532.png"></p>
+<p>发现没有直接引入WinState，我们修改一下</p>
+<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;).default 
+</code></pre>
+<p>现在就没报错了。</p>
+<p>但是我们发现，虽然安装了这个包，但是我们程序的状态还是没有改变，这就很奇怪了，其实，是我们自己已经给窗口设置了自定义宽高，覆盖了。我们也缺了一句代码；</p>
+<pre><code class="javascript"> winState.manage(win)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125102737449.png"></p>
+<p>现在我们的状态保存就没问题了。当我们关闭窗口再次打开的时候就是关闭之前的样子了。</p>
+<h4 id="2-dialog"><a href="#2-dialog" class="headerlink" title="2.dialog"></a>2.dialog</h4><p>这些具体参数请看官方文档，下面几个方法返回一个promise对象</p>
+<h6 id="（1）dialog-showOpenDialog-browserWindow-options"><a href="#（1）dialog-showOpenDialog-browserWindow-options" class="headerlink" title="（1）dialog.showOpenDialog([browserWindow, ]options)"></a>（1）<code>dialog.showOpenDialog([browserWindow, ]options)</code></h6><h6 id="（2）dialog-showSaveDialog-browserWindow-options"><a href="#（2）dialog-showSaveDialog-browserWindow-options" class="headerlink" title="（2）dialog.showSaveDialog([browserWindow, ]options)"></a>（2）<code>dialog.showSaveDialog([browserWindow, ]options)</code></h6><h6 id="（3）dialog-showMessageBox-browserWindow-options"><a href="#（3）dialog-showMessageBox-browserWindow-options" class="headerlink" title="（3）dialog.showMessageBox([browserWindow, ]options)"></a>（3）<code>dialog.showMessageBox([browserWindow, ]options)</code></h6><p>[dialog文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options">https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options</a> “</p>
+<h4 id="3-快捷键（globalShortcut）"><a href="#3-快捷键（globalShortcut）" class="headerlink" title="3.快捷键（globalShortcut）"></a>3.快捷键（globalShortcut）</h4><blockquote>
+<p>在应用程序没有键盘焦点时，监听键盘事件。</p>
+</blockquote>
+<p><code>globalShortcut</code> 模块可以在操作系统中注册&#x2F;注销全局快捷键, 以便可以为操作定制各种快捷键。</p>
+<p><strong>注意:</strong> 快捷方式是全局的; 即使应用程序没有键盘焦点, 它也仍然在持续监听键盘事件。 在 app 模块的 <code>ready</code> 事件就绪之前，这个模块不能使用。</p>
+<pre><code class="javascript">const &#123; app, globalShortcut &#125; = require(&#39;electron&#39;)
+
+app.whenReady().then(() =&gt; &#123;
+  // 注册一个&#39;CommandOrControl+X&#39; 快捷键监听器
+  const ret = globalShortcut.register(&#39;CommandOrControl+X&#39;, () =&gt; &#123;
+    console.log(&#39;CommandOrControl+X is pressed&#39;)
+  &#125;)
+
+  if (!ret) &#123;
+    console.log(&#39;registration failed&#39;)
+  &#125;
+
+  // 检查快捷键是否注册成功
+  console.log(globalShortcut.isRegistered(&#39;CommandOrControl+X&#39;))
+&#125;)
+
+app.on(&#39;will-quit&#39;, () =&gt; &#123;
+  // 注销快捷键
+  globalShortcut.unregister(&#39;CommandOrControl+X&#39;)
+
+  // 注销所有快捷键
+  globalShortcut.unregisterAll()
+&#125;)
+</code></pre>
+<p>方法</p>
+<p><code>globalShortcut</code> 模块具有以下方法:</p>
+<h6 id="（1）globalShortcut-register-accelerator-callback"><a href="#（1）globalShortcut-register-accelerator-callback" class="headerlink" title="（1）globalShortcut.register(accelerator, callback)"></a>（1）<code>globalShortcut.register(accelerator, callback)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+<li><code>callback</code> Function</li>
+</ul>
+<p>返回<code>boolean</code> - 快捷键注册是否成功</p>
+<p>注册 <code>accelerator</code> 的全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
+<p>如果指定的快捷键已经被其他应用程序注册掉, 调用会默默失败。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
+<ul>
+<li>“Media Play&#x2F;Pause”</li>
+<li>“Media Next Track”</li>
+<li>“Media Previous Track”</li>
+<li>“Media Stop”</li>
+</ul>
+<h6 id="（2）globalShortcut-registerAll-accelerators-callback"><a href="#（2）globalShortcut-registerAll-accelerators-callback" class="headerlink" title="（2）globalShortcut.registerAll(accelerators, callback)"></a>（2）<code>globalShortcut.registerAll(accelerators, callback)</code></h6><ul>
+<li><code>accelerators</code> string[] - an array of Accelerators.</li>
+<li><code>callback</code> Function</li>
+</ul>
+<p>注册多个全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
+<p>如果定义的快捷键已经被其他应用占用，这个调用会失效。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
+<ul>
+<li>“Media Play&#x2F;Pause”</li>
+<li>“Media Next Track”</li>
+<li>“Media Previous Track”</li>
+<li>“Media Stop”</li>
+</ul>
+<h6 id="（3）globalShortcut-isRegistered-accelerator"><a href="#（3）globalShortcut-isRegistered-accelerator" class="headerlink" title="（3）globalShortcut.isRegistered(accelerator)"></a>（3）<code>globalShortcut.isRegistered(accelerator)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+</ul>
+<p>Returns <code>boolean</code> - 表示 <code>accelerator</code> 全局快捷键是否注册成功</p>
+<p>当快捷键已经被其他应用程序注册时, 此调用依然将返回 <code>false</code>。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<h6 id="（4）globalShortcut-unregister-accelerator"><a href="#（4）globalShortcut-unregister-accelerator" class="headerlink" title="（4）globalShortcut.unregister(accelerator)"></a>（4）<code>globalShortcut.unregister(accelerator)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+</ul>
+<p>注销 <code>accelerator</code> 的全局快捷键。</p>
+<h6 id="（5）globalShortcut-unregisterAll"><a href="#（5）globalShortcut-unregisterAll" class="headerlink" title="（5）globalShortcut.unregisterAll()"></a>（5）<code>globalShortcut.unregisterAll()</code></h6><p>注销所有的全局快捷键（清空该应用程序的所有全局快捷键）。</p>
+<h4 id="4-菜单（Menu）"><a href="#4-菜单（Menu）" class="headerlink" title="4.菜单（Menu）"></a>4.菜单（Menu）</h4><p>我们这举个例子：</p>
+<pre><code class="javascript">//一个简单的菜单模板
+const &#123; app, Menu &#125; = require(&#39;electron&#39;)
+
+const isMac = process.platform === &#39;darwin&#39;//判断是不是macOS
+//role：菜单选项
+const template = [
+  // &#123; role: &#39;appMenu&#39; &#125;
+  ...(isMac ? [&#123;
+    label: app.name,//我们程序名称
+    submenu: [
+      &#123; role: &#39;about&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;services&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;hide&#39; &#125;,
+      &#123; role: &#39;hideOthers&#39; &#125;,
+      &#123; role: &#39;unhide&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;quit&#39; &#125;
+    ]
+  &#125;] : []),
+  // &#123; role: &#39;fileMenu&#39; &#125;
+  &#123;
+    label: &#39;File&#39;,
+    submenu: [
+      isMac ? &#123; role: &#39;close&#39; &#125; : &#123; role: &#39;quit&#39; &#125;
+    ]
+  &#125;,
+  // &#123; role: &#39;editMenu&#39; &#125;
+  &#123;
+    label: &#39;Edit&#39;,
+    submenu: [
+      &#123; role: &#39;undo&#39; &#125;,
+      &#123; role: &#39;redo&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;cut&#39; &#125;,
+      &#123; role: &#39;copy&#39; &#125;,
+      &#123; role: &#39;paste&#39; &#125;,
+      ...(isMac ? [
+        &#123; role: &#39;pasteAndMatchStyle&#39; &#125;,
+        &#123; role: &#39;delete&#39; &#125;,
+        &#123; role: &#39;selectAll&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123;
+          label: &#39;Speech&#39;,
+          submenu: [
+            &#123; role: &#39;startSpeaking&#39; &#125;,
+            &#123; role: &#39;stopSpeaking&#39; &#125;
+          ]
+        &#125;
+      ] : [
+        &#123; role: &#39;delete&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;selectAll&#39; &#125;
+      ])
+    ]
+  &#125;,
+  // &#123; role: &#39;viewMenu&#39; &#125;
+  &#123;
+    label: &#39;View&#39;,
+    submenu: [
+      &#123; role: &#39;reload&#39; &#125;,
+      &#123; role: &#39;forceReload&#39; &#125;,
+      &#123; role: &#39;toggleDevTools&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;resetZoom&#39; &#125;,
+      &#123; role: &#39;zoomIn&#39; &#125;,
+      &#123; role: &#39;zoomOut&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;togglefullscreen&#39; &#125;
+    ]
+  &#125;,
+  // &#123; role: &#39;windowMenu&#39; &#125;
+  &#123;
+    label: &#39;Window&#39;,
+    submenu: [
+      &#123; role: &#39;minimize&#39; &#125;,
+      &#123; role: &#39;zoom&#39; &#125;,
+      ...(isMac ? [
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;front&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;window&#39; &#125;
+      ] : [
+        &#123; role: &#39;close&#39; &#125;
+      ])
+    ]
+  &#125;,
+  &#123;
+    role: &#39;help&#39;,
+    submenu: [
+      &#123;
+        label: &#39;Learn More&#39;,
+        click: async () =&gt; &#123;
+          //定义自己的菜单方法
+          const &#123; shell &#125; = require(&#39;electron&#39;)
+          await shell.openExternal(&#39;https://electronjs.org&#39;)
+        &#125;
+      &#125;,
+      &#123;
+        label:&#39;alanmf&#39;,
+          click:()=&gt;&#123;console.log(&#39;shift+G&#39;)&#125;,
+          accelerator:&#39;shift+G&#39;//定义快捷键
+      &#125;
+    ]
+  &#125;
+]
+
+const menu = Menu.buildFromTemplate(template)//一般来说， template是一个options类型的数组，用于构建MenuItem。 使用方法可参考前文。还可以将其他字段附加到template，它们将成为菜单项的属性。
+Menu.setApplicationMenu(menu)//在macOS上将 menu设置成应用内菜单 在windows和Linux上，menu 将会被设置成窗口顶部菜单在Windows和Linux中
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125155603331.png"></p>
+<p>[Menu菜单文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu">https://www.electronjs.org/zh/docs/latest/api/menu</a> “<br>[role的属性值]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu-item#%E8%A7%92%E8%89%B2">https://www.electronjs.org/zh/docs/latest/api/menu-item#角色</a> “</p>
+<h4 id="5-系统托盘（Tray）"><a href="#5-系统托盘（Tray）" class="headerlink" title="5.系统托盘（Tray）"></a>5.系统托盘（Tray）</h4><blockquote>
+<p>添加图标和上下文菜单到系统通知区</p>
+</blockquote>
+<pre><code class="javascript">const &#123; app, Menu, Tray &#125; = require(&#39;electron&#39;)
+
+let tray = null
+app.whenReady().then(() =&gt; &#123;
+  tray = new Tray(&#39;/path/to/my/icon&#39;) //定义icon的路径
+  const contextMenu = Menu.buildFromTemplate([
+    &#123; label: &#39;Item1&#39;, type: &#39;radio&#39; &#125;,
+    &#123; label: &#39;Item2&#39;, type: &#39;radio&#39; &#125;,
+    &#123; label: &#39;Item3&#39;, type: &#39;radio&#39;, checked: true &#125;,
+    &#123; label: &#39;Item4&#39;, type: &#39;radio&#39; &#125;
+  ])
+  tray.setToolTip(&#39;This is my application.&#39;)//设置鼠标指针在托盘图标上悬停时显示的文本
+  tray.setContextMenu(contextMenu)//设置上下文菜单到托盘
+&#125;)
+</code></pre>
+<p>其实这个Tray跟Menu是布局差不太多的，所以学习起来也不是很难理解了。具体事件和方法也不是特别多，我们就直接看官方API文档吧！</p>
+<p>[Tray文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/tray">https://www.electronjs.org/zh/docs/latest/api/tray</a> “</p>
+<h4 id="6-触控板（TouchBar）"><a href="#6-触控板（TouchBar）" class="headerlink" title="6.触控板（TouchBar）"></a>6.触控板（TouchBar）</h4><p><strong>注意:</strong> TouchBar API目前为实验性质，可能会更改或删除。</p>
+<p>如果官网推荐的TouchBar模拟器下载失败，自己搜索一下即可。（如果下载的打不开，那就在应用程序-&gt;右键显示包内容-&gt;如下）执行就可以了</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172856290.png"></p>
+<pre><code class="javascript">//touchbar.js
+const &#123; app, BrowserWindow, TouchBar &#125; = require(&#39;electron&#39;)
+
+const &#123; TouchBarLabel, TouchBarButton, TouchBarSpacer &#125; = TouchBar
+
+let spinning = false
+
+// 类似老虎机的滚轴标签
+const reel1 = new TouchBarLabel()
+const reel2 = new TouchBarLabel()
+const reel3 = new TouchBarLabel()
+
+// 旋转结果标签
+const result = new TouchBarLabel()
+
+// 旋转按钮
+const spin = new TouchBarButton(&#123;
+  label: &#39;🎰 Spin&#39;,
+  backgroundColor: &#39;#7851A9&#39;,
+  click: () =&gt; &#123;
+    // Ignore clicks if already spinning
+    if (spinning) &#123;
+      return
+    &#125;
+
+    spinning = true
+    result.label = &#39;&#39;
+
+    let timeout = 10
+    const spinLength = 4 * 1000 // 4 seconds
+    const startTime = Date.now()
+
+    const spinReels = () =&gt; &#123;
+      updateReels()
+
+      if ((Date.now() - startTime) &gt;= spinLength) &#123;
+        finishSpin()
+      &#125; else &#123;
+        // Slow down a bit on each spin
+        timeout *= 1.1
+        setTimeout(spinReels, timeout)
+      &#125;
+    &#125;
+
+    spinReels()
+  &#125;
+&#125;)
+
+const getRandomValue = () =&gt; &#123;
+  const values = [&#39;🍒&#39;, &#39;💎&#39;, &#39;7️⃣&#39;, &#39;🍊&#39;, &#39;🔔&#39;, &#39;⭐&#39;, &#39;🍇&#39;, &#39;🍀&#39;]
+  return values[Math.floor(Math.random() * values.length)]
+&#125;
+
+const updateReels = () =&gt; &#123;
+  reel1.label = getRandomValue()
+  reel2.label = getRandomValue()
+  reel3.label = getRandomValue()
+&#125;
+
+const finishSpin = () =&gt; &#123;
+  const uniqueValues = new Set([reel1.label, reel2.label, reel3.label]).size
+  if (uniqueValues === 1) &#123;
+    // All 3 values are the same
+    result.label = &#39;💰 Jackpot!&#39;
+    result.textColor = &#39;#FDFF00&#39;
+  &#125; else if (uniqueValues === 2) &#123;
+    // 2个值相同
+    result.label = &#39;😍 Winner!&#39;
+    result.textColor = &#39;#FDFF00&#39;
+  &#125; else &#123;
+    // 没有值相同
+    result.label = &#39;🙁 Spin Again&#39;
+    result.textColor = null
+  &#125;
+  spinning = false
+&#125;
+
+const touchBar = new TouchBar(&#123;
+  items: [
+    spin,
+    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
+    reel1,
+    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
+    reel2,
+    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
+    reel3,
+    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
+    result
+  ]
+&#125;)
+
+let window
+
+app.whenReady().then(() =&gt; &#123;
+  window = new BrowserWindow(&#123;
+    frame: false,
+    titleBarStyle: &#39;hiddenInset&#39;,
+    width: 200,
+    height: 200,
+    backgroundColor: &#39;#000&#39;
+  &#125;)
+  window.loadURL(&#39;about:blank&#39;)
+  window.setTouchBar(touchBar)
+&#125;)
+</code></pre>
+<p>运行命令：</p>
+<pre><code class="ini">./node_modules/.bin/electron touchbar.js
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
+<p>[TouchBar文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
+]]></content>
+      <categories>
+        <category>Electron</category>
+        <category>Electron-d-2.0</category>
       </categories>
       <tags>
         <tag>electron</tag>
@@ -11238,6 +11238,447 @@ pubsub.notify(TYPE_C);
       </categories>
       <tags>
         <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>图像优化</title>
+    <url>/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="图像优化"><a href="#图像优化" class="headerlink" title="图像优化"></a>图像优化</h1><blockquote>
+<p>前端大部分的工作都围绕在JavaScript和CSS上，考虑如何更快地下载文件，如何提供给用户复杂而优雅的交互，如何高效合理地应用有限的处理和传输资源等，这些是用户感知的全部吗?</p>
+<p>当然，他们在前端开发和性能优化中的地位举足轻重，但JavaScript和CSS对用户感知而言，并不是最重要的部分，图像才是。我们在公众号发布文章或用PPT进行演讲时，都知道一条高效传递信息的原则:字不如表，表不如图。</p>
+<p>网站作为一种信息传递的媒介，且如今各类Web项目中，图像资源的使用占比也越来越大，更应当注重图像资源的使用方式。如果网站中的图像资源未进行恰当的优化，那么势必会导致许多问题，诸如巨量的访问请求引发传输带宽的挑战，请求大尺寸图片需要过久的等待时间等。</p>
+<p>图像优化问题主要可以分为两方面:图像的选取和使用，图像的加载和显示。对于加载方面的策略将放在 加载优化 中深入讨论,本章将聚焦图像的选取和使用。本章内容包括:什么是图像文件，都有哪些格式的图像文件，不同格式的图像文件适用于怎样的业务场景，以及通过怎样的优化方法能够有效提升用户对图像的体验感知等。</p>
+</blockquote>
+<h3 id="一、图像基础"><a href="#一、图像基础" class="headerlink" title="一、图像基础"></a>一、图像基础</h3><p>​	HTTP Archive上的数据显示，网站传输的数据中，60%的资源都是由各种图像文件组成的，当然这个数据是将各种类型网站平均之后的结果，要是单独看电商类面向消费者端页面的数据，这个比例可能会更大。如此之大的资源占比，也同样意味着存在很大的优化空间。</p>
+<h4 id="1-图像是否必需"><a href="#1-图像是否必需" class="headerlink" title="1.图像是否必需"></a>1.图像是否必需</h4><p>​		图像资源优化的根本思想，可以归结为两个字: 压缩。无论是选取何种图像的文件格式，还是针对同一种格式压缩至更小的尺寸，其本质都是用更小的资源开销来完成图像的传输和展示。</p>
+<p>​		在深入探讨之前，我们首先思考一下要达到期望的信息传递效果，是否真的需要图像?这不仅是因为图像资源与网页上的其他资源(HTML&#x2F;CSS&#x2F;JavaScript等)相比有更大的字节开销，出于对节省资源的考虑，对用户注意力的珍惜也很重要，如果一个页面打开后有很多图像，那么用户其实很难快速梳理出有效的信息，即便获取到了也会让用户觉得很累。</p>
+<p>​		一个低感官体验的网站，它的价值转化率不会很高。当然这个问题的答案不是通过自己简单想想就能得到的，我们可能需要在日常的开发中与产品经理及体验设计师不断沟通，不断思考，来趋近更优的方案。</p>
+<p>​		当确定了图像的展示效果必须存在时，在前端实现上也并非一定就要用图像文件，还存在一些场景可以使用更高效的方式来实现所需的效果。</p>
+<ul>
+<li>网站中一个图像在不同的页面或不同的交互状态下，需要呈现出不同的效果(边角的裁切、阴影或渐变)，其实没有必要为不同场景准备不同效果的多份图像文件，只需用CSS将一-张图像处理为所需的不同效果即可。相对于一个图像文件的大小来讲，修改其所增加的CSS代码量可以忽略不计。</li>
+<li>如果一个图像上面需要显示文字，建议使用网页字体的形式通过前端代码进行添加，而不是使用带文字的图像，其原因一方面是包含了更多信息的图像文件一般会更大， 另一方面是图像中的文本信息带来的用户体验一般较差 (不可选择、搜索及缩放)，并且在高分辨率设备上的显示效果也会打折扣。</li>
+</ul>
+<p>这里列举的两个例子，为了说明当我们在选择使用某种资源之前，如果期望达到更优的性能效果，则需要先去思考这种选择是否必需。</p>
+<h4 id="2-矢量图和位图"><a href="#2-矢量图和位图" class="headerlink" title="2.矢量图和位图"></a>2.矢量图和位图</h4><p>​		当确定了图像是实现展示效果的最佳方式时，接下来就是选择合适的图像格式。图像文件可以分为两类:矢量图和位图。每种类型都有其各自的优缺点和适用场景。</p>
+<p>1.矢量图</p>
+<p>​		矢量图中的图形元素被定义为一个对象，包括颜色、大小、形状及屏幕位置等属性。它适合如文本、品牌logo、控件图标及二维码等构图形状较简单的几何图形。矢量图的 优点 是能够在任何缩放比例下呈现出细节同样清晰的展示效果。其缺点是对细节的展示效果不够丰富，对足够复杂的图像来说，比如要达到照片的效果，若通过SVG进行矢量图绘制，则所得文件会大得离谱，但即便如此也很难达到照片的真实效果。</p>
+<p>​		SVG也是一种基于XML的图像格式，其全称是Scalable Vector Graphics (可缩放的矢量图形)，目前几乎所有浏览器都支持SVG.我们可以在Iconfont.上找到许多矢量图，或者上传自己绘制的矢量图，在上面构建自己的矢量图标库并引入项目进行使用，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108155047156.png" alt="矢量图标"></p>
+<p>标识照片的矢量图标的SVG标签格式，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108155303100.png"></p>
+<p>​		SVG标签所包括的部分就是该矢量图的全部内容，除了必要的绘制信息，可能还包括一些元数据，比如XML命名空间、图层及注释信息。但这些信息对浏览器绘制一个 SVG来说并不是必要的，所以在使用前可通过工县去除这些元数据来达到压缩的目的。</p>
+<p>2.位图</p>
+<p>​		位图是通过对一个矩阵中的栅格进行编码来表示图像的，每个栅格只能编码表示一个特定的颜色，如果组成图像的栅格像素点越多且每个像素点所能表示的颜色范围越广，则位图图像整体的显示效果就会越逼真。虽然位图没有像矢量图那种不受分辨率影响的优秀特性，但对于复杂的照片却能提供较为真实的细节体验，如图中一幅海边的位图对于云朵及波浪的细节表现，如果用矢量图来实现是不可想象的。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108160504567.png" alt="海边的位图"></p>
+<p>​		当把图像不断放大后，就会看到许多栅格像素色块，如图所示。每个像素存储的是图像局部的RGBA信息，即红绿蓝三色通道及透明度。通常浏览器会为每个颜色通道分配一个字节的存储空间，即2^8&#x3D;256个色阶值。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108160613742.png" alt="放大后的位图局部"></p>
+<p>​		一个像素点4个通道就是4字节，一张图像整体的大小与其包含的像素数成正比，图像包含的像素越多，所能展示的细节就越丰富，同时图像就越大。</p>
+<p>​		如表所示，当图像尺寸为100像素 x 100像素时，文件大小为39KB.随着图像尺寸在长和宽两个维度上同时增大，所产生像素数量的增加就不是简单的线性关系了，而是平方的抛物线增加，也就是说文件大小会迅速增加，在网络带宽一 定的前提下，下载完张图像会更慢。</p>
+<table>
+<thead>
+<tr>
+<th>图像尺寸</th>
+<th>像素数量</th>
+<th>文件大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100像素 x 100像素</td>
+<td>10,000</td>
+<td>39KB</td>
+</tr>
+<tr>
+<td>200像素 x 200像素</td>
+<td>40,000</td>
+<td>156KB</td>
+</tr>
+<tr>
+<td>500像素 x 500像素</td>
+<td>250,000</td>
+<td>977KB</td>
+</tr>
+<tr>
+<td>800像素 x 800像素</td>
+<td>640,000</td>
+<td>2.5MB</td>
+</tr>
+</tbody></table>
+<p>​		出于对性能的考虑，在使用图像时必须考虑对图像进行压缩，采用什么样的图像格式，使用什么样的压缩算法及压缩到何种程度，这将是本章接下来详细讨论的内容，但在此之前先说明关于分辨率的两个容易混淆的概念。</p>
+<h4 id="3-分辨率"><a href="#3-分辨率" class="headerlink" title="3.分辨率"></a>3.分辨率</h4><p>​		在前端开发过程中书写CSS时，经常会为图像设置显示所需的长宽像素值，但在不同的设备屏幕上，有时候相同的图像及相同的设置，其渲染出来的图像会让人明显察觉出清晰度有差别。产生这个现象的原因涉及两种不同的分辨率:屏幕分辨率和图像分辨率。</p>
+<p>​		图像分辨率表示的就是该图像文件所包含的真实像素值信息，比如一个 200像素X200像素的分辨率的图像文件，它就定义了长宽各200个像素点的信息。设备分辨率则是显示器屏幕所能显示的最大像素值，比如一台13英寸的Mac Pro 笔记本电脑的显示器分辨率为2560像素 x 1600像素。这两种分辨率都用到了像素，那么它们有什么区别呢?</p>
+<p>​		更高的设备分辨率有助于显示更绚丽多彩的图像，这其实很话合矢量图的发挥，因为它不会因放大而失真。而对位图来说，只有图像文件包含更多的像素信息时，才能更充分地利用屏幕分辨率。为了能在不同的分辨率下使项目中所包含的图像都能得到恰当的展示效果，可以利用picture标签和srcset 属性提供图像的多个变体。</p>
+<p>​		用于插入图像的ing标签，有一个 srcset属性可以用来针对不同设备，提供不同分辨率的图像文件:</p>
+<pre><code class="html">&lt; img src=&quot;photo.jpg&quot; srcset=&quot;photo@2x.jpg 2x,photo@3x.jpg 3x, photo@4x.jpg 4x&quot; alt=&quot;photo&quot;&gt;
+</code></pre>
+<p>​		除了IE和其他较低版本的浏览器不支持，目前主流的大部分浏览器都已支持img标签的srcset 属性。在srcset属性中设置多种分辨率的图像文件及使用条件，浏览器在请求之前便会先对此进行解析，只选择最合适的图像文件进行下载，如果浏览器不支持，请务必在src属性中包含必要的默认图片。</p>
+<p>​		使用picture标签则会在多图像文件选择时，获得更多的控制维度，比如屏幕方向、设备大小、屏幕分辨率等。</p>
+<pre><code class="html">&lt;picture&gt;
+  &lt;source media=&quot; (min-width:800px)&quot; srcset=&quot;photo.ipg, photo-2x.jpg 2x&quot;&gt;
+  &lt;source media=&quot; (min-width:450px)&quot; srcset=&quot;photo-s.jpg photo-s-2x.jpg 2x&quot;&gt;
+  &lt; img src=&quot;photo.jpg&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+<p>​		由于picture标签也是加入标准不久的元素标签，所以在使用过程中，同样应当考虑兼容性问题。</p>
+<h4 id="4-压缩的有损和无损"><a href="#4-压缩的有损和无损" class="headerlink" title="4.压缩的有损和无损"></a>4.压缩的有损和无损</h4><p>​		压缩是降低源文件大小的有效方式，对JavaScript代码或网页的一些脚本文件而言，压缩掉的内容是一些多余的空格及不影响执行的注释，其目的是在不损坏正常执行的情况下，尽量缩小源文件的大小。对图像文件而言，由于人眼对不同颜色的敏感度存在差异，所以便可通过减少对某种颜色的编码位数来减小文件大小，甚至还可以损失部分源文件信息，以达到近似的效果，使得压缩后的文件尺寸更小。</p>
+<p>​		对于图像压缩，应该采用有损压缩还是无损压缩?如果都采用又该如何搭配设置呢?当结合了具体的业务需求再考虑后，关于压缩的技术选型就可以简单分成两步进行。</p>
+<p>（1）首先确定业务所要展示图像的颜色阶数、图像显示的分率及清晰程度，当锚定了这几个参数的基准后，如果获取的图像源文件的相应参数指标过高，便可适当进行有损压缩，通过降低源文件图像质量的方法来降低图像文件大小。</p>
+<p>​		如果业务所要求的图像质量较高，便可跳过有损压缩，直接进入第二步无损压缩。所以是否要进行有损压缩，其实是在理解了业务需求后的一个可选选项，而非必要的。</p>
+<p>（2）当确定了展示图像的质量后，便可利用无损压缩技术尽可能降低图像大小。和第(1)步要通过业务决策来判断是否需要所不同的是，无损压缩是应当完成的工作环节。那么最好能通过一套完善的工程方案，自动化执行来避免烦琐的人工重复工作。</p>
+<h3 id="二、图像格式"><a href="#二、图像格式" class="headerlink" title="二、图像格式"></a>二、图像格式</h3><p>​		实际上，不同的图像文件格式(JPG、PNG、GIF 等)之间的区别，在于它们进行有损压缩和无损压缩过程中采用了不同的算法组合，接下来我们将从不同的图像文件格式入手，看看它们的特点和使用场景，以及在具体业务中应该如何选取。</p>
+<h4 id="1-JPEG"><a href="#1-JPEG" class="headerlink" title="1.JPEG"></a>1.JPEG</h4><p>​		JPEG可能是目前所有图像格式中出现最早，同时也是使用范围最广的一种格式。它也是一种有损压缩算法，它通过去除相关冗余图像和色彩数据等方式来获得较高的压缩率，同时还能展现出相当丰富的图像内容。</p>
+<p>​		JPEG在网站开发中经常被用作背景图、轮播图或者一些商品的banner图，以呈现色彩丰富的内容。但由于是有损压缩，当处理Logo或图标时，需要较强线条感和强烈颜色对比，JPEG图像可能会出现一些边 界模糊的不佳体验，另外JPEG图像并不支持透明度。</p>
+<p>​		接下来介绍有关JPEG常用的压缩编码方式，以及在工程实践中如何自动批量处理。</p>
+<p>1.压缩模式</p>
+<p>​		JPEG包含了多种压缩模式，其中常见的有基于基线的、渐进式的。简单来说基线模式的JPEG加载顺序是自上而下的，当网络连接缓慢或不稳定时，其是从上往下逐渐加载完成的，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108163309301.png" alt="基线JPEG"></p>
+<pre><code>     渐进式模式是将图像文件分为多次扫描，首先展示一个低质量模糊的图像，随着扫描到的图像信息不断增多，每次扫描过后所展示的图像清晰度也会不断提升，如图所示。
+</code></pre>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109080817397.png" alt="渐进式JPEG"></p>
+<p>2.渐进式JPEG的优缺点</p>
+<p>​		渐进式JPEG的优点是显而易见的，在网络连接缓慢的情况下，首先能快速加载出一个图像质量比较模糊的预览版本。这样用户便可据此了解图像的大致内容，来决定是否继续花费时间等待完整图像的加载。这样做可以很好地提高对用户的感知性能，用户不仅知道所访问图像的大致内容，还会感知完整的图像就快加载好了。如果读者平时留心观察，应该能注意到渐进式JPEG已经在渐渐取代基线JPEG了。</p>
+<p>​		通过了解两种压缩的原理不难发现，渐进式JPEG的解码速度会比基线的要慢一些，因为它增加了重复的检索开销。另外，通过渐进式JPEG压缩模式得到的图像文件也不一定是最小的，比如特别小的图像。所以是否要采用渐进式JPEG,需要综合考虑文件大小、大部分用户的设备类型与网络延迟。</p>
+<p>3.创建渐进式JPEG</p>
+<p>​		如果所得到的图像不是渐进式JPEG,那么我们可以通过许多第三方工具来进行处理，例如imagemin、libjpeg、 imageMagick 等。值得注意的是，这个步骤应当尽量交给构建工具来自动化完成，通过如下代码可以将该工作加入gulp处理管道:</p>
+<pre><code class="javascript">const gulp = require(&#39;gulp&#39;);
+const imagemin = require(&#39;gulp-imagemin&#39;);
+gulp.task(&#39;images&#39;,()=&gt; 
+    gulp.src(&#39;images/*.jpg&#39;)
+    .pipe(imagemin(&#123;
+        progressive:true
+    &#125;))
+    .pipe(gulp.dest(&#39;dist&#39;))
+);
+</code></pre>
+<p>在执行构建流程后，gulp 会调用imagemin的方法把images 文件夹下的所有jpg后缀图像全部进行渐进式编码处理。</p>
+<p>4.其他JPEG编码方式</p>
+<p>​		除了常见的基线与渐进式压缩编码方式，最近还出现了几种现代的JPEG编码器，它们尝试以更高的保真度及压缩后更小的文件大小为目标，同时还兼容当前主流的浏览器。其中比较出色的有Mozilla基金会推出的MozJPEG和Google提出的Guetzli。</p>
+<p>​		MozJPEG和Guetzli也都已经有了可靠的imagemin插件支持，其使用方式与渐进式JPEG处理方式类似，这里仅列出示例代码，具体工程化构建请读者结合项目实践进行改写。</p>
+<pre><code class="javascript"> const gulp = require(&#39;gulp&#39;);
+const imagemin = require (&#39;gulp-imagemin&#39;);
+const imageminMozJPEG = require (&#39;imagemin-mozjpeg&#39;); //引入MozJPEG依赖包
+const imageminGuetzli = require (&#39;imagemin-guetzli&#39;); //引入Guetzli依赖包
+//MozJPEG压缩编码
+gulp. task(&#39;mozjpeg&#39;, () =&gt;
+    gulp.src(&#39;image/*. jpg&#39;)
+    .pipe (imagemin([
+        imageminMozJPEG(&#123;quality: 85 &#125;)
+    ]))
+    .pipe(gulp.dest(&#39;dist&#39;))
+)
+//Guetzli压缩编码
+gulp.task(&#39;guetzli&#39;, () =&gt;
+    gulp.src(&#39;image/* . jpg&#39;)
+    .pipe (imagemin([
+        imageminGuetzli (&#123;quality: 85 &#125;)
+    ]))
+    .pipe (gulp.dest(&#39;dist&#39;))
+)
+</code></pre>
+<p>​		MozJPEG引入了对逐行扫描的优化及一些栅 格量化的功能，最多能将图像文件压缩10%，而Guetzli则是找到人眼感知上无法区分的最小体积的JPEG,那么两者的优化效果具体如何，又如何评价呢?</p>
+<p>​		这里需要借助两个指标来进行衡量，首先是用来计算两个图像相似度的结构相似性分数(Structural Similarity index),简称SSIM,具体的计算过程可以借助第三方工具jpeg-compress 来进行，这个指标分数以原图为标准来判断测试图片与原图的相似度，数值越接近1表示和原图越相似。</p>
+<p>​		Butteraugli则是一种基 于人类感知测量图像的差异模型，它能在人眼几乎看不出明显差异的地方，给出可靠的差别分数。如果SSIM是对图像差别的汇总，那么Butteraugli则可以帮助找出非常糟糕的部分。表列出了MozJPEG编码压缩后的数据比较。</p>
+<table>
+<thead>
+<tr>
+<th>原图大小 982 KB</th>
+<th>Q&#x3D;90 &#x2F; 841KB</th>
+<th>Q&#x3D;85 &#x2F; 562KB</th>
+<th>Q&#x3D;75 &#x2F;324KB</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SSIM</td>
+<td>0.999936</td>
+<td>0.999698</td>
+<td>0.999478</td>
+</tr>
+<tr>
+<td>Butteraugli</td>
+<td>1.576957</td>
+<td>2.483837</td>
+<td>3.66127</td>
+</tr>
+</tbody></table>
+<p>​																	MozJPEG编码压缩后的数据比较</p>
+<table>
+<thead>
+<tr>
+<th>原图大小 982 KB</th>
+<th>Q&#x3D;100 &#x2F; 945KB</th>
+<th>Q&#x3D;90 &#x2F; 687KB</th>
+<th>Q&#x3D;85 &#x2F; 542KB</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SSIM</td>
+<td>0.999998</td>
+<td>0.99971</td>
+<td>0.999508</td>
+</tr>
+<tr>
+<td>Butteraugli</td>
+<td>0.40884</td>
+<td>1.580555</td>
+<td>2.0996</td>
+</tr>
+</tbody></table>
+<p>​																	Guetzli编码压缩后的数据比较</p>
+<p>不仅要考虑图像压缩的质量和保真度，还要关注压缩后的大小，没有哪种压缩编码方式在各种条件下都是最优的，需要结合实际业务进行选择。这里可以给读者一些使用建议:</p>
+<ul>
+<li>使用一些外部工具找到图像的最佳表现质量后，再用MozJPEG进行编码压缩。</li>
+<li>Guetzli会获得更高质量的图像，压缩速度相对较慢。</li>
+</ul>
+<p>​		虽然本节介绍了关于JPEG的若干编码器，也对它们之间的差别进行了比较，但需要明确的一点是，最终压缩后的图像文件大小差异更多地取决于设置的压缩质量，而非所选择的编码器。所以在对JPEG进行编码优化时，应主要关注业务可接受的最低图像质量。</p>
+<h4 id="2-GIF"><a href="#2-GIF" class="headerlink" title="2.GIF"></a>2.GIF</h4><p>​		GIF是Graphics Interchange Format的缩写，也是一种比较早的图像文件格式。 由于对支持颜色数量的限制，256色远小于展示照片所需颜色的数量级，所以GIF并不适合用来呈现照片，可能用来呈现图标或Logo会更适合些， 但后来推出的PNG格式对于图形的展示效果更佳，所以当下只有在需要使用到动画时才会使用GIF。</p>
+<p>接下来探讨一些关于GIF的优化点。</p>
+<ol>
+<li>单帧的GIF转化为PNG</li>
+</ol>
+<p>​		首先可以使用npm引入ImageMagick工具来检查GIF图像文件，看其中是否包含多帧动画。如果GIF图像文件中不包含多帧动画，则会返回一个GIF字符串，如果GIF图像文件中包含动画内容，则会返回多帧信息。</p>
+<p>​		对于单帧图像的情况，同样可使用ImageMagick工具将其转化为更适合展示图形的PNG文件格式。对于动画的处理稍后会进一步介绍， 这里先列出代码示例:</p>
+<pre><code class="javascript">const im = require(&#39;imagemagick&#39;);
+//检查是否为动画
+im.identify([&#39;-format&#39;,&#39;%m&#39;,&#39;my.gif&#39;],(err,output)=&gt;&#123;
+    if (err) throw err;
+    //通过output处理判断流程
+&#125;)
+//将gif转化为png
+im.convert([&#39;my.gif&#39;,&#39;my.png&#39;],(err,stdout)=&gt;&#123;
+    if (err) throw err;
+    console.log(&#39;转化完成&#39;,stdout)
+&#125;)
+</code></pre>
+<ol start="2">
+<li>GIF 动画优化</li>
+</ol>
+<p>​		由于动画包含了许多静态帧，并且每个静态帧图像上的内容在相邻的不同帧上通常不会有太多的差异，所以可通过工具来移除动画里连续帧中重复的像素信息。这里可借助gifsicle来实现:</p>
+<pre><code class="javascript">const &#123; execFile &#125; = require(&#39;child_process&#39;);
+const gifsicle = require(&#39;gifsicle&#39;);
+execFile(gifsicle,[&#39;-o&#39;,&#39;output.gif&#39;,&#39;input.gif&#39;],err =&gt; &#123;
+    console.log(&#39;动画压缩完成&#39;)
+&#125;)
+</code></pre>
+<ol start="3">
+<li>用视频替换动画</li>
+</ol>
+<p>​		当了解过GIF的相关特性后，不难发现如果单纯以展示动面这个目的来看，那么GIF可能并不是最好的呈现方式，因为动画的内容将会受到诸如图像质量、播放帧率及播放长度等因素的限制。</p>
+<p>​		GIF展示的动画没有声音，最高支持256色的图像质量，如果动画长度较长， 即便压缩过后文件也会较大。综合考虑，建议将内容较长的GIF动画转化为视频后进行插入，因为动画也是视频的一种， 成熟的视频编码格式可以让传输的动画内容节省网络带宽开销。</p>
+<p>​		可以利用ffmpeg将原本的GIF文件转化为MPEG-4或WebM的视频文件格式，将一个14MB的GIF动画通过转化后得到的视频文件格式大小分别是: MPEG-4格式下867KB, WebM 格式下611KB.另外，要知道通过压缩后的动画或视频文件，在播放前都需要进行解码，可以通过Chrome的跟踪工具(chrome:&#x2F;&#x2F;tracing)查看不同格式的文件，在解码阶段的CPU占用时，文件格式与CPU耗时如表所示。</p>
+<table>
+<thead>
+<tr>
+<th>文件格式</th>
+<th>CPU耗时（ms）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GIF</td>
+<td>2,668</td>
+</tr>
+<tr>
+<td>MPEG-4</td>
+<td>1,995</td>
+</tr>
+<tr>
+<td>WebM</td>
+<td>2,354</td>
+</tr>
+</tbody></table>
+<p>​		从表中可以看出，相比视频文件，GIF 在解码阶段也是十分耗时的，所以出于对性能的考虑，在使用GIF前应尽量谨慎选择。</p>
+<h4 id="3-PNG"><a href="#3-PNG" class="headerlink" title="3.PNG"></a>3.PNG</h4><p>​		PNG是一种无损压缩的高保真图片格式，它的出现弥补了GIF图像格式的一些缺点，同时规避了当时GIF中还处在专利保护期的压缩算法，所以也有人将PNG文件后缀的缩写表示成“PNG is Not GIF”。</p>
+<p>​		相比于JPEG, PNG支持透明度，对线条的处理更加细腻，并增强了色彩的表现力，不过唯一的不足就是文件体积太大。如果说GIF是专门为图标图形设计的图像文件格式，JPEG是专门为照片设计的图像文件格式，那么PNG对这两种类型的图像都能支持。通常在使用中会碰到PNG的几种子类型，有PNG-8、PNG-24、 PNG-32等。</p>
+<p>1.对比GIF</p>
+<p>​		其中PNG-8也称为调色板PNG,除了不支持动画，其他所有GIF拥有的功能它都拥有，同时还支持完全的alpha通道透明。只要不是颜色数特别少的图像，PNG-8的压缩比表现都会更高一筹。</p>
+<p>​		对于颜色数少的单帧图形图像来说，更好的做法也并不是将其存为一个GIF文件，相比雪碧图都会更好一些，因为能够大大降低HTTP请求的开销，这一点后面章节会接着介绍，此处给出个优化建议: 在使用单帧图形图像时，应当尽量用 PNG-8格式来替换GIF格式。</p>
+<p>2.对比JPEG</p>
+<p>​		当所处理图像中的颜色超过256种时，就需要用到JPEG或者真彩PNG,真彩PNG包括PNG-24和PNG-32二者的区别是真彩PNG-24不包括alpha透明通道，而加上8位的alpha透明通道就是真彩PNG-32。</p>
+<p>​		JPEG是有损的。它拥有更高的压缩比，也是照片存储的实际标准，如果还是要用PNG,那么很可能是在清晰的颜色过度周围出现了不可接受的“大色块”。</p>
+<p>3.优化PNG</p>
+<p>​		PNG图像格式还有一个优点，就是便于扩展，它将图像的信息保存在“块”中，开发者便可以通过添加一些自定义的“块”来实现额外的功能，但所添加的自定义功能并非所有软件都能读取识别，大部分可能只是特定的作图软件在读取时使用而已。对Web显示而言，浏览器可能直接将这些多余的块自动忽略掉了，如果对显示没有作用，那么又何必要存储和传输这些信息呢?因此我们可以使用pngcrush对这些多余的块进行删除压缩，通过npm引入imagemin-pngcrush,代码如下:</p>
+<pre><code class="javascript">const imagemin = require(&#39;imagemin&#39;);
+const imageminPngcrush = require(&#39;imagemin-pngcrush&#39;);
+imagemin([&#39;images/*.png&#39;],&#39;build/images&#39;,&#123;
+    plugins:[imageminPngcrush()]
+&#125;)
+.then(()=&gt; console.log(&#39;完成图像优化&#39;))
+</code></pre>
+<p>其中，imageminPngcrush()中可以带入如下一些 参数进行压缩控制。</p>
+<ul>
+<li>-rem alla: 删除所有块，保留控制alpha透明通道的块。</li>
+<li>-brute: 采用多种方法进行压缩会得到较好的压缩效果，由于执行的方法较多，所以执行压缩的速度会变慢，建议在离线操作下可以添加，但有时改进效果并不明显，如果对构建流程有要求可不加。</li>
+<li>-reduce: 会尝试减少调色板使用的颜色数量。</li>
+</ul>
+<h4 id="4-WebP"><a href="#4-WebP" class="headerlink" title="4.WebP"></a>4.WebP</h4><p>​		前面介绍的三种图像文件格式，在呈现位图方面各有优劣势: GIF虽然包含的颜色阶数少，但能呈现动画: JPEG虽然不支持透明度，但图像文件的压缩比高:PNG虽然文件尺寸较大，但支持透明且色彩表现力强。</p>
+<p>​		开发者在使用位图时对于这样的现状就需要先考虑选型。假如有一个统的图像文件格式，具有之前格式的所有优点，WebP 就在这样的期待中诞生了。</p>
+<ol>
+<li>WebP的优缺点</li>
+</ol>
+<p>​		WebP是Google在2010年推出的一种图像文件格式， 它的目标是以较高的视觉体验为前提的，尽可能地降低有损压缩和无损压缩后的文件尺寸，同时还要支持透明度与动画。根据WebP官方给出的实验数据，当使用WebP有损文件时，文件尺寸会比JPEG小25%~ 34%，而使用WebP无损文件时，文件尺寸会比PNG小26%。就像所有新技术一样， 具有如此多优异特性的WebP, 同样也不可避免兼容性的问题，CanlUse. com网站数据统计情况，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109091411793.png"></p>
+<p>​	从图中可以发现，除了IE不支持，其他主流浏览器的最新版本都已支持WebP, 考虑到浏览器的市场占有率，这样的兼容性程度可以说是非常乐观的了。虽然还需要做一 些兼容性处理，但我们也有足够的理由在项目中积极地使用WebP.此外，由于有损压缩WebP使用了VP8视频关键帧编码,可能对较高质量(80~ 99)的图像编码来说，会比JPEG占用更多的计算资源，但在较低质量(0~50)时，依然有很大的优势。</p>
+<p>2.如何使用WebP</p>
+<p>​		可以使用图像编辑软件直接导出WebP格式的图像文件，或者将原有的JPEG或PNG图像转化为WebP格式。这样的转化最好使用构建工具辅助完成，比如通过npm安装webp-loader后，在webpack中进行如下配置:</p>
+<pre><code class="javascript">loader:[&#123;
+    test:/\.(jpe?g|png)$/I,
+    loaders:[
+        &#39;file-loader&#39;,
+        &#39;webp-loader?&#123;quality:13&#125;&#39;
+    ],
+&#125;]
+</code></pre>
+<p>​		这里值得注意的是，尽量不要使用低质量的JPEG格式进行WebP转化，因为低质量的JPEG中可能包含压缩的伪像，这样WebP不仅要保存图像信息，还要保存JPEG添加的失真，从而影响最终的转化效果。所以在选择转化的源图像文件时，建议使用质量最佳的。</p>
+<p>3.兼容性处理</p>
+<p>​		目前WebP格式的图像并不适用于所有浏览器，所以在使用时，应当注意兼容处理好不支持的浏览器场景。</p>
+<p>​		通常的处理思路分为两种:一种是在前端处理浏览器兼容性的判断，可以通过浏览器的全局属性window.navigator. userAgent获取版本信息，再根据兼容支持情况，选择是否请求WebP图像格式的资源;也可以使用<picture>标签来选择显示的图像格式，在<picture> 标签中添加多个<source>标签元素，以及一个包含旧图像格式的<img>标签，当浏览器在解析DOM时便会对<picture>标签中包含的多个图片源依次进行检测。</p>
+<p>​		倘若浏览器不支持WebP格式而未能检测获取到，最后也能够通过<img>标记兼容显示出旧图像格式，例如:</p>
+<pre><code class="html">&lt;picture&gt;
+   &lt;source srcset=&quot;/path/image.webp&quot; type=&quot;image/webp&quot;&gt;
+   &lt;img src=&quot;/path/image.jpg&quot; alt=&quot;&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+<p>这见需要注意的<source>标签的顺序位置，应当将包含image&#x2F;webp的图像源写在旧图像格式的前面。</p>
+<p>​		另一种是将判断浏览器是否支持的工作放在后端处理，让服务器根据HTTP请求头的Accept字段来决定返回图像的文件格式。如果Accept 字段中包含image&#x2F;webp，就返回WebP图像格式，否则就使用旧图像格式(JPEG、PNG等)返回。这样做的好处是让系统的维护性更强，无论浏览器对WebP图像格式的兼容支持发生怎样的改变，只需要服务器检查Accept字段即可，无须前端跟进相应的修改。</p>
+<h4 id="5-SVG"><a href="#5-SVG" class="headerlink" title="5.SVG"></a>5.SVG</h4><p>​		前面介绍的几种图像文件格式呈现的都是位图，而SVG呈现的是矢量图。正如我们在介绍位图和矢量图时讲到的，SVG对图像的处理不是基于像素栅格的，而是通过图像的形状轮廓、屏幕位置等信息进行描述的。</p>
+<p>1.优缺点</p>
+<p>​		SVG这种基于XML语法描述图像形状的文件格式，就适合用来表示Logo等图标图像，它可以无限放大并且不会失真，无论分辨率多高的屏幕，个文件就可以统一适配:另外，作为文本文件，除了可以将SVG标签像写代码样写在HTML中，还可以把对图标图像的描述信息写在以.svg为后缀的文件中进行存储和引用。</p>
+<p>​		由于文本文件的高压缩比，最后得到的图像文件体积也会更小。要说缺点与不足，除了仅能表示矢量图，还有就是使用的学习成本和渲染成本比较高。</p>
+<p>2.优化建议</p>
+<p>即便SVG图像文件拥有诸多优点，但依然有可优化的空间。下面介绍一些优化建议。</p>
+<p>（1）应保持SVG尽量精简，去除编辑器创建SVG时可能携带的一些冗余信息，比如注释、隐藏图层及元数据等。</p>
+<p>（2）由于显示器的本质依然是元素点构成位图，所以在渲染绘制矢量图时，就会比位图的显示多一步光栅化的过程。为了使浏览器解析渲染的过程更快，建议使用预定义的SVG形状来代替自定义路径，这样会减少最终生成图像所包含标记的数量，预定义形状有<circle>、<recD>、 <line>、 <polygon>等。</p>
+<p>（3）如果必须使用自定义路径，那么也尽量少用曲线。</p>
+<p>（4）不要在SVG中嵌入位图。</p>
+<p>（5）使用工具优化SVG,这里介绍一款基于node.js 的优化工具svgo;它可以通过降低定义中的数字精度来缩小文件的尺寸。通过npm install -g svgo 可直接安装命令方式使用，若想用webpack进行工程化集成，可加入svgo-loader的相关配置:</p>
+<pre><code class="javascript">module.exports = &#123;
+    rules:[
+        test: /\.svg$/,
+        use: [
+            &#123;loader:&#39;file-loader&#39;&#125;,
+            &#123;loader:&#39;svgo-loader&#39;,options:&#123;externalConfig:&#39;svgo-config.yml&#39;&#125;,
+        &#125;]
+    ]
+&#125;
+</code></pre>
+<p>其中，可在 svgo-config.yml 的配置文件中定义相关优化选项：</p>
+<pre><code class="java">plugins:
+ - removeTitle: true
+ - convertPathData: false
+ - convertColors:
+    shorthex: false
+</code></pre>
+<p>（6）优化过后，使用gzip压缩和（或）brotli压缩。</p>
+<h4 id="6-Base64"><a href="#6-Base64" class="headerlink" title="6.Base64"></a>6.Base64</h4><p>​		准确地说，Base64 并不是一种图像文件格式， 而是种用于传输 8位字节码的编码方式，它通过将代表图像的编码直接写入HTML或CSS中来实现图像的展示，一般展示图像的方法都是通过将图像文件的URL值传给img标签的src属性，当HTML解析到img标签时，便会发起对该图像URL的网络请求:</p>
+<p>&lt; img src&#x3D;”<a href="https://xx.cdn.com/photo.jpg&quot;&gt;">https://xx.cdn.com/photo.jpg&quot;&gt;</a></p>
+<p>​		当采用Base64编码图像时，写入src的属性值不是URL值，而是类似下面的编码:data: image&#x2F;png;base64, iVBORwOKGgOAAAANSUhEUgAABYAAAWCAYAADEtGw7AA.</p>
+<p>​		浏览器会自动解析该编码并展示出图像，而无须发起任何关于该图像的URL，这是Base64的优点，同时也隐含了对于使用的限制。由于Base64编码原理的特点，一般经过Base64编码后的图像大小，会膨胀四分之三。</p>
+<p>​		这对想尝试通过Base64方式尽可能减少HTTP请求次数来说是得不偿失的，较复杂的大图经过编码后，所节省的几次HTTP请求，与图像文件大小增加所带来的带宽消耗相比简直是杯水车薪。所以也只有对小图而言，Base64 才能体现出真正的性能优势。</p>
+<p>​		作为使用指导建议，笔者希望在考虑是否使用Base64编码时，比对如下几个条件:</p>
+<ul>
+<li>图像文件的实际尺寸是否很小。</li>
+<li>图像文件是否真的无法以雪碧图的形式进行引入。</li>
+<li>图像文件的更新频率是否很低，以避免在使用Base64时，增加不心必要的维护成本。</li>
+</ul>
+<h4 id="7-格式选择建议"><a href="#7-格式选择建议" class="headerlink" title="7.格式选择建议"></a>7.格式选择建议</h4><p>​		在了解了不同图像文件格式的特性后，显而易见的是不存在适用于任何场景且性能最优的图像使用方式。所以作为开发者，想要网站性能在图像方面达到最优，如何根据业务场景选择合适的文件格式也至关重要，图像文件使用策略如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109101114259.png" alt="图像文件使用策略"></p>
+<p>​		这里根据使用场景的不同，以及图像文件的特性给出了一个可参考的选择策略:考虑到矢量图具有缩放不失真且表示图标时较小的文件尺寸，凡用到图标的场景应尽量使用矢量图:而对于位图的使用场景，由于在相同图像质量下其具有更高的压缩比且支持动画，所以WebP格式应该是我们的首选。</p>
+<p>​		考虑到新技术的兼容性问题，也需要采用传统的方式进行适配;包含动画时使用GIF,对图像要求有更高分辨率来展示细节且需要透明度时，建议使用PNG;而在其他场景下追求更高的图像压缩比时，可使用JPEG.除此之外，位图对于不同缩放比的响应式场景，建议提供多张不同尺寸的图像，让浏览器根据具体场景进行请求调用。</p>
+<h3 id="三、使用建议"><a href="#三、使用建议" class="headerlink" title="三、使用建议"></a>三、使用建议</h3><p>​		本节额外给出些使用建议来优化图像 资源的体验性能， 包括合并多张小图资源请求次数的雪碧图方案，使用Web字体的方式来替代图标文件及display:none使用的注意事项。</p>
+<h4 id="1-CSS-Sprite"><a href="#1-CSS-Sprite" class="headerlink" title="1.CSS Sprite"></a>1.CSS Sprite</h4><p>​		CSS Sprite技术就是我们常说的雪碧图，通过将多张小图标拼接成一张大图， 有效地减少HTTP请求数量以达到加速显示内容的技术。</p>
+<p>​		通常对于雪碧图的使用场景应当满足以下条件:首先这些图标不会随用户信息的变化而变化，它们属于网站通用的静态图标;同时单张图标体积要尽量小，这样经过拼接后其性能的提升才会比较乐观;若加载量比较大则效果会更好。</p>
+<p>​		不建议将较大的图片拼接成雪碧图，因为大图拼接后的单个文件体积会非常大，这样占用网络带宽的增加与请求完成所耗费时间的延长，会完全淹没通过减少HTTP请求次数所带来的性能提升。下面来看一个雪碧图实际案例，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109102349521.png"></p>
+<p>​		图中截取了淘宝网一处图标导航栏及请求的相应资源，通过案例还可以看出所拼接的雪碧图是一张PNG格式的图像文件，其中的图标不只含有一种颜色， 同时也可支持颜色渐变，这通常是单色Web字体很难具备的表现力。</p>
+<p>雪碧图的使用方式也很简单，通过CSS 的background-image 属性引入雪碧图的UrL后，再使用background-position定位所需要的单个图标在雪碧图上的起始位置，配合width和height属性来锁定具体图标的尺寸，示例代码如下:</p>
+<pre><code class="css">.sprite-sheet&#123;
+    background-image: url(https://img.xxxx.com/xxx/sprite-sheet.png);
+    background-size: 24px 600px;
+&#125;
+.icon-1 .sprite-sheet&#123;
+    background-position: 0 0;
+    height: 24px;
+    width: 24px;
+&#125;
+.icon-2 .sprite-sheet&#123;
+    background-position: 0 -24px;
+    height: 24px;
+    width: 24px;
+&#125;
+</code></pre>
+<p>​		其中，background-position属性关于横纵偏移的设置规则指的是如何通过设置背景图的偏移，将雪碧图上所需图标的左上角起始位置移至坐标(0,0)位置。与通常数学上的直角坐标系不同，浏览器中的坐标系Y轴正方向是垂直向下的。当引入雪碧图后，整个图片的左上角起始位置在(0,0)，所以要得到其中的某个图标，我们就需要将雪碧图向负轴方向进行偏移，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109105436897.png" alt="雪碧图与坐标系"></p>
+<p>​		如果使用第一行左边第一 个图标，则可通过设置background-position: 0 0来让雪碧图不偏移(两个0之间有空格，分别表示在X轴、Y轴的位置)，倘若要使用第二行中间的图标，就需要将雪碧图向左上方偏移，将属性backgound-position的值设置为-24px -24px，注意是负值，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109105529239.png" alt="偏移后的雪碧图"></p>
+<p>​		使用雪碧图来提升小图标加载性能的历史由来已久。在HTTP 1.x环境下，它确实能够减少相应的HTTP请求，但需要注意当部分图标变更时，会导致已经加载的雪碧图缓存失效。同时在HTTP2中，最好的方式应该是加载单张图像文件，因为可以在一个HTTP连接上发起多次请求，所以对于是否使用此方法，需要考虑具体的使用环境和网络设置。</p>
+<h4 id="2-Web-字体"><a href="#2-Web-字体" class="headerlink" title="2.Web 字体"></a>2.Web 字体</h4><p>​		使用Web字体有多种优点:增强网站的设计感、可读性，同时还能搜索和选取所表示的文本内容，且不受屏幕尺寸与分辨率的影响，能提供一致的视觉体验。 除此之外，由于每个字型都是特定的矢量图标，所以可以将项目中用到的矢量图标打包到一个Web字体文件中使用，以节省对图标资源的HTTP请求次数，这样做类似雪碧图优化目的。</p>
+<p>1.字体的使用</p>
+<p>​		目前网络上常用的字体格式有: EOT、TTF、WOFF与WOFF2,由于存在兼容性的问题，并没有哪一种字体能够适用所有浏览器，所以在实际使用中，网站开发者会声明提供字体的多种文件格式，来达到一致性的体验效果。</p>
+<p>在Web项目中，一般 会先通过@font-face声明使用的字体系列:</p>
+<pre><code class="css">@font-face &#123;
+font-family: &#39;tianfont&#39;;
+src: url(&#39;//at.alicdn.com/t/font_ 1307911 xxxx.eot&#39;);
+src: url(&#39;//at.alicdn.com/t/fot 1307911 xxx.eot?#iefix&#39;) format(&#39;enmbederopentype&#39;),
+url(&#39;//at.alicdn.com/t/font_ 1307911 xxxx.woff2&#39;) format(&#39;woff2&#39;),
+url(&#39;//at.alicdn.com/t/font_ 1307911 xxxx.woff&#39;) format(&#39;woff&#39;),
+url(&#39;//at.alicdn.com/t/font_ 1307911_ xxxx.ttf&#39;) format (&#39;truetype&#39;),
+url(&#39;//at.alicdn.com/t/font_ 1307911 xxxx.svg#tianfont&#39;) format(&#39;svg&#39;),
+&#125;
+</code></pre>
+<p>​		在上述代码中通过src字段的属性值，可以指定字体资源的位置，并且该属性值还可以提供一个用逗 号分隔的列表，列表中不同字体文件格式的资源顺序同样重要，浏览器将选取其所支持的第一个格式资源。 如果希望较新的WOFF2格式被使用，则应当将WOFF2声明在WOFF之上。</p>
+<p>2.子集内嵌</p>
+<p>​		对于同一个字符，Web字体可以根据样式、粗细及拉伸等属性的不同，拥有多种变种的字型展示。如果将所有字型都打包成一个文件来请求使用， 不免就会存在许多根本用不到的字型信息浪费带宽。相较于拉丁文字体而言，包含中文字符的字体文件的大小会格外突出。字体文件是否能够按需加载，就成为一个显而易见的优化项，这便是子集内嵌。</p>
+<p>​		通过@font- face和unicode-range属性就可以定义所使用的字体子集，属性unicode-range用来指定所需字体在@font-face声明字体集中的子集范围，它支持三种形式:单一取值(如U+233)、范围取值(如U+233-2ff)、通配符范围( 如U+2??),取值的含义是字体集文件中的代码索引点，具体使用示例如下:</p>
+<pre><code class="css">@font-face &#123;
+font-family: &#39;Awesome Font&#39; ;
+font-style: normal;
+font-weight: 500;
+src: 
+  url(&#39;/fonts/awesome.woff2&#39;) format(&#39;woff2&#39;),
+  url(&#39;/fonts/awesome.woff&#39;) format(&#39;woff&#39;),
+  url(&#39;/fonts/awesome.ttf&#39;) format(&#39;ttf&#39;),
+  url(&#39;/fonts/awesome.eot&#39;) format(&#39;eot&#39;),
+  unicode-range: U+100-3ff, U+f??
+&#125;
+</code></pre>
+<p>​		通过使用子集内嵌，以及为字体的不同样式变体采用单独的文件，用户可以仅根据需要下载字体的子集，而不必强制他们下载可能永远都不会用到的字体子集，这样对字体下载优化来说会更快速高效。不过属性unicode-range也存在兼容性的问题，对于不支持的浏览器，若想提供必要的子集字体支持，则可能需要手动处理字体文件。</p>
+<p>3.字体文件预加载</p>
+<p>在默认情况下，构建谊染树之前会阻塞字体文件的请求，这将可能导致部分文本谊染延迟，对此我们可使用-link re-reloao”&gt;对字体资源进行预加载。关于预加载的详细内容，会在加载优化章节进一步 介绍。</p>
+<pre><code class="html">&lt;head&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/ fonts/ awesome .woff2&quot; as=&quot; font&quot;&gt;
+&lt;/head&gt;
+</code></pre>
+<link rel="preload">需要和@font-face对字体的定义一同使用，它只负责提示浏览器需要预加载给定的资源，而不指明如何使用。但同时需要注意的是，这样做将会无条件向网络发出字体请求，如果项目迭代将原本使用的字体文件修改或删除，也需同步删除对字体预加载的设置。
+
+<h4 id="3-注意display-none的使用"><a href="#3-注意display-none的使用" class="headerlink" title="3.注意display:none的使用"></a>3.注意display:none的使用</h4><p>​	在使用位图时，经常会根据屏幕尺寸、权限控制等不同条件，响应式地处理资源的展示与隐藏。出于对性能的考虑，希望对于不展示的图像:尽量避免在首展时进行资源请求加载。但根据一些直觉性的编程习惯， 读者们真的确定所控制隐藏的图像，是否有发起资源请求吗?来看下面两个例子。</p>
+<p>下面img1.jpg的图像文件是否有被浏览器发起请求?即使父级的div 设置为不显示。</p>
+<pre><code class="html">&lt;div style=&quot;display:none&quot;&gt;
+  &lt; img src=&quot;img1.jpg&quot;&gt;
+&lt;/div&gt;
+</code></pre>
+<p>根据HTML的解析顺序，答案是肯定的，img1.jpg 的图像文件会被请求。那么下面img2.jpg的图像文件会发起请求吗?</p>
+<pre><code class="html">&lt;div style=&quot;display:none&quot;&gt;
+  &lt;div style=&quot;background: url(img2. jpg) &quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>CSS解析后发现父级使用了display:none, 再去计算子级的样式就没有多大意义了，所以就不会去下载子级div的背景图像。</p>
+<p>如果不清楚不同浏览器对display:none 关于图像加载的控制，则可以通过开发者工具进行验证。这里推荐的做法是使用<picture>或&lt; img srcset&gt;的方式进行响应式显示。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>​		本章首先从图像基础开始，在普及了包括图像的构成表示、分类压缩等知识之后对前端项目中常用的图像文件格式GIF、JPEG、PNG、 SVG、 WebP 及Base64进行了细致的分析介绍，包括它们之间优缺点的比较，具体场景下的技术选型，以及优化使用建议和工程实践。给出了三点与图像相关的优化技术与建议，希望同学能够明白Web项目中的图像优化是一项技术也是一门艺术， 技术指的是对于每一种图像文件的压缩和使用都有一套工程化的手段，艺术指的是当面对具体的项目实践时，如何技术选型与压缩以达到对用户最佳的体验效果，则需要在多个维度上进行权衡与取舍，并不存在明确的最佳方案。</p>
+<p>本章最后给出一些希望同学能够记住的方法与技巧:</p>
+<ul>
+<li>适合用矢量图的地方首选矢量图。</li>
+<li>使用位图时首选WebP,对不支持的浏览器场景进行兼容处理。</li>
+<li>尽量为位图图像格式找到最佳质量设置。</li>
+<li>删除图像文件中多余的元数据。</li>
+<li>对图像文件进行必要的压缩。</li>
+<li>为图像提供多种缩放尺寸的响应式资源。</li>
+<li>对工程化通用图像处理流程尽量自动化。</li>
+</ul>
+<h3 id="参考书籍：web前端性能优化"><a href="#参考书籍：web前端性能优化" class="headerlink" title="参考书籍：web前端性能优化"></a>参考书籍：web前端性能优化</h3>]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>图像优化</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
       </tags>
   </entry>
   <entry>

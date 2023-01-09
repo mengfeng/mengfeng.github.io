@@ -177,6 +177,487 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-图像优化"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/"
+    >图像优化</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/" class="article-date">
+  <time datetime="2023-01-09T03:23:30.000Z" itemprop="datePublished">2023-01-09</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/">图像优化</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="图像优化"><a href="#图像优化" class="headerlink" title="图像优化"></a>图像优化</h1><blockquote>
+<p>前端大部分的工作都围绕在JavaScript和CSS上，考虑如何更快地下载文件，如何提供给用户复杂而优雅的交互，如何高效合理地应用有限的处理和传输资源等，这些是用户感知的全部吗?</p>
+<p>当然，他们在前端开发和性能优化中的地位举足轻重，但JavaScript和CSS对用户感知而言，并不是最重要的部分，图像才是。我们在公众号发布文章或用PPT进行演讲时，都知道一条高效传递信息的原则:字不如表，表不如图。</p>
+<p>网站作为一种信息传递的媒介，且如今各类Web项目中，图像资源的使用占比也越来越大，更应当注重图像资源的使用方式。如果网站中的图像资源未进行恰当的优化，那么势必会导致许多问题，诸如巨量的访问请求引发传输带宽的挑战，请求大尺寸图片需要过久的等待时间等。</p>
+<p>图像优化问题主要可以分为两方面:图像的选取和使用，图像的加载和显示。对于加载方面的策略将放在 加载优化 中深入讨论,本章将聚焦图像的选取和使用。本章内容包括:什么是图像文件，都有哪些格式的图像文件，不同格式的图像文件适用于怎样的业务场景，以及通过怎样的优化方法能够有效提升用户对图像的体验感知等。</p>
+</blockquote>
+<h3 id="一、图像基础"><a href="#一、图像基础" class="headerlink" title="一、图像基础"></a>一、图像基础</h3><p>​	HTTP Archive上的数据显示，网站传输的数据中，60%的资源都是由各种图像文件组成的，当然这个数据是将各种类型网站平均之后的结果，要是单独看电商类面向消费者端页面的数据，这个比例可能会更大。如此之大的资源占比，也同样意味着存在很大的优化空间。</p>
+<h4 id="1-图像是否必需"><a href="#1-图像是否必需" class="headerlink" title="1.图像是否必需"></a>1.图像是否必需</h4><p>​		图像资源优化的根本思想，可以归结为两个字: 压缩。无论是选取何种图像的文件格式，还是针对同一种格式压缩至更小的尺寸，其本质都是用更小的资源开销来完成图像的传输和展示。</p>
+<p>​		在深入探讨之前，我们首先思考一下要达到期望的信息传递效果，是否真的需要图像?这不仅是因为图像资源与网页上的其他资源(HTML&#x2F;CSS&#x2F;JavaScript等)相比有更大的字节开销，出于对节省资源的考虑，对用户注意力的珍惜也很重要，如果一个页面打开后有很多图像，那么用户其实很难快速梳理出有效的信息，即便获取到了也会让用户觉得很累。</p>
+<p>​		一个低感官体验的网站，它的价值转化率不会很高。当然这个问题的答案不是通过自己简单想想就能得到的，我们可能需要在日常的开发中与产品经理及体验设计师不断沟通，不断思考，来趋近更优的方案。</p>
+<p>​		当确定了图像的展示效果必须存在时，在前端实现上也并非一定就要用图像文件，还存在一些场景可以使用更高效的方式来实现所需的效果。</p>
+<ul>
+<li>网站中一个图像在不同的页面或不同的交互状态下，需要呈现出不同的效果(边角的裁切、阴影或渐变)，其实没有必要为不同场景准备不同效果的多份图像文件，只需用CSS将一-张图像处理为所需的不同效果即可。相对于一个图像文件的大小来讲，修改其所增加的CSS代码量可以忽略不计。</li>
+<li>如果一个图像上面需要显示文字，建议使用网页字体的形式通过前端代码进行添加，而不是使用带文字的图像，其原因一方面是包含了更多信息的图像文件一般会更大， 另一方面是图像中的文本信息带来的用户体验一般较差 (不可选择、搜索及缩放)，并且在高分辨率设备上的显示效果也会打折扣。</li>
+</ul>
+<p>这里列举的两个例子，为了说明当我们在选择使用某种资源之前，如果期望达到更优的性能效果，则需要先去思考这种选择是否必需。</p>
+<h4 id="2-矢量图和位图"><a href="#2-矢量图和位图" class="headerlink" title="2.矢量图和位图"></a>2.矢量图和位图</h4><p>​		当确定了图像是实现展示效果的最佳方式时，接下来就是选择合适的图像格式。图像文件可以分为两类:矢量图和位图。每种类型都有其各自的优缺点和适用场景。</p>
+<p>1.矢量图</p>
+<p>​		矢量图中的图形元素被定义为一个对象，包括颜色、大小、形状及屏幕位置等属性。它适合如文本、品牌logo、控件图标及二维码等构图形状较简单的几何图形。矢量图的 优点 是能够在任何缩放比例下呈现出细节同样清晰的展示效果。其缺点是对细节的展示效果不够丰富，对足够复杂的图像来说，比如要达到照片的效果，若通过SVG进行矢量图绘制，则所得文件会大得离谱，但即便如此也很难达到照片的真实效果。</p>
+<p>​		SVG也是一种基于XML的图像格式，其全称是Scalable Vector Graphics (可缩放的矢量图形)，目前几乎所有浏览器都支持SVG.我们可以在Iconfont.上找到许多矢量图，或者上传自己绘制的矢量图，在上面构建自己的矢量图标库并引入项目进行使用，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108155047156.png" alt="矢量图标"></p>
+<p>标识照片的矢量图标的SVG标签格式，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108155303100.png"></p>
+<p>​		SVG标签所包括的部分就是该矢量图的全部内容，除了必要的绘制信息，可能还包括一些元数据，比如XML命名空间、图层及注释信息。但这些信息对浏览器绘制一个 SVG来说并不是必要的，所以在使用前可通过工县去除这些元数据来达到压缩的目的。</p>
+<p>2.位图</p>
+<p>​		位图是通过对一个矩阵中的栅格进行编码来表示图像的，每个栅格只能编码表示一个特定的颜色，如果组成图像的栅格像素点越多且每个像素点所能表示的颜色范围越广，则位图图像整体的显示效果就会越逼真。虽然位图没有像矢量图那种不受分辨率影响的优秀特性，但对于复杂的照片却能提供较为真实的细节体验，如图中一幅海边的位图对于云朵及波浪的细节表现，如果用矢量图来实现是不可想象的。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108160504567.png" alt="海边的位图"></p>
+<p>​		当把图像不断放大后，就会看到许多栅格像素色块，如图所示。每个像素存储的是图像局部的RGBA信息，即红绿蓝三色通道及透明度。通常浏览器会为每个颜色通道分配一个字节的存储空间，即2^8&#x3D;256个色阶值。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108160613742.png" alt="放大后的位图局部"></p>
+<p>​		一个像素点4个通道就是4字节，一张图像整体的大小与其包含的像素数成正比，图像包含的像素越多，所能展示的细节就越丰富，同时图像就越大。</p>
+<p>​		如表所示，当图像尺寸为100像素 x 100像素时，文件大小为39KB.随着图像尺寸在长和宽两个维度上同时增大，所产生像素数量的增加就不是简单的线性关系了，而是平方的抛物线增加，也就是说文件大小会迅速增加，在网络带宽一 定的前提下，下载完张图像会更慢。</p>
+<table>
+<thead>
+<tr>
+<th>图像尺寸</th>
+<th>像素数量</th>
+<th>文件大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100像素 x 100像素</td>
+<td>10,000</td>
+<td>39KB</td>
+</tr>
+<tr>
+<td>200像素 x 200像素</td>
+<td>40,000</td>
+<td>156KB</td>
+</tr>
+<tr>
+<td>500像素 x 500像素</td>
+<td>250,000</td>
+<td>977KB</td>
+</tr>
+<tr>
+<td>800像素 x 800像素</td>
+<td>640,000</td>
+<td>2.5MB</td>
+</tr>
+</tbody></table>
+<p>​		出于对性能的考虑，在使用图像时必须考虑对图像进行压缩，采用什么样的图像格式，使用什么样的压缩算法及压缩到何种程度，这将是本章接下来详细讨论的内容，但在此之前先说明关于分辨率的两个容易混淆的概念。</p>
+<h4 id="3-分辨率"><a href="#3-分辨率" class="headerlink" title="3.分辨率"></a>3.分辨率</h4><p>​		在前端开发过程中书写CSS时，经常会为图像设置显示所需的长宽像素值，但在不同的设备屏幕上，有时候相同的图像及相同的设置，其渲染出来的图像会让人明显察觉出清晰度有差别。产生这个现象的原因涉及两种不同的分辨率:屏幕分辨率和图像分辨率。</p>
+<p>​		图像分辨率表示的就是该图像文件所包含的真实像素值信息，比如一个 200像素X200像素的分辨率的图像文件，它就定义了长宽各200个像素点的信息。设备分辨率则是显示器屏幕所能显示的最大像素值，比如一台13英寸的Mac Pro 笔记本电脑的显示器分辨率为2560像素 x 1600像素。这两种分辨率都用到了像素，那么它们有什么区别呢?</p>
+<p>​		更高的设备分辨率有助于显示更绚丽多彩的图像，这其实很话合矢量图的发挥，因为它不会因放大而失真。而对位图来说，只有图像文件包含更多的像素信息时，才能更充分地利用屏幕分辨率。为了能在不同的分辨率下使项目中所包含的图像都能得到恰当的展示效果，可以利用picture标签和srcset 属性提供图像的多个变体。</p>
+<p>​		用于插入图像的ing标签，有一个 srcset属性可以用来针对不同设备，提供不同分辨率的图像文件:</p>
+<pre><code class="html">&lt; img src=&quot;photo.jpg&quot; srcset=&quot;photo@2x.jpg 2x,photo@3x.jpg 3x, photo@4x.jpg 4x&quot; alt=&quot;photo&quot;&gt;
+</code></pre>
+<p>​		除了IE和其他较低版本的浏览器不支持，目前主流的大部分浏览器都已支持img标签的srcset 属性。在srcset属性中设置多种分辨率的图像文件及使用条件，浏览器在请求之前便会先对此进行解析，只选择最合适的图像文件进行下载，如果浏览器不支持，请务必在src属性中包含必要的默认图片。</p>
+<p>​		使用picture标签则会在多图像文件选择时，获得更多的控制维度，比如屏幕方向、设备大小、屏幕分辨率等。</p>
+<pre><code class="html">&lt;picture&gt;
+  &lt;source media=&quot; (min-width:800px)&quot; srcset=&quot;photo.ipg, photo-2x.jpg 2x&quot;&gt;
+  &lt;source media=&quot; (min-width:450px)&quot; srcset=&quot;photo-s.jpg photo-s-2x.jpg 2x&quot;&gt;
+  &lt; img src=&quot;photo.jpg&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+<p>​		由于picture标签也是加入标准不久的元素标签，所以在使用过程中，同样应当考虑兼容性问题。</p>
+<h4 id="4-压缩的有损和无损"><a href="#4-压缩的有损和无损" class="headerlink" title="4.压缩的有损和无损"></a>4.压缩的有损和无损</h4><p>​		压缩是降低源文件大小的有效方式，对JavaScript代码或网页的一些脚本文件而言，压缩掉的内容是一些多余的空格及不影响执行的注释，其目的是在不损坏正常执行的情况下，尽量缩小源文件的大小。对图像文件而言，由于人眼对不同颜色的敏感度存在差异，所以便可通过减少对某种颜色的编码位数来减小文件大小，甚至还可以损失部分源文件信息，以达到近似的效果，使得压缩后的文件尺寸更小。</p>
+<p>​		对于图像压缩，应该采用有损压缩还是无损压缩?如果都采用又该如何搭配设置呢?当结合了具体的业务需求再考虑后，关于压缩的技术选型就可以简单分成两步进行。</p>
+<p>（1）首先确定业务所要展示图像的颜色阶数、图像显示的分率及清晰程度，当锚定了这几个参数的基准后，如果获取的图像源文件的相应参数指标过高，便可适当进行有损压缩，通过降低源文件图像质量的方法来降低图像文件大小。</p>
+<p>​		如果业务所要求的图像质量较高，便可跳过有损压缩，直接进入第二步无损压缩。所以是否要进行有损压缩，其实是在理解了业务需求后的一个可选选项，而非必要的。</p>
+<p>（2）当确定了展示图像的质量后，便可利用无损压缩技术尽可能降低图像大小。和第(1)步要通过业务决策来判断是否需要所不同的是，无损压缩是应当完成的工作环节。那么最好能通过一套完善的工程方案，自动化执行来避免烦琐的人工重复工作。</p>
+<h3 id="二、图像格式"><a href="#二、图像格式" class="headerlink" title="二、图像格式"></a>二、图像格式</h3><p>​		实际上，不同的图像文件格式(JPG、PNG、GIF 等)之间的区别，在于它们进行有损压缩和无损压缩过程中采用了不同的算法组合，接下来我们将从不同的图像文件格式入手，看看它们的特点和使用场景，以及在具体业务中应该如何选取。</p>
+<h4 id="1-JPEG"><a href="#1-JPEG" class="headerlink" title="1.JPEG"></a>1.JPEG</h4><p>​		JPEG可能是目前所有图像格式中出现最早，同时也是使用范围最广的一种格式。它也是一种有损压缩算法，它通过去除相关冗余图像和色彩数据等方式来获得较高的压缩率，同时还能展现出相当丰富的图像内容。</p>
+<p>​		JPEG在网站开发中经常被用作背景图、轮播图或者一些商品的banner图，以呈现色彩丰富的内容。但由于是有损压缩，当处理Logo或图标时，需要较强线条感和强烈颜色对比，JPEG图像可能会出现一些边 界模糊的不佳体验，另外JPEG图像并不支持透明度。</p>
+<p>​		接下来介绍有关JPEG常用的压缩编码方式，以及在工程实践中如何自动批量处理。</p>
+<p>1.压缩模式</p>
+<p>​		JPEG包含了多种压缩模式，其中常见的有基于基线的、渐进式的。简单来说基线模式的JPEG加载顺序是自上而下的，当网络连接缓慢或不稳定时，其是从上往下逐渐加载完成的，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230108163309301.png" alt="基线JPEG"></p>
+<pre><code>     渐进式模式是将图像文件分为多次扫描，首先展示一个低质量模糊的图像，随着扫描到的图像信息不断增多，每次扫描过后所展示的图像清晰度也会不断提升，如图所示。
+</code></pre>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109080817397.png" alt="渐进式JPEG"></p>
+<p>2.渐进式JPEG的优缺点</p>
+<p>​		渐进式JPEG的优点是显而易见的，在网络连接缓慢的情况下，首先能快速加载出一个图像质量比较模糊的预览版本。这样用户便可据此了解图像的大致内容，来决定是否继续花费时间等待完整图像的加载。这样做可以很好地提高对用户的感知性能，用户不仅知道所访问图像的大致内容，还会感知完整的图像就快加载好了。如果读者平时留心观察，应该能注意到渐进式JPEG已经在渐渐取代基线JPEG了。</p>
+<p>​		通过了解两种压缩的原理不难发现，渐进式JPEG的解码速度会比基线的要慢一些，因为它增加了重复的检索开销。另外，通过渐进式JPEG压缩模式得到的图像文件也不一定是最小的，比如特别小的图像。所以是否要采用渐进式JPEG,需要综合考虑文件大小、大部分用户的设备类型与网络延迟。</p>
+<p>3.创建渐进式JPEG</p>
+<p>​		如果所得到的图像不是渐进式JPEG,那么我们可以通过许多第三方工具来进行处理，例如imagemin、libjpeg、 imageMagick 等。值得注意的是，这个步骤应当尽量交给构建工具来自动化完成，通过如下代码可以将该工作加入gulp处理管道:</p>
+<pre><code class="javascript">const gulp = require(&#39;gulp&#39;);
+const imagemin = require(&#39;gulp-imagemin&#39;);
+gulp.task(&#39;images&#39;,()=&gt; 
+    gulp.src(&#39;images/*.jpg&#39;)
+    .pipe(imagemin(&#123;
+        progressive:true
+    &#125;))
+    .pipe(gulp.dest(&#39;dist&#39;))
+);
+</code></pre>
+<p>在执行构建流程后，gulp 会调用imagemin的方法把images 文件夹下的所有jpg后缀图像全部进行渐进式编码处理。</p>
+<p>4.其他JPEG编码方式</p>
+<p>​		除了常见的基线与渐进式压缩编码方式，最近还出现了几种现代的JPEG编码器，它们尝试以更高的保真度及压缩后更小的文件大小为目标，同时还兼容当前主流的浏览器。其中比较出色的有Mozilla基金会推出的MozJPEG和Google提出的Guetzli。</p>
+<p>​		MozJPEG和Guetzli也都已经有了可靠的imagemin插件支持，其使用方式与渐进式JPEG处理方式类似，这里仅列出示例代码，具体工程化构建请读者结合项目实践进行改写。</p>
+<pre><code class="javascript"> const gulp = require(&#39;gulp&#39;);
+const imagemin = require (&#39;gulp-imagemin&#39;);
+const imageminMozJPEG = require (&#39;imagemin-mozjpeg&#39;); //引入MozJPEG依赖包
+const imageminGuetzli = require (&#39;imagemin-guetzli&#39;); //引入Guetzli依赖包
+//MozJPEG压缩编码
+gulp. task(&#39;mozjpeg&#39;, () =&gt;
+    gulp.src(&#39;image/*. jpg&#39;)
+    .pipe (imagemin([
+        imageminMozJPEG(&#123;quality: 85 &#125;)
+    ]))
+    .pipe(gulp.dest(&#39;dist&#39;))
+)
+//Guetzli压缩编码
+gulp.task(&#39;guetzli&#39;, () =&gt;
+    gulp.src(&#39;image/* . jpg&#39;)
+    .pipe (imagemin([
+        imageminGuetzli (&#123;quality: 85 &#125;)
+    ]))
+    .pipe (gulp.dest(&#39;dist&#39;))
+)
+</code></pre>
+<p>​		MozJPEG引入了对逐行扫描的优化及一些栅 格量化的功能，最多能将图像文件压缩10%，而Guetzli则是找到人眼感知上无法区分的最小体积的JPEG,那么两者的优化效果具体如何，又如何评价呢?</p>
+<p>​		这里需要借助两个指标来进行衡量，首先是用来计算两个图像相似度的结构相似性分数(Structural Similarity index),简称SSIM,具体的计算过程可以借助第三方工具jpeg-compress 来进行，这个指标分数以原图为标准来判断测试图片与原图的相似度，数值越接近1表示和原图越相似。</p>
+<p>​		Butteraugli则是一种基 于人类感知测量图像的差异模型，它能在人眼几乎看不出明显差异的地方，给出可靠的差别分数。如果SSIM是对图像差别的汇总，那么Butteraugli则可以帮助找出非常糟糕的部分。表列出了MozJPEG编码压缩后的数据比较。</p>
+<table>
+<thead>
+<tr>
+<th>原图大小 982 KB</th>
+<th>Q&#x3D;90 &#x2F; 841KB</th>
+<th>Q&#x3D;85 &#x2F; 562KB</th>
+<th>Q&#x3D;75 &#x2F;324KB</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SSIM</td>
+<td>0.999936</td>
+<td>0.999698</td>
+<td>0.999478</td>
+</tr>
+<tr>
+<td>Butteraugli</td>
+<td>1.576957</td>
+<td>2.483837</td>
+<td>3.66127</td>
+</tr>
+</tbody></table>
+<p>​																	MozJPEG编码压缩后的数据比较</p>
+<table>
+<thead>
+<tr>
+<th>原图大小 982 KB</th>
+<th>Q&#x3D;100 &#x2F; 945KB</th>
+<th>Q&#x3D;90 &#x2F; 687KB</th>
+<th>Q&#x3D;85 &#x2F; 542KB</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SSIM</td>
+<td>0.999998</td>
+<td>0.99971</td>
+<td>0.999508</td>
+</tr>
+<tr>
+<td>Butteraugli</td>
+<td>0.40884</td>
+<td>1.580555</td>
+<td>2.0996</td>
+</tr>
+</tbody></table>
+<p>​																	Guetzli编码压缩后的数据比较</p>
+<p>不仅要考虑图像压缩的质量和保真度，还要关注压缩后的大小，没有哪种压缩编码方式在各种条件下都是最优的，需要结合实际业务进行选择。这里可以给读者一些使用建议:</p>
+<ul>
+<li>使用一些外部工具找到图像的最佳表现质量后，再用MozJPEG进行编码压缩。</li>
+<li>Guetzli会获得更高质量的图像，压缩速度相对较慢。</li>
+</ul>
+<p>​		虽然本节介绍了关于JPEG的若干编码器，也对它们之间的差别进行了比较，但需要明确的一点是，最终压缩后的图像文件大小差异更多地取决于设置的压缩质量，而非所选择的编码器。所以在对JPEG进行编码优化时，应主要关注业务可接受的最低图像质量。</p>
+<h4 id="2-GIF"><a href="#2-GIF" class="headerlink" title="2.GIF"></a>2.GIF</h4><p>​		GIF是Graphics Interchange Format的缩写，也是一种比较早的图像文件格式。 由于对支持颜色数量的限制，256色远小于展示照片所需颜色的数量级，所以GIF并不适合用来呈现照片，可能用来呈现图标或Logo会更适合些， 但后来推出的PNG格式对于图形的展示效果更佳，所以当下只有在需要使用到动画时才会使用GIF。</p>
+<p>接下来探讨一些关于GIF的优化点。</p>
+<ol>
+<li>单帧的GIF转化为PNG</li>
+</ol>
+<p>​		首先可以使用npm引入ImageMagick工具来检查GIF图像文件，看其中是否包含多帧动画。如果GIF图像文件中不包含多帧动画，则会返回一个GIF字符串，如果GIF图像文件中包含动画内容，则会返回多帧信息。</p>
+<p>​		对于单帧图像的情况，同样可使用ImageMagick工具将其转化为更适合展示图形的PNG文件格式。对于动画的处理稍后会进一步介绍， 这里先列出代码示例:</p>
+<pre><code class="javascript">const im = require(&#39;imagemagick&#39;);
+//检查是否为动画
+im.identify([&#39;-format&#39;,&#39;%m&#39;,&#39;my.gif&#39;],(err,output)=&gt;&#123;
+    if (err) throw err;
+    //通过output处理判断流程
+&#125;)
+//将gif转化为png
+im.convert([&#39;my.gif&#39;,&#39;my.png&#39;],(err,stdout)=&gt;&#123;
+    if (err) throw err;
+    console.log(&#39;转化完成&#39;,stdout)
+&#125;)
+</code></pre>
+<ol start="2">
+<li>GIF 动画优化</li>
+</ol>
+<p>​		由于动画包含了许多静态帧，并且每个静态帧图像上的内容在相邻的不同帧上通常不会有太多的差异，所以可通过工具来移除动画里连续帧中重复的像素信息。这里可借助gifsicle来实现:</p>
+<pre><code class="javascript">const &#123; execFile &#125; = require(&#39;child_process&#39;);
+const gifsicle = require(&#39;gifsicle&#39;);
+execFile(gifsicle,[&#39;-o&#39;,&#39;output.gif&#39;,&#39;input.gif&#39;],err =&gt; &#123;
+    console.log(&#39;动画压缩完成&#39;)
+&#125;)
+</code></pre>
+<ol start="3">
+<li>用视频替换动画</li>
+</ol>
+<p>​		当了解过GIF的相关特性后，不难发现如果单纯以展示动面这个目的来看，那么GIF可能并不是最好的呈现方式，因为动画的内容将会受到诸如图像质量、播放帧率及播放长度等因素的限制。</p>
+<p>​		GIF展示的动画没有声音，最高支持256色的图像质量，如果动画长度较长， 即便压缩过后文件也会较大。综合考虑，建议将内容较长的GIF动画转化为视频后进行插入，因为动画也是视频的一种， 成熟的视频编码格式可以让传输的动画内容节省网络带宽开销。</p>
+<p>​		可以利用ffmpeg将原本的GIF文件转化为MPEG-4或WebM的视频文件格式，将一个14MB的GIF动画通过转化后得到的视频文件格式大小分别是: MPEG-4格式下867KB, WebM 格式下611KB.另外，要知道通过压缩后的动画或视频文件，在播放前都需要进行解码，可以通过Chrome的跟踪工具(chrome:&#x2F;&#x2F;tracing)查看不同格式的文件，在解码阶段的CPU占用时，文件格式与CPU耗时如表所示。</p>
+<table>
+<thead>
+<tr>
+<th>文件格式</th>
+<th>CPU耗时（ms）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GIF</td>
+<td>2,668</td>
+</tr>
+<tr>
+<td>MPEG-4</td>
+<td>1,995</td>
+</tr>
+<tr>
+<td>WebM</td>
+<td>2,354</td>
+</tr>
+</tbody></table>
+<p>​		从表中可以看出，相比视频文件，GIF 在解码阶段也是十分耗时的，所以出于对性能的考虑，在使用GIF前应尽量谨慎选择。</p>
+<h4 id="3-PNG"><a href="#3-PNG" class="headerlink" title="3.PNG"></a>3.PNG</h4><p>​		PNG是一种无损压缩的高保真图片格式，它的出现弥补了GIF图像格式的一些缺点，同时规避了当时GIF中还处在专利保护期的压缩算法，所以也有人将PNG文件后缀的缩写表示成“PNG is Not GIF”。</p>
+<p>​		相比于JPEG, PNG支持透明度，对线条的处理更加细腻，并增强了色彩的表现力，不过唯一的不足就是文件体积太大。如果说GIF是专门为图标图形设计的图像文件格式，JPEG是专门为照片设计的图像文件格式，那么PNG对这两种类型的图像都能支持。通常在使用中会碰到PNG的几种子类型，有PNG-8、PNG-24、 PNG-32等。</p>
+<p>1.对比GIF</p>
+<p>​		其中PNG-8也称为调色板PNG,除了不支持动画，其他所有GIF拥有的功能它都拥有，同时还支持完全的alpha通道透明。只要不是颜色数特别少的图像，PNG-8的压缩比表现都会更高一筹。</p>
+<p>​		对于颜色数少的单帧图形图像来说，更好的做法也并不是将其存为一个GIF文件，相比雪碧图都会更好一些，因为能够大大降低HTTP请求的开销，这一点后面章节会接着介绍，此处给出个优化建议: 在使用单帧图形图像时，应当尽量用 PNG-8格式来替换GIF格式。</p>
+<p>2.对比JPEG</p>
+<p>​		当所处理图像中的颜色超过256种时，就需要用到JPEG或者真彩PNG,真彩PNG包括PNG-24和PNG-32二者的区别是真彩PNG-24不包括alpha透明通道，而加上8位的alpha透明通道就是真彩PNG-32。</p>
+<p>​		JPEG是有损的。它拥有更高的压缩比，也是照片存储的实际标准，如果还是要用PNG,那么很可能是在清晰的颜色过度周围出现了不可接受的“大色块”。</p>
+<p>3.优化PNG</p>
+<p>​		PNG图像格式还有一个优点，就是便于扩展，它将图像的信息保存在“块”中，开发者便可以通过添加一些自定义的“块”来实现额外的功能，但所添加的自定义功能并非所有软件都能读取识别，大部分可能只是特定的作图软件在读取时使用而已。对Web显示而言，浏览器可能直接将这些多余的块自动忽略掉了，如果对显示没有作用，那么又何必要存储和传输这些信息呢?因此我们可以使用pngcrush对这些多余的块进行删除压缩，通过npm引入imagemin-pngcrush,代码如下:</p>
+<pre><code class="javascript">const imagemin = require(&#39;imagemin&#39;);
+const imageminPngcrush = require(&#39;imagemin-pngcrush&#39;);
+imagemin([&#39;images/*.png&#39;],&#39;build/images&#39;,&#123;
+    plugins:[imageminPngcrush()]
+&#125;)
+.then(()=&gt; console.log(&#39;完成图像优化&#39;))
+</code></pre>
+<p>其中，imageminPngcrush()中可以带入如下一些 参数进行压缩控制。</p>
+<ul>
+<li>-rem alla: 删除所有块，保留控制alpha透明通道的块。</li>
+<li>-brute: 采用多种方法进行压缩会得到较好的压缩效果，由于执行的方法较多，所以执行压缩的速度会变慢，建议在离线操作下可以添加，但有时改进效果并不明显，如果对构建流程有要求可不加。</li>
+<li>-reduce: 会尝试减少调色板使用的颜色数量。</li>
+</ul>
+<h4 id="4-WebP"><a href="#4-WebP" class="headerlink" title="4.WebP"></a>4.WebP</h4><p>​		前面介绍的三种图像文件格式，在呈现位图方面各有优劣势: GIF虽然包含的颜色阶数少，但能呈现动画: JPEG虽然不支持透明度，但图像文件的压缩比高:PNG虽然文件尺寸较大，但支持透明且色彩表现力强。</p>
+<p>​		开发者在使用位图时对于这样的现状就需要先考虑选型。假如有一个统的图像文件格式，具有之前格式的所有优点，WebP 就在这样的期待中诞生了。</p>
+<ol>
+<li>WebP的优缺点</li>
+</ol>
+<p>​		WebP是Google在2010年推出的一种图像文件格式， 它的目标是以较高的视觉体验为前提的，尽可能地降低有损压缩和无损压缩后的文件尺寸，同时还要支持透明度与动画。根据WebP官方给出的实验数据，当使用WebP有损文件时，文件尺寸会比JPEG小25%~ 34%，而使用WebP无损文件时，文件尺寸会比PNG小26%。就像所有新技术一样， 具有如此多优异特性的WebP, 同样也不可避免兼容性的问题，CanlUse. com网站数据统计情况，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109091411793.png"></p>
+<p>​	从图中可以发现，除了IE不支持，其他主流浏览器的最新版本都已支持WebP, 考虑到浏览器的市场占有率，这样的兼容性程度可以说是非常乐观的了。虽然还需要做一 些兼容性处理，但我们也有足够的理由在项目中积极地使用WebP.此外，由于有损压缩WebP使用了VP8视频关键帧编码,可能对较高质量(80~ 99)的图像编码来说，会比JPEG占用更多的计算资源，但在较低质量(0~50)时，依然有很大的优势。</p>
+<p>2.如何使用WebP</p>
+<p>​		可以使用图像编辑软件直接导出WebP格式的图像文件，或者将原有的JPEG或PNG图像转化为WebP格式。这样的转化最好使用构建工具辅助完成，比如通过npm安装webp-loader后，在webpack中进行如下配置:</p>
+<pre><code class="javascript">loader:[&#123;
+    test:/\.(jpe?g|png)$/I,
+    loaders:[
+        &#39;file-loader&#39;,
+        &#39;webp-loader?&#123;quality:13&#125;&#39;
+    ],
+&#125;]
+</code></pre>
+<p>​		这里值得注意的是，尽量不要使用低质量的JPEG格式进行WebP转化，因为低质量的JPEG中可能包含压缩的伪像，这样WebP不仅要保存图像信息，还要保存JPEG添加的失真，从而影响最终的转化效果。所以在选择转化的源图像文件时，建议使用质量最佳的。</p>
+<p>3.兼容性处理</p>
+<p>​		目前WebP格式的图像并不适用于所有浏览器，所以在使用时，应当注意兼容处理好不支持的浏览器场景。</p>
+<p>​		通常的处理思路分为两种:一种是在前端处理浏览器兼容性的判断，可以通过浏览器的全局属性window.navigator. userAgent获取版本信息，再根据兼容支持情况，选择是否请求WebP图像格式的资源;也可以使用<picture>标签来选择显示的图像格式，在<picture> 标签中添加多个<source>标签元素，以及一个包含旧图像格式的<img>标签，当浏览器在解析DOM时便会对<picture>标签中包含的多个图片源依次进行检测。</p>
+<p>​		倘若浏览器不支持WebP格式而未能检测获取到，最后也能够通过<img>标记兼容显示出旧图像格式，例如:</p>
+<pre><code class="html">&lt;picture&gt;
+   &lt;source srcset=&quot;/path/image.webp&quot; type=&quot;image/webp&quot;&gt;
+   &lt;img src=&quot;/path/image.jpg&quot; alt=&quot;&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+<p>这见需要注意的<source>标签的顺序位置，应当将包含image&#x2F;webp的图像源写在旧图像格式的前面。</p>
+<p>​		另一种是将判断浏览器是否支持的工作放在后端处理，让服务器根据HTTP请求头的Accept字段来决定返回图像的文件格式。如果Accept 字段中包含image&#x2F;webp，就返回WebP图像格式，否则就使用旧图像格式(JPEG、PNG等)返回。这样做的好处是让系统的维护性更强，无论浏览器对WebP图像格式的兼容支持发生怎样的改变，只需要服务器检查Accept字段即可，无须前端跟进相应的修改。</p>
+<h4 id="5-SVG"><a href="#5-SVG" class="headerlink" title="5.SVG"></a>5.SVG</h4><p>​		前面介绍的几种图像文件格式呈现的都是位图，而SVG呈现的是矢量图。正如我们在介绍位图和矢量图时讲到的，SVG对图像的处理不是基于像素栅格的，而是通过图像的形状轮廓、屏幕位置等信息进行描述的。</p>
+<p>1.优缺点</p>
+<p>​		SVG这种基于XML语法描述图像形状的文件格式，就适合用来表示Logo等图标图像，它可以无限放大并且不会失真，无论分辨率多高的屏幕，个文件就可以统一适配:另外，作为文本文件，除了可以将SVG标签像写代码样写在HTML中，还可以把对图标图像的描述信息写在以.svg为后缀的文件中进行存储和引用。</p>
+<p>​		由于文本文件的高压缩比，最后得到的图像文件体积也会更小。要说缺点与不足，除了仅能表示矢量图，还有就是使用的学习成本和渲染成本比较高。</p>
+<p>2.优化建议</p>
+<p>即便SVG图像文件拥有诸多优点，但依然有可优化的空间。下面介绍一些优化建议。</p>
+<p>（1）应保持SVG尽量精简，去除编辑器创建SVG时可能携带的一些冗余信息，比如注释、隐藏图层及元数据等。</p>
+<p>（2）由于显示器的本质依然是元素点构成位图，所以在渲染绘制矢量图时，就会比位图的显示多一步光栅化的过程。为了使浏览器解析渲染的过程更快，建议使用预定义的SVG形状来代替自定义路径，这样会减少最终生成图像所包含标记的数量，预定义形状有<circle>、<recD>、 <line>、 <polygon>等。</p>
+<p>（3）如果必须使用自定义路径，那么也尽量少用曲线。</p>
+<p>（4）不要在SVG中嵌入位图。</p>
+<p>（5）使用工具优化SVG,这里介绍一款基于node.js 的优化工具svgo;它可以通过降低定义中的数字精度来缩小文件的尺寸。通过npm install -g svgo 可直接安装命令方式使用，若想用webpack进行工程化集成，可加入svgo-loader的相关配置:</p>
+<pre><code class="javascript">module.exports = &#123;
+    rules:[
+        test: /\.svg$/,
+        use: [
+            &#123;loader:&#39;file-loader&#39;&#125;,
+            &#123;loader:&#39;svgo-loader&#39;,options:&#123;externalConfig:&#39;svgo-config.yml&#39;&#125;,
+        &#125;]
+    ]
+&#125;
+</code></pre>
+<p>其中，可在 svgo-config.yml 的配置文件中定义相关优化选项：</p>
+<pre><code class="java">plugins:
+ - removeTitle: true
+ - convertPathData: false
+ - convertColors:
+    shorthex: false
+</code></pre>
+<p>（6）优化过后，使用gzip压缩和（或）brotli压缩。</p>
+<h4 id="6-Base64"><a href="#6-Base64" class="headerlink" title="6.Base64"></a>6.Base64</h4><p>​		准确地说，Base64 并不是一种图像文件格式， 而是种用于传输 8位字节码的编码方式，它通过将代表图像的编码直接写入HTML或CSS中来实现图像的展示，一般展示图像的方法都是通过将图像文件的URL值传给img标签的src属性，当HTML解析到img标签时，便会发起对该图像URL的网络请求:</p>
+<p>&lt; img src&#x3D;”<a target="_blank" rel="noopener" href="https://xx.cdn.com/photo.jpg&quot;&gt;">https://xx.cdn.com/photo.jpg&quot;&gt;</a></p>
+<p>​		当采用Base64编码图像时，写入src的属性值不是URL值，而是类似下面的编码:data: image&#x2F;png;base64, iVBORwOKGgOAAAANSUhEUgAABYAAAWCAYAADEtGw7AA.</p>
+<p>​		浏览器会自动解析该编码并展示出图像，而无须发起任何关于该图像的URL，这是Base64的优点，同时也隐含了对于使用的限制。由于Base64编码原理的特点，一般经过Base64编码后的图像大小，会膨胀四分之三。</p>
+<p>​		这对想尝试通过Base64方式尽可能减少HTTP请求次数来说是得不偿失的，较复杂的大图经过编码后，所节省的几次HTTP请求，与图像文件大小增加所带来的带宽消耗相比简直是杯水车薪。所以也只有对小图而言，Base64 才能体现出真正的性能优势。</p>
+<p>​		作为使用指导建议，笔者希望在考虑是否使用Base64编码时，比对如下几个条件:</p>
+<ul>
+<li>图像文件的实际尺寸是否很小。</li>
+<li>图像文件是否真的无法以雪碧图的形式进行引入。</li>
+<li>图像文件的更新频率是否很低，以避免在使用Base64时，增加不心必要的维护成本。</li>
+</ul>
+<h4 id="7-格式选择建议"><a href="#7-格式选择建议" class="headerlink" title="7.格式选择建议"></a>7.格式选择建议</h4><p>​		在了解了不同图像文件格式的特性后，显而易见的是不存在适用于任何场景且性能最优的图像使用方式。所以作为开发者，想要网站性能在图像方面达到最优，如何根据业务场景选择合适的文件格式也至关重要，图像文件使用策略如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109101114259.png" alt="图像文件使用策略"></p>
+<p>​		这里根据使用场景的不同，以及图像文件的特性给出了一个可参考的选择策略:考虑到矢量图具有缩放不失真且表示图标时较小的文件尺寸，凡用到图标的场景应尽量使用矢量图:而对于位图的使用场景，由于在相同图像质量下其具有更高的压缩比且支持动画，所以WebP格式应该是我们的首选。</p>
+<p>​		考虑到新技术的兼容性问题，也需要采用传统的方式进行适配;包含动画时使用GIF,对图像要求有更高分辨率来展示细节且需要透明度时，建议使用PNG;而在其他场景下追求更高的图像压缩比时，可使用JPEG.除此之外，位图对于不同缩放比的响应式场景，建议提供多张不同尺寸的图像，让浏览器根据具体场景进行请求调用。</p>
+<h3 id="三、使用建议"><a href="#三、使用建议" class="headerlink" title="三、使用建议"></a>三、使用建议</h3><p>​		本节额外给出些使用建议来优化图像 资源的体验性能， 包括合并多张小图资源请求次数的雪碧图方案，使用Web字体的方式来替代图标文件及display:none使用的注意事项。</p>
+<h4 id="1-CSS-Sprite"><a href="#1-CSS-Sprite" class="headerlink" title="1.CSS Sprite"></a>1.CSS Sprite</h4><p>​		CSS Sprite技术就是我们常说的雪碧图，通过将多张小图标拼接成一张大图， 有效地减少HTTP请求数量以达到加速显示内容的技术。</p>
+<p>​		通常对于雪碧图的使用场景应当满足以下条件:首先这些图标不会随用户信息的变化而变化，它们属于网站通用的静态图标;同时单张图标体积要尽量小，这样经过拼接后其性能的提升才会比较乐观;若加载量比较大则效果会更好。</p>
+<p>​		不建议将较大的图片拼接成雪碧图，因为大图拼接后的单个文件体积会非常大，这样占用网络带宽的增加与请求完成所耗费时间的延长，会完全淹没通过减少HTTP请求次数所带来的性能提升。下面来看一个雪碧图实际案例，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109102349521.png"></p>
+<p>​		图中截取了淘宝网一处图标导航栏及请求的相应资源，通过案例还可以看出所拼接的雪碧图是一张PNG格式的图像文件，其中的图标不只含有一种颜色， 同时也可支持颜色渐变，这通常是单色Web字体很难具备的表现力。</p>
+<p>雪碧图的使用方式也很简单，通过CSS 的background-image 属性引入雪碧图的UrL后，再使用background-position定位所需要的单个图标在雪碧图上的起始位置，配合width和height属性来锁定具体图标的尺寸，示例代码如下:</p>
+<pre><code class="css">.sprite-sheet&#123;
+    background-image: url(https://img.xxxx.com/xxx/sprite-sheet.png);
+    background-size: 24px 600px;
+&#125;
+.icon-1 .sprite-sheet&#123;
+    background-position: 0 0;
+    height: 24px;
+    width: 24px;
+&#125;
+.icon-2 .sprite-sheet&#123;
+    background-position: 0 -24px;
+    height: 24px;
+    width: 24px;
+&#125;
+</code></pre>
+<p>​		其中，background-position属性关于横纵偏移的设置规则指的是如何通过设置背景图的偏移，将雪碧图上所需图标的左上角起始位置移至坐标(0,0)位置。与通常数学上的直角坐标系不同，浏览器中的坐标系Y轴正方向是垂直向下的。当引入雪碧图后，整个图片的左上角起始位置在(0,0)，所以要得到其中的某个图标，我们就需要将雪碧图向负轴方向进行偏移，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109105436897.png" alt="雪碧图与坐标系"></p>
+<p>​		如果使用第一行左边第一 个图标，则可通过设置background-position: 0 0来让雪碧图不偏移(两个0之间有空格，分别表示在X轴、Y轴的位置)，倘若要使用第二行中间的图标，就需要将雪碧图向左上方偏移，将属性backgound-position的值设置为-24px -24px，注意是负值，如图所示。</p>
+<p><img src="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/image-20230109105529239.png" alt="偏移后的雪碧图"></p>
+<p>​		使用雪碧图来提升小图标加载性能的历史由来已久。在HTTP 1.x环境下，它确实能够减少相应的HTTP请求，但需要注意当部分图标变更时，会导致已经加载的雪碧图缓存失效。同时在HTTP2中，最好的方式应该是加载单张图像文件，因为可以在一个HTTP连接上发起多次请求，所以对于是否使用此方法，需要考虑具体的使用环境和网络设置。</p>
+<h4 id="2-Web-字体"><a href="#2-Web-字体" class="headerlink" title="2.Web 字体"></a>2.Web 字体</h4><p>​		使用Web字体有多种优点:增强网站的设计感、可读性，同时还能搜索和选取所表示的文本内容，且不受屏幕尺寸与分辨率的影响，能提供一致的视觉体验。 除此之外，由于每个字型都是特定的矢量图标，所以可以将项目中用到的矢量图标打包到一个Web字体文件中使用，以节省对图标资源的HTTP请求次数，这样做类似雪碧图优化目的。</p>
+<p>1.字体的使用</p>
+<p>​		目前网络上常用的字体格式有: EOT、TTF、WOFF与WOFF2,由于存在兼容性的问题，并没有哪一种字体能够适用所有浏览器，所以在实际使用中，网站开发者会声明提供字体的多种文件格式，来达到一致性的体验效果。</p>
+<p>在Web项目中，一般 会先通过@font-face声明使用的字体系列:</p>
+<pre><code class="css">@font-face &#123;
+font-family: &#39;tianfont&#39;;
+src: url(&#39;//at.alicdn.com/t/font_ 1307911 xxxx.eot&#39;);
+src: url(&#39;//at.alicdn.com/t/fot 1307911 xxx.eot?#iefix&#39;) format(&#39;enmbederopentype&#39;),
+url(&#39;//at.alicdn.com/t/font_ 1307911 xxxx.woff2&#39;) format(&#39;woff2&#39;),
+url(&#39;//at.alicdn.com/t/font_ 1307911 xxxx.woff&#39;) format(&#39;woff&#39;),
+url(&#39;//at.alicdn.com/t/font_ 1307911_ xxxx.ttf&#39;) format (&#39;truetype&#39;),
+url(&#39;//at.alicdn.com/t/font_ 1307911 xxxx.svg#tianfont&#39;) format(&#39;svg&#39;),
+&#125;
+</code></pre>
+<p>​		在上述代码中通过src字段的属性值，可以指定字体资源的位置，并且该属性值还可以提供一个用逗 号分隔的列表，列表中不同字体文件格式的资源顺序同样重要，浏览器将选取其所支持的第一个格式资源。 如果希望较新的WOFF2格式被使用，则应当将WOFF2声明在WOFF之上。</p>
+<p>2.子集内嵌</p>
+<p>​		对于同一个字符，Web字体可以根据样式、粗细及拉伸等属性的不同，拥有多种变种的字型展示。如果将所有字型都打包成一个文件来请求使用， 不免就会存在许多根本用不到的字型信息浪费带宽。相较于拉丁文字体而言，包含中文字符的字体文件的大小会格外突出。字体文件是否能够按需加载，就成为一个显而易见的优化项，这便是子集内嵌。</p>
+<p>​		通过@font- face和unicode-range属性就可以定义所使用的字体子集，属性unicode-range用来指定所需字体在@font-face声明字体集中的子集范围，它支持三种形式:单一取值(如U+233)、范围取值(如U+233-2ff)、通配符范围( 如U+2??),取值的含义是字体集文件中的代码索引点，具体使用示例如下:</p>
+<pre><code class="css">@font-face &#123;
+font-family: &#39;Awesome Font&#39; ;
+font-style: normal;
+font-weight: 500;
+src: 
+  url(&#39;/fonts/awesome.woff2&#39;) format(&#39;woff2&#39;),
+  url(&#39;/fonts/awesome.woff&#39;) format(&#39;woff&#39;),
+  url(&#39;/fonts/awesome.ttf&#39;) format(&#39;ttf&#39;),
+  url(&#39;/fonts/awesome.eot&#39;) format(&#39;eot&#39;),
+  unicode-range: U+100-3ff, U+f??
+&#125;
+</code></pre>
+<p>​		通过使用子集内嵌，以及为字体的不同样式变体采用单独的文件，用户可以仅根据需要下载字体的子集，而不必强制他们下载可能永远都不会用到的字体子集，这样对字体下载优化来说会更快速高效。不过属性unicode-range也存在兼容性的问题，对于不支持的浏览器，若想提供必要的子集字体支持，则可能需要手动处理字体文件。</p>
+<p>3.字体文件预加载</p>
+<p>在默认情况下，构建谊染树之前会阻塞字体文件的请求，这将可能导致部分文本谊染延迟，对此我们可使用-link re-reloao”&gt;对字体资源进行预加载。关于预加载的详细内容，会在加载优化章节进一步 介绍。</p>
+<pre><code class="html">&lt;head&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/ fonts/ awesome .woff2&quot; as=&quot; font&quot;&gt;
+&lt;/head&gt;
+</code></pre>
+<link rel="preload">需要和@font-face对字体的定义一同使用，它只负责提示浏览器需要预加载给定的资源，而不指明如何使用。但同时需要注意的是，这样做将会无条件向网络发出字体请求，如果项目迭代将原本使用的字体文件修改或删除，也需同步删除对字体预加载的设置。
+
+<h4 id="3-注意display-none的使用"><a href="#3-注意display-none的使用" class="headerlink" title="3.注意display:none的使用"></a>3.注意display:none的使用</h4><p>​	在使用位图时，经常会根据屏幕尺寸、权限控制等不同条件，响应式地处理资源的展示与隐藏。出于对性能的考虑，希望对于不展示的图像:尽量避免在首展时进行资源请求加载。但根据一些直觉性的编程习惯， 读者们真的确定所控制隐藏的图像，是否有发起资源请求吗?来看下面两个例子。</p>
+<p>下面img1.jpg的图像文件是否有被浏览器发起请求?即使父级的div 设置为不显示。</p>
+<pre><code class="html">&lt;div style=&quot;display:none&quot;&gt;
+  &lt; img src=&quot;img1.jpg&quot;&gt;
+&lt;/div&gt;
+</code></pre>
+<p>根据HTML的解析顺序，答案是肯定的，img1.jpg 的图像文件会被请求。那么下面img2.jpg的图像文件会发起请求吗?</p>
+<pre><code class="html">&lt;div style=&quot;display:none&quot;&gt;
+  &lt;div style=&quot;background: url(img2. jpg) &quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>CSS解析后发现父级使用了display:none, 再去计算子级的样式就没有多大意义了，所以就不会去下载子级div的背景图像。</p>
+<p>如果不清楚不同浏览器对display:none 关于图像加载的控制，则可以通过开发者工具进行验证。这里推荐的做法是使用<picture>或&lt; img srcset&gt;的方式进行响应式显示。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>​		本章首先从图像基础开始，在普及了包括图像的构成表示、分类压缩等知识之后对前端项目中常用的图像文件格式GIF、JPEG、PNG、 SVG、 WebP 及Base64进行了细致的分析介绍，包括它们之间优缺点的比较，具体场景下的技术选型，以及优化使用建议和工程实践。给出了三点与图像相关的优化技术与建议，希望同学能够明白Web项目中的图像优化是一项技术也是一门艺术， 技术指的是对于每一种图像文件的压缩和使用都有一套工程化的手段，艺术指的是当面对具体的项目实践时，如何技术选型与压缩以达到对用户最佳的体验效果，则需要在多个维度上进行权衡与取舍，并不存在明确的最佳方案。</p>
+<p>本章最后给出一些希望同学能够记住的方法与技巧:</p>
+<ul>
+<li>适合用矢量图的地方首选矢量图。</li>
+<li>使用位图时首选WebP,对不支持的浏览器场景进行兼容处理。</li>
+<li>尽量为位图图像格式找到最佳质量设置。</li>
+<li>删除图像文件中多余的元数据。</li>
+<li>对图像文件进行必要的压缩。</li>
+<li>为图像提供多种缩放尺寸的响应式资源。</li>
+<li>对工程化通用图像处理流程尽量自动化。</li>
+</ul>
+<h3 id="参考书籍：web前端性能优化"><a href="#参考书籍：web前端性能优化" class="headerlink" title="参考书籍：web前端性能优化"></a>参考书籍：web前端性能优化</h3> 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-前端页面的生命周期"
   class="article article-type-post"
   itemscope
@@ -3808,74 +4289,6 @@ const sendData = () =&gt; &#123;
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue3/" rel="tag">vue3</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-chatGPT是什么"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/14/chatGPT%E6%98%AF%E4%BB%80%E4%B9%88/"
-    >chatGPT是什么</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/14/chatGPT%E6%98%AF%E4%BB%80%E4%B9%88/" class="article-date">
-  <time datetime="2022-12-14T01:04:08.000Z" itemprop="datePublished">2022-12-14</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%B6%A3%E5%91%B3%E6%8A%80%E6%9C%AF/">趣味技术</a> / <a class="article-category-link" href="/categories/%E8%B6%A3%E5%91%B3%E6%8A%80%E6%9C%AF/chatGPT%E6%98%AF%E4%BB%80%E4%B9%88/">chatGPT是什么</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="chatGPT是什么"><a href="#chatGPT是什么" class="headerlink" title="chatGPT是什么"></a>chatGPT是什么</h1><blockquote>
-<p>我们都知道目前火出圈的AI绘画和chatGPT</p>
-<p>那么它们是什么呢？</p>
-</blockquote>
-<h3 id="一、chatGPT是什么"><a href="#一、chatGPT是什么" class="headerlink" title="一、chatGPT是什么"></a>一、chatGPT是什么</h3><p><strong>ChatGPT</strong>是由<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/OpenAI">OpenAI</a>开发的一个<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">人工智能</a><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/%E8%81%8A%E5%A4%A9%E6%A9%9F%E5%99%A8%E4%BA%BA">聊天机器人</a>程序，于2022年11月推出。该程序使用基于<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/GPT-3">GPT-3.5</a>架构的<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B">大型语言模型</a>并通过<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/wiki/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0">强化学习</a>进行训练。它以对话方式进行交互。在推广的期间中，所有人可以免费注册，并在登入后后免费使用 ChatGPT 实现与 AI 机器人对话</p>
-<p>有世界首富——电动汽车巨头特斯拉掌门人马斯克（ Elon Musk）入股的研发公司OpenAI表示，最新推出的聊天机器人ChatGPT在不到一周时间里就拥有百万用户。</p>
-<p>ChatGPT是OpenAI发布的聊天机器人模型，它的交互界面简洁，只有一个输入框，AI将根据输入内容进行回复，并允许在一个语境下持续聊天。</p>
-<p><img src="/2022/12/14/chatGPT%E6%98%AF%E4%BB%80%E4%B9%88/image-20221214085330016.png"></p>
-<h3 id="二、如何强大"><a href="#二、如何强大" class="headerlink" title="二、如何强大"></a>二、如何强大</h3><p>据浙商和国盛证券研报，ChatGPT相比以往的主要提升点在于记忆能力，ChatGPT可以储存对话信息，延续上下文，从而实现连续对话，这在对话场景中至关重要，极大地提升了对话交互模式下的用户体验。</p>
-<p>具体而言，此次新加入的训练方式被称为“从人类反馈中强化学习”（ReinforcementLearning from Human Feedback，RLHF）。这一训练方法增加了人类对模型输出结果的演示，并且对结果进行了排序。具体操作上，人工智能训练者扮演对话的双方，即用户和人工智能助手，提供对话样本。在人类扮演聊天机器人的时候，会让模型生成一些建议辅助训练师撰写回复，训练师会对回复选项打分排名，将更好的结果输回到模型中，通过以上奖励策略对模型进行微调并持续迭代。</p>
-<p><strong>此外，ChatGPT的背后离不开大模型、大数据、大算力。</strong></p>
-<p>ChatGPT成为AIGC里程碑的背后，是算力发展和数字时代形成的大数据所共同支持的大模型训练，才能实现目前的效果。由OpenAI研发的ChatGPT是微调后的GPT-3.5系列模型，有着多达1750亿个模型参数，并在今年年初训练完成。模型训练的背后离不开大数据的支持，OpenAI主要使用的公共爬虫数据集有着超过万亿单词的人类语言数据集。在算力方面，GPT-3.5在Azure AI超算基础设施（由V100GPU组成的高带宽集群）上进行训练，总算力消耗约3640PF-days（即每秒一千万亿次计算，运行3640个整日）。</p>
-<p><strong>AIGC里程碑级应用</strong></p>
-<p><a target="_blank" rel="noopener" href="https://www.8btc.com/article/6787780">AIGC</a> 将是 Web3 时代的生产力工具。当我们迈入 Web3.0 时代，人工智能、关联数据和语义网络构建，形成人与网络的全新链接，内容消费需求飞速增长。UGC\PGC 这样的内容生成方式将难以匹配扩张的需求。AIGC 将是新的元宇宙内容生成解决方案。AIGC 的生成利用人工智能学习知识图谱、自动生成，在内容的创作为人类提供协助或是完全由 AI 产生内容。不仅能帮助提高内容生成的效率，还能提高内容的多样性。随着 NLP（Natural Language Processing，自然语言处理）技术和扩散模型（Diffusion Model）的发展，AI 不再仅作为内容创造的辅助工具，创造生成内容成为了可能。由此，将来文字生成、图片绘制、视频剪辑、游戏内容生成皆可由 AI 替代。</p>
-<p>国盛证券表示，AIGC不仅改变创作，还将改变获取信息的主要方式。而在此之上，ChatGPT所展示了作为生产力的存在，ChatGPT在寻找答案、解决问题的效率上已经部分的超越了如今的搜索引擎，ChatGPT或许在未来会改变我们获取信息、输出内容的方式，AIGC有望成为数字经济时代驱动需求爆发的杀手级应用。</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[维基百科]: 	“<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh-hans/ChatGPT">https://zh.m.wikipedia.org/zh-hans/ChatGPT</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/chatGPT/" rel="tag">chatGPT</a></li></ul>
 
     </footer>
   </div>

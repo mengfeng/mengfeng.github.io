@@ -177,6 +177,412 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-Vue3api变化"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/12/16/Vue3api%E5%8F%98%E5%8C%96/"
+    >Vue3api变化</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/16/Vue3api%E5%8F%98%E5%8C%96/" class="article-date">
+  <time datetime="2022-12-16T01:20:02.000Z" itemprop="datePublished">2022-12-16</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Vue3/">Vue3</a> / <a class="article-category-link" href="/categories/Vue3/Vue3api%E5%8F%98%E5%8C%96/">Vue3api变化</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="Vue3"><a href="#Vue3" class="headerlink" title="Vue3"></a>Vue3</h1><blockquote>
+<p>官网地址：<a target="_blank" rel="noopener" href="https://cn.vuejs.org/">https://cn.vuejs.org/</a><br>vue最新版分为两个版本： Vue3.0（20年9月18日） Vue 3.2 （21年8月10日）</p>
+</blockquote>
+<h3 id="Vue-3-2-Vite-volar"><a href="#Vue-3-2-Vite-volar" class="headerlink" title="Vue 3.2 +Vite+volar"></a><strong>Vue 3.2 +Vite+volar</strong></h3><ul>
+<li>Vue3 框架做了大量的性能优化，包括虚拟 DOM，编译模板、代理的新数据监听，体积更小的打包文件等。</li>
+<li>新的组合式 API （composition-api），更适合大型项目的构建，去除繁琐的 this 操作；</li>
+<li>由于是基于 TypeScript 编写，对 TypeScript 原生支持更好，更强大的智能类型推导功能；</li>
+<li>生命周期的一些改变，vue2 中的 beforeCreate 和 created 被一个新增的 setup 生命周期函数代替；</li>
+<li>一些常见 API 如 v-model 的变化，支持对一个组件同时进行多个 v-model 的数据绑定。</li>
+</ul>
+<p>vscode 的插件 vetur 对vue3 的composition API语法支持度非常弱，所以开发vue3项目需要将vetur禁用 更换另一个插件</p>
+<p>开发vue3安装并使用： volar 插件</p>
+<h3 id="1-项目创建"><a href="#1-项目创建" class="headerlink" title="1.项目创建"></a>1.项目创建</h3><p>Vite 官网：<a target="_blank" rel="noopener" href="https://cn.vitejs.dev/">https://cn.vitejs.dev/</a></p>
+<pre><code class="json">yarn create vite my-vue-app --template vue     
+</code></pre>
+<h3 id="2-SFC-单文件组件"><a href="#2-SFC-单文件组件" class="headerlink" title="2.SFC 单文件组件"></a>2.SFC 单文件组件</h3><blockquote>
+<p>html 部分变化不大<br>vue2的 template 中只能有一个子节点，vue3的 template 中可以写多个子节点<br>js 部分内置ts，但是vite创建的项目没有开启 ， <code>&lt;script lang=&quot;ts&quot; setup&gt;</code> 这样写即可支持ts<br>新增setup 语法糖，js代码大量简化<br>代码中不再出现 <code>this</code><br>css 代码中 可以使用v-bind 指令</p>
+</blockquote>
+<pre><code class="html">&lt;template&gt;
+    &lt;div&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+       let color = &#39;#f60&#39;;
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.box&#123;
+  width: 100px;
+  height: 100px;
+  background: v-bind(color);
+&#125;
+&lt;/style&gt;
+</code></pre>
+<h3 id="2-setup语法糖"><a href="#2-setup语法糖" class="headerlink" title="2. setup语法糖"></a>2. setup语法糖</h3><p>起初 Vue3.0 暴露变量必须 return 出来，template中才能使用； 这样会导致在页面上变量会出现很多次。</p>
+<p>vue3.2只需在script标签中添加setup,可以帮助我们解决这个问题。</p>
+<p>1.组件只需引入不用注册，属性和方法也不用返回， 也不用写setup函数，也不用写export default ， 甚至是自定义指令也可以在我们的template中自动获得。</p>
+<h2 id="3-data-定义"><a href="#3-data-定义" class="headerlink" title="3.data 定义"></a>3.data 定义</h2><h3 id="3-1-直接定义-无响应式"><a href="#3-1-直接定义-无响应式" class="headerlink" title="3.1 直接定义 无响应式"></a>3.1 直接定义 无响应式</h3><pre><code class="html">&lt;template&gt;
+  &lt;div&gt;
+      &lt;h1&gt;&#123;&#123;name&#125;&#125;&lt;/h1&gt;
+      &lt;!-- 这里双向绑定失效，直接定义变量没有响应式特性 --&gt;
+      &lt;input type=&quot;text&quot; v-model=&quot;name&quot;&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+  let name = &#39;张麻子&#39;;
+
+&lt;/script&gt;
+</code></pre>
+<h3 id="3-2-ref-定义基本数据类型-有响应式"><a href="#3-2-ref-定义基本数据类型-有响应式" class="headerlink" title="3.2 ref 定义基本数据类型 有响应式"></a>3.2 ref 定义基本数据类型 有响应式</h3><pre><code class="html">&lt;template&gt;
+  &lt;div&gt;
+      &lt;h1&gt;&#123;&#123;name&#125;&#125;&lt;/h1&gt;
+       &lt;!-- 修改数据 有响应式 --&gt;
+      &lt;input type=&quot;text&quot; v-model=&quot;name&quot;&gt;
+      &lt;button @click=&quot;setData&quot;&gt;修改数据&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+ import &#123;ref&#125; from &#39;vue&#39;;   
+    
+ let name = ref(&#39;张麻子&#39;);
+   //js中修改数据有响应式
+ const setData = ()=&gt;&#123;
+     name.value = &#39;黄四郎&#39;
+ &#125;
+     
+&lt;/script&gt;
+</code></pre>
+<h3 id="3-3-reactvie-定义引用数据类型-有响应式"><a href="#3-3-reactvie-定义引用数据类型-有响应式" class="headerlink" title="3.3 reactvie 定义引用数据类型 有响应式"></a>3.3 reactvie 定义引用数据类型 有响应式</h3><pre><code class="javascript">&lt;template&gt;
+  &lt;div&gt;
+      &lt;h2&gt;&#123;&#123;user.name&#125;&#125;&lt;/h2&gt;
+      &lt;!-- 修改数据 有响应式 --&gt;
+      &lt;input type=&quot;text&quot; v-model=&quot;user.name&quot;&gt;
+      &lt;!-- 新增属性 --&gt;
+      &lt;button @click=&quot;addItem&quot;&gt;新增属性&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import &#123;ref,reactive&#125; from &#39;vue&#39;
+let user = reactive(&#123;
+  name:&#39;张麻子&#39;,
+  age:40
+&#125;)
+// js中新增对象属性-可以直接赋值和修改（有响应式），在ts环境下，vscode会提示错误，但在页面中可以正常渲染
+const addItem = ()=&gt;&#123;
+  user.like=&#39;打豆豆&#39;
+&#125;
+
+&lt;/script&gt;
+</code></pre>
+<h2 id="4-methods-方法定义"><a href="#4-methods-方法定义" class="headerlink" title="4.methods 方法定义"></a>4.methods 方法定义</h2><pre><code class="javascript">&lt;template&gt;
+  &lt;div&gt;
+    &lt;!-- 年龄 + --&gt;
+    &lt;h1&gt;&#123;&#123;user.age&#125;&#125;&lt;/h1&gt;
+    &lt;!-- 调用方法 --&gt;
+    &lt;button @click=&quot;addAge&quot;&gt;年龄+&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import &#123; ref, reactive &#125; from &quot;vue&quot;;
+
+let user = reactive(&#123;
+  name: &quot;张麻子&quot;,
+  age: 40,
+&#125;);
+//方法
+const addAge=()=&gt;&#123;
+    user.age++;
+&#125;
+//方法调用方法
+const getUserInfo=()=&gt;&#123;
+  addAge()
+  console.log(user.age)
+&#125;
+&lt;/script&gt;
+</code></pre>
+<h2 id="5-computed-计算属性"><a href="#5-computed-计算属性" class="headerlink" title="5.computed 计算属性"></a>5.computed 计算属性</h2><pre><code class="java">&lt;script setup&gt;
+import &#123; ref, reactive, computed &#125; from &quot;vue&quot;;
+
+let user = reactive(&#123;
+  name: &quot;张麻子&quot;,
+  age: 40,
+&#125;);
+//计算属性
+const getAge = computed(()=&gt;&#123;
+  return &#39;我的年龄&#39;+user.age
+&#125;)
+&lt;/script&gt;
+</code></pre>
+<h2 id="6-watch-使用"><a href="#6-watch-使用" class="headerlink" title="6.watch 使用"></a>6.watch 使用</h2><pre><code class="json">watch(监听数据源,执行函数,[配置参数])    
+//配置参数： 立即执行 深度监听
+&#123;immediate: true, deep: true &#125;
+</code></pre>
+<h3 id="6-1-监听基本数据类型单一数据源"><a href="#6-1-监听基本数据类型单一数据源" class="headerlink" title="6.1 监听基本数据类型单一数据源"></a>6.1 监听基本数据类型单一数据源</h3><pre><code class="javascript">&lt;script setup&gt;
+import &#123;ref, watch&#125; from &#39;vue&#39;
+ let name = ref(&#39;张麻子&#39;)
+
+ //监听器
+watch(name,(newVal,oldVal)=&gt;&#123;
+    console.log(&#39;变量发生了改变...&#39;,newVal);
+&#125;)
+&lt;/script&gt;
+</code></pre>
+<h3 id="6-2-监听引用数据类型单一数据源"><a href="#6-2-监听引用数据类型单一数据源" class="headerlink" title="6.2 监听引用数据类型单一数据源"></a>6.2 监听引用数据类型单一数据源</h3><pre><code class="java">&lt;script setup&gt;
+import &#123;reactive, ref, watch&#125; from &#39;vue&#39;
+let user = reactive(&#123;name:&#39;张三&#39;,age:14&#125;)
+ //监听器
+watch(()=&gt;user.name,(newVal,oldVal)=&gt;&#123;
+  console.log(&#39;对象user中的name属性发生了变化..&#39;,newVal);
+&#125;)
+&lt;/script&gt;
+</code></pre>
+<h3 id="6-3-监听引用数据类型-多数据源-深度监听"><a href="#6-3-监听引用数据类型-多数据源-深度监听" class="headerlink" title="6.3 监听引用数据类型 多数据源[深度监听]"></a>6.3 监听引用数据类型 多数据源[深度监听]</h3><pre><code class="java">&lt;template&gt;
+  &lt;div&gt;
+    &lt;button @click=&quot;addNum()&quot;&gt; 添加随机数&lt;/button&gt;
+    &lt;div v-for=&quot;item in nums&quot; :key=&quot;item&quot;&gt;&#123;&#123; item &#125;&#125;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import &#123; reactive, ref, watch &#125; from &#39;vue&#39;
+let nums = reactive([]);
+
+//添加随机数
+const addNum = () =&gt; &#123;
+  let num = Math.ceil(Math.random() * 100);
+  nums.push(num);
+&#125;
+//监听数组变化-深度监听
+watch(()=&gt;nums,(newVal,oldVal)=&gt;&#123;
+    console.log(&#39;nums数组发生了变化..&#39;,newVal);
+&#125;,&#123;deep:true&#125;)
+
+&lt;/script&gt;
+</code></pre>
+<h2 id="7-生命周期"><a href="#7-生命周期" class="headerlink" title="7.生命周期"></a>7.生命周期</h2><table>
+<thead>
+<tr>
+<th>vue2</th>
+<th>vue3.0</th>
+<th>vue3.2</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>beforeCreate</td>
+<td></td>
+<td>setup</td>
+<td>组件创建之前 可以获取顶级实例对象</td>
+</tr>
+<tr>
+<td>created</td>
+<td></td>
+<td>setup</td>
+<td>组件创建完成，可以获取变量</td>
+</tr>
+<tr>
+<td>beforeMount</td>
+<td></td>
+<td>onBeforeMount</td>
+<td>挂载前，VNdom创建完成，真实dom未渲染</td>
+</tr>
+<tr>
+<td>mounted</td>
+<td></td>
+<td>onMounted</td>
+<td>挂载完成，真实dom创建完成，可以获取dom</td>
+</tr>
+<tr>
+<td>beforeUpdate</td>
+<td></td>
+<td>onBeforeUpdate</td>
+<td>dom更新前触发</td>
+</tr>
+<tr>
+<td>updated</td>
+<td></td>
+<td>onUpdated</td>
+<td>dom更新完成触发</td>
+</tr>
+<tr>
+<td>beforedestroy，destroyed</td>
+<td>beforeUnmount</td>
+<td>onBeforeUnmount</td>
+<td>组件卸载后触发 所有的挂载的数据 子组件全部卸载后触发</td>
+</tr>
+<tr>
+<td></td>
+<td>errorCaptured</td>
+<td>onErrorCaptured</td>
+<td>在捕获一个来自后代组件的错误时被调用</td>
+</tr>
+<tr>
+<td></td>
+<td>renderTracked</td>
+<td>onRenderTracked</td>
+<td>跟踪虚拟 DOM 重新渲染时调用</td>
+</tr>
+<tr>
+<td></td>
+<td>renderTriggered</td>
+<td>onRenderTriggered</td>
+<td>当虚拟 DOM 重新渲染被触发时调用</td>
+</tr>
+<tr>
+<td>activated</td>
+<td>activated</td>
+<td>onActivated</td>
+<td>缓存组件激活时调用</td>
+</tr>
+<tr>
+<td>deactivated</td>
+<td>deactivated</td>
+<td>onDeactivated</td>
+<td>缓存组件失活时调用</td>
+</tr>
+</tbody></table>
+<pre><code class="java">&lt;template&gt;
+  &lt;div&gt;
+      &lt;div class=&quot;box&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;script setup&gt;
+import &#123; onMounted &#125; from &#39;vue&#39;;
+  //生命周期钩子监听
+  onMounted(()=&gt;&#123;
+    console.log(document.querySelector(&#39;.box&#39;)); //可以获取dom
+  &#125;)
+&lt;/script&gt;
+</code></pre>
+<h2 id="8-组件使用"><a href="#8-组件使用" class="headerlink" title="8.组件使用"></a>8.组件使用</h2><ul>
+<li>创建 src&#x2F;components&#x2F;Son.vue</li>
+<li>App.vue中导入并使用该组件</li>
+</ul>
+<p>vue3.2 中当我们导入子组件时，setup语法糖会自动去注册该组件，所以注册语句不用写了。</p>
+<pre><code class="java">&lt;template&gt;
+  &lt;div&gt;
+    &lt;son&gt;&lt;/son&gt;
+  &lt;/div&gt;
+&lt;script setup&gt;
+import Son from &#39;./components/Son.vue&#39;
+&lt;/script&gt;
+</code></pre>
+<h2 id="9-组件通信"><a href="#9-组件通信" class="headerlink" title="9.组件通信"></a>9.组件通信</h2><h3 id="9-1-父传子-defineProps"><a href="#9-1-父传子-defineProps" class="headerlink" title="9.1 父传子 defineProps"></a>9.1 父传子 defineProps</h3><ul>
+<li>父组件</li>
+</ul>
+<pre><code class="java">&lt;template&gt;
+  &lt;div&gt;
+      &lt;Son class=&quot;box&quot; title=&quot;我是父组件传递的标题&quot; :likes=&quot;likes&quot;&gt;&lt;/Son&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+  import Son from &#39;./components/Son.vue&#39;
+  let likes = [&#39;张三&#39;,&#39;李四&#39;]
+&lt;/script&gt;
+</code></pre>
+<ul>
+<li>子组件</li>
+</ul>
+<pre><code class="java">&lt;script setup&gt;
+const props=defineProps(&#123;
+    title:&#123;
+        type:String,
+        default:&#39;&#39;
+    &#125;,
+    likes:&#123;
+        type:Array,
+        default:()=&gt;[]
+    &#125;
+&#125;)
+&lt;/script&gt;
+</code></pre>
+<h3 id="9-2-子传父-defineEmits"><a href="#9-2-子传父-defineEmits" class="headerlink" title="9.2 子传父 defineEmits"></a>9.2 子传父 defineEmits</h3><ul>
+<li>子组件</li>
+</ul>
+<pre><code class="java">&lt;template&gt;
+    &lt;div&gt;
+        &lt;button @click=&quot;sendData&quot;&gt;传递数据&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+//定义自定义事件
+const emit = defineEmits([&#39;send&#39;])
+//自己的事件执行函数
+const sendData = () =&gt; &#123;
+    //执行自定义事件
+    emit(&#39;send&#39;, &#39;我是儿子组件传递的数据&#39;)
+&#125;
+&lt;/script&gt;
+</code></pre>
+<ul>
+<li>父组件</li>
+</ul>
+<pre><code class="java">&lt;template&gt;
+  &lt;div&gt;
+      &lt;Son class=&quot;box&quot;  @send=&quot;getData&quot; &gt;&lt;/Son&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+  import Son from &#39;./components/Son.vue&#39;
+  //触发自定义事件-接收数据
+  const getData = (data)=&gt;&#123;
+    console.log(data);
+  &#125;
+&lt;/script&gt;
+</code></pre>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue3/" rel="tag">vue3</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-chatGPT是什么"
   class="article article-type-post"
   itemscope
@@ -1724,415 +2130,6 @@ Test.prototype.update = function(dt) &#123;
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/playcanvas/" rel="tag">playcanvas</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-threejs-d-5-0"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/02/threejs-d-5-0/"
-    >threejs-d-5.0</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/02/threejs-d-5-0/" class="article-date">
-  <time datetime="2022-12-02T08:37:44.000Z" itemprop="datePublished">2022-12-02</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/Three-js/">Three.js</a> / <a class="article-category-link" href="/categories/Web3D/Three-js/threejs-d-5-0/">threejs-d-5.0</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="threejs-d-5-0"><a href="#threejs-d-5-0" class="headerlink" title="threejs-d-5.0"></a>threejs-d-5.0</h1><h3 id="一、置换与置换贴图"><a href="#一、置换与置换贴图" class="headerlink" title="一、置换与置换贴图"></a>一、置换与置换贴图</h3><blockquote>
-<h3 id="displacementMap-Texture"><a href="#displacementMap-Texture" class="headerlink" title=".displacementMap : Texture"></a>.displacementMap : Texture</h3><p>位移贴图会影响网格顶点的位置，与仅影响材质的光照和阴影的其他贴图不同，移位的顶点可以投射阴影，阻挡其他对象， 以及充当真实的几何体。位移纹理是指：网格的所有顶点被映射为图像中每个像素的值（白色是最高的），并且被重定位。</p>
-<h3 id="displacementScale-Float"><a href="#displacementScale-Float" class="headerlink" title=".displacementScale : Float"></a>.displacementScale : Float</h3><p>位移贴图对网格的影响程度（黑色是无位移，白色是最大位移）。如果没有设置位移贴图，则不会应用此值。默认值为1。</p>
-</blockquote>
-<pre><code class="javascript">//main.js+
-const textureLoader = new THREE.TextureLoader();
-const mbColortexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_diffuse.jpg&#39;) 
-const mbHeighttexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_height.jpg&#39;) 
-mbColortexture.wrapS = THREE.RepeatWrapping
-mbColortexture.wrapT = THREE.RepeatWrapping
-mbColortexture.center.set(0.5,0.5)
-// mbColortexture.rotation = Math.PI / 4
-const geometry = new THREE.BoxGeometry( 1, 1, 1,100,100,100 );
-const material = new THREE.MeshStandardMaterial( &#123; 
-    color: &#39;#ffffff&#39;,
-    map:mbColortexture,
-    displacementMap:mbHeighttexture,
-    displacementScale:0.05
-
- &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p>置换效果图：</p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202081128766.png"></p>
-<h3 id="二、粗糙度与粗糙度贴图"><a href="#二、粗糙度与粗糙度贴图" class="headerlink" title="二、粗糙度与粗糙度贴图"></a>二、粗糙度与粗糙度贴图</h3><blockquote>
-<h3 id="roughness-Float"><a href="#roughness-Float" class="headerlink" title=".roughness : Float"></a>.roughness : Float</h3><p>材质的粗糙程度。0.0表示平滑的镜面反射，1.0表示完全漫反射。默认值为1.0。如果还提供roughnessMap，则两个值相乘。</p>
-<h3 id="roughnessMap-Texture"><a href="#roughnessMap-Texture" class="headerlink" title=".roughnessMap : Texture"></a>.roughnessMap : Texture</h3><p>该纹理的绿色通道用于改变材质的粗糙度。</p>
-</blockquote>
-<pre><code class="javascript">//main.js+
-const textureLoader = new THREE.TextureLoader();
-const mbColortexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_diffuse.jpg&#39;) 
-const mbHeighttexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_height.jpg&#39;) 
-const mbRoughnesstexture = textureLoader.load(&#39;./texture/road_with_tram_rails_24_71_roughness.jpg&#39;) 
-mbColortexture.wrapS = THREE.RepeatWrapping
-mbColortexture.wrapT = THREE.RepeatWrapping
-mbColortexture.center.set(0.5,0.5)
-// mbColortexture.rotation = Math.PI / 4
-const geometry = new THREE.BoxGeometry( 1, 1, 1,50,50,50 );
-const material = new THREE.MeshStandardMaterial( &#123; 
-    color: &#39;#ffffff&#39;,
-    map:mbColortexture,
-    displacementMap:mbHeighttexture,
-    displacementScale:0.05,
-    // roughness:0,
-    roughnessMap:mbRoughnesstexture
-
- &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p>粗糙度为0效果：</p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202082244999.png"></p>
-<p>加载粗糙度纹理：</p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202082433121.png"></p>
-<h3 id="三、金属度与金属贴图"><a href="#三、金属度与金属贴图" class="headerlink" title="三、金属度与金属贴图"></a>三、金属度与金属贴图</h3><blockquote>
-<h3 id="metalness-Float"><a href="#metalness-Float" class="headerlink" title=".metalness : Float"></a>.metalness : Float</h3><p>材质与金属的相似度。非金属材质，如木材或石材，使用0.0，金属使用1.0，通常没有中间值。 默认值为0.0。0.0到1.0之间的值可用于生锈金属的外观。如果还提供了metalnessMap，则两个值相乘。</p>
-<h3 id="metalnessMap-Texture"><a href="#metalnessMap-Texture" class="headerlink" title=".metalnessMap : Texture"></a>.metalnessMap : Texture</h3><p>该纹理的蓝色通道用于改变材质的金属度。</p>
-</blockquote>
-<pre><code class="javascript">//main.js+
-const textureLoader = new THREE.TextureLoader();
-const mbColortexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_diffuse.jpg&#39;) 
-const mbHeighttexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_height.jpg&#39;) 
-const mbRoughnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_roughness.jpg&#39;) 
-const mbMetalnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_metalness.jpg&#39;) 
-
-mbColortexture.wrapS = THREE.RepeatWrapping
-mbColortexture.wrapT = THREE.RepeatWrapping
-mbColortexture.center.set(0.5,0.5)
-// mbColortexture.rotation = Math.PI / 4
-const geometry = new THREE.PlaneGeometry( 1, 1,100,100 );
-const material = new THREE.MeshStandardMaterial( &#123; 
-    color: &#39;#ffffff&#39;,
-    map:mbColortexture,
-    displacementMap:mbHeighttexture,
-    displacementScale:0.05,
-    roughness:0.2,
-    roughnessMap:mbRoughnesstexture,
-    metalnessMap:mbMetalnesstexture,
-    metalness:0.3
-
- &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p>添加金属和金属贴图前：</p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202091721564.png"></p>
-<p>添加金属和金属贴图后： </p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202091744042.png"></p>
-<h3 id="四、法线和法线贴图"><a href="#四、法线和法线贴图" class="headerlink" title="四、法线和法线贴图"></a>四、法线和法线贴图</h3><blockquote>
-<h3 id="normalMap-Texture"><a href="#normalMap-Texture" class="headerlink" title=".normalMap : Texture"></a>.normalMap : Texture</h3><p>用于创建法线贴图的纹理。RGB值会影响每个像素片段的曲面法线，并更改颜色照亮的方式。法线贴图不会改变曲面的实际形状，只会改变光照。 In case the material has a normal map authored using the left handed convention, the y component of normalScale should be negated to compensate for the different handedness.</p>
-<h3 id="normalMapType-Integer"><a href="#normalMapType-Integer" class="headerlink" title=".normalMapType : Integer"></a>.normalMapType : Integer</h3><p>法线贴图的类型。</p>
-<p>选项为THREE.TangentSpaceNormalMap（默认）和THREE.ObjectSpaceNormalMap。</p>
-<h3 id="normalScale-Vector2"><a href="#normalScale-Vector2" class="headerlink" title=".normalScale : Vector2"></a>.normalScale : Vector2</h3><p>法线贴图对材质的影响程度。典型范围是0-1。默认值是Vector2设置为（1,1）</p>
-</blockquote>
-<pre><code class="javascript">//main.js+
-const textureLoader = new THREE.TextureLoader();
-const mbColortexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_diffuse.jpg&#39;) 
-const mbHeighttexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_height.jpg&#39;) 
-const mbRoughnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_roughness.jpg&#39;) 
-const mbMetalnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_metalness.jpg&#39;) 
-const mbNormaltexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_normal.jpg&#39;) 
-
-mbColortexture.wrapS = THREE.RepeatWrapping
-mbColortexture.wrapT = THREE.RepeatWrapping
-mbColortexture.center.set(0.5,0.5)
-// mbColortexture.rotation = Math.PI / 4
-const geometry = new THREE.PlaneGeometry( 1, 1,100,100 );
-const material = new THREE.MeshStandardMaterial( &#123; 
-    color: &#39;#ffffff&#39;,
-    map:mbColortexture,
-    displacementMap:mbHeighttexture,
-    displacementScale:0.05,
-    roughness:0.2,
-    roughnessMap:mbRoughnesstexture,
-    metalnessMap:mbMetalnesstexture,
-    metalness:0.3,
-    normalMap:mbNormaltexture
-
- &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p>添加法线贴图后：</p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202092454739.png"></p>
-<p>贴图到这里就已经很逼真了，当然，不同的材质所使用的贴图也有一定的区别。</p>
-<h3 id="五、纹理加载回调"><a href="#五、纹理加载回调" class="headerlink" title="五、纹理加载回调"></a>五、纹理加载回调</h3><h4 id="1-纹理回调"><a href="#1-纹理回调" class="headerlink" title="1.纹理回调"></a>1.纹理回调</h4><blockquote>
-<h3 id="load-url-String-onLoad-Function-onProgress-Function-onError-Function-Texture"><a href="#load-url-String-onLoad-Function-onProgress-Function-onError-Function-Texture" class="headerlink" title=".load ( url : String, onLoad : Function, onProgress : Function, onError : Function ) : Texture"></a>.load ( url : String, onLoad : Function, onProgress : Function, onError : Function ) : Texture</h3><p>url — 文件的URL或者路径，也可以为 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">Data URI</a>.<br>onLoad — 加载完成时将调用。回调参数为将要加载的texture.<br>onProgress — 将在加载过程中进行调用。参数为XMLHttpRequest实例，实例包含total和loaded字节。<br>onError — 在加载错误时被调用。</p>
-</blockquote>
-<pre><code class="javascript">//main.js+
-const textureLoader = new THREE.TextureLoader();
-const mbColortexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_diffuse.jpg&#39;) 
-const mbHeighttexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_height.jpg&#39;) 
-const mbRoughnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_roughness.jpg&#39;) 
-const mbMetalnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_metalness.jpg&#39;) 
-const event = &#123;&#125;;
-event.onLoad = function(e)&#123;
-    console.log(&#39;加载完成了&#39;)
-&#125;
-event.onProgress = function(e)&#123;
-    console.log(e)
-    console.log(&#39;正在加载&#39;)
-&#125;
-event.onError = function(e)&#123;
-    console.log(&#39;加载错误了&#39;)
-    console.log(e)
-&#125;
-const mbNormaltexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_normal.jpg&#39;,
-event.onLoad,//加载完成调用
-event.onProgress,//加载过程中调用
-event.onError//加载错误调用
-) 
-
-mbColortexture.wrapS = THREE.RepeatWrapping
-mbColortexture.wrapT = THREE.RepeatWrapping
-mbColortexture.center.set(0.5,0.5)
-// mbColortexture.rotation = Math.PI / 4
-const geometry = new THREE.PlaneGeometry( 1, 1,100,100 );
-const material = new THREE.MeshStandardMaterial( &#123; 
-    color: &#39;#ffffff&#39;,
-    map:mbColortexture,
-    displacementMap:mbHeighttexture,
-    displacementScale:0.05,
-    roughness:0.2,
-    roughnessMap:mbRoughnesstexture,
-    metalnessMap:mbMetalnesstexture,
-    metalness:0.3,
-    normalMap:mbNormaltexture
-
- &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p>加载中</p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202101019627.png" alt="onProgress"></p>
-<p>加载完成</p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202101056269.png" alt="onLoad"></p>
-<p>加载错误</p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202101123771.png" alt="onError"></p>
-<h4 id="2-纹理加载器"><a href="#2-纹理加载器" class="headerlink" title="2.纹理加载器"></a>2.纹理加载器</h4><blockquote>
-<p>其功能是处理并跟踪已加载和待处理的数据，管理我们加载的纹理</p>
-</blockquote>
-<pre><code class="javascript">//main.js+
-const event = &#123;&#125;;
-event.onLoad = function(e)&#123;
-    console.log(&#39;加载完成了&#39;)
-&#125;
-event.onProgress = function( url,itemsLoaded,itemsTotal)&#123;
-    console.log(&#39;url:&#39;+ url)//当前加载纹理路径
-    console.log(&#39;itemsLoaded:&#39; + itemsLoaded )//加载当前纹理位置
-    console.log(&#39;itemsTotal:&#39; + itemsTotal)//纹理总数
-    console.log(&#39;加载角度:&#39; + ((itemsLoaded / itemsTotal) * 100).toFixed(2) + &#39;%&#39;)//纹理加载进度
-&#125;
-event.onError = function(e)&#123;
-    console.log(&#39;加载错误了&#39;)
-    console.log(e)
-&#125;
-const manager = new THREE.LoadingManager(
-    event.onLoad,
-    event.onProgress,
-    event.onError
-    );
-
-const textureLoader = new THREE.TextureLoader(manager);//装载加载器
-const mbColortexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_diffuse.jpg&#39;) 
-const mbHeighttexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_height.jpg&#39;) 
-const mbRoughnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_roughness.jpg&#39;) 
-const mbMetalnesstexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_metalness.jpg&#39;) 
-const mbNormaltexture = textureLoader.load(&#39;./texture/welded_and_painted_metal_panels_26_64_normal.jpg&#39;) 
-mbColortexture.wrapS = THREE.RepeatWrapping
-mbColortexture.wrapT = THREE.RepeatWrapping
-mbColortexture.center.set(0.5,0.5)
-// mbColortexture.rotation = Math.PI / 4
-const geometry = new THREE.PlaneGeometry( 1, 1,100,100 );
-const material = new THREE.MeshStandardMaterial( &#123; 
-    color: &#39;#ffffff&#39;,
-    map:mbColortexture,
-    displacementMap:mbHeighttexture,
-    displacementScale:0.05,
-    roughness:0.2,
-    roughnessMap:mbRoughnesstexture,
-    metalnessMap:mbMetalnesstexture,
-    metalness:0.3,
-    normalMap:mbNormaltexture
-
- &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202102251981.png"></p>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202104213221.png"></p>
-<h3 id="六、环境纹理"><a href="#六、环境纹理" class="headerlink" title="六、环境纹理"></a>六、环境纹理</h3><blockquote>
-<p>创建一个由6张图片所组成的纹理对象。</p>
-<p>（前后，上下，左右）也可以是 <a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F">hdr</a>（一张图）</p>
-</blockquote>
-<pre><code class="javascript">const loader = new THREE.CubeTextureLoader();
-loader.setPath( &#39;textures/cube/pisa/&#39; );
-
-const textureCube = loader.load( [
-    &#39;px.png&#39;, &#39;nx.png&#39;,
-    &#39;py.png&#39;, &#39;ny.png&#39;,
-    &#39;pz.png&#39;, &#39;nz.png&#39;
-] );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0xffffff, envMap: textureCube &#125; );
-scene.background = textureCube;
-scene.environment = textureCube;//若该值不为null，则该纹理贴图将会被设为场景中所有物理材质的环境贴图。 然而，该属性不能够覆盖已存在的、已分配给 MeshStandardMaterial.envMap 的贴图
-</code></pre>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202133340321.png"></p>
-<h3 id="七、HDR"><a href="#七、HDR" class="headerlink" title="七、HDR"></a>七、HDR</h3><blockquote>
-<p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F">HDR</a></p>
-<p>那么我们也是要知道如何加载hdr</p>
-</blockquote>
-<p><strong>高动态范围成像</strong>（英語：<strong>H</strong>igh <strong>D</strong>ynamic <strong>R</strong>ange Imaging，简称<strong>HDRI</strong>或<strong>HDR</strong>），在计算机图形学与电影摄影术中，是用来实现比普通数位图像技术更大曝光动态范围（即更大的明暗差别）的一组技术。高动态范围成像的目的就是要正确地表示真实世界中从太阳光直射到最暗的阴影这样大的范围亮度。</p>
-<blockquote>
-<h3 id="mapping-number"><a href="#mapping-number" class="headerlink" title=".mapping : number"></a>.mapping : number</h3><p>图像将如何应用到物体（对象）上。默认值是THREE.UVMapping对象类型， 即UV坐标将被用于纹理映射。</p>
-<p>EquirectangularReflectionMapping 和 EquirectangularRefractionMapping 用于等距圆柱投影的环境贴图，也被叫做经纬线映射贴图。等距圆柱投影贴图表示沿着其水平中线360°的视角，以及沿着其垂直轴向180°的视角。贴图顶部和底部的边缘分别对应于它所映射的球体的北极和南极。</p>
-</blockquote>
-<pre><code class="javascript">//main.js+
-import &#123; RGBELoader &#125; from &#39;three/examples/jsm/loaders/RGBELoader&#39;
-const rgbeLoader = new RGBELoader();
-rgbeLoader.loadAsync(&#39;./texture/ruin1.hdr&#39;).then((texture)=&gt;&#123;
-    texture.mapping = THREE.EquirectangularReflectionMapping;
-    scene.background = texture;
-    scene.environment = texture;
-&#125;)
-const geometry = new THREE.SphereGeometry( 15, 100, 50 );
-const material = new THREE.MeshStandardMaterial( &#123; 
-    color: &#39;#ffffff&#39;,
-    metalness:0.5,
-    roughness:0.05
- &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-</code></pre>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202141946012.png"></p>
-<h3 id="八、灯光与阴影"><a href="#八、灯光与阴影" class="headerlink" title="八、灯光与阴影"></a>八、灯光与阴影</h3><blockquote>
-<p>阴影需要满足的条件</p>
-<p>1.材质应满足对灯光有反应（环境光由于是四面八方的光，所以不具备阴影的条件）</p>
-<p>2.渲染器开启阴影计算：renderer.shadowMap.enabled &#x3D; true</p>
-<p>3.光照投射阴影：light.castShadow &#x3D; true</p>
-<p>4.物体投射阴影：cube.castShadow &#x3D; true（投影主体）</p>
-<p>5.物体接收投射阴影：plane.receiveShadow &#x3D; true（接收主体）</p>
-</blockquote>
-<pre><code class="javascript">//main.js
-import * as THREE from &#39;three&#39;
-import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; 
-import dat from &#39;dat.gui&#39;
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-renderer.shadowMap.enabled = true;//渲染器开启阴影计算
-document.body.appendChild( renderer.domElement );
-
-const axesHelper = new THREE.AxesHelper( 30 );//轴的线段长度. 默认为 1.
-scene.add( axesHelper );//添加到场景
-
-
-const geometry = new THREE.SphereGeometry( 15, 100, 50 );
-const material = new THREE.MeshStandardMaterial();
-const cube = new THREE.Mesh( geometry, material );
-cube.castShadow = true;//物体投射阴影
-scene.add( cube );
-
-const geometryP = new THREE.PlaneGeometry( 100,100 );
-const materialP = new THREE.MeshStandardMaterial();
-const plane = new THREE.Mesh( geometryP, materialP );
-plane.rotation.x = -Math.PI / 2
-plane.position.set(0,-15,0)
-plane.receiveShadow = true//物体接收投射阴影
-scene.add( plane );
-
-const light = new THREE.PointLight( 0xffffff, 1, 100 );
-light.position.set( 10, 50, 10 );
-light.castShadow = true;//光照投射阴影
-scene.add( light ); 
-
-const gui = new dat.GUI();
-gui.add(light.position,&#39;x&#39;)
-.min(0)
-.max(30)
-.name(&#39;移动x坐标&#39;)
-.step(0.1)
-gui.add(light.position,&#39;y&#39;)
-.min(0)
-.max(30)
-.name(&#39;移动y坐标&#39;)
-.step(0.1)
-gui.add(light.position,&#39;z&#39;)
-.min(0)
-.max(30)
-.name(&#39;移动z坐标&#39;)
-.step(0.1)
-const controls = new OrbitControls( camera,renderer.domElement  );
-camera.position.set(0,20,100);
-controls.update();
-function animate() &#123;
-    requestAnimationFrame( animate );
-    controls.update();
-    renderer.render( scene, camera );
-&#125;
-animate();
-
-window.addEventListener(&#39;resize&#39;,()=&gt;&#123;
-    // console.log(&#39;屏幕变化了&#39;)
-    camera.aspect = window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth,window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-&#125;)
-</code></pre>
-<p><img src="/2022/12/02/threejs-d-5-0/image-20221202151934429.png"></p>
-<p>总结：</p>
-<p>我们还有一些灯光，例如点光源和聚光灯，它们的属性我们就不一一来讲了，相信我们到了这，文档已经可以比较熟悉的查阅了。加油！！！</p>
-<p>参考文档：</p>
-<p>[HDR讲解]: 	“<a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F&quot;">https://zh.m.wikipedia.org/zh/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F&quot;</a></p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/threejs/" rel="tag">threejs</a></li></ul>
 
     </footer>
   </div>

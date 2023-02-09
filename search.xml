@@ -1,6 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Apifox和Leancloud</title>
+    <url>/2022/12/25/Apifox%E5%92%8CLeancloud/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Apifox和Leancloud"><a href="#Apifox和Leancloud" class="headerlink" title="Apifox和Leancloud"></a>Apifox和Leancloud</h1><blockquote>
+<p>我们为什么选择Apifox和Leancloud的组合呢</p>
+<p>Apifox也是一款可以模拟接口的一款工具，当然也不只可以模拟接口</p>
+<p>Leancloud选择是当我们去开发一些小的应用的时候，我们降低开发成本的时候，我们就可以去选择Leancloud去当我们的平台进行数据存储，还是比较方便的。</p>
+</blockquote>
+<h3 id="一、Apifox下载"><a href="#一、Apifox下载" class="headerlink" title="一、Apifox下载"></a>一、Apifox下载</h3><p>访问<a href="https://www.apifox.cn/">官网</a>进行下载</p>
+<p>有付费和免费的，根据需求下载</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225090853860.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225091357277.png"></p>
+<p>我们可以去新建我们的项目和接口</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225092715766.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093542358.png"></p>
+<p>下面会讲如何设置和填写参数以便于和Leancloud去交互请求</p>
+<h3 id="二、Leancloud注册登陆"><a href="#二、Leancloud注册登陆" class="headerlink" title="二、Leancloud注册登陆"></a>二、Leancloud注册登陆</h3><p>我们访问<a href="https://www.leancloud.cn/">官网</a>注册登陆</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093702335.png"></p>
+<p>然后来到我们的控制台创建我们的应用</p>
+<p>我们可以对我们每个应用分开管理</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093850074.png"></p>
+<p>我们每个应用都有自己的信息</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094016973.png"></p>
+<p>大家测试的时候可以使用自己的应用信息配置</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094046589.png"></p>
+<h3 id="三、配置Apifox"><a href="#三、配置Apifox" class="headerlink" title="三、配置Apifox"></a>三、配置Apifox</h3><blockquote>
+<p>当我们应用和Apifox环境准备完毕，那么我们就可以根据文档来配置了</p>
+</blockquote>
+<p>文档-&gt;REST API-&gt;数据存储</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094258347.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094449937.png"></p>
+<h4 id="1-新建接口"><a href="#1-新建接口" class="headerlink" title="1.新建接口"></a>1.新建接口</h4><p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094537626.png"></p>
+<p>在配置我们的接口的前提是要选好我们接口运行的环境</p>
+<p>让我们先配置一下环境</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094638510.png"></p>
+<p>我们可以将我们的服务改成我们Leancloud平台的开放服务地址（后续我们可以改成我们的域名）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094725724.png"></p>
+<p>根据文档来配置</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095251514.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095213854.png"></p>
+<p>Header-&gt;批量编辑-&gt;冒号模式（然后将负责的配置修改成下面这种格式就可以了）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095423023.png"></p>
+<p>下一步我们来携带参数body</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095604642.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095717122.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095746960.png"></p>
+<p>修改状态码并添加响应示例</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095819827.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095940926.png"></p>
+<p>保存运行</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100023787.png"></p>
+<p>出error了，修复它（给body添加示例值就可以了）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100109578.png"></p>
+<h4 id="2-发起请求"><a href="#2-发起请求" class="headerlink" title="2.发起请求"></a>2.发起请求</h4><p>我们发送（响应成功）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101014178.png"></p>
+<h3 id="四、Leancloud"><a href="#四、Leancloud" class="headerlink" title="四、Leancloud"></a>四、Leancloud</h3><p>当我们查看Leancloud应用的时候，发现我们多了一张表和数据，表示我们的请求已经成功</p>
+<blockquote>
+<p>我们还可以根据文档来修改，查找，删除我们的数据表，代码中的配置也是一样的，这样我们就可以利用LeanCloud来搭建我们一个小应用的数据表了。</p>
+</blockquote>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101228952.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101502303.png"></p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
+      <categories>
+        <category>uniapp</category>
+        <category>Apifox和Leancloud</category>
+      </categories>
+      <tags>
+        <tag>leancloud</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Docker部署Drone</title>
     <url>/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Docker部署Drone"><a href="#Docker部署Drone" class="headerlink" title="Docker部署Drone"></a>Docker部署Drone</h1><h3 id="一、新建-GitHub-应用"><a href="#一、新建-GitHub-应用" class="headerlink" title="一、新建 GitHub 应用"></a>一、新建 GitHub 应用</h3><p>具体顺序Settings-&gt;Developer settings-&gt;OAuth Apps-&gt;New OAuth App</p>
@@ -97,76 +167,6 @@ DRONE_GITHUB_CLIENT_SECRET=
       </tags>
   </entry>
   <entry>
-    <title>Apifox和Leancloud</title>
-    <url>/2022/12/25/Apifox%E5%92%8CLeancloud/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Apifox和Leancloud"><a href="#Apifox和Leancloud" class="headerlink" title="Apifox和Leancloud"></a>Apifox和Leancloud</h1><blockquote>
-<p>我们为什么选择Apifox和Leancloud的组合呢</p>
-<p>Apifox也是一款可以模拟接口的一款工具，当然也不只可以模拟接口</p>
-<p>Leancloud选择是当我们去开发一些小的应用的时候，我们降低开发成本的时候，我们就可以去选择Leancloud去当我们的平台进行数据存储，还是比较方便的。</p>
-</blockquote>
-<h3 id="一、Apifox下载"><a href="#一、Apifox下载" class="headerlink" title="一、Apifox下载"></a>一、Apifox下载</h3><p>访问<a href="https://www.apifox.cn/">官网</a>进行下载</p>
-<p>有付费和免费的，根据需求下载</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225090853860.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225091357277.png"></p>
-<p>我们可以去新建我们的项目和接口</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225092715766.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093542358.png"></p>
-<p>下面会讲如何设置和填写参数以便于和Leancloud去交互请求</p>
-<h3 id="二、Leancloud注册登陆"><a href="#二、Leancloud注册登陆" class="headerlink" title="二、Leancloud注册登陆"></a>二、Leancloud注册登陆</h3><p>我们访问<a href="https://www.leancloud.cn/">官网</a>注册登陆</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093702335.png"></p>
-<p>然后来到我们的控制台创建我们的应用</p>
-<p>我们可以对我们每个应用分开管理</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093850074.png"></p>
-<p>我们每个应用都有自己的信息</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094016973.png"></p>
-<p>大家测试的时候可以使用自己的应用信息配置</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094046589.png"></p>
-<h3 id="三、配置Apifox"><a href="#三、配置Apifox" class="headerlink" title="三、配置Apifox"></a>三、配置Apifox</h3><blockquote>
-<p>当我们应用和Apifox环境准备完毕，那么我们就可以根据文档来配置了</p>
-</blockquote>
-<p>文档-&gt;REST API-&gt;数据存储</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094258347.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094449937.png"></p>
-<h4 id="1-新建接口"><a href="#1-新建接口" class="headerlink" title="1.新建接口"></a>1.新建接口</h4><p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094537626.png"></p>
-<p>在配置我们的接口的前提是要选好我们接口运行的环境</p>
-<p>让我们先配置一下环境</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094638510.png"></p>
-<p>我们可以将我们的服务改成我们Leancloud平台的开放服务地址（后续我们可以改成我们的域名）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094725724.png"></p>
-<p>根据文档来配置</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095251514.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095213854.png"></p>
-<p>Header-&gt;批量编辑-&gt;冒号模式（然后将负责的配置修改成下面这种格式就可以了）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095423023.png"></p>
-<p>下一步我们来携带参数body</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095604642.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095717122.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095746960.png"></p>
-<p>修改状态码并添加响应示例</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095819827.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095940926.png"></p>
-<p>保存运行</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100023787.png"></p>
-<p>出error了，修复它（给body添加示例值就可以了）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100109578.png"></p>
-<h4 id="2-发起请求"><a href="#2-发起请求" class="headerlink" title="2.发起请求"></a>2.发起请求</h4><p>我们发送（响应成功）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101014178.png"></p>
-<h3 id="四、Leancloud"><a href="#四、Leancloud" class="headerlink" title="四、Leancloud"></a>四、Leancloud</h3><p>当我们查看Leancloud应用的时候，发现我们多了一张表和数据，表示我们的请求已经成功</p>
-<blockquote>
-<p>我们还可以根据文档来修改，查找，删除我们的数据表，代码中的配置也是一样的，这样我们就可以利用LeanCloud来搭建我们一个小应用的数据表了。</p>
-</blockquote>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101228952.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101502303.png"></p>
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
-      <categories>
-        <category>uniapp</category>
-        <category>Apifox和Leancloud</category>
-      </categories>
-      <tags>
-        <tag>leancloud</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Dokcer部署Drone2</title>
     <url>/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Dokcer部署Drone2"><a href="#Dokcer部署Drone2" class="headerlink" title="Dokcer部署Drone2"></a>Dokcer部署Drone2</h1><p>这一篇延续上一篇的问题，这一篇解决仓库初始化失败（500）的问题</p>
@@ -256,66 +256,6 @@ DRONE_GITHUB_CLIENT_SECRET=
       <categories>
         <category>CI/CD</category>
         <category>Dokcer部署Drone2</category>
-      </categories>
-      <tags>
-        <tag>CI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Drone-UI挂起</title>
-    <url>/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Drone-UI挂起"><a href="#Drone-UI挂起" class="headerlink" title="Drone-UI挂起"></a>Drone-UI挂起</h1><h3 id="一、问题描述"><a href="#一、问题描述" class="headerlink" title="一、问题描述"></a>一、问题描述</h3><p>当我们将.drone.yml配置文件放在项目根目录，执行</p>
-<pre><code class="ini">git init //初始化仓库
-git remote add origin 仓库地址 //链接远程仓库
-git add . 
-git commit -m &quot;xxxx&quot;
-git push 仓库地址 //推送远程仓库
-</code></pre>
-<p>当我们将.drone.yml推送到仓库的时候，那么webhooks就会被触发，我们在drone ci页面就可以看见构建流程</p>
-<p>但如果我们的.drone.yml配置失败，那么就会出现一直卡在pending上，或者构建失败</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221115090812831.png"></p>
-<h3 id="二、修改配置文件"><a href="#二、修改配置文件" class="headerlink" title="二、修改配置文件"></a>二、修改配置文件</h3><p>1、.dron.yml文件配置和执行程序对应</p>
-<p>如果没有对应配置，那么就会pending</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105118132.png"></p>
-<p>举个荔枝：</p>
-<pre><code class="ini">#.dron.yml
-kind: pipeline
-type: docker
-name: deployment
-
-platform:
-  os: linux
-  arch: arm64
-
-steps:
-  - name: deployment
-    image: node
-    commands:
-      - pwd
-      - ls
-      - node app.js
-
-branches: main
-</code></pre>
-<pre><code class="javascript">//app.js
-let res = function()&#123;
-    console.log(&quot;hello word&quot;)
-&#125;
-res()
-</code></pre>
-<h3 id="三、推送到远程仓库"><a href="#三、推送到远程仓库" class="headerlink" title="三、推送到远程仓库"></a>三、推送到远程仓库</h3><pre><code class="ini">git add . 
-git commit -m &quot;xxxx&quot;
-git push 仓库地址 //推送远程仓库
-</code></pre>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105715577.png"></p>
-<h3 id="四、查看构建结果"><a href="#四、查看构建结果" class="headerlink" title="四、查看构建结果"></a>四、查看构建结果</h3><p>构建成功</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105812556.png"></p>
-<p>我们CI持续集成构建就成功了，我们可以去继续丰富我们配置文件，直到达到我们想要的结果</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Drone入门]: 	“<a href="https://0-8-0.docs.drone.io/zh/getting-started/">https://0-8-0.docs.drone.io/zh/getting-started/</a> “</p>
-]]></content>
-      <categories>
-        <category>CI/CD</category>
-        <category>Drone-UI挂起</category>
       </categories>
       <tags>
         <tag>CI</tag>
@@ -1111,6 +1051,66 @@ export default defineConfig(
       </tags>
   </entry>
   <entry>
+    <title>Drone-UI挂起</title>
+    <url>/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Drone-UI挂起"><a href="#Drone-UI挂起" class="headerlink" title="Drone-UI挂起"></a>Drone-UI挂起</h1><h3 id="一、问题描述"><a href="#一、问题描述" class="headerlink" title="一、问题描述"></a>一、问题描述</h3><p>当我们将.drone.yml配置文件放在项目根目录，执行</p>
+<pre><code class="ini">git init //初始化仓库
+git remote add origin 仓库地址 //链接远程仓库
+git add . 
+git commit -m &quot;xxxx&quot;
+git push 仓库地址 //推送远程仓库
+</code></pre>
+<p>当我们将.drone.yml推送到仓库的时候，那么webhooks就会被触发，我们在drone ci页面就可以看见构建流程</p>
+<p>但如果我们的.drone.yml配置失败，那么就会出现一直卡在pending上，或者构建失败</p>
+<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221115090812831.png"></p>
+<h3 id="二、修改配置文件"><a href="#二、修改配置文件" class="headerlink" title="二、修改配置文件"></a>二、修改配置文件</h3><p>1、.dron.yml文件配置和执行程序对应</p>
+<p>如果没有对应配置，那么就会pending</p>
+<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105118132.png"></p>
+<p>举个荔枝：</p>
+<pre><code class="ini">#.dron.yml
+kind: pipeline
+type: docker
+name: deployment
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+  - name: deployment
+    image: node
+    commands:
+      - pwd
+      - ls
+      - node app.js
+
+branches: main
+</code></pre>
+<pre><code class="javascript">//app.js
+let res = function()&#123;
+    console.log(&quot;hello word&quot;)
+&#125;
+res()
+</code></pre>
+<h3 id="三、推送到远程仓库"><a href="#三、推送到远程仓库" class="headerlink" title="三、推送到远程仓库"></a>三、推送到远程仓库</h3><pre><code class="ini">git add . 
+git commit -m &quot;xxxx&quot;
+git push 仓库地址 //推送远程仓库
+</code></pre>
+<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105715577.png"></p>
+<h3 id="四、查看构建结果"><a href="#四、查看构建结果" class="headerlink" title="四、查看构建结果"></a>四、查看构建结果</h3><p>构建成功</p>
+<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105812556.png"></p>
+<p>我们CI持续集成构建就成功了，我们可以去继续丰富我们配置文件，直到达到我们想要的结果</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Drone入门]: 	“<a href="https://0-8-0.docs.drone.io/zh/getting-started/">https://0-8-0.docs.drone.io/zh/getting-started/</a> “</p>
+]]></content>
+      <categories>
+        <category>CI/CD</category>
+        <category>Drone-UI挂起</category>
+      </categories>
+      <tags>
+        <tag>CI</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Vue-eventBus</title>
     <url>/2022/12/23/Vue-eventBus/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vue-eventBus"><a href="#Vue-eventBus" class="headerlink" title="Vue-eventBus"></a>Vue-eventBus</h1><p>父子组件通信与兄弟组件通信</p>
@@ -1900,46 +1900,6 @@ const sendData = () =&gt; &#123;
       </tags>
   </entry>
   <entry>
-    <title>blender基本操作</title>
-    <url>/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Blender基本操作"><a href="#Blender基本操作" class="headerlink" title="Blender基本操作"></a>Blender基本操作</h1><blockquote>
-<p>虽然我们是程序员一枚，但是，既然学了3D那么我们就要拓展我们的技能</p>
-<p>那么这篇文章就来讲讲这款免费的3维软件<a href="https://www.blender.org/">Blender</a>（英文版）</p>
-<p>你要问我C4d和Blender哪个好（Blender是免费的，不要钱）要是不差钱也可以玩玩oc渲染器（比较香）</p>
-<p>具体操作还得看视频，我今天就总结一些快捷键</p>
-</blockquote>
-<h3 id="一、安装软件"><a href="#一、安装软件" class="headerlink" title="一、安装软件"></a>一、安装软件</h3><p>下载—安装</p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205093244288.png" alt="image-20221205093244288"></p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094355133.png"></p>
-<h3 id="二、更改配置"><a href="#二、更改配置" class="headerlink" title="二、更改配置"></a>二、更改配置</h3><p>更改页面语言，如果需要更改为简体中文的话（如果找不到配置了，改为简体中文后就方便了）</p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094539463.png"></p>
-<h3 id="三、界面快捷键"><a href="#三、界面快捷键" class="headerlink" title="三、界面快捷键"></a>三、界面快捷键</h3><p>这些快捷键有点多，加油（当然，你也可以根据你的习惯去修改你的快捷键）</p>
-<p>具体步骤如图所示：</p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094948395.png"></p>
-<blockquote>
-<p>我建议，在你选择直接使用快捷键的时候，尽量先去了解界面，快捷键是提高工作效率的首选，但初学者还是要先熟悉软件的界面操作，再逐步的去熟悉我们大量的快捷键来提高我们的工作效率。</p>
-<p>在一些情况下，快捷键却会让你行云流水的操作变得生硬</p>
-</blockquote>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094730873.png"></p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205101434727.png"></p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205104621343.png"></p>
-<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205142035840.png"></p>
-<blockquote>
-<p>其他快捷键我们都可以去视频练习哦</p>
-<p>最后，一款双语切换插件给你们</p>
-</blockquote>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[blender基础操作]: 	“<a href="https://www.youtube.com/watch?v=prQj0xVwMeo&amp;list=PL3bztmH9zKvv4sjPb6PJyLgULvQYJ8e0f&amp;index=4&quot;">https://www.youtube.com/watch?v=prQj0xVwMeo&amp;list=PL3bztmH9zKvv4sjPb6PJyLgULvQYJ8e0f&amp;index=4&quot;</a><br>[双语切换]: 	“<a href="https://github.com/Mister-Kin/ToggleLanguage/releases/tag/v1.1&quot;">https://github.com/Mister-Kin/ToggleLanguage/releases/tag/v1.1&quot;</a><br>[双语切换]: 	“<a href="https://mister-kin.github.io/manuals/toggle-language/">https://mister-kin.github.io/manuals/toggle-language/</a> “</p>
-]]></content>
-      <categories>
-        <category>Web3D</category>
-        <category>blender</category>
-        <category>blender基本操作</category>
-      </categories>
-      <tags>
-        <tag>blender</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>c4d及其oc的安装和初始化设置</title>
     <url>/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="C4d-amp-amp-OC"><a href="#C4d-amp-amp-OC" class="headerlink" title="C4d &amp;&amp; OC"></a>C4d &amp;&amp; OC</h1><p>我们这篇文章是基于Mac Book Pro M1 Max芯片条件下运行的</p>
@@ -2015,6 +1975,46 @@ const sendData = () =&gt; &#123;
       <tags>
         <tag>c4d</tag>
         <tag>oc</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>blender基本操作</title>
+    <url>/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Blender基本操作"><a href="#Blender基本操作" class="headerlink" title="Blender基本操作"></a>Blender基本操作</h1><blockquote>
+<p>虽然我们是程序员一枚，但是，既然学了3D那么我们就要拓展我们的技能</p>
+<p>那么这篇文章就来讲讲这款免费的3维软件<a href="https://www.blender.org/">Blender</a>（英文版）</p>
+<p>你要问我C4d和Blender哪个好（Blender是免费的，不要钱）要是不差钱也可以玩玩oc渲染器（比较香）</p>
+<p>具体操作还得看视频，我今天就总结一些快捷键</p>
+</blockquote>
+<h3 id="一、安装软件"><a href="#一、安装软件" class="headerlink" title="一、安装软件"></a>一、安装软件</h3><p>下载—安装</p>
+<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205093244288.png" alt="image-20221205093244288"></p>
+<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094355133.png"></p>
+<h3 id="二、更改配置"><a href="#二、更改配置" class="headerlink" title="二、更改配置"></a>二、更改配置</h3><p>更改页面语言，如果需要更改为简体中文的话（如果找不到配置了，改为简体中文后就方便了）</p>
+<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094539463.png"></p>
+<h3 id="三、界面快捷键"><a href="#三、界面快捷键" class="headerlink" title="三、界面快捷键"></a>三、界面快捷键</h3><p>这些快捷键有点多，加油（当然，你也可以根据你的习惯去修改你的快捷键）</p>
+<p>具体步骤如图所示：</p>
+<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094948395.png"></p>
+<blockquote>
+<p>我建议，在你选择直接使用快捷键的时候，尽量先去了解界面，快捷键是提高工作效率的首选，但初学者还是要先熟悉软件的界面操作，再逐步的去熟悉我们大量的快捷键来提高我们的工作效率。</p>
+<p>在一些情况下，快捷键却会让你行云流水的操作变得生硬</p>
+</blockquote>
+<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205094730873.png"></p>
+<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205101434727.png"></p>
+<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205104621343.png"></p>
+<p><img src="/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/image-20221205142035840.png"></p>
+<blockquote>
+<p>其他快捷键我们都可以去视频练习哦</p>
+<p>最后，一款双语切换插件给你们</p>
+</blockquote>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[blender基础操作]: 	“<a href="https://www.youtube.com/watch?v=prQj0xVwMeo&amp;list=PL3bztmH9zKvv4sjPb6PJyLgULvQYJ8e0f&amp;index=4&quot;">https://www.youtube.com/watch?v=prQj0xVwMeo&amp;list=PL3bztmH9zKvv4sjPb6PJyLgULvQYJ8e0f&amp;index=4&quot;</a><br>[双语切换]: 	“<a href="https://github.com/Mister-Kin/ToggleLanguage/releases/tag/v1.1&quot;">https://github.com/Mister-Kin/ToggleLanguage/releases/tag/v1.1&quot;</a><br>[双语切换]: 	“<a href="https://mister-kin.github.io/manuals/toggle-language/">https://mister-kin.github.io/manuals/toggle-language/</a> “</p>
+]]></content>
+      <categories>
+        <category>Web3D</category>
+        <category>blender</category>
+        <category>blender基本操作</category>
+      </categories>
+      <tags>
+        <tag>blender</tag>
       </tags>
   </entry>
   <entry>
@@ -2295,6 +2295,90 @@ npm home jquery  # 会打开默认浏览器跳转到github中jquery的主页
       </categories>
       <tags>
         <tag>npm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>playcanvas初识</title>
+    <url>/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="playcanvas（基于WebGL的游戏引擎）"><a href="#playcanvas（基于WebGL的游戏引擎）" class="headerlink" title="playcanvas（基于WebGL的游戏引擎）"></a>playcanvas（基于WebGL的游戏引擎）</h1><p>PlayCanvas 是一款使用 HTML5 和 WebGL 技术运行游戏以及其他 3D 内容的开源游戏引擎，PlayCanvas 以其独特的性能实现了在任何手机移动端和桌面浏览器端均可以流畅运行。</p>
+<p>PlayCanvas 引擎是一款可以基于浏览器的用于制作游戏以及 3D 可视化的开源引擎。除此之外，还开发了<a href="https://playcanvas.com/">PlayCanvas 开发平台</a>， 为用户提供了可视化编辑器，资源管理，代码编辑，代码托管以及发布等服务。</p>
+<blockquote>
+<p>目前中文的教程很少，所以英语好的同学可以去看一下国外的那些教程，但是还是有<a href="https://developer.playcanvas.com/zh/">中文文档</a>的。</p>
+</blockquote>
+<p>可视化平台操作上倒是没什么难度，就是和正常的建模操作大同小异，一个可视化的一个操作平台，可以进一步的提高我们工作的效率吧。</p>
+<h3 id="一、注册账户"><a href="#一、注册账户" class="headerlink" title="一、注册账户"></a>一、注册账户</h3><blockquote>
+<p>注册账户的方式很简单，根据提示去注册就可以了</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203152809943.png"></p>
+<h3 id="二、新建项目"><a href="#二、新建项目" class="headerlink" title="二、新建项目"></a>二、新建项目</h3><blockquote>
+<p>1.我们点击NEW，即可创建新项目</p>
+<p>2.点击我们的项目就可以进入项目界面</p>
+<p>3.点击EDITOR就可以进入可视化操作平台，去操作我们的项目</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203153658606.png"></p>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203153755107.png"></p>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203152450815.png"></p>
+<h3 id="三、导出项目"><a href="#三、导出项目" class="headerlink" title="三、导出项目"></a>三、导出项目</h3><blockquote>
+<p>1.导出项目前，我们得先pulish</p>
+<p>2.点击下载 .zip 包</p>
+<p>3.将包用vsCode打开，运行index.html</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203155914469.png"></p>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160109159.png"></p>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160208211.png"></p>
+<h3 id="四、其他界面菜单"><a href="#四、其他界面菜单" class="headerlink" title="四、其他界面菜单"></a>四、其他界面菜单</h3><p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160737778.png"></p>
+<h4 id="1-工具栏和菜单栏"><a href="#1-工具栏和菜单栏" class="headerlink" title="1.工具栏和菜单栏"></a>1.工具栏和菜单栏</h4><blockquote>
+<p>点击 PLAYCANVAS 图标会显示所有的可用功能，可以使用这些功能编辑场景。如果找不到某个按钮或者快捷键，肯定是能在菜单里找到对应功能的。</p>
+<p>工具栏提供快捷访问的常用功能，其中包含最重要的运行按钮。运行按钮会在一个独立的浏览器窗口中启动游戏并且加载当前的场景，可以立即开始游戏测试。可以从属性编辑栏中看到运行中游戏的实时参数变化。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161229021.png"></p>
+<h4 id="2-层级树"><a href="#2-层级树" class="headerlink" title="2.层级树"></a>2.层级树</h4><blockquote>
+<p>场景是由层级结构的实体组成，场景层级树显示了当前整个场景的树形结构。一个场景永远包含一个根节点实体，位于层级树的最顶端。所有其他的实体都是由开发者逐步加入的。</p>
+<p>层级树面板包含了场景中的全部实体，可以在其中快速定位实体，而不必在场景中搜寻。点击层级树上的实体将会选中它。</p>
+<h2 id="创建和删除实体"><a href="#创建和删除实体" class="headerlink" title="创建和删除实体"></a>创建和删除实体</h2><p>当在层级树中选中一个实体时，用户可以创建一个新的实体或者选出这个所选中的选项。或者使用位于层级树面板左上角的各种按钮，又或者通过点击操作打开内容目录来进行操作。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161304494.png"></p>
+<h4 id="3-检测器"><a href="#3-检测器" class="headerlink" title="3.检测器"></a>3.检测器</h4><blockquote>
+<p>检查器面板会显示当前选定对象的属性值。</p>
+<p>根据选择的不同，会现实不同的检查器面板。目前有</p>
+<ul>
+<li><strong>实体&#x2F;组件检查器</strong></li>
+<li><strong>纹理检查器</strong></li>
+<li><strong>材质检查器</strong></li>
+<li><strong>Cubemap检查器</strong></li>
+</ul>
+<p>修改这些数值用以特制化实体的行为。譬如可以设置 Model 组件所渲染的模型，或灯光的颜色等灯。</p>
+<p>有些参数是简单的文字或数值，通过标准的文字框和滑动条来进行修改。有些值需要特殊的编辑方式，譬如从资源面板中选取一个高亮的资源之类（选取纹理等）。有些值可以通过视口进行可视化编辑，譬如可以直接在视口中用Gizmo平移旋转缩放一个实体的变换属性.</p>
+<p>在应用和编辑器同时运行的情况下，对实体属性的修改将会传递到运行中的应用中。一个绝佳的迭代方式是在应用运行起来之后，并排打开编辑器和应用窗口，实时的对想要的调整的值进行修正。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161602442.png"></p>
+<h4 id="4-视口"><a href="#4-视口" class="headerlink" title="4.视口"></a>4.视口</h4><blockquote>
+<p>视口展示了当前场景的可视化状态。你可以通过移动摄影机在场景中自由漫游。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161643712.png"></p>
+<blockquote>
+<h2 id="摄影机"><a href="#摄影机" class="headerlink" title="摄影机"></a>摄影机</h2><p>初始情况下，编辑器会采用 <strong>透视</strong> 摄影机。这种摄影机如同电影摄影机一般漂浮在场景之中。可以使用摄影机选择菜单选择场景中的不同摄影机。 <strong>正交</strong> 摄影机包含几个确定的机位：顶视图，底视图，前视图，后视图，左视图，右视图。通过这些机位可以无透视的观察场景，特别方便用来调整场景中的实体位置之类。</p>
+<p>在摄影机菜单中选择摄影机的同时，场景中的摄影机实体会被显示为高亮状态。可以利用这个特性精确的设置摄影机位置。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161804927.png"></p>
+<h4 id="5-资源"><a href="#5-资源" class="headerlink" title="5.资源"></a>5.资源</h4><blockquote>
+<p>资源面板管理了所有的项目中的可用资源。从这个面板可以创建，上传，删除，查看和编辑任何资源</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161917993.png"></p>
+<h3 id="五、小结"><a href="#五、小结" class="headerlink" title="五、小结"></a>五、小结</h3><blockquote>
+<p>three.js还是比PlayCanvas活跃的，当然，如果感兴趣并且有精力的话，还是建议都了解了解</p>
+<p>毕竟知识是无穷无尽的</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203162850169.png"></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[playcanvas-github]: 	“<a href="https://github.com/playcanvas/engine/blob/main/README-zh.md">https://github.com/playcanvas/engine/blob/main/README-zh.md</a> “<br>[playcanvas中文]: 	“<a href="https://developer.playcanvas.com/zh/">https://developer.playcanvas.com/zh/</a> “</p>
+]]></content>
+      <categories>
+        <category>Web3D</category>
+        <category>playcanvas</category>
+        <category>playcanvas初识</category>
+      </categories>
+      <tags>
+        <tag>playcanvas</tag>
       </tags>
   </entry>
   <entry>
@@ -2651,90 +2735,6 @@ Test.prototype.update = function(dt) &#123;
         <category>Web3D</category>
         <category>playcanvas</category>
         <category>playcanvas初级</category>
-      </categories>
-      <tags>
-        <tag>playcanvas</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>playcanvas初识</title>
-    <url>/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="playcanvas（基于WebGL的游戏引擎）"><a href="#playcanvas（基于WebGL的游戏引擎）" class="headerlink" title="playcanvas（基于WebGL的游戏引擎）"></a>playcanvas（基于WebGL的游戏引擎）</h1><p>PlayCanvas 是一款使用 HTML5 和 WebGL 技术运行游戏以及其他 3D 内容的开源游戏引擎，PlayCanvas 以其独特的性能实现了在任何手机移动端和桌面浏览器端均可以流畅运行。</p>
-<p>PlayCanvas 引擎是一款可以基于浏览器的用于制作游戏以及 3D 可视化的开源引擎。除此之外，还开发了<a href="https://playcanvas.com/">PlayCanvas 开发平台</a>， 为用户提供了可视化编辑器，资源管理，代码编辑，代码托管以及发布等服务。</p>
-<blockquote>
-<p>目前中文的教程很少，所以英语好的同学可以去看一下国外的那些教程，但是还是有<a href="https://developer.playcanvas.com/zh/">中文文档</a>的。</p>
-</blockquote>
-<p>可视化平台操作上倒是没什么难度，就是和正常的建模操作大同小异，一个可视化的一个操作平台，可以进一步的提高我们工作的效率吧。</p>
-<h3 id="一、注册账户"><a href="#一、注册账户" class="headerlink" title="一、注册账户"></a>一、注册账户</h3><blockquote>
-<p>注册账户的方式很简单，根据提示去注册就可以了</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203152809943.png"></p>
-<h3 id="二、新建项目"><a href="#二、新建项目" class="headerlink" title="二、新建项目"></a>二、新建项目</h3><blockquote>
-<p>1.我们点击NEW，即可创建新项目</p>
-<p>2.点击我们的项目就可以进入项目界面</p>
-<p>3.点击EDITOR就可以进入可视化操作平台，去操作我们的项目</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203153658606.png"></p>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203153755107.png"></p>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203152450815.png"></p>
-<h3 id="三、导出项目"><a href="#三、导出项目" class="headerlink" title="三、导出项目"></a>三、导出项目</h3><blockquote>
-<p>1.导出项目前，我们得先pulish</p>
-<p>2.点击下载 .zip 包</p>
-<p>3.将包用vsCode打开，运行index.html</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203155914469.png"></p>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160109159.png"></p>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160208211.png"></p>
-<h3 id="四、其他界面菜单"><a href="#四、其他界面菜单" class="headerlink" title="四、其他界面菜单"></a>四、其他界面菜单</h3><p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160737778.png"></p>
-<h4 id="1-工具栏和菜单栏"><a href="#1-工具栏和菜单栏" class="headerlink" title="1.工具栏和菜单栏"></a>1.工具栏和菜单栏</h4><blockquote>
-<p>点击 PLAYCANVAS 图标会显示所有的可用功能，可以使用这些功能编辑场景。如果找不到某个按钮或者快捷键，肯定是能在菜单里找到对应功能的。</p>
-<p>工具栏提供快捷访问的常用功能，其中包含最重要的运行按钮。运行按钮会在一个独立的浏览器窗口中启动游戏并且加载当前的场景，可以立即开始游戏测试。可以从属性编辑栏中看到运行中游戏的实时参数变化。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161229021.png"></p>
-<h4 id="2-层级树"><a href="#2-层级树" class="headerlink" title="2.层级树"></a>2.层级树</h4><blockquote>
-<p>场景是由层级结构的实体组成，场景层级树显示了当前整个场景的树形结构。一个场景永远包含一个根节点实体，位于层级树的最顶端。所有其他的实体都是由开发者逐步加入的。</p>
-<p>层级树面板包含了场景中的全部实体，可以在其中快速定位实体，而不必在场景中搜寻。点击层级树上的实体将会选中它。</p>
-<h2 id="创建和删除实体"><a href="#创建和删除实体" class="headerlink" title="创建和删除实体"></a>创建和删除实体</h2><p>当在层级树中选中一个实体时，用户可以创建一个新的实体或者选出这个所选中的选项。或者使用位于层级树面板左上角的各种按钮，又或者通过点击操作打开内容目录来进行操作。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161304494.png"></p>
-<h4 id="3-检测器"><a href="#3-检测器" class="headerlink" title="3.检测器"></a>3.检测器</h4><blockquote>
-<p>检查器面板会显示当前选定对象的属性值。</p>
-<p>根据选择的不同，会现实不同的检查器面板。目前有</p>
-<ul>
-<li><strong>实体&#x2F;组件检查器</strong></li>
-<li><strong>纹理检查器</strong></li>
-<li><strong>材质检查器</strong></li>
-<li><strong>Cubemap检查器</strong></li>
-</ul>
-<p>修改这些数值用以特制化实体的行为。譬如可以设置 Model 组件所渲染的模型，或灯光的颜色等灯。</p>
-<p>有些参数是简单的文字或数值，通过标准的文字框和滑动条来进行修改。有些值需要特殊的编辑方式，譬如从资源面板中选取一个高亮的资源之类（选取纹理等）。有些值可以通过视口进行可视化编辑，譬如可以直接在视口中用Gizmo平移旋转缩放一个实体的变换属性.</p>
-<p>在应用和编辑器同时运行的情况下，对实体属性的修改将会传递到运行中的应用中。一个绝佳的迭代方式是在应用运行起来之后，并排打开编辑器和应用窗口，实时的对想要的调整的值进行修正。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161602442.png"></p>
-<h4 id="4-视口"><a href="#4-视口" class="headerlink" title="4.视口"></a>4.视口</h4><blockquote>
-<p>视口展示了当前场景的可视化状态。你可以通过移动摄影机在场景中自由漫游。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161643712.png"></p>
-<blockquote>
-<h2 id="摄影机"><a href="#摄影机" class="headerlink" title="摄影机"></a>摄影机</h2><p>初始情况下，编辑器会采用 <strong>透视</strong> 摄影机。这种摄影机如同电影摄影机一般漂浮在场景之中。可以使用摄影机选择菜单选择场景中的不同摄影机。 <strong>正交</strong> 摄影机包含几个确定的机位：顶视图，底视图，前视图，后视图，左视图，右视图。通过这些机位可以无透视的观察场景，特别方便用来调整场景中的实体位置之类。</p>
-<p>在摄影机菜单中选择摄影机的同时，场景中的摄影机实体会被显示为高亮状态。可以利用这个特性精确的设置摄影机位置。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161804927.png"></p>
-<h4 id="5-资源"><a href="#5-资源" class="headerlink" title="5.资源"></a>5.资源</h4><blockquote>
-<p>资源面板管理了所有的项目中的可用资源。从这个面板可以创建，上传，删除，查看和编辑任何资源</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161917993.png"></p>
-<h3 id="五、小结"><a href="#五、小结" class="headerlink" title="五、小结"></a>五、小结</h3><blockquote>
-<p>three.js还是比PlayCanvas活跃的，当然，如果感兴趣并且有精力的话，还是建议都了解了解</p>
-<p>毕竟知识是无穷无尽的</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203162850169.png"></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[playcanvas-github]: 	“<a href="https://github.com/playcanvas/engine/blob/main/README-zh.md">https://github.com/playcanvas/engine/blob/main/README-zh.md</a> “<br>[playcanvas中文]: 	“<a href="https://developer.playcanvas.com/zh/">https://developer.playcanvas.com/zh/</a> “</p>
-]]></content>
-      <categories>
-        <category>Web3D</category>
-        <category>playcanvas</category>
-        <category>playcanvas初识</category>
       </categories>
       <tags>
         <tag>playcanvas</tag>
@@ -3404,77 +3404,6 @@ export default (api: IApi) =&gt; &#123;
       </tags>
   </entry>
   <entry>
-    <title>uniapp安装及调试</title>
-    <url>/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="uniapp安装及调试"><a href="#uniapp安装及调试" class="headerlink" title="uniapp安装及调试"></a>uniapp安装及调试</h1><blockquote>
-<p>我们本篇文章主要讲解uniapp的项目创建</p>
-<p>真机调试、ios模拟器调试、微信小程序调试</p>
-</blockquote>
-<h3 id="一、下载HBuilder-X"><a href="#一、下载HBuilder-X" class="headerlink" title="一、下载HBuilder X"></a>一、下载HBuilder X</h3><p>[HBuilder X]: 	“<a href="https://www.dcloud.io/hbuilderx.html">https://www.dcloud.io/hbuilderx.html</a> “</p>
-<p>我们可以下载我们需要的版本</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095304650.png"></p>
-<h3 id="二、安装运行并创建项目"><a href="#二、安装运行并创建项目" class="headerlink" title="二、安装运行并创建项目"></a>二、安装运行并创建项目</h3><p>第一次打开HBuilder X，我们可以去定义一下我们的配置，macos是去偏好设置，windows的在工具-&gt;设置</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095514743.png"></p>
-<p>我们可以去新建项目弹出窗口配置我们项目信息，项目名称和vue版本，这里我现在的是vue3，vue3的绑定预设是vite。</p>
-<p>我们也可以去选择不一样的模板。</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095735225.png"></p>
-<h3 id="三、运行项目"><a href="#三、运行项目" class="headerlink" title="三、运行项目"></a>三、运行项目</h3><p>当我们打开项目的时候，准备运行的时候，我们可以选择将我们的项目运行到哪里，它会提示你安装相对应的插件，如果安装完插件，我们的软件没有识别到我们的插件，那我们可以选择重启我们的软件。</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100111748.png"></p>
-<p>这里先演示一下运行到内置浏览器（第一次运行我们可能要稍等一下）</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100428208.png"></p>
-<h3 id="四、调试"><a href="#四、调试" class="headerlink" title="四、调试"></a>四、调试</h3><h4 id="1-ios模拟器调试"><a href="#1-ios模拟器调试" class="headerlink" title="1.ios模拟器调试"></a>1.ios模拟器调试</h4><blockquote>
-<p>当然，在ios模拟器调试的前提是要是macos环境，并且下载了xcode（提前准备一下哦）因为我没有ios手机🫠</p>
-</blockquote>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100850001.png"></p>
-<p>我们选择运行到ios模拟器 App基座（loading…）</p>
-<p>选择我们的模拟器手机型号</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218101003209.png"></p>
-<p>现在我就可以看到程序运行到了我们的iPhone 14 Pro Max（香得嘞）</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218101115311.png"></p>
-<p>当我们修改我们的程序代码并保存，就可以看见我们的视图更新了</p>
-<h4 id="2-Android手机真机调试"><a href="#2-Android手机真机调试" class="headerlink" title="2.Android手机真机调试"></a>2.Android手机真机调试</h4><blockquote>
-<p>当然，没有Android手机的也可以借其他同学的（Android模拟器配置有点麻烦，就先不配置了，想配置的同学先自行打开搜索🔍）</p>
-</blockquote>
-<p>手机真机调试的前提是要打开你的手机的开发者模式，不同的手机开启的方式也是不一样的，我的手机是红米K20 pro</p>
-<p>具体打开流程为设置-&gt;我的设备-&gt;全部参数-&gt;点击MIUI版本3下（连击）系统提示进入开发者模式-&gt;返回到更多设置-&gt;开发者选项-&gt;打开usb调试</p>
-<p>当我们选择运行到Android App基座，就会识别你的手机（记得用数据线将手机连接到电脑），点击运行</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218102154748.png"></p>
-<p>第一次运行，手机会让你安装，点击安装就可以了</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/WechatIMG125.jpeg"></p>
-<h4 id="3-微信小程序开发者工具调试"><a href="#3-微信小程序开发者工具调试" class="headerlink" title="3.微信小程序开发者工具调试"></a>3.微信小程序开发者工具调试</h4><blockquote>
-<p>这个调试的方式的前提是要有一个开发者账号，没有的同学要先去注册一个</p>
-<p>[注册]: 	“<a href="https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;lang=zh_CN">https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;lang=zh_CN</a> “</p>
-<p>然后利用注册绑定的微信登陆我们的微信公众平台</p>
-<p>没有下载微信开发者工具的同学也要下载一个</p>
-</blockquote>
-<p>然后在我们的开发-&gt;开发管理-&gt;开发设置下面有我们的开发者ID（等会要用）</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218102931643.png"></p>
-<p>当我们点击发行-&gt;小程序-微信的时候，会让你配置你的开发者ID，然后项目就会自动打包</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103403063.png"></p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103530235.png"></p>
-<p>第一次编译的时候，我们可以根据编译完成的项目路径去手动导入我们的微信开发者工具去调试</p>
-<p>注意：不要在微信开发者工具去修改我们的代码，因为下一次发行编译会覆盖掉我们的修改</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103710649.png"></p>
-<p>当然，我们还有另一种导入方法，那就是自动导入</p>
-<p>首先我们要将微信开发者工具的安全设置的服务端口打开</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104049483.png"></p>
-<p>再到HBuilder X去配置微信开发者工具的路径（这里的路径可以查看自己的安装路径）</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104502864.png"></p>
-<p>到这我们的配置就完成了</p>
-<p>接下来我们再发行微信小程序</p>
-<p>我们就可以看见微信开发者工具自动打开并运行我们的项目了</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104719407.png"></p>
-<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>到目前为止，我们开发时候的调试就可以轻松掌握了</p>
-]]></content>
-      <categories>
-        <category>uniapp</category>
-        <category>uniapp安装及调试</category>
-      </categories>
-      <tags>
-        <tag>uniapp</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>uniapp生命周期</title>
     <url>/2022/12/20/uniapp%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="uniapp生命周期"><a href="#uniapp生命周期" class="headerlink" title="uniapp生命周期"></a>uniapp生命周期</h1><h3 id="一、应用生命周期"><a href="#一、应用生命周期" class="headerlink" title="一、应用生命周期"></a>一、应用生命周期</h3><p>uni-app 支持如下应用生命周期函数：</p>
@@ -3898,6 +3827,77 @@ export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt
       </tags>
   </entry>
   <entry>
+    <title>uniapp安装及调试</title>
+    <url>/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="uniapp安装及调试"><a href="#uniapp安装及调试" class="headerlink" title="uniapp安装及调试"></a>uniapp安装及调试</h1><blockquote>
+<p>我们本篇文章主要讲解uniapp的项目创建</p>
+<p>真机调试、ios模拟器调试、微信小程序调试</p>
+</blockquote>
+<h3 id="一、下载HBuilder-X"><a href="#一、下载HBuilder-X" class="headerlink" title="一、下载HBuilder X"></a>一、下载HBuilder X</h3><p>[HBuilder X]: 	“<a href="https://www.dcloud.io/hbuilderx.html">https://www.dcloud.io/hbuilderx.html</a> “</p>
+<p>我们可以下载我们需要的版本</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095304650.png"></p>
+<h3 id="二、安装运行并创建项目"><a href="#二、安装运行并创建项目" class="headerlink" title="二、安装运行并创建项目"></a>二、安装运行并创建项目</h3><p>第一次打开HBuilder X，我们可以去定义一下我们的配置，macos是去偏好设置，windows的在工具-&gt;设置</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095514743.png"></p>
+<p>我们可以去新建项目弹出窗口配置我们项目信息，项目名称和vue版本，这里我现在的是vue3，vue3的绑定预设是vite。</p>
+<p>我们也可以去选择不一样的模板。</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095735225.png"></p>
+<h3 id="三、运行项目"><a href="#三、运行项目" class="headerlink" title="三、运行项目"></a>三、运行项目</h3><p>当我们打开项目的时候，准备运行的时候，我们可以选择将我们的项目运行到哪里，它会提示你安装相对应的插件，如果安装完插件，我们的软件没有识别到我们的插件，那我们可以选择重启我们的软件。</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100111748.png"></p>
+<p>这里先演示一下运行到内置浏览器（第一次运行我们可能要稍等一下）</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100428208.png"></p>
+<h3 id="四、调试"><a href="#四、调试" class="headerlink" title="四、调试"></a>四、调试</h3><h4 id="1-ios模拟器调试"><a href="#1-ios模拟器调试" class="headerlink" title="1.ios模拟器调试"></a>1.ios模拟器调试</h4><blockquote>
+<p>当然，在ios模拟器调试的前提是要是macos环境，并且下载了xcode（提前准备一下哦）因为我没有ios手机🫠</p>
+</blockquote>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100850001.png"></p>
+<p>我们选择运行到ios模拟器 App基座（loading…）</p>
+<p>选择我们的模拟器手机型号</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218101003209.png"></p>
+<p>现在我就可以看到程序运行到了我们的iPhone 14 Pro Max（香得嘞）</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218101115311.png"></p>
+<p>当我们修改我们的程序代码并保存，就可以看见我们的视图更新了</p>
+<h4 id="2-Android手机真机调试"><a href="#2-Android手机真机调试" class="headerlink" title="2.Android手机真机调试"></a>2.Android手机真机调试</h4><blockquote>
+<p>当然，没有Android手机的也可以借其他同学的（Android模拟器配置有点麻烦，就先不配置了，想配置的同学先自行打开搜索🔍）</p>
+</blockquote>
+<p>手机真机调试的前提是要打开你的手机的开发者模式，不同的手机开启的方式也是不一样的，我的手机是红米K20 pro</p>
+<p>具体打开流程为设置-&gt;我的设备-&gt;全部参数-&gt;点击MIUI版本3下（连击）系统提示进入开发者模式-&gt;返回到更多设置-&gt;开发者选项-&gt;打开usb调试</p>
+<p>当我们选择运行到Android App基座，就会识别你的手机（记得用数据线将手机连接到电脑），点击运行</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218102154748.png"></p>
+<p>第一次运行，手机会让你安装，点击安装就可以了</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/WechatIMG125.jpeg"></p>
+<h4 id="3-微信小程序开发者工具调试"><a href="#3-微信小程序开发者工具调试" class="headerlink" title="3.微信小程序开发者工具调试"></a>3.微信小程序开发者工具调试</h4><blockquote>
+<p>这个调试的方式的前提是要有一个开发者账号，没有的同学要先去注册一个</p>
+<p>[注册]: 	“<a href="https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;lang=zh_CN">https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;lang=zh_CN</a> “</p>
+<p>然后利用注册绑定的微信登陆我们的微信公众平台</p>
+<p>没有下载微信开发者工具的同学也要下载一个</p>
+</blockquote>
+<p>然后在我们的开发-&gt;开发管理-&gt;开发设置下面有我们的开发者ID（等会要用）</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218102931643.png"></p>
+<p>当我们点击发行-&gt;小程序-微信的时候，会让你配置你的开发者ID，然后项目就会自动打包</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103403063.png"></p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103530235.png"></p>
+<p>第一次编译的时候，我们可以根据编译完成的项目路径去手动导入我们的微信开发者工具去调试</p>
+<p>注意：不要在微信开发者工具去修改我们的代码，因为下一次发行编译会覆盖掉我们的修改</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103710649.png"></p>
+<p>当然，我们还有另一种导入方法，那就是自动导入</p>
+<p>首先我们要将微信开发者工具的安全设置的服务端口打开</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104049483.png"></p>
+<p>再到HBuilder X去配置微信开发者工具的路径（这里的路径可以查看自己的安装路径）</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104502864.png"></p>
+<p>到这我们的配置就完成了</p>
+<p>接下来我们再发行微信小程序</p>
+<p>我们就可以看见微信开发者工具自动打开并运行我们的项目了</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104719407.png"></p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>到目前为止，我们开发时候的调试就可以轻松掌握了</p>
+]]></content>
+      <categories>
+        <category>uniapp</category>
+        <category>uniapp安装及调试</category>
+      </categories>
+      <tags>
+        <tag>uniapp</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>webgl</title>
     <url>/2022/11/18/webgl/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="webgl"><a href="#webgl" class="headerlink" title="webgl"></a>webgl</h1><h2 id="第一章-webgl绘图流程"><a href="#第一章-webgl绘图流程" class="headerlink" title="第一章  webgl绘图流程"></a>第一章  webgl绘图流程</h2><hr>
@@ -4303,30 +4303,57 @@ gl.drawArrays(gl.TRIANGLES,0,3);
       </tags>
   </entry>
   <entry>
-    <title>什么是CI/CD</title>
-    <url>/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署"><a href="#CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署" class="headerlink" title="CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署"></a>CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署</h1><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>CI&#x2F;CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。CI&#x2F;CD 的核心概念是持续集成、持续交付和持续部署。作为一个面向开发和运营团队的解决方案，CI&#x2F;CD 主要针对在集成新代码时所引发的问题（亦称：”集成地狱”）。</p>
-<p>具体而言，CI&#x2F;CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为”CI&#x2F;CD 管道”，由开发和运维团队以敏捷方式协同支持。</p>
-<h3 id="CI-是什么？CI-和-CD-有什么区别？"><a href="#CI-是什么？CI-和-CD-有什么区别？" class="headerlink" title="CI 是什么？CI 和 CD 有什么区别？"></a>CI 是什么？CI 和 CD 有什么区别？</h3><p>缩略词 CI &#x2F; CD 具有几个不同的含义。CI&#x2F;CD 中的”CI”始终指持续集成，它属于开发人员的自动化流程。成功的 CI 意味着应用代码的新更改会定期构建、测试并合并到共享存储库中。该解决方案可以解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</p>
-<p>CI&#x2F;CD 中的”CD”指的是持续交付和&#x2F;或持续部署，这些相关概念有时会交叉使用。两者都事关管道后续阶段的自动化，但它们有时也会单独使用，用于说明自动化程度。</p>
-<p>持续<em>交付</em>通常是指开发人员对应用的更改会自动进行错误测试并上传到存储库（如 GitHub或容器注册表），然后由运维团队将其部署到实时生产环境中。这旨在解决开发和运维团队之间可见性及沟通较差的问题。因此，持续交付的目的就是确保尽可能减少部署新代码时所需的工作量。</p>
-<p>持续<em>部署</em>（另一种”CD”）指的是自动将开发人员的更改从存储库发布到生产环境，以供客户使用。它主要为了解决因手动流程降低应用交付速度，从而使运维团队超负荷的问题。持续部署以持续交付的优势为根基，实现了管道后续阶段的自动化。</p>
-<p><img src="/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/ci-cd-flow-desktop_edited_0.png" alt="CI/CD flow"></p>
-<p>CI&#x2F;CD 既可能仅指持续集成和持续交付构成的关联环节，也可以指持续集成、持续交付和持续部署这三项构成的关联环节。更为复杂的是，有时”持续交付”也包含了持续部署流程。</p>
-<p>归根结底，我们没必要纠结于这些语义，您只需记得 CI&#x2F;CD 其实就是一个流程（通常形象地表述为管道），用于实现应用开发中的高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于 CI&#x2F;CD 管道的自动化程度。许多企业最开始先添加 CI，然后逐步实现交付和部署的自动化（例如作为云原生应用的一部分）。</p>
-<h3 id="CI-持续集成（Continuous-Integration）"><a href="#CI-持续集成（Continuous-Integration）" class="headerlink" title="CI 持续集成（Continuous Integration）"></a>CI 持续集成（Continuous Integration）</h3><p>现代应用开发的目标是让多位开发人员同时处理同一应用的不同功能。但是，如果企业安排在一天内将所有分支源代码合并在一起（称为”合并日”），最终可能造成工作繁琐、耗时，而且需要手动完成。这是因为当一位独立工作的开发人员对应用进行更改时，有可能会与其他开发人员同时进行的更改发生冲突。如果每个开发人员都自定义自己的本地集成开发环境（IDE），而不是让团队就一个基于云的 IDE 达成一致，那么就会让问题更加雪上加霜。</p>
-<p>持续集成（CI）可以帮助开发人员更加频繁地（有时甚至每天）将代码更改合并到共享分支或”主干”中。一旦开发人员对应用所做的更改被合并，系统就会通过自动构建应用并运行不同级别的自动化测试（通常是单元测试和集成测试）来验证这些更改，确保这些更改没有对应用造成破坏。这意味着测试内容涵盖了从类和函数到构成整个应用的不同模块。如果自动化测试发现新代码和现有代码之间存在冲突，CI 可以更加轻松地快速修复这些错误。</p>
-<h3 id="CD-持续交付（Continuous-Delivery）"><a href="#CD-持续交付（Continuous-Delivery）" class="headerlink" title="CD 持续交付（Continuous Delivery）"></a>CD 持续交付（Continuous Delivery）</h3><p>完成 CI 中构建及单元测试和集成测试的自动化流程后，持续交付可自动将已验证的代码发布到存储库。为了实现高效的持续交付流程，务必要确保 CI 已内置于开发管道。持续交付的目标是拥有一个可随时部署到生产环境的代码库。</p>
-<p>在持续交付中，每个阶段（从代码更改的合并，到生产就绪型构建版本的交付）都涉及测试自动化和代码发布自动化。在流程结束时，运维团队可以快速、轻松地将应用部署到生产环境中。</p>
-<h3 id="CD-持续部署（Continuous-Deployment）"><a href="#CD-持续部署（Continuous-Deployment）" class="headerlink" title="CD 持续部署（Continuous Deployment）"></a>CD 持续部署（Continuous Deployment）</h3><p>对于一个成熟的 CI&#x2F;CD 管道来说，最后的阶段是持续部署。作为持续交付——自动将生产就绪型构建版本发布到代码存储库——的延伸，持续部署可以自动将应用发布到生产环境。由于在生产之前的管道阶段没有手动门控，因此持续部署在很大程度上都得依赖精心设计的测试自动化。</p>
-<p>实际上，持续部署意味着开发人员对应用的更改在编写后的几分钟内就能生效（假设它通过了自动化测试）。这更加便于持续接收和整合用户反馈。总而言之，所有这些 CI&#x2F;CD 的关联步骤都有助于降低应用的部署风险，因此更便于以小件的方式（而非一次性）发布对应用的更改。不过，由于还需要编写自动化测试以适应 CI&#x2F;CD 管道中的各种测试和发布阶段，因此前期投资还是会很大。</p>
+    <title>yarn命令详解</title>
+    <url>/2022/11/09/yarn%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="yarn命令详解"><a href="#yarn命令详解" class="headerlink" title="yarn命令详解"></a>yarn命令详解</h1><h3 id="一、yarn安装初始化"><a href="#一、yarn安装初始化" class="headerlink" title="一、yarn安装初始化"></a>一、yarn安装初始化</h3><pre><code class="css">npm i yarn -g #yarn安装
+yarn -v #查看版本
+yarn init ｜ yarn #初始化，创建package.json文件
+yarn init --yes #简写 -y 跳过会话，直接通过默认值生成 package.json
+</code></pre>
+<h3 id="二、yarn安装依赖"><a href="#二、yarn安装依赖" class="headerlink" title="二、yarn安装依赖"></a>二、yarn安装依赖</h3><pre><code class="css">yarn add webpack@2.3.3 # yarn --save 是 yarn 默认的，默认记录在 package.json dependencies 中
+</code></pre>
+<pre><code class="css">yarn add webpack --dev # yarn 简写 -D  devDependencies 中
+</code></pre>
+<pre><code class="css">yarn global add webpack # yarn 安装全局依赖
+</code></pre>
+<h3 id="三、yarn更新依赖"><a href="#三、yarn更新依赖" class="headerlink" title="三、yarn更新依赖"></a>三、yarn更新依赖</h3><pre><code class="css">yarn upgrade # 升级所有依赖项，不记录在 package.json 中
+yarn upgrade webpack # 升级指定包
+yarn upgrade --latest # 忽略版本规则，升级到最新版本，并且更新 package.json
+</code></pre>
+<h3 id="四、yarn移除依赖"><a href="#四、yarn移除依赖" class="headerlink" title="四、yarn移除依赖"></a>四、yarn移除依赖</h3><pre><code class="css">yarn remove webpack # yarn
+</code></pre>
+<h3 id="五、其他命令"><a href="#五、其他命令" class="headerlink" title="五、其他命令"></a>五、其他命令</h3><pre><code class="css">yarn install # 或者 yarn 在 node_modules 目录安装 package.json 中列出的所有依赖
+yarn install --force # 强制下载安装
+yarn start # yarn  执行 scripts 下 start 对应的脚本
+
+###用来查看某个模块的最新版本信息
+yarn info webpack # yarn
+yarn info webpack --json # 输出 json 格式
+yarn info webpack readme # 输出 README 部分
+
+yarn list # 列出当前项目的依赖
+yarn list --depth=0 # 限制依赖的深度
+sudo yarn global list # 列出全局安装的模块
+
+###yarn配置文件
+yarn config set key value # 设置
+yarn config get key # 读取值
+yarn config delete key # 删除
+yarn config list # 显示当前配置
+yarn config set registry [https://registry.npm.taobao.org](https://links.jianshu.com/go?to=https%3A%2F%2Fregistry.npm.taobao.org) # 设置淘宝镜像
+
+###缓存
+sudo yarn cache list # 列出已缓存的每个包
+sudo yarn cache dir # 返回 全局缓存位置
+sudo yarn cache clean # 清除缓存
+</code></pre>
 ]]></content>
       <categories>
-        <category>CI/CD</category>
-        <category>什么是CI/CD</category>
+        <category>npm&amp;yarn</category>
+        <category>yarn常用命令</category>
       </categories>
       <tags>
-        <tag>CI/CD</tag>
+        <tag>yarn</tag>
       </tags>
   </entry>
   <entry>
@@ -4415,57 +4442,30 @@ gl.drawArrays(gl.TRIANGLES,0,3);
       </tags>
   </entry>
   <entry>
-    <title>yarn命令详解</title>
-    <url>/2022/11/09/yarn%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="yarn命令详解"><a href="#yarn命令详解" class="headerlink" title="yarn命令详解"></a>yarn命令详解</h1><h3 id="一、yarn安装初始化"><a href="#一、yarn安装初始化" class="headerlink" title="一、yarn安装初始化"></a>一、yarn安装初始化</h3><pre><code class="css">npm i yarn -g #yarn安装
-yarn -v #查看版本
-yarn init ｜ yarn #初始化，创建package.json文件
-yarn init --yes #简写 -y 跳过会话，直接通过默认值生成 package.json
-</code></pre>
-<h3 id="二、yarn安装依赖"><a href="#二、yarn安装依赖" class="headerlink" title="二、yarn安装依赖"></a>二、yarn安装依赖</h3><pre><code class="css">yarn add webpack@2.3.3 # yarn --save 是 yarn 默认的，默认记录在 package.json dependencies 中
-</code></pre>
-<pre><code class="css">yarn add webpack --dev # yarn 简写 -D  devDependencies 中
-</code></pre>
-<pre><code class="css">yarn global add webpack # yarn 安装全局依赖
-</code></pre>
-<h3 id="三、yarn更新依赖"><a href="#三、yarn更新依赖" class="headerlink" title="三、yarn更新依赖"></a>三、yarn更新依赖</h3><pre><code class="css">yarn upgrade # 升级所有依赖项，不记录在 package.json 中
-yarn upgrade webpack # 升级指定包
-yarn upgrade --latest # 忽略版本规则，升级到最新版本，并且更新 package.json
-</code></pre>
-<h3 id="四、yarn移除依赖"><a href="#四、yarn移除依赖" class="headerlink" title="四、yarn移除依赖"></a>四、yarn移除依赖</h3><pre><code class="css">yarn remove webpack # yarn
-</code></pre>
-<h3 id="五、其他命令"><a href="#五、其他命令" class="headerlink" title="五、其他命令"></a>五、其他命令</h3><pre><code class="css">yarn install # 或者 yarn 在 node_modules 目录安装 package.json 中列出的所有依赖
-yarn install --force # 强制下载安装
-yarn start # yarn  执行 scripts 下 start 对应的脚本
-
-###用来查看某个模块的最新版本信息
-yarn info webpack # yarn
-yarn info webpack --json # 输出 json 格式
-yarn info webpack readme # 输出 README 部分
-
-yarn list # 列出当前项目的依赖
-yarn list --depth=0 # 限制依赖的深度
-sudo yarn global list # 列出全局安装的模块
-
-###yarn配置文件
-yarn config set key value # 设置
-yarn config get key # 读取值
-yarn config delete key # 删除
-yarn config list # 显示当前配置
-yarn config set registry [https://registry.npm.taobao.org](https://links.jianshu.com/go?to=https%3A%2F%2Fregistry.npm.taobao.org) # 设置淘宝镜像
-
-###缓存
-sudo yarn cache list # 列出已缓存的每个包
-sudo yarn cache dir # 返回 全局缓存位置
-sudo yarn cache clean # 清除缓存
-</code></pre>
+    <title>什么是CI/CD</title>
+    <url>/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署"><a href="#CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署" class="headerlink" title="CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署"></a>CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署</h1><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>CI&#x2F;CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。CI&#x2F;CD 的核心概念是持续集成、持续交付和持续部署。作为一个面向开发和运营团队的解决方案，CI&#x2F;CD 主要针对在集成新代码时所引发的问题（亦称：”集成地狱”）。</p>
+<p>具体而言，CI&#x2F;CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为”CI&#x2F;CD 管道”，由开发和运维团队以敏捷方式协同支持。</p>
+<h3 id="CI-是什么？CI-和-CD-有什么区别？"><a href="#CI-是什么？CI-和-CD-有什么区别？" class="headerlink" title="CI 是什么？CI 和 CD 有什么区别？"></a>CI 是什么？CI 和 CD 有什么区别？</h3><p>缩略词 CI &#x2F; CD 具有几个不同的含义。CI&#x2F;CD 中的”CI”始终指持续集成，它属于开发人员的自动化流程。成功的 CI 意味着应用代码的新更改会定期构建、测试并合并到共享存储库中。该解决方案可以解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</p>
+<p>CI&#x2F;CD 中的”CD”指的是持续交付和&#x2F;或持续部署，这些相关概念有时会交叉使用。两者都事关管道后续阶段的自动化，但它们有时也会单独使用，用于说明自动化程度。</p>
+<p>持续<em>交付</em>通常是指开发人员对应用的更改会自动进行错误测试并上传到存储库（如 GitHub或容器注册表），然后由运维团队将其部署到实时生产环境中。这旨在解决开发和运维团队之间可见性及沟通较差的问题。因此，持续交付的目的就是确保尽可能减少部署新代码时所需的工作量。</p>
+<p>持续<em>部署</em>（另一种”CD”）指的是自动将开发人员的更改从存储库发布到生产环境，以供客户使用。它主要为了解决因手动流程降低应用交付速度，从而使运维团队超负荷的问题。持续部署以持续交付的优势为根基，实现了管道后续阶段的自动化。</p>
+<p><img src="/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/ci-cd-flow-desktop_edited_0.png" alt="CI/CD flow"></p>
+<p>CI&#x2F;CD 既可能仅指持续集成和持续交付构成的关联环节，也可以指持续集成、持续交付和持续部署这三项构成的关联环节。更为复杂的是，有时”持续交付”也包含了持续部署流程。</p>
+<p>归根结底，我们没必要纠结于这些语义，您只需记得 CI&#x2F;CD 其实就是一个流程（通常形象地表述为管道），用于实现应用开发中的高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于 CI&#x2F;CD 管道的自动化程度。许多企业最开始先添加 CI，然后逐步实现交付和部署的自动化（例如作为云原生应用的一部分）。</p>
+<h3 id="CI-持续集成（Continuous-Integration）"><a href="#CI-持续集成（Continuous-Integration）" class="headerlink" title="CI 持续集成（Continuous Integration）"></a>CI 持续集成（Continuous Integration）</h3><p>现代应用开发的目标是让多位开发人员同时处理同一应用的不同功能。但是，如果企业安排在一天内将所有分支源代码合并在一起（称为”合并日”），最终可能造成工作繁琐、耗时，而且需要手动完成。这是因为当一位独立工作的开发人员对应用进行更改时，有可能会与其他开发人员同时进行的更改发生冲突。如果每个开发人员都自定义自己的本地集成开发环境（IDE），而不是让团队就一个基于云的 IDE 达成一致，那么就会让问题更加雪上加霜。</p>
+<p>持续集成（CI）可以帮助开发人员更加频繁地（有时甚至每天）将代码更改合并到共享分支或”主干”中。一旦开发人员对应用所做的更改被合并，系统就会通过自动构建应用并运行不同级别的自动化测试（通常是单元测试和集成测试）来验证这些更改，确保这些更改没有对应用造成破坏。这意味着测试内容涵盖了从类和函数到构成整个应用的不同模块。如果自动化测试发现新代码和现有代码之间存在冲突，CI 可以更加轻松地快速修复这些错误。</p>
+<h3 id="CD-持续交付（Continuous-Delivery）"><a href="#CD-持续交付（Continuous-Delivery）" class="headerlink" title="CD 持续交付（Continuous Delivery）"></a>CD 持续交付（Continuous Delivery）</h3><p>完成 CI 中构建及单元测试和集成测试的自动化流程后，持续交付可自动将已验证的代码发布到存储库。为了实现高效的持续交付流程，务必要确保 CI 已内置于开发管道。持续交付的目标是拥有一个可随时部署到生产环境的代码库。</p>
+<p>在持续交付中，每个阶段（从代码更改的合并，到生产就绪型构建版本的交付）都涉及测试自动化和代码发布自动化。在流程结束时，运维团队可以快速、轻松地将应用部署到生产环境中。</p>
+<h3 id="CD-持续部署（Continuous-Deployment）"><a href="#CD-持续部署（Continuous-Deployment）" class="headerlink" title="CD 持续部署（Continuous Deployment）"></a>CD 持续部署（Continuous Deployment）</h3><p>对于一个成熟的 CI&#x2F;CD 管道来说，最后的阶段是持续部署。作为持续交付——自动将生产就绪型构建版本发布到代码存储库——的延伸，持续部署可以自动将应用发布到生产环境。由于在生产之前的管道阶段没有手动门控，因此持续部署在很大程度上都得依赖精心设计的测试自动化。</p>
+<p>实际上，持续部署意味着开发人员对应用的更改在编写后的几分钟内就能生效（假设它通过了自动化测试）。这更加便于持续接收和整合用户反馈。总而言之，所有这些 CI&#x2F;CD 的关联步骤都有助于降低应用的部署风险，因此更便于以小件的方式（而非一次性）发布对应用的更改。不过，由于还需要编写自动化测试以适应 CI&#x2F;CD 管道中的各种测试和发布阶段，因此前期投资还是会很大。</p>
 ]]></content>
       <categories>
-        <category>npm&amp;yarn</category>
-        <category>yarn常用命令</category>
+        <category>CI/CD</category>
+        <category>什么是CI/CD</category>
       </categories>
       <tags>
-        <tag>yarn</tag>
+        <tag>CI/CD</tag>
       </tags>
   </entry>
   <entry>
@@ -5498,6 +5498,109 @@ console.log(res);
       </tags>
   </entry>
   <entry>
+    <title>如何设计一个组件</title>
+    <url>/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何设计一个组件"><a href="#如何设计一个组件" class="headerlink" title="如何设计一个组件"></a>如何设计一个组件</h1><blockquote>
+<p>在开发过程中，我们经常会遇到现有组件库无法满足需求，需要自己设计和实现组件的情况。那么，如何才能设计一个既满足产品需求，又易于开发人员使用的组件呢？本文就以一个级联组件的设计为例，探讨一下如何设计一个优质组件。</p>
+</blockquote>
+<h2 id="组件设计"><a href="#组件设计" class="headerlink" title="组件设计"></a>组件设计</h2><h3 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h3><p>开发这个组件的原因是来自工作中遇到的一个需求。</p>
+<p>产品提出的业务需求是实现一个地区的级联选择，并且应设计师要求，不能使用 Ant Design 的Cascader 级联选择，因此需要自己实现一个级联选择。</p>
+<p>通常需要从 4 个角度对需求进行分析：</p>
+<ol>
+<li>业务需求角度</li>
+<li>UI 设计角度</li>
+<li>开发人员角度</li>
+<li>与其他组件配合角度</li>
+</ol>
+<h4 id="业务需求角度"><a href="#业务需求角度" class="headerlink" title="业务需求角度"></a>业务需求角度</h4><p>在拿到一个需求之后，我们不应当直接考虑如何实现，而要先思考一下，这个需求是不是真正的需求。或者说，这个需求背后，是否还有更加基础和核心的需求。</p>
+<p>现在，我们拿到了一个<strong>地区级联选择</strong>的需求，那么我们应该<strong>仅仅实现</strong>地区级联选择吗？我认为不是的，今天我们拿到的是地区选择的需求，明天就可能变成职业选择。</p>
+<p>因此，我们实际需要实现的，应该是一个支持<strong>N 级</strong>的级联选择框。</p>
+<h4 id="UI-设计角度"><a href="#UI-设计角度" class="headerlink" title="UI 设计角度"></a>UI 设计角度</h4><p>既然已经确定了要实现 N 级级联选择框，就需要考虑其在各个屏幕尺寸的兼容情况，于是我在组件中引入了 Grid 栅格 。并默认设置了 3 级级联的样式，同时为使用者提供了相应的配置选项，如下：</p>
+<pre><code class="yaml">&lt;Cascade
+  rowProps=&#123;&#123;
+    gutter: 10,
+  &#125;&#125;
+  colProps=&#123;&#123;
+    xs: 24,
+    sm: 24,
+    md: 8,
+    lg: 8,
+    xl: 8,
+  &#125;&#125;
+/&gt;
+</code></pre>
+<h4 id="开发人员角度"><a href="#开发人员角度" class="headerlink" title="开发人员角度"></a>开发人员角度</h4><p>我们开发的组件，不止会被我们的团队成员使用，甚至会开源给其他开发者使用。那么，提供给开发者更好的体验就尤为重要。</p>
+<p>为了节省开发人员的学习成本，我们可以按照以下思路考虑：</p>
+<ol>
+<li>在满足基本需求的前提下，提供尽量少的 API。</li>
+<li>为 API 选项提供尽量少的配置项。</li>
+<li>为代码，特别是 API 提供尽量好的文档或注释。</li>
+</ol>
+<p>定义的 <code>Cascade</code> 组件 <code>Props</code> 示例如下：</p>
+<pre><code class="less">interface Props&lt;T&gt; &#123;
+  cascadeKeys?: CascadeKeys; // 自定义 dataSource 中 value label children 的字段
+  value?: T[]; // 指定当前选中的条目
+  onChange?: (value: T[], level: number) =&gt; void; // 选中选项时，调用此函数
+  rowProps?: RowProps; // 行排列方式，可参考https://ant.design/components/grid-cn/
+  colProps?: ColProps; // 列排列方式
+  loading?: boolean[]; // 选择框loading装填
+  dataSource?: T[] | CascadeData&lt;T&gt; | T[][]; // 可选项数据源
+&#125;
+</code></pre>
+<p>可以看到， <code>Props</code> 中只有 <code>dataSource</code> 是必须的。也就是说，如果你对配置项并不了解，组件也只需要最简单的配置，就可以正常工作了，例如：</p>
+<pre><code class="ini">&lt;Cascade
+  dataSource=&#123;pcaCascadeData&#125;
+/&gt;
+</code></pre>
+<ol>
+<li><p>在使用 TypeScript 时，还需要特别考虑类型匹配的问题。例如可以在使用组件时，传入一个类型，并且在 <code>onChange</code> 事件中如果使用了其他类型， TypeScript 检查就会提示错误，如下面例子中的 <code>PCAItem</code> 。</p>
+<pre><code class="ini">&lt;Cascade&lt;PCAItem&gt;
+  dataSource=&#123;pcaCascadeData&#125;
+  cascadeKeys=&#123;pcaCascadeKeys&#125;
+  onChange=&#123;async (value: PCAItem[], level: number) =&gt; &#123;
+    setPCAData(value);
+    setPCAIndex(level);
+  &#125;&#125;
+/&gt;
+</code></pre>
+</li>
+<li><p>对于级联组件，我们还需要考虑 dataSource 的数据来源可能有两种。</p>
+<ul>
+<li>组件初始化时，就传入了所有的级联数据，例如 省&#x2F;地&#x2F;县&#x2F;乡层级数据 。对应 Demo 中的“同步级联数据”，以及 <code>Props</code> 中 <code>dataSource</code> 类型定义的 <code>CascadeData&lt;T&gt; | T[][]</code> 。<ul>
+<li>在某些场景下，虽然没有级联选择框存在，但也需要处理树形数据，包括数据的查询和校验等功能，因此将该方法封装到 <code>CascadeData</code> 类中。</li>
+<li>考虑到树的数据量可能非常庞大，如果在每次选择时都在树中搜索效率较低。因此设计成在组件创建时，直接遍历树中的所有节点，然后将每个层级所有节点的数据都存储在相应的 <code>Map</code> 中，之后就能很方便地查询数据。</li>
+<li>虽然在组件初始化时遍历所有节点比较耗时，但考虑到用户从进入页面到操作组件有一定时间差，因此我认为这个问题可以忽略。</li>
+<li>基于以上考虑，你在 <code>Props</code> 中 <code>dataSource</code> 类型中看到的 <code>CascadeData&lt;T&gt;</code> ，就表示直接传入了一个 <code>new CascadeData(treeData)</code> 。而<code>T[][]</code>就表示直接传入树形数据，由组件内部进行 <code>new CascadeData(treeData) </code> 。</li>
+</ul>
+</li>
+<li>组件初始化时，只传入了第一级的选项，之后每级的选项通过前一级所选择的参数，从服务端获取。对应 Demo 中的“异步级联数据”，对应 <code>dataSource</code> 类型中的 <code>T[]</code> 。<ul>
+<li>组件初始化时，只传入第一级的数据，其他级别传入空数组，如：<code>[[&#123;&quot;code&quot;:110000,&quot;name&quot;:&quot;北京市&quot;&#125;],[],[]]</code>，组件会渲染出 3 层级联选项。</li>
+<li>当进行选择时，需要使用者通过 <code>onChange</code> 事件自行更新下一级的数据。也就是说，组件完全放弃了对数据的控制。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="与其他组件配合角度"><a href="#与其他组件配合角度" class="headerlink" title="与其他组件配合角度"></a>与其他组件配合角度</h4><p>由于该组件需要与 Ant Design 其他组件配合使用，如前面讨论过的 UI 部分，该组件就结合了 Grid 栅格 组件。既保证了该组件在各屏幕宽度下正常显示，又保证了与其他组件的显示一致。</p>
+<p>除此之外，还需要考虑与 Form 表单 组件的配合，特别是兼容表单校验功能。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文通过一个级联组件的设计案例，探讨了如何从四个角度分析，进而设计一个优秀的组件。这 4 个角度分别是：</p>
+<ol>
+<li>业务需求角度</li>
+<li>UI 设计角度</li>
+<li>开发人员角度</li>
+<li>与其他组件配合角度</li>
+</ol>
+<p>我认为很多时候组件的设计并没有最优解，总是需要根据需求在各种方案中取舍。但只要按照本文提到的 4 个角度进行分析，就能设计出优秀的组件。</p>
+]]></content>
+      <categories>
+        <category>工程技术</category>
+        <category>如何设计一个组件</category>
+      </categories>
+      <tags>
+        <tag>组件设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何搭建一个自己的博客平台（github+hexo）</title>
     <url>/2022/08/27/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%B9%B3%E5%8F%B0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何搭建一个自己的博客平台（github-hexo）"><a href="#如何搭建一个自己的博客平台（github-hexo）" class="headerlink" title="如何搭建一个自己的博客平台（github+hexo）"></a>如何搭建一个自己的博客平台（github+hexo）</h1><h2 id="一、下载node-js"><a href="#一、下载node-js" class="headerlink" title="一、下载node.js"></a>一、下载node.js</h2><p>直接到<a href="https://nodejs.org/zh-cn/">node.js官网</a>下载就可以了</p>
@@ -5605,109 +5708,6 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
       </tags>
   </entry>
   <entry>
-    <title>如何设计一个组件</title>
-    <url>/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何设计一个组件"><a href="#如何设计一个组件" class="headerlink" title="如何设计一个组件"></a>如何设计一个组件</h1><blockquote>
-<p>在开发过程中，我们经常会遇到现有组件库无法满足需求，需要自己设计和实现组件的情况。那么，如何才能设计一个既满足产品需求，又易于开发人员使用的组件呢？本文就以一个级联组件的设计为例，探讨一下如何设计一个优质组件。</p>
-</blockquote>
-<h2 id="组件设计"><a href="#组件设计" class="headerlink" title="组件设计"></a>组件设计</h2><h3 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h3><p>开发这个组件的原因是来自工作中遇到的一个需求。</p>
-<p>产品提出的业务需求是实现一个地区的级联选择，并且应设计师要求，不能使用 Ant Design 的Cascader 级联选择，因此需要自己实现一个级联选择。</p>
-<p>通常需要从 4 个角度对需求进行分析：</p>
-<ol>
-<li>业务需求角度</li>
-<li>UI 设计角度</li>
-<li>开发人员角度</li>
-<li>与其他组件配合角度</li>
-</ol>
-<h4 id="业务需求角度"><a href="#业务需求角度" class="headerlink" title="业务需求角度"></a>业务需求角度</h4><p>在拿到一个需求之后，我们不应当直接考虑如何实现，而要先思考一下，这个需求是不是真正的需求。或者说，这个需求背后，是否还有更加基础和核心的需求。</p>
-<p>现在，我们拿到了一个<strong>地区级联选择</strong>的需求，那么我们应该<strong>仅仅实现</strong>地区级联选择吗？我认为不是的，今天我们拿到的是地区选择的需求，明天就可能变成职业选择。</p>
-<p>因此，我们实际需要实现的，应该是一个支持<strong>N 级</strong>的级联选择框。</p>
-<h4 id="UI-设计角度"><a href="#UI-设计角度" class="headerlink" title="UI 设计角度"></a>UI 设计角度</h4><p>既然已经确定了要实现 N 级级联选择框，就需要考虑其在各个屏幕尺寸的兼容情况，于是我在组件中引入了 Grid 栅格 。并默认设置了 3 级级联的样式，同时为使用者提供了相应的配置选项，如下：</p>
-<pre><code class="yaml">&lt;Cascade
-  rowProps=&#123;&#123;
-    gutter: 10,
-  &#125;&#125;
-  colProps=&#123;&#123;
-    xs: 24,
-    sm: 24,
-    md: 8,
-    lg: 8,
-    xl: 8,
-  &#125;&#125;
-/&gt;
-</code></pre>
-<h4 id="开发人员角度"><a href="#开发人员角度" class="headerlink" title="开发人员角度"></a>开发人员角度</h4><p>我们开发的组件，不止会被我们的团队成员使用，甚至会开源给其他开发者使用。那么，提供给开发者更好的体验就尤为重要。</p>
-<p>为了节省开发人员的学习成本，我们可以按照以下思路考虑：</p>
-<ol>
-<li>在满足基本需求的前提下，提供尽量少的 API。</li>
-<li>为 API 选项提供尽量少的配置项。</li>
-<li>为代码，特别是 API 提供尽量好的文档或注释。</li>
-</ol>
-<p>定义的 <code>Cascade</code> 组件 <code>Props</code> 示例如下：</p>
-<pre><code class="less">interface Props&lt;T&gt; &#123;
-  cascadeKeys?: CascadeKeys; // 自定义 dataSource 中 value label children 的字段
-  value?: T[]; // 指定当前选中的条目
-  onChange?: (value: T[], level: number) =&gt; void; // 选中选项时，调用此函数
-  rowProps?: RowProps; // 行排列方式，可参考https://ant.design/components/grid-cn/
-  colProps?: ColProps; // 列排列方式
-  loading?: boolean[]; // 选择框loading装填
-  dataSource?: T[] | CascadeData&lt;T&gt; | T[][]; // 可选项数据源
-&#125;
-</code></pre>
-<p>可以看到， <code>Props</code> 中只有 <code>dataSource</code> 是必须的。也就是说，如果你对配置项并不了解，组件也只需要最简单的配置，就可以正常工作了，例如：</p>
-<pre><code class="ini">&lt;Cascade
-  dataSource=&#123;pcaCascadeData&#125;
-/&gt;
-</code></pre>
-<ol>
-<li><p>在使用 TypeScript 时，还需要特别考虑类型匹配的问题。例如可以在使用组件时，传入一个类型，并且在 <code>onChange</code> 事件中如果使用了其他类型， TypeScript 检查就会提示错误，如下面例子中的 <code>PCAItem</code> 。</p>
-<pre><code class="ini">&lt;Cascade&lt;PCAItem&gt;
-  dataSource=&#123;pcaCascadeData&#125;
-  cascadeKeys=&#123;pcaCascadeKeys&#125;
-  onChange=&#123;async (value: PCAItem[], level: number) =&gt; &#123;
-    setPCAData(value);
-    setPCAIndex(level);
-  &#125;&#125;
-/&gt;
-</code></pre>
-</li>
-<li><p>对于级联组件，我们还需要考虑 dataSource 的数据来源可能有两种。</p>
-<ul>
-<li>组件初始化时，就传入了所有的级联数据，例如 省&#x2F;地&#x2F;县&#x2F;乡层级数据 。对应 Demo 中的“同步级联数据”，以及 <code>Props</code> 中 <code>dataSource</code> 类型定义的 <code>CascadeData&lt;T&gt; | T[][]</code> 。<ul>
-<li>在某些场景下，虽然没有级联选择框存在，但也需要处理树形数据，包括数据的查询和校验等功能，因此将该方法封装到 <code>CascadeData</code> 类中。</li>
-<li>考虑到树的数据量可能非常庞大，如果在每次选择时都在树中搜索效率较低。因此设计成在组件创建时，直接遍历树中的所有节点，然后将每个层级所有节点的数据都存储在相应的 <code>Map</code> 中，之后就能很方便地查询数据。</li>
-<li>虽然在组件初始化时遍历所有节点比较耗时，但考虑到用户从进入页面到操作组件有一定时间差，因此我认为这个问题可以忽略。</li>
-<li>基于以上考虑，你在 <code>Props</code> 中 <code>dataSource</code> 类型中看到的 <code>CascadeData&lt;T&gt;</code> ，就表示直接传入了一个 <code>new CascadeData(treeData)</code> 。而<code>T[][]</code>就表示直接传入树形数据，由组件内部进行 <code>new CascadeData(treeData) </code> 。</li>
-</ul>
-</li>
-<li>组件初始化时，只传入了第一级的选项，之后每级的选项通过前一级所选择的参数，从服务端获取。对应 Demo 中的“异步级联数据”，对应 <code>dataSource</code> 类型中的 <code>T[]</code> 。<ul>
-<li>组件初始化时，只传入第一级的数据，其他级别传入空数组，如：<code>[[&#123;&quot;code&quot;:110000,&quot;name&quot;:&quot;北京市&quot;&#125;],[],[]]</code>，组件会渲染出 3 层级联选项。</li>
-<li>当进行选择时，需要使用者通过 <code>onChange</code> 事件自行更新下一级的数据。也就是说，组件完全放弃了对数据的控制。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<h4 id="与其他组件配合角度"><a href="#与其他组件配合角度" class="headerlink" title="与其他组件配合角度"></a>与其他组件配合角度</h4><p>由于该组件需要与 Ant Design 其他组件配合使用，如前面讨论过的 UI 部分，该组件就结合了 Grid 栅格 组件。既保证了该组件在各屏幕宽度下正常显示，又保证了与其他组件的显示一致。</p>
-<p>除此之外，还需要考虑与 Form 表单 组件的配合，特别是兼容表单校验功能。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文通过一个级联组件的设计案例，探讨了如何从四个角度分析，进而设计一个优秀的组件。这 4 个角度分别是：</p>
-<ol>
-<li>业务需求角度</li>
-<li>UI 设计角度</li>
-<li>开发人员角度</li>
-<li>与其他组件配合角度</li>
-</ol>
-<p>我认为很多时候组件的设计并没有最优解，总是需要根据需求在各种方案中取舍。但只要按照本文提到的 4 个角度进行分析，就能设计出优秀的组件。</p>
-]]></content>
-      <categories>
-        <category>工程技术</category>
-        <category>如何设计一个组件</category>
-      </categories>
-      <tags>
-        <tag>组件设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>宝塔Linux部署</title>
     <url>/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="宝塔Linux部署"><a href="#宝塔Linux部署" class="headerlink" title="宝塔Linux部署"></a>宝塔Linux部署</h1><h3 id="一、购买云服务器"><a href="#一、购买云服务器" class="headerlink" title="一、购买云服务器"></a>一、购买云服务器</h3><p>[阿里云官网]: 	“<a href="https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955">https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955</a> “</p>
@@ -5771,6 +5771,390 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
       </categories>
       <tags>
         <tag>demo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搭建私有的npm仓库</title>
+    <url>/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="使用docker和verdaccio搭建npm私有库"><a href="#使用docker和verdaccio搭建npm私有库" class="headerlink" title="使用docker和verdaccio搭建npm私有库"></a>使用docker和verdaccio搭建npm私有库</h1><p>本文章docker环境为macos</p>
+<h3 id="1-使用-docker-镜像安装verdaccio"><a href="#1-使用-docker-镜像安装verdaccio" class="headerlink" title="1.使用 docker 镜像安装verdaccio"></a>1.使用 docker 镜像安装verdaccio</h3><pre><code class="ini">docker pull verdaccio/verdaccio //安装verdaccio镜像
+</code></pre>
+<h3 id="2-启动端口映射verdaccio容器"><a href="#2-启动端口映射verdaccio容器" class="headerlink" title="2.启动端口映射verdaccio容器"></a>2.启动端口映射verdaccio容器</h3><pre><code class="ini">docker run -it --name verdaccio -p 4873:4873 verdaccio/verdaccio //运行 verdaccio，使用 docker 命令运行镜像，创建 verdaccio 容器 ，端口4873
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095140709.png"></p>
+<h3 id="3-私有部署npm仓库成功"><a href="#3-私有部署npm仓库成功" class="headerlink" title="3.私有部署npm仓库成功"></a>3.私有部署npm仓库成功</h3><p>访问<a href="http://localhost:4873/">http://localhost:4873/</a></p>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095258155.png"></p>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095230480.png"></p>
+<h3 id="4-添加权限用户"><a href="#4-添加权限用户" class="headerlink" title="4.添加权限用户"></a>4.添加权限用户</h3><pre><code class="ini">npm adduser --registry http://localhost:4873/ //根据提示添加用户
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095338495.png"></p>
+<h3 id="5-登陆"><a href="#5-登陆" class="headerlink" title="5.登陆"></a>5.登陆</h3><p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095621194.png"></p>
+<h3 id="6-发布npm包"><a href="#6-发布npm包" class="headerlink" title="6.发布npm包"></a>6.发布npm包</h3><p>当我们的私有仓库搭建好之后，那么我们就可以向仓库发布npm包了，到我们npm包目录下上传就可以了</p>
+<pre><code class="css">1.创建npm-me包目录
+2.npm init 初始化目录
+3.编写功能文件
+4.如果是改版发布，更新版本号
+5.登陆私有仓库
+6.向私有仓库发布npm包
+</code></pre>
+<pre><code class="javascript">//ifYes.js
+exports.ifYes = function() &#123;
+    return &quot;If you&#39;re late, your wages will be docked version new（registry）&quot;
+&#125;
+</code></pre>
+<pre><code class="json">//package.json
+&#123;
+  &quot;name&quot;: &quot;alan-npm-me&quot;,
+  &quot;version&quot;: &quot;1.0.3&quot;,
+  &quot;description&quot;: &quot;If you&#39;re late, your wages will be docked&quot;,
+  &quot;main&quot;: &quot;ifYes.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  &#125;,
+  &quot;keywords&quot;: [
+    &quot;ifYes&quot;
+  ],
+  &quot;author&quot;: &quot;alan_mf&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+&#125;
+</code></pre>
+<pre><code class="ini">npm version patch  //补丁版本更新
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112101529827.png"></p>
+<pre><code class="ini">npm-me % npm publish --registry http://localhost:4873/ //发布
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112102102928.png"></p>
+<p>这时候刷新我们的私有仓库页面就可以看到了<a href="http://localhost:4873/">http://localhost:4873/</a></p>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112102228314.png"></p>
+<h3 id="7-下载私有仓库的包"><a href="#7-下载私有仓库的包" class="headerlink" title="7.下载私有仓库的包"></a>7.下载私有仓库的包</h3><pre><code class="css">1.创建一个文件目录
+2.初始化 npm init -y
+3.编辑测试代码
+4. npm install --registry http://localhost:4873 alan-npm-me //下载私有仓库npm包
+5.执行测试代码
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112105324344.png"></p>
+<h3 id="8-修改verdaccio权限"><a href="#8-修改verdaccio权限" class="headerlink" title="8.修改verdaccio权限"></a>8.修改verdaccio权限</h3><p>因为我是docker安装的verdaccio，所以查找配置文件路径是这样的</p>
+<pre><code class="ini">1. docker exec --user root -it verdaccio sh
+2. cd /verdaccio
+3. cd conf
+4. vi config.yaml
+</code></pre>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112125337815.png"></p>
+<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112125352787.png"></p>
+<p>里面就可以配置你们的文件了，重启容器就生效了</p>
+]]></content>
+      <categories>
+        <category>npm&amp;yarn</category>
+        <category>搭建私有的npm仓库</category>
+      </categories>
+      <tags>
+        <tag>npm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>表白爱心biu</title>
+    <url>/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="爱心代码（canvas）"><a href="#爱心代码（canvas）" class="headerlink" title="爱心代码（canvas）"></a>爱心代码（canvas）</h1><p>每天浪漫一点点</p>
+<p>发给你女朋友，有奖励🥳</p>
+<p><img src="/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/image-20221111095138378.png"></p>
+<pre><code class="javascript">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;title&gt;玥小公主爱心&lt;/title&gt;
+
+    &lt;style&gt;
+      html,
+      body &#123;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        background: #000;
+      &#125;
+      canvas &#123;
+        width: 100%;
+        height: 100%;
+      &#125;
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;canvas id=&quot;pinkboard&quot;&gt;&lt;/canvas&gt;
+    &lt;script&gt;
+      /*
+       * 参数配置
+       */
+      var settings = &#123;
+        particles: &#123;
+          length: 500, // 最大颗粒量
+          duration: 2, // 粒子持续时间（秒）
+          velocity: 110, // 粒子范围（像素/秒）
+          effect: -1.0, // 内轮廓
+          size: 35, // 颗粒大小（像素）
+        &#125;,
+      &#125;;
+
+      /*
+       * Point class
+       */
+      var Point = (function () &#123;
+        function Point(x, y) &#123;
+          this.x = typeof x !== &quot;undefined&quot; ? x : 0;
+          this.y = typeof y !== &quot;undefined&quot; ? y : 0;
+        &#125;
+        Point.prototype.clone = function () &#123;
+          return new Point(this.x, this.y);
+        &#125;;
+        Point.prototype.length = function (length) &#123;
+          if (typeof length == &quot;undefined&quot;)
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+          this.normalize();
+          this.x *= length;
+          this.y *= length;
+          return this;
+        &#125;;
+        Point.prototype.normalize = function () &#123;
+          var length = this.length();
+          this.x /= length;
+          this.y /= length;
+          return this;
+        &#125;;
+        return Point;
+      &#125;)();
+
+      /*
+       * Particle class
+       */
+      var Particle = (function () &#123;
+        function Particle() &#123;
+          this.position = new Point();
+          this.velocity = new Point();
+          this.acceleration = new Point();
+          this.age = 0;
+        &#125;
+        Particle.prototype.initialize = function (x, y, dx, dy) &#123;
+          this.position.x = x;
+          this.position.y = y;
+          this.velocity.x = dx;
+          this.velocity.y = dy;
+          this.acceleration.x = dx * settings.particles.effect;
+          this.acceleration.y = dy * settings.particles.effect;
+          this.age = 0;
+        &#125;;
+        Particle.prototype.update = function (deltaTime) &#123;
+          this.position.x += this.velocity.x * deltaTime;
+          this.position.y += this.velocity.y * deltaTime;
+          this.velocity.x += this.acceleration.x * deltaTime;
+          this.velocity.y += this.acceleration.y * deltaTime;
+          this.age += deltaTime;
+        &#125;;
+        Particle.prototype.draw = function (context, image) &#123;
+          function ease(t) &#123;
+            return --t * t * t + 1;
+          &#125;
+          var size = image.width * ease(this.age / settings.particles.duration);
+          context.globalAlpha = 1 - this.age / settings.particles.duration;
+          context.drawImage(
+            image,
+            this.position.x - size / 2,
+            this.position.y - size / 2,
+            size,
+            size
+          );
+        &#125;;
+        return Particle;
+      &#125;)();
+
+      /*
+       * ParticlePool class
+       */
+      var ParticlePool = (function () &#123;
+        var particles,
+          firstActive = 0,
+          firstFree = 0,
+          duration = settings.particles.duration;
+
+        function ParticlePool(length) &#123;
+          // create and populate particle pool
+          particles = new Array(length);
+          for (var i = 0; i &lt; particles.length; i++)
+            particles[i] = new Particle();
+        &#125;
+        ParticlePool.prototype.add = function (x, y, dx, dy) &#123;
+          particles[firstFree].initialize(x, y, dx, dy);
+
+          // handle circular queue
+          firstFree++;
+          if (firstFree == particles.length) firstFree = 0;
+          if (firstActive == firstFree) firstActive++;
+          if (firstActive == particles.length) firstActive = 0;
+        &#125;;
+        ParticlePool.prototype.update = function (deltaTime) &#123;
+          var i;
+
+          // update active particles
+          if (firstActive &lt; firstFree) &#123;
+            for (i = firstActive; i &lt; firstFree; i++)
+              particles[i].update(deltaTime);
+          &#125;
+          if (firstFree &lt; firstActive) &#123;
+            for (i = firstActive; i &lt; particles.length; i++)
+              particles[i].update(deltaTime);
+            for (i = 0; i &lt; firstFree; i++) particles[i].update(deltaTime);
+          &#125;
+
+          // remove inactive particles
+          while (
+            particles[firstActive].age &gt;= duration &amp;&amp;
+            firstActive != firstFree
+          ) &#123;
+            firstActive++;
+            if (firstActive == particles.length) firstActive = 0;
+          &#125;
+        &#125;;
+        ParticlePool.prototype.draw = function (context, image) &#123;
+          // draw active particles
+          if (firstActive &lt; firstFree) &#123;
+            for (i = firstActive; i &lt; firstFree; i++)
+              particles[i].draw(context, image);
+          &#125;
+          if (firstFree &lt; firstActive) &#123;
+            for (i = firstActive; i &lt; particles.length; i++)
+              particles[i].draw(context, image);
+            for (i = 0; i &lt; firstFree; i++) particles[i].draw(context, image);
+          &#125;
+        &#125;;
+        return ParticlePool;
+      &#125;)();
+
+      /*
+       * Putting it all together
+       */
+      (function (canvas) &#123;
+        var context = canvas.getContext(&quot;2d&quot;),
+          particles = new ParticlePool(settings.particles.length),
+          particleRate =
+            settings.particles.length / settings.particles.duration, // particles/sec
+          time;
+
+        // get point on heart with -PI &lt;= t &lt;= PI
+        function pointOnHeart(t) &#123;
+          return new Point(
+            160 * Math.pow(Math.sin(t), 3),
+            130 * Math.cos(t) -
+              50 * Math.cos(2 * t) -
+              20 * Math.cos(3 * t) -
+              10 * Math.cos(4 * t) +
+              25
+          );
+        &#125;
+
+        // 使用虚拟画布创建粒子图像
+        var image = (function () &#123;
+          var canvas = document.createElement(&quot;canvas&quot;),
+            context = canvas.getContext(&quot;2d&quot;);
+          canvas.width = settings.particles.size;
+          canvas.height = settings.particles.size;
+          // helper function to create the path
+          function to(t) &#123;
+            var point = pointOnHeart(t);
+            point.x =
+              settings.particles.size / 2 +
+              (point.x * settings.particles.size) / 450;
+            point.y =
+              settings.particles.size / 2 -
+              (point.y * settings.particles.size) / 450;
+            return point;
+          &#125;
+          // create the path
+          context.beginPath();
+          var t = -Math.PI;
+          var point = to(t);
+          context.moveTo(point.x, point.y);
+          while (t &lt; Math.PI) &#123;
+            t += 0.03; // baby steps!
+            point = to(t);
+            context.lineTo(point.x, point.y);
+          &#125;
+          context.closePath();
+          // create the fill （更换爱心颜色）
+          context.fillStyle = &quot;#ea80b0&quot;;
+          context.fill();
+          // create the image
+          var image = new Image();
+          image.src = canvas.toDataURL();
+          return image;
+        &#125;)();
+
+        // render that thing!
+        function render() &#123;
+          // next animation frame
+          requestAnimationFrame(render);
+
+          // update time（粒子速度）
+          var newTime = new Date().getTime() / 1000,
+            deltaTime = newTime - (time || newTime);
+          time = newTime;
+
+          // clear canvas
+          context.clearRect(0, 0, canvas.width, canvas.height);
+
+          // create new particles
+          var amount = particleRate * deltaTime;
+          for (var i = 0; i &lt; amount; i++) &#123;
+            var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
+            var dir = pos.clone().length(settings.particles.velocity);
+            particles.add(
+              canvas.width / 2 + pos.x,
+              canvas.height / 2 - pos.y,
+              dir.x,
+              -dir.y
+            );
+          &#125;
+
+          // update and draw particles
+          particles.update(deltaTime);
+          particles.draw(context, image);
+        &#125;
+
+        // handle (re-)sizing of the canvas
+        function onResize() &#123;
+          canvas.width = canvas.clientWidth;
+          canvas.height = canvas.clientHeight;
+        &#125;
+        window.onresize = onResize;
+
+        // delay rendering bootstrap
+        setTimeout(function () &#123;
+          onResize();
+          render();
+        &#125;, 10);
+      &#125;)(document.getElementById(&quot;pinkboard&quot;));
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+]]></content>
+      <categories>
+        <category>趣味技术</category>
+        <category>表白爱心biu</category>
+      </categories>
+      <tags>
+        <tag>浪漫代码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>秋天的第一个烤红薯</title>
+    <url>/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="秋天的第一个烤红薯"><a href="#秋天的第一个烤红薯" class="headerlink" title="秋天的第一个烤红薯"></a>秋天的第一个烤红薯</h1><h2 id="美丽的不只是风景"><a href="#美丽的不只是风景" class="headerlink" title="美丽的不只是风景"></a>美丽的不只是风景</h2><p><img src="/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/IMG_20220923_174805.jpg"></p>
+]]></content>
+      <categories>
+        <category>旅行</category>
+        <category>秋天</category>
+      </categories>
+      <tags>
+        <tag>旅行</tag>
+        <tag>秋天</tag>
+        <tag>季节</tag>
       </tags>
   </entry>
   <entry>
@@ -6066,387 +6450,436 @@ class ErrorBoundary extends React.Component &#123;
       </tags>
   </entry>
   <entry>
-    <title>搭建私有的npm仓库</title>
-    <url>/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="使用docker和verdaccio搭建npm私有库"><a href="#使用docker和verdaccio搭建npm私有库" class="headerlink" title="使用docker和verdaccio搭建npm私有库"></a>使用docker和verdaccio搭建npm私有库</h1><p>本文章docker环境为macos</p>
-<h3 id="1-使用-docker-镜像安装verdaccio"><a href="#1-使用-docker-镜像安装verdaccio" class="headerlink" title="1.使用 docker 镜像安装verdaccio"></a>1.使用 docker 镜像安装verdaccio</h3><pre><code class="ini">docker pull verdaccio/verdaccio //安装verdaccio镜像
+    <title>Electron-d-2.0</title>
+    <url>/2022/11/25/Electron-d-2-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><p>本篇文章接上一篇文章，详细讲解主进程和渲染进程一些常用的API</p>
+<h3 id="主进程API"><a href="#主进程API" class="headerlink" title="主进程API"></a>主进程API</h3><h4 id="1-App-BrowserWindow"><a href="#1-App-BrowserWindow" class="headerlink" title="1.App+BrowserWindow"></a>1.App+BrowserWindow</h4><h5 id="App事件："><a href="#App事件：" class="headerlink" title="App事件："></a>App事件：</h5><h6 id="（1）Before-quit"><a href="#（1）Before-quit" class="headerlink" title="（1）Before-quit"></a>（1）Before-quit</h6><ul>
+<li><code>event</code> Event #返回</li>
+</ul>
+<p> 在程序关闭窗口前触发（macOS不是关闭窗口触发，而是关闭程序）</p>
+<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125085755781.png"></p>
+<h6 id="（2）browser-window-blur"><a href="#（2）browser-window-blur" class="headerlink" title="（2）browser-window-blur"></a>（2）browser-window-blur</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>window</code> BrowserWindow #返回</li>
+</ul>
+<p>当一个 browserWindow （窗口）失去焦点时触发。当我们鼠标点击窗口以外的地方就会失焦。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090204480.png"></p>
+<h6 id="（3）browser-window-focus"><a href="#（3）browser-window-focus" class="headerlink" title="（3）browser-window-focus"></a>（3）browser-window-focus</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>window</code> BrowserWindow #返回</li>
+</ul>
+<p>当一个 browserWindow 获得焦点时触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090450485.png"></p>
+<h6 id="（4）quit"><a href="#（4）quit" class="headerlink" title="（4）quit"></a>（4）quit</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>exitCode</code> Integer #返回</li>
+</ul>
+<p>在应用程序退出时发出。</p>
+<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090654139.png"></p>
+<h6 id="（5）window-all-closed"><a href="#（5）window-all-closed" class="headerlink" title="（5）window-all-closed"></a>（5）window-all-closed</h6><p>当所有的窗口都被关闭时触发。</p>
+<p>如果你没有监听此事件并且所有窗口都关闭了，默认的行为是控制退出程序；但如果你监听了此事件，你可以控制是否退出程序。 如果用户按下了 <code>Cmd + Q</code>，或者开发者调用了 <code>app.quit()</code>，Electron 会首先关闭所有的窗口然后触发 <code>will-quit</code> 事件，在这种情况下 <code>window-all-closed</code>事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090909458.png"></p>
+<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><p>由于各种app.方法使用频率都差不多，那么我们根据需要看官方文档吧（也比较容易看懂）</p>
+<p>[App.方法 文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app#%E6%96%B9%E6%B3%95">https://www.electronjs.org/zh/docs/latest/api/app#方法</a> “</p>
+<h5 id="BrowserWindow："><a href="#BrowserWindow：" class="headerlink" title="BrowserWindow："></a>BrowserWindow：</h5><p><code>BrowserWindow</code> 类暴露了各种方法来修改应用窗口的外观和行为</p>
+<h6 id="（1）优雅的打开窗口"><a href="#（1）优雅的打开窗口" class="headerlink" title="（1）优雅的打开窗口"></a>（1）优雅的打开窗口</h6><p><code>ready-to-show</code> 事件</p>
+<p>在加载页面时，渲染进程第一次完成绘制时，如果窗口还没有被显示，渲染进程会发出 <code>ready-to-show</code> 事件 。 在此事件后显示窗口将没有视觉闪烁：（不会有白屏出现，但如果绘制没有完成，窗口出现的时间也会延长，根据业务需求来选择是否要选择这种优雅的打开窗口方式）</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093133167.png"></p>
+<p>这个事件通常在 <code>did-finish-load</code> 事件之后发出，但是页面有许多远程资源时，它可能会在 <code>did-finish-load</code>之前发出事件。</p>
+<p><code>backgroundColor</code>属性</p>
+<p>对于一个复杂的应用，<code>ready-to-show</code> 可能发出的太晚，会让应用感觉缓慢。 在这种情况下，建议立刻显示窗口，并使用接近应用程序背景的 <code>backgroundColor</code></p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093813389.png"></p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093827541.png"></p>
+<p>建议 设置 <code>backgroundColor</code>和 <code>ready-to-show</code> 事件一起用，以使应用感觉更接近原生。</p>
+<pre><code class="javascript">//backgroundColor有效值
+const win = new BrowserWindow()
+win.setBackgroundColor(&#39;hsl(230, 100%, 50%)&#39;)
+win.setBackgroundColor(&#39;rgb(255, 145, 145)&#39;)
+win.setBackgroundColor(&#39;#ff00a3&#39;)
+win.setBackgroundColor(&#39;blueviolet&#39;)
 </code></pre>
-<h3 id="2-启动端口映射verdaccio容器"><a href="#2-启动端口映射verdaccio容器" class="headerlink" title="2.启动端口映射verdaccio容器"></a>2.启动端口映射verdaccio容器</h3><pre><code class="ini">docker run -it --name verdaccio -p 4873:4873 verdaccio/verdaccio //运行 verdaccio，使用 docker 命令运行镜像，创建 verdaccio 容器 ，端口4873
+<h6 id="（2）父子窗口-amp-amp-模态窗口"><a href="#（2）父子窗口-amp-amp-模态窗口" class="headerlink" title="（2）父子窗口&amp;&amp;模态窗口"></a>（2）父子窗口&amp;&amp;模态窗口</h6><p>父子窗口：</p>
+<p>通过使用 <code>parent</code> 选项，你可以创建子窗口：</p>
+<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
+
+const top = new BrowserWindow()
+const child = new BrowserWindow(&#123; parent: top &#125;)
+child.show()
+top.show()
 </code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095140709.png"></p>
-<h3 id="3-私有部署npm仓库成功"><a href="#3-私有部署npm仓库成功" class="headerlink" title="3.私有部署npm仓库成功"></a>3.私有部署npm仓库成功</h3><p>访问<a href="http://localhost:4873/">http://localhost:4873/</a></p>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095258155.png"></p>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095230480.png"></p>
-<h3 id="4-添加权限用户"><a href="#4-添加权限用户" class="headerlink" title="4.添加权限用户"></a>4.添加权限用户</h3><pre><code class="ini">npm adduser --registry http://localhost:4873/ //根据提示添加用户
+<p><code>child</code> 窗口将总是显示在 <code>top</code> 窗口的顶部.</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125094829288.png"></p>
+<p>模态窗口</p>
+<p>模态窗口是禁用父窗口的子窗口，创建模态窗口必须设置 <code>parent</code> 和 <code>modal</code> 选项：</p>
+<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
+
+const child = new BrowserWindow(&#123; parent: top, modal: true, show: false &#125;)
+child.loadURL(&#39;https://github.com&#39;)
+child.once(&#39;ready-to-show&#39;, () =&gt; &#123;
+  child.show()
+&#125;)
 </code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095338495.png"></p>
-<h3 id="5-登陆"><a href="#5-登陆" class="headerlink" title="5.登陆"></a>5.登陆</h3><p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112095621194.png"></p>
-<h3 id="6-发布npm包"><a href="#6-发布npm包" class="headerlink" title="6.发布npm包"></a>6.发布npm包</h3><p>当我们的私有仓库搭建好之后，那么我们就可以向仓库发布npm包了，到我们npm包目录下上传就可以了</p>
-<pre><code class="css">1.创建npm-me包目录
-2.npm init 初始化目录
-3.编写功能文件
-4.如果是改版发布，更新版本号
-5.登陆私有仓库
-6.向私有仓库发布npm包
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125095057232.png"></p>
+<h6 id="（3）BrowserWindow属性"><a href="#（3）BrowserWindow属性" class="headerlink" title="（3）BrowserWindow属性"></a>（3）BrowserWindow属性</h6><p>这个BrowserWindow属性 比较多，而且都是设置窗口的一些属性，也是不难理解，我们就对照我们的官方文档来学习吧！</p>
+<p>[BrowserWindow属性]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions">https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions</a> “</p>
+<h6 id="（4）webContents"><a href="#（4）webContents" class="headerlink" title="（4）webContents"></a>（4）webContents</h6><p><code>did-finish-load</code> 事件</p>
+<p>导航完成时触发，即选项卡的旋转器将停止旋转，并指派<code>onload</code>事件后。</p>
+<p>[webContents类实例事件]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/web-contents#%E7%B1%BB-webcontents">https://www.electronjs.org/zh/docs/latest/api/web-contents#类-webcontents</a> “</p>
+<h6 id="（5）保存窗口状态"><a href="#（5）保存窗口状态" class="headerlink" title="（5）保存窗口状态"></a>（5）保存窗口状态</h6><p>当我们使用桌面程序的时候，那么我们有时候希望我们关闭程序再次打开程序的时候，程序的界面和状态能够是我们关闭前的样子，不希望再去重新设置。那我们就需要一个包<code>electron-win-state</code> </p>
+<p>安装这个包</p>
+<pre><code class="ini">npm i electron-win-state -S
 </code></pre>
-<pre><code class="javascript">//ifYes.js
-exports.ifYes = function() &#123;
-    return &quot;If you&#39;re late, your wages will be docked version new（registry）&quot;
-&#125;
+<p>我们可以在npmjs官网上找到这个包，去看它的说明文档</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101014250.png"></p>
+<p>根据使用说明，我们代码如下：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101245297.png"></p>
+<p>我们发现报错了，WinState is not a constructor</p>
+<p>当我们打印一下WinState看看什么情况</p>
+<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;)
+console.log(WinState)
 </code></pre>
-<pre><code class="json">//package.json
-&#123;
-  &quot;name&quot;: &quot;alan-npm-me&quot;,
-  &quot;version&quot;: &quot;1.0.3&quot;,
-  &quot;description&quot;: &quot;If you&#39;re late, your wages will be docked&quot;,
-  &quot;main&quot;: &quot;ifYes.js&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101446532.png"></p>
+<p>发现没有直接引入WinState，我们修改一下</p>
+<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;).default 
+</code></pre>
+<p>现在就没报错了。</p>
+<p>但是我们发现，虽然安装了这个包，但是我们程序的状态还是没有改变，这就很奇怪了，其实，是我们自己已经给窗口设置了自定义宽高，覆盖了。我们也缺了一句代码；</p>
+<pre><code class="javascript"> winState.manage(win)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125102737449.png"></p>
+<p>现在我们的状态保存就没问题了。当我们关闭窗口再次打开的时候就是关闭之前的样子了。</p>
+<h4 id="2-dialog"><a href="#2-dialog" class="headerlink" title="2.dialog"></a>2.dialog</h4><p>这些具体参数请看官方文档，下面几个方法返回一个promise对象</p>
+<h6 id="（1）dialog-showOpenDialog-browserWindow-options"><a href="#（1）dialog-showOpenDialog-browserWindow-options" class="headerlink" title="（1）dialog.showOpenDialog([browserWindow, ]options)"></a>（1）<code>dialog.showOpenDialog([browserWindow, ]options)</code></h6><h6 id="（2）dialog-showSaveDialog-browserWindow-options"><a href="#（2）dialog-showSaveDialog-browserWindow-options" class="headerlink" title="（2）dialog.showSaveDialog([browserWindow, ]options)"></a>（2）<code>dialog.showSaveDialog([browserWindow, ]options)</code></h6><h6 id="（3）dialog-showMessageBox-browserWindow-options"><a href="#（3）dialog-showMessageBox-browserWindow-options" class="headerlink" title="（3）dialog.showMessageBox([browserWindow, ]options)"></a>（3）<code>dialog.showMessageBox([browserWindow, ]options)</code></h6><p>[dialog文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options">https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options</a> “</p>
+<h4 id="3-快捷键（globalShortcut）"><a href="#3-快捷键（globalShortcut）" class="headerlink" title="3.快捷键（globalShortcut）"></a>3.快捷键（globalShortcut）</h4><blockquote>
+<p>在应用程序没有键盘焦点时，监听键盘事件。</p>
+</blockquote>
+<p><code>globalShortcut</code> 模块可以在操作系统中注册&#x2F;注销全局快捷键, 以便可以为操作定制各种快捷键。</p>
+<p><strong>注意:</strong> 快捷方式是全局的; 即使应用程序没有键盘焦点, 它也仍然在持续监听键盘事件。 在 app 模块的 <code>ready</code> 事件就绪之前，这个模块不能使用。</p>
+<pre><code class="javascript">const &#123; app, globalShortcut &#125; = require(&#39;electron&#39;)
+
+app.whenReady().then(() =&gt; &#123;
+  // 注册一个&#39;CommandOrControl+X&#39; 快捷键监听器
+  const ret = globalShortcut.register(&#39;CommandOrControl+X&#39;, () =&gt; &#123;
+    console.log(&#39;CommandOrControl+X is pressed&#39;)
+  &#125;)
+
+  if (!ret) &#123;
+    console.log(&#39;registration failed&#39;)
+  &#125;
+
+  // 检查快捷键是否注册成功
+  console.log(globalShortcut.isRegistered(&#39;CommandOrControl+X&#39;))
+&#125;)
+
+app.on(&#39;will-quit&#39;, () =&gt; &#123;
+  // 注销快捷键
+  globalShortcut.unregister(&#39;CommandOrControl+X&#39;)
+
+  // 注销所有快捷键
+  globalShortcut.unregisterAll()
+&#125;)
+</code></pre>
+<p>方法</p>
+<p><code>globalShortcut</code> 模块具有以下方法:</p>
+<h6 id="（1）globalShortcut-register-accelerator-callback"><a href="#（1）globalShortcut-register-accelerator-callback" class="headerlink" title="（1）globalShortcut.register(accelerator, callback)"></a>（1）<code>globalShortcut.register(accelerator, callback)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+<li><code>callback</code> Function</li>
+</ul>
+<p>返回<code>boolean</code> - 快捷键注册是否成功</p>
+<p>注册 <code>accelerator</code> 的全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
+<p>如果指定的快捷键已经被其他应用程序注册掉, 调用会默默失败。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
+<ul>
+<li>“Media Play&#x2F;Pause”</li>
+<li>“Media Next Track”</li>
+<li>“Media Previous Track”</li>
+<li>“Media Stop”</li>
+</ul>
+<h6 id="（2）globalShortcut-registerAll-accelerators-callback"><a href="#（2）globalShortcut-registerAll-accelerators-callback" class="headerlink" title="（2）globalShortcut.registerAll(accelerators, callback)"></a>（2）<code>globalShortcut.registerAll(accelerators, callback)</code></h6><ul>
+<li><code>accelerators</code> string[] - an array of Accelerators.</li>
+<li><code>callback</code> Function</li>
+</ul>
+<p>注册多个全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
+<p>如果定义的快捷键已经被其他应用占用，这个调用会失效。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
+<ul>
+<li>“Media Play&#x2F;Pause”</li>
+<li>“Media Next Track”</li>
+<li>“Media Previous Track”</li>
+<li>“Media Stop”</li>
+</ul>
+<h6 id="（3）globalShortcut-isRegistered-accelerator"><a href="#（3）globalShortcut-isRegistered-accelerator" class="headerlink" title="（3）globalShortcut.isRegistered(accelerator)"></a>（3）<code>globalShortcut.isRegistered(accelerator)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+</ul>
+<p>Returns <code>boolean</code> - 表示 <code>accelerator</code> 全局快捷键是否注册成功</p>
+<p>当快捷键已经被其他应用程序注册时, 此调用依然将返回 <code>false</code>。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<h6 id="（4）globalShortcut-unregister-accelerator"><a href="#（4）globalShortcut-unregister-accelerator" class="headerlink" title="（4）globalShortcut.unregister(accelerator)"></a>（4）<code>globalShortcut.unregister(accelerator)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+</ul>
+<p>注销 <code>accelerator</code> 的全局快捷键。</p>
+<h6 id="（5）globalShortcut-unregisterAll"><a href="#（5）globalShortcut-unregisterAll" class="headerlink" title="（5）globalShortcut.unregisterAll()"></a>（5）<code>globalShortcut.unregisterAll()</code></h6><p>注销所有的全局快捷键（清空该应用程序的所有全局快捷键）。</p>
+<h4 id="4-菜单（Menu）"><a href="#4-菜单（Menu）" class="headerlink" title="4.菜单（Menu）"></a>4.菜单（Menu）</h4><p>我们这举个例子：</p>
+<pre><code class="javascript">//一个简单的菜单模板
+const &#123; app, Menu &#125; = require(&#39;electron&#39;)
+
+const isMac = process.platform === &#39;darwin&#39;//判断是不是macOS
+//role：菜单选项
+const template = [
+  // &#123; role: &#39;appMenu&#39; &#125;
+  ...(isMac ? [&#123;
+    label: app.name,//我们程序名称
+    submenu: [
+      &#123; role: &#39;about&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;services&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;hide&#39; &#125;,
+      &#123; role: &#39;hideOthers&#39; &#125;,
+      &#123; role: &#39;unhide&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;quit&#39; &#125;
+    ]
+  &#125;] : []),
+  // &#123; role: &#39;fileMenu&#39; &#125;
+  &#123;
+    label: &#39;File&#39;,
+    submenu: [
+      isMac ? &#123; role: &#39;close&#39; &#125; : &#123; role: &#39;quit&#39; &#125;
+    ]
   &#125;,
-  &quot;keywords&quot;: [
-    &quot;ifYes&quot;
-  ],
-  &quot;author&quot;: &quot;alan_mf&quot;,
-  &quot;license&quot;: &quot;ISC&quot;
+  // &#123; role: &#39;editMenu&#39; &#125;
+  &#123;
+    label: &#39;Edit&#39;,
+    submenu: [
+      &#123; role: &#39;undo&#39; &#125;,
+      &#123; role: &#39;redo&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;cut&#39; &#125;,
+      &#123; role: &#39;copy&#39; &#125;,
+      &#123; role: &#39;paste&#39; &#125;,
+      ...(isMac ? [
+        &#123; role: &#39;pasteAndMatchStyle&#39; &#125;,
+        &#123; role: &#39;delete&#39; &#125;,
+        &#123; role: &#39;selectAll&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123;
+          label: &#39;Speech&#39;,
+          submenu: [
+            &#123; role: &#39;startSpeaking&#39; &#125;,
+            &#123; role: &#39;stopSpeaking&#39; &#125;
+          ]
+        &#125;
+      ] : [
+        &#123; role: &#39;delete&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;selectAll&#39; &#125;
+      ])
+    ]
+  &#125;,
+  // &#123; role: &#39;viewMenu&#39; &#125;
+  &#123;
+    label: &#39;View&#39;,
+    submenu: [
+      &#123; role: &#39;reload&#39; &#125;,
+      &#123; role: &#39;forceReload&#39; &#125;,
+      &#123; role: &#39;toggleDevTools&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;resetZoom&#39; &#125;,
+      &#123; role: &#39;zoomIn&#39; &#125;,
+      &#123; role: &#39;zoomOut&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;togglefullscreen&#39; &#125;
+    ]
+  &#125;,
+  // &#123; role: &#39;windowMenu&#39; &#125;
+  &#123;
+    label: &#39;Window&#39;,
+    submenu: [
+      &#123; role: &#39;minimize&#39; &#125;,
+      &#123; role: &#39;zoom&#39; &#125;,
+      ...(isMac ? [
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;front&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;window&#39; &#125;
+      ] : [
+        &#123; role: &#39;close&#39; &#125;
+      ])
+    ]
+  &#125;,
+  &#123;
+    role: &#39;help&#39;,
+    submenu: [
+      &#123;
+        label: &#39;Learn More&#39;,
+        click: async () =&gt; &#123;
+          //定义自己的菜单方法
+          const &#123; shell &#125; = require(&#39;electron&#39;)
+          await shell.openExternal(&#39;https://electronjs.org&#39;)
+        &#125;
+      &#125;,
+      &#123;
+        label:&#39;alanmf&#39;,
+          click:()=&gt;&#123;console.log(&#39;shift+G&#39;)&#125;,
+          accelerator:&#39;shift+G&#39;//定义快捷键
+      &#125;
+    ]
+  &#125;
+]
+
+const menu = Menu.buildFromTemplate(template)//一般来说， template是一个options类型的数组，用于构建MenuItem。 使用方法可参考前文。还可以将其他字段附加到template，它们将成为菜单项的属性。
+Menu.setApplicationMenu(menu)//在macOS上将 menu设置成应用内菜单 在windows和Linux上，menu 将会被设置成窗口顶部菜单在Windows和Linux中
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125155603331.png"></p>
+<p>[Menu菜单文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu">https://www.electronjs.org/zh/docs/latest/api/menu</a> “<br>[role的属性值]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu-item#%E8%A7%92%E8%89%B2">https://www.electronjs.org/zh/docs/latest/api/menu-item#角色</a> “</p>
+<h4 id="5-系统托盘（Tray）"><a href="#5-系统托盘（Tray）" class="headerlink" title="5.系统托盘（Tray）"></a>5.系统托盘（Tray）</h4><blockquote>
+<p>添加图标和上下文菜单到系统通知区</p>
+</blockquote>
+<pre><code class="javascript">const &#123; app, Menu, Tray &#125; = require(&#39;electron&#39;)
+
+let tray = null
+app.whenReady().then(() =&gt; &#123;
+  tray = new Tray(&#39;/path/to/my/icon&#39;) //定义icon的路径
+  const contextMenu = Menu.buildFromTemplate([
+    &#123; label: &#39;Item1&#39;, type: &#39;radio&#39; &#125;,
+    &#123; label: &#39;Item2&#39;, type: &#39;radio&#39; &#125;,
+    &#123; label: &#39;Item3&#39;, type: &#39;radio&#39;, checked: true &#125;,
+    &#123; label: &#39;Item4&#39;, type: &#39;radio&#39; &#125;
+  ])
+  tray.setToolTip(&#39;This is my application.&#39;)//设置鼠标指针在托盘图标上悬停时显示的文本
+  tray.setContextMenu(contextMenu)//设置上下文菜单到托盘
+&#125;)
+</code></pre>
+<p>其实这个Tray跟Menu是布局差不太多的，所以学习起来也不是很难理解了。具体事件和方法也不是特别多，我们就直接看官方API文档吧！</p>
+<p>[Tray文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/tray">https://www.electronjs.org/zh/docs/latest/api/tray</a> “</p>
+<h4 id="6-触控板（TouchBar）"><a href="#6-触控板（TouchBar）" class="headerlink" title="6.触控板（TouchBar）"></a>6.触控板（TouchBar）</h4><p><strong>注意:</strong> TouchBar API目前为实验性质，可能会更改或删除。</p>
+<p>如果官网推荐的TouchBar模拟器下载失败，自己搜索一下即可。（如果下载的打不开，那就在应用程序-&gt;右键显示包内容-&gt;如下）执行就可以了</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172856290.png"></p>
+<pre><code class="javascript">//touchbar.js
+const &#123; app, BrowserWindow, TouchBar &#125; = require(&#39;electron&#39;)
+
+const &#123; TouchBarLabel, TouchBarButton, TouchBarSpacer &#125; = TouchBar
+
+let spinning = false
+
+// 类似老虎机的滚轴标签
+const reel1 = new TouchBarLabel()
+const reel2 = new TouchBarLabel()
+const reel3 = new TouchBarLabel()
+
+// 旋转结果标签
+const result = new TouchBarLabel()
+
+// 旋转按钮
+const spin = new TouchBarButton(&#123;
+  label: &#39;🎰 Spin&#39;,
+  backgroundColor: &#39;#7851A9&#39;,
+  click: () =&gt; &#123;
+    // Ignore clicks if already spinning
+    if (spinning) &#123;
+      return
+    &#125;
+
+    spinning = true
+    result.label = &#39;&#39;
+
+    let timeout = 10
+    const spinLength = 4 * 1000 // 4 seconds
+    const startTime = Date.now()
+
+    const spinReels = () =&gt; &#123;
+      updateReels()
+
+      if ((Date.now() - startTime) &gt;= spinLength) &#123;
+        finishSpin()
+      &#125; else &#123;
+        // Slow down a bit on each spin
+        timeout *= 1.1
+        setTimeout(spinReels, timeout)
+      &#125;
+    &#125;
+
+    spinReels()
+  &#125;
+&#125;)
+
+const getRandomValue = () =&gt; &#123;
+  const values = [&#39;🍒&#39;, &#39;💎&#39;, &#39;7️⃣&#39;, &#39;🍊&#39;, &#39;🔔&#39;, &#39;⭐&#39;, &#39;🍇&#39;, &#39;🍀&#39;]
+  return values[Math.floor(Math.random() * values.length)]
 &#125;
+
+const updateReels = () =&gt; &#123;
+  reel1.label = getRandomValue()
+  reel2.label = getRandomValue()
+  reel3.label = getRandomValue()
+&#125;
+
+const finishSpin = () =&gt; &#123;
+  const uniqueValues = new Set([reel1.label, reel2.label, reel3.label]).size
+  if (uniqueValues === 1) &#123;
+    // All 3 values are the same
+    result.label = &#39;💰 Jackpot!&#39;
+    result.textColor = &#39;#FDFF00&#39;
+  &#125; else if (uniqueValues === 2) &#123;
+    // 2个值相同
+    result.label = &#39;😍 Winner!&#39;
+    result.textColor = &#39;#FDFF00&#39;
+  &#125; else &#123;
+    // 没有值相同
+    result.label = &#39;🙁 Spin Again&#39;
+    result.textColor = null
+  &#125;
+  spinning = false
+&#125;
+
+const touchBar = new TouchBar(&#123;
+  items: [
+    spin,
+    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
+    reel1,
+    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
+    reel2,
+    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
+    reel3,
+    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
+    result
+  ]
+&#125;)
+
+let window
+
+app.whenReady().then(() =&gt; &#123;
+  window = new BrowserWindow(&#123;
+    frame: false,
+    titleBarStyle: &#39;hiddenInset&#39;,
+    width: 200,
+    height: 200,
+    backgroundColor: &#39;#000&#39;
+  &#125;)
+  window.loadURL(&#39;about:blank&#39;)
+  window.setTouchBar(touchBar)
+&#125;)
 </code></pre>
-<pre><code class="ini">npm version patch  //补丁版本更新
+<p>运行命令：</p>
+<pre><code class="ini">./node_modules/.bin/electron touchbar.js
 </code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112101529827.png"></p>
-<pre><code class="ini">npm-me % npm publish --registry http://localhost:4873/ //发布
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112102102928.png"></p>
-<p>这时候刷新我们的私有仓库页面就可以看到了<a href="http://localhost:4873/">http://localhost:4873/</a></p>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112102228314.png"></p>
-<h3 id="7-下载私有仓库的包"><a href="#7-下载私有仓库的包" class="headerlink" title="7.下载私有仓库的包"></a>7.下载私有仓库的包</h3><pre><code class="css">1.创建一个文件目录
-2.初始化 npm init -y
-3.编辑测试代码
-4. npm install --registry http://localhost:4873 alan-npm-me //下载私有仓库npm包
-5.执行测试代码
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112105324344.png"></p>
-<h3 id="8-修改verdaccio权限"><a href="#8-修改verdaccio权限" class="headerlink" title="8.修改verdaccio权限"></a>8.修改verdaccio权限</h3><p>因为我是docker安装的verdaccio，所以查找配置文件路径是这样的</p>
-<pre><code class="ini">1. docker exec --user root -it verdaccio sh
-2. cd /verdaccio
-3. cd conf
-4. vi config.yaml
-</code></pre>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112125337815.png"></p>
-<p><img src="/2022/11/12/%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E7%9A%84npm%E4%BB%93%E5%BA%93/image-20221112125352787.png"></p>
-<p>里面就可以配置你们的文件了，重启容器就生效了</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
+<p>[TouchBar文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
 ]]></content>
       <categories>
-        <category>npm&amp;yarn</category>
-        <category>搭建私有的npm仓库</category>
+        <category>Electron</category>
+        <category>Electron-d-2.0</category>
       </categories>
       <tags>
-        <tag>npm</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>秋天的第一个烤红薯</title>
-    <url>/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="秋天的第一个烤红薯"><a href="#秋天的第一个烤红薯" class="headerlink" title="秋天的第一个烤红薯"></a>秋天的第一个烤红薯</h1><h2 id="美丽的不只是风景"><a href="#美丽的不只是风景" class="headerlink" title="美丽的不只是风景"></a>美丽的不只是风景</h2><p><img src="/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/IMG_20220923_174805.jpg"></p>
-]]></content>
-      <categories>
-        <category>旅行</category>
-        <category>秋天</category>
-      </categories>
-      <tags>
-        <tag>旅行</tag>
-        <tag>秋天</tag>
-        <tag>季节</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>表白爱心biu</title>
-    <url>/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="爱心代码（canvas）"><a href="#爱心代码（canvas）" class="headerlink" title="爱心代码（canvas）"></a>爱心代码（canvas）</h1><p>每天浪漫一点点</p>
-<p>发给你女朋友，有奖励🥳</p>
-<p><img src="/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/image-20221111095138378.png"></p>
-<pre><code class="javascript">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;meta charset=&quot;utf-8&quot; /&gt;
-    &lt;title&gt;玥小公主爱心&lt;/title&gt;
-
-    &lt;style&gt;
-      html,
-      body &#123;
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        background: #000;
-      &#125;
-      canvas &#123;
-        width: 100%;
-        height: 100%;
-      &#125;
-    &lt;/style&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;canvas id=&quot;pinkboard&quot;&gt;&lt;/canvas&gt;
-    &lt;script&gt;
-      /*
-       * 参数配置
-       */
-      var settings = &#123;
-        particles: &#123;
-          length: 500, // 最大颗粒量
-          duration: 2, // 粒子持续时间（秒）
-          velocity: 110, // 粒子范围（像素/秒）
-          effect: -1.0, // 内轮廓
-          size: 35, // 颗粒大小（像素）
-        &#125;,
-      &#125;;
-
-      /*
-       * Point class
-       */
-      var Point = (function () &#123;
-        function Point(x, y) &#123;
-          this.x = typeof x !== &quot;undefined&quot; ? x : 0;
-          this.y = typeof y !== &quot;undefined&quot; ? y : 0;
-        &#125;
-        Point.prototype.clone = function () &#123;
-          return new Point(this.x, this.y);
-        &#125;;
-        Point.prototype.length = function (length) &#123;
-          if (typeof length == &quot;undefined&quot;)
-            return Math.sqrt(this.x * this.x + this.y * this.y);
-          this.normalize();
-          this.x *= length;
-          this.y *= length;
-          return this;
-        &#125;;
-        Point.prototype.normalize = function () &#123;
-          var length = this.length();
-          this.x /= length;
-          this.y /= length;
-          return this;
-        &#125;;
-        return Point;
-      &#125;)();
-
-      /*
-       * Particle class
-       */
-      var Particle = (function () &#123;
-        function Particle() &#123;
-          this.position = new Point();
-          this.velocity = new Point();
-          this.acceleration = new Point();
-          this.age = 0;
-        &#125;
-        Particle.prototype.initialize = function (x, y, dx, dy) &#123;
-          this.position.x = x;
-          this.position.y = y;
-          this.velocity.x = dx;
-          this.velocity.y = dy;
-          this.acceleration.x = dx * settings.particles.effect;
-          this.acceleration.y = dy * settings.particles.effect;
-          this.age = 0;
-        &#125;;
-        Particle.prototype.update = function (deltaTime) &#123;
-          this.position.x += this.velocity.x * deltaTime;
-          this.position.y += this.velocity.y * deltaTime;
-          this.velocity.x += this.acceleration.x * deltaTime;
-          this.velocity.y += this.acceleration.y * deltaTime;
-          this.age += deltaTime;
-        &#125;;
-        Particle.prototype.draw = function (context, image) &#123;
-          function ease(t) &#123;
-            return --t * t * t + 1;
-          &#125;
-          var size = image.width * ease(this.age / settings.particles.duration);
-          context.globalAlpha = 1 - this.age / settings.particles.duration;
-          context.drawImage(
-            image,
-            this.position.x - size / 2,
-            this.position.y - size / 2,
-            size,
-            size
-          );
-        &#125;;
-        return Particle;
-      &#125;)();
-
-      /*
-       * ParticlePool class
-       */
-      var ParticlePool = (function () &#123;
-        var particles,
-          firstActive = 0,
-          firstFree = 0,
-          duration = settings.particles.duration;
-
-        function ParticlePool(length) &#123;
-          // create and populate particle pool
-          particles = new Array(length);
-          for (var i = 0; i &lt; particles.length; i++)
-            particles[i] = new Particle();
-        &#125;
-        ParticlePool.prototype.add = function (x, y, dx, dy) &#123;
-          particles[firstFree].initialize(x, y, dx, dy);
-
-          // handle circular queue
-          firstFree++;
-          if (firstFree == particles.length) firstFree = 0;
-          if (firstActive == firstFree) firstActive++;
-          if (firstActive == particles.length) firstActive = 0;
-        &#125;;
-        ParticlePool.prototype.update = function (deltaTime) &#123;
-          var i;
-
-          // update active particles
-          if (firstActive &lt; firstFree) &#123;
-            for (i = firstActive; i &lt; firstFree; i++)
-              particles[i].update(deltaTime);
-          &#125;
-          if (firstFree &lt; firstActive) &#123;
-            for (i = firstActive; i &lt; particles.length; i++)
-              particles[i].update(deltaTime);
-            for (i = 0; i &lt; firstFree; i++) particles[i].update(deltaTime);
-          &#125;
-
-          // remove inactive particles
-          while (
-            particles[firstActive].age &gt;= duration &amp;&amp;
-            firstActive != firstFree
-          ) &#123;
-            firstActive++;
-            if (firstActive == particles.length) firstActive = 0;
-          &#125;
-        &#125;;
-        ParticlePool.prototype.draw = function (context, image) &#123;
-          // draw active particles
-          if (firstActive &lt; firstFree) &#123;
-            for (i = firstActive; i &lt; firstFree; i++)
-              particles[i].draw(context, image);
-          &#125;
-          if (firstFree &lt; firstActive) &#123;
-            for (i = firstActive; i &lt; particles.length; i++)
-              particles[i].draw(context, image);
-            for (i = 0; i &lt; firstFree; i++) particles[i].draw(context, image);
-          &#125;
-        &#125;;
-        return ParticlePool;
-      &#125;)();
-
-      /*
-       * Putting it all together
-       */
-      (function (canvas) &#123;
-        var context = canvas.getContext(&quot;2d&quot;),
-          particles = new ParticlePool(settings.particles.length),
-          particleRate =
-            settings.particles.length / settings.particles.duration, // particles/sec
-          time;
-
-        // get point on heart with -PI &lt;= t &lt;= PI
-        function pointOnHeart(t) &#123;
-          return new Point(
-            160 * Math.pow(Math.sin(t), 3),
-            130 * Math.cos(t) -
-              50 * Math.cos(2 * t) -
-              20 * Math.cos(3 * t) -
-              10 * Math.cos(4 * t) +
-              25
-          );
-        &#125;
-
-        // 使用虚拟画布创建粒子图像
-        var image = (function () &#123;
-          var canvas = document.createElement(&quot;canvas&quot;),
-            context = canvas.getContext(&quot;2d&quot;);
-          canvas.width = settings.particles.size;
-          canvas.height = settings.particles.size;
-          // helper function to create the path
-          function to(t) &#123;
-            var point = pointOnHeart(t);
-            point.x =
-              settings.particles.size / 2 +
-              (point.x * settings.particles.size) / 450;
-            point.y =
-              settings.particles.size / 2 -
-              (point.y * settings.particles.size) / 450;
-            return point;
-          &#125;
-          // create the path
-          context.beginPath();
-          var t = -Math.PI;
-          var point = to(t);
-          context.moveTo(point.x, point.y);
-          while (t &lt; Math.PI) &#123;
-            t += 0.03; // baby steps!
-            point = to(t);
-            context.lineTo(point.x, point.y);
-          &#125;
-          context.closePath();
-          // create the fill （更换爱心颜色）
-          context.fillStyle = &quot;#ea80b0&quot;;
-          context.fill();
-          // create the image
-          var image = new Image();
-          image.src = canvas.toDataURL();
-          return image;
-        &#125;)();
-
-        // render that thing!
-        function render() &#123;
-          // next animation frame
-          requestAnimationFrame(render);
-
-          // update time（粒子速度）
-          var newTime = new Date().getTime() / 1000,
-            deltaTime = newTime - (time || newTime);
-          time = newTime;
-
-          // clear canvas
-          context.clearRect(0, 0, canvas.width, canvas.height);
-
-          // create new particles
-          var amount = particleRate * deltaTime;
-          for (var i = 0; i &lt; amount; i++) &#123;
-            var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
-            var dir = pos.clone().length(settings.particles.velocity);
-            particles.add(
-              canvas.width / 2 + pos.x,
-              canvas.height / 2 - pos.y,
-              dir.x,
-              -dir.y
-            );
-          &#125;
-
-          // update and draw particles
-          particles.update(deltaTime);
-          particles.draw(context, image);
-        &#125;
-
-        // handle (re-)sizing of the canvas
-        function onResize() &#123;
-          canvas.width = canvas.clientWidth;
-          canvas.height = canvas.clientHeight;
-        &#125;
-        window.onresize = onResize;
-
-        // delay rendering bootstrap
-        setTimeout(function () &#123;
-          onResize();
-          render();
-        &#125;, 10);
-      &#125;)(document.getElementById(&quot;pinkboard&quot;));
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-]]></content>
-      <categories>
-        <category>趣味技术</category>
-        <category>表白爱心biu</category>
-      </categories>
-      <tags>
-        <tag>浪漫代码</tag>
+        <tag>electron</tag>
       </tags>
   </entry>
   <entry>
@@ -6916,439 +7349,6 @@ ipcMain.on(&#39;counter-value&#39;, (_event, value) =&gt; &#123;
       <categories>
         <category>Electron</category>
         <category>Electron-d-1.0</category>
-      </categories>
-      <tags>
-        <tag>electron</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Electron-d-2.0</title>
-    <url>/2022/11/25/Electron-d-2-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><p>本篇文章接上一篇文章，详细讲解主进程和渲染进程一些常用的API</p>
-<h3 id="主进程API"><a href="#主进程API" class="headerlink" title="主进程API"></a>主进程API</h3><h4 id="1-App-BrowserWindow"><a href="#1-App-BrowserWindow" class="headerlink" title="1.App+BrowserWindow"></a>1.App+BrowserWindow</h4><h5 id="App事件："><a href="#App事件：" class="headerlink" title="App事件："></a>App事件：</h5><h6 id="（1）Before-quit"><a href="#（1）Before-quit" class="headerlink" title="（1）Before-quit"></a>（1）Before-quit</h6><ul>
-<li><code>event</code> Event #返回</li>
-</ul>
-<p> 在程序关闭窗口前触发（macOS不是关闭窗口触发，而是关闭程序）</p>
-<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125085755781.png"></p>
-<h6 id="（2）browser-window-blur"><a href="#（2）browser-window-blur" class="headerlink" title="（2）browser-window-blur"></a>（2）browser-window-blur</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>window</code> BrowserWindow #返回</li>
-</ul>
-<p>当一个 browserWindow （窗口）失去焦点时触发。当我们鼠标点击窗口以外的地方就会失焦。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090204480.png"></p>
-<h6 id="（3）browser-window-focus"><a href="#（3）browser-window-focus" class="headerlink" title="（3）browser-window-focus"></a>（3）browser-window-focus</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>window</code> BrowserWindow #返回</li>
-</ul>
-<p>当一个 browserWindow 获得焦点时触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090450485.png"></p>
-<h6 id="（4）quit"><a href="#（4）quit" class="headerlink" title="（4）quit"></a>（4）quit</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>exitCode</code> Integer #返回</li>
-</ul>
-<p>在应用程序退出时发出。</p>
-<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090654139.png"></p>
-<h6 id="（5）window-all-closed"><a href="#（5）window-all-closed" class="headerlink" title="（5）window-all-closed"></a>（5）window-all-closed</h6><p>当所有的窗口都被关闭时触发。</p>
-<p>如果你没有监听此事件并且所有窗口都关闭了，默认的行为是控制退出程序；但如果你监听了此事件，你可以控制是否退出程序。 如果用户按下了 <code>Cmd + Q</code>，或者开发者调用了 <code>app.quit()</code>，Electron 会首先关闭所有的窗口然后触发 <code>will-quit</code> 事件，在这种情况下 <code>window-all-closed</code>事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090909458.png"></p>
-<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><p>由于各种app.方法使用频率都差不多，那么我们根据需要看官方文档吧（也比较容易看懂）</p>
-<p>[App.方法 文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app#%E6%96%B9%E6%B3%95">https://www.electronjs.org/zh/docs/latest/api/app#方法</a> “</p>
-<h5 id="BrowserWindow："><a href="#BrowserWindow：" class="headerlink" title="BrowserWindow："></a>BrowserWindow：</h5><p><code>BrowserWindow</code> 类暴露了各种方法来修改应用窗口的外观和行为</p>
-<h6 id="（1）优雅的打开窗口"><a href="#（1）优雅的打开窗口" class="headerlink" title="（1）优雅的打开窗口"></a>（1）优雅的打开窗口</h6><p><code>ready-to-show</code> 事件</p>
-<p>在加载页面时，渲染进程第一次完成绘制时，如果窗口还没有被显示，渲染进程会发出 <code>ready-to-show</code> 事件 。 在此事件后显示窗口将没有视觉闪烁：（不会有白屏出现，但如果绘制没有完成，窗口出现的时间也会延长，根据业务需求来选择是否要选择这种优雅的打开窗口方式）</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093133167.png"></p>
-<p>这个事件通常在 <code>did-finish-load</code> 事件之后发出，但是页面有许多远程资源时，它可能会在 <code>did-finish-load</code>之前发出事件。</p>
-<p><code>backgroundColor</code>属性</p>
-<p>对于一个复杂的应用，<code>ready-to-show</code> 可能发出的太晚，会让应用感觉缓慢。 在这种情况下，建议立刻显示窗口，并使用接近应用程序背景的 <code>backgroundColor</code></p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093813389.png"></p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093827541.png"></p>
-<p>建议 设置 <code>backgroundColor</code>和 <code>ready-to-show</code> 事件一起用，以使应用感觉更接近原生。</p>
-<pre><code class="javascript">//backgroundColor有效值
-const win = new BrowserWindow()
-win.setBackgroundColor(&#39;hsl(230, 100%, 50%)&#39;)
-win.setBackgroundColor(&#39;rgb(255, 145, 145)&#39;)
-win.setBackgroundColor(&#39;#ff00a3&#39;)
-win.setBackgroundColor(&#39;blueviolet&#39;)
-</code></pre>
-<h6 id="（2）父子窗口-amp-amp-模态窗口"><a href="#（2）父子窗口-amp-amp-模态窗口" class="headerlink" title="（2）父子窗口&amp;&amp;模态窗口"></a>（2）父子窗口&amp;&amp;模态窗口</h6><p>父子窗口：</p>
-<p>通过使用 <code>parent</code> 选项，你可以创建子窗口：</p>
-<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const top = new BrowserWindow()
-const child = new BrowserWindow(&#123; parent: top &#125;)
-child.show()
-top.show()
-</code></pre>
-<p><code>child</code> 窗口将总是显示在 <code>top</code> 窗口的顶部.</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125094829288.png"></p>
-<p>模态窗口</p>
-<p>模态窗口是禁用父窗口的子窗口，创建模态窗口必须设置 <code>parent</code> 和 <code>modal</code> 选项：</p>
-<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const child = new BrowserWindow(&#123; parent: top, modal: true, show: false &#125;)
-child.loadURL(&#39;https://github.com&#39;)
-child.once(&#39;ready-to-show&#39;, () =&gt; &#123;
-  child.show()
-&#125;)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125095057232.png"></p>
-<h6 id="（3）BrowserWindow属性"><a href="#（3）BrowserWindow属性" class="headerlink" title="（3）BrowserWindow属性"></a>（3）BrowserWindow属性</h6><p>这个BrowserWindow属性 比较多，而且都是设置窗口的一些属性，也是不难理解，我们就对照我们的官方文档来学习吧！</p>
-<p>[BrowserWindow属性]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions">https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions</a> “</p>
-<h6 id="（4）webContents"><a href="#（4）webContents" class="headerlink" title="（4）webContents"></a>（4）webContents</h6><p><code>did-finish-load</code> 事件</p>
-<p>导航完成时触发，即选项卡的旋转器将停止旋转，并指派<code>onload</code>事件后。</p>
-<p>[webContents类实例事件]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/web-contents#%E7%B1%BB-webcontents">https://www.electronjs.org/zh/docs/latest/api/web-contents#类-webcontents</a> “</p>
-<h6 id="（5）保存窗口状态"><a href="#（5）保存窗口状态" class="headerlink" title="（5）保存窗口状态"></a>（5）保存窗口状态</h6><p>当我们使用桌面程序的时候，那么我们有时候希望我们关闭程序再次打开程序的时候，程序的界面和状态能够是我们关闭前的样子，不希望再去重新设置。那我们就需要一个包<code>electron-win-state</code> </p>
-<p>安装这个包</p>
-<pre><code class="ini">npm i electron-win-state -S
-</code></pre>
-<p>我们可以在npmjs官网上找到这个包，去看它的说明文档</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101014250.png"></p>
-<p>根据使用说明，我们代码如下：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101245297.png"></p>
-<p>我们发现报错了，WinState is not a constructor</p>
-<p>当我们打印一下WinState看看什么情况</p>
-<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;)
-console.log(WinState)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101446532.png"></p>
-<p>发现没有直接引入WinState，我们修改一下</p>
-<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;).default 
-</code></pre>
-<p>现在就没报错了。</p>
-<p>但是我们发现，虽然安装了这个包，但是我们程序的状态还是没有改变，这就很奇怪了，其实，是我们自己已经给窗口设置了自定义宽高，覆盖了。我们也缺了一句代码；</p>
-<pre><code class="javascript"> winState.manage(win)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125102737449.png"></p>
-<p>现在我们的状态保存就没问题了。当我们关闭窗口再次打开的时候就是关闭之前的样子了。</p>
-<h4 id="2-dialog"><a href="#2-dialog" class="headerlink" title="2.dialog"></a>2.dialog</h4><p>这些具体参数请看官方文档，下面几个方法返回一个promise对象</p>
-<h6 id="（1）dialog-showOpenDialog-browserWindow-options"><a href="#（1）dialog-showOpenDialog-browserWindow-options" class="headerlink" title="（1）dialog.showOpenDialog([browserWindow, ]options)"></a>（1）<code>dialog.showOpenDialog([browserWindow, ]options)</code></h6><h6 id="（2）dialog-showSaveDialog-browserWindow-options"><a href="#（2）dialog-showSaveDialog-browserWindow-options" class="headerlink" title="（2）dialog.showSaveDialog([browserWindow, ]options)"></a>（2）<code>dialog.showSaveDialog([browserWindow, ]options)</code></h6><h6 id="（3）dialog-showMessageBox-browserWindow-options"><a href="#（3）dialog-showMessageBox-browserWindow-options" class="headerlink" title="（3）dialog.showMessageBox([browserWindow, ]options)"></a>（3）<code>dialog.showMessageBox([browserWindow, ]options)</code></h6><p>[dialog文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options">https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options</a> “</p>
-<h4 id="3-快捷键（globalShortcut）"><a href="#3-快捷键（globalShortcut）" class="headerlink" title="3.快捷键（globalShortcut）"></a>3.快捷键（globalShortcut）</h4><blockquote>
-<p>在应用程序没有键盘焦点时，监听键盘事件。</p>
-</blockquote>
-<p><code>globalShortcut</code> 模块可以在操作系统中注册&#x2F;注销全局快捷键, 以便可以为操作定制各种快捷键。</p>
-<p><strong>注意:</strong> 快捷方式是全局的; 即使应用程序没有键盘焦点, 它也仍然在持续监听键盘事件。 在 app 模块的 <code>ready</code> 事件就绪之前，这个模块不能使用。</p>
-<pre><code class="javascript">const &#123; app, globalShortcut &#125; = require(&#39;electron&#39;)
-
-app.whenReady().then(() =&gt; &#123;
-  // 注册一个&#39;CommandOrControl+X&#39; 快捷键监听器
-  const ret = globalShortcut.register(&#39;CommandOrControl+X&#39;, () =&gt; &#123;
-    console.log(&#39;CommandOrControl+X is pressed&#39;)
-  &#125;)
-
-  if (!ret) &#123;
-    console.log(&#39;registration failed&#39;)
-  &#125;
-
-  // 检查快捷键是否注册成功
-  console.log(globalShortcut.isRegistered(&#39;CommandOrControl+X&#39;))
-&#125;)
-
-app.on(&#39;will-quit&#39;, () =&gt; &#123;
-  // 注销快捷键
-  globalShortcut.unregister(&#39;CommandOrControl+X&#39;)
-
-  // 注销所有快捷键
-  globalShortcut.unregisterAll()
-&#125;)
-</code></pre>
-<p>方法</p>
-<p><code>globalShortcut</code> 模块具有以下方法:</p>
-<h6 id="（1）globalShortcut-register-accelerator-callback"><a href="#（1）globalShortcut-register-accelerator-callback" class="headerlink" title="（1）globalShortcut.register(accelerator, callback)"></a>（1）<code>globalShortcut.register(accelerator, callback)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-<li><code>callback</code> Function</li>
-</ul>
-<p>返回<code>boolean</code> - 快捷键注册是否成功</p>
-<p>注册 <code>accelerator</code> 的全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
-<p>如果指定的快捷键已经被其他应用程序注册掉, 调用会默默失败。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
-<ul>
-<li>“Media Play&#x2F;Pause”</li>
-<li>“Media Next Track”</li>
-<li>“Media Previous Track”</li>
-<li>“Media Stop”</li>
-</ul>
-<h6 id="（2）globalShortcut-registerAll-accelerators-callback"><a href="#（2）globalShortcut-registerAll-accelerators-callback" class="headerlink" title="（2）globalShortcut.registerAll(accelerators, callback)"></a>（2）<code>globalShortcut.registerAll(accelerators, callback)</code></h6><ul>
-<li><code>accelerators</code> string[] - an array of Accelerators.</li>
-<li><code>callback</code> Function</li>
-</ul>
-<p>注册多个全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
-<p>如果定义的快捷键已经被其他应用占用，这个调用会失效。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
-<ul>
-<li>“Media Play&#x2F;Pause”</li>
-<li>“Media Next Track”</li>
-<li>“Media Previous Track”</li>
-<li>“Media Stop”</li>
-</ul>
-<h6 id="（3）globalShortcut-isRegistered-accelerator"><a href="#（3）globalShortcut-isRegistered-accelerator" class="headerlink" title="（3）globalShortcut.isRegistered(accelerator)"></a>（3）<code>globalShortcut.isRegistered(accelerator)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-</ul>
-<p>Returns <code>boolean</code> - 表示 <code>accelerator</code> 全局快捷键是否注册成功</p>
-<p>当快捷键已经被其他应用程序注册时, 此调用依然将返回 <code>false</code>。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<h6 id="（4）globalShortcut-unregister-accelerator"><a href="#（4）globalShortcut-unregister-accelerator" class="headerlink" title="（4）globalShortcut.unregister(accelerator)"></a>（4）<code>globalShortcut.unregister(accelerator)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-</ul>
-<p>注销 <code>accelerator</code> 的全局快捷键。</p>
-<h6 id="（5）globalShortcut-unregisterAll"><a href="#（5）globalShortcut-unregisterAll" class="headerlink" title="（5）globalShortcut.unregisterAll()"></a>（5）<code>globalShortcut.unregisterAll()</code></h6><p>注销所有的全局快捷键（清空该应用程序的所有全局快捷键）。</p>
-<h4 id="4-菜单（Menu）"><a href="#4-菜单（Menu）" class="headerlink" title="4.菜单（Menu）"></a>4.菜单（Menu）</h4><p>我们这举个例子：</p>
-<pre><code class="javascript">//一个简单的菜单模板
-const &#123; app, Menu &#125; = require(&#39;electron&#39;)
-
-const isMac = process.platform === &#39;darwin&#39;//判断是不是macOS
-//role：菜单选项
-const template = [
-  // &#123; role: &#39;appMenu&#39; &#125;
-  ...(isMac ? [&#123;
-    label: app.name,//我们程序名称
-    submenu: [
-      &#123; role: &#39;about&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;services&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;hide&#39; &#125;,
-      &#123; role: &#39;hideOthers&#39; &#125;,
-      &#123; role: &#39;unhide&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;quit&#39; &#125;
-    ]
-  &#125;] : []),
-  // &#123; role: &#39;fileMenu&#39; &#125;
-  &#123;
-    label: &#39;File&#39;,
-    submenu: [
-      isMac ? &#123; role: &#39;close&#39; &#125; : &#123; role: &#39;quit&#39; &#125;
-    ]
-  &#125;,
-  // &#123; role: &#39;editMenu&#39; &#125;
-  &#123;
-    label: &#39;Edit&#39;,
-    submenu: [
-      &#123; role: &#39;undo&#39; &#125;,
-      &#123; role: &#39;redo&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;cut&#39; &#125;,
-      &#123; role: &#39;copy&#39; &#125;,
-      &#123; role: &#39;paste&#39; &#125;,
-      ...(isMac ? [
-        &#123; role: &#39;pasteAndMatchStyle&#39; &#125;,
-        &#123; role: &#39;delete&#39; &#125;,
-        &#123; role: &#39;selectAll&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123;
-          label: &#39;Speech&#39;,
-          submenu: [
-            &#123; role: &#39;startSpeaking&#39; &#125;,
-            &#123; role: &#39;stopSpeaking&#39; &#125;
-          ]
-        &#125;
-      ] : [
-        &#123; role: &#39;delete&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;selectAll&#39; &#125;
-      ])
-    ]
-  &#125;,
-  // &#123; role: &#39;viewMenu&#39; &#125;
-  &#123;
-    label: &#39;View&#39;,
-    submenu: [
-      &#123; role: &#39;reload&#39; &#125;,
-      &#123; role: &#39;forceReload&#39; &#125;,
-      &#123; role: &#39;toggleDevTools&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;resetZoom&#39; &#125;,
-      &#123; role: &#39;zoomIn&#39; &#125;,
-      &#123; role: &#39;zoomOut&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;togglefullscreen&#39; &#125;
-    ]
-  &#125;,
-  // &#123; role: &#39;windowMenu&#39; &#125;
-  &#123;
-    label: &#39;Window&#39;,
-    submenu: [
-      &#123; role: &#39;minimize&#39; &#125;,
-      &#123; role: &#39;zoom&#39; &#125;,
-      ...(isMac ? [
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;front&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;window&#39; &#125;
-      ] : [
-        &#123; role: &#39;close&#39; &#125;
-      ])
-    ]
-  &#125;,
-  &#123;
-    role: &#39;help&#39;,
-    submenu: [
-      &#123;
-        label: &#39;Learn More&#39;,
-        click: async () =&gt; &#123;
-          //定义自己的菜单方法
-          const &#123; shell &#125; = require(&#39;electron&#39;)
-          await shell.openExternal(&#39;https://electronjs.org&#39;)
-        &#125;
-      &#125;,
-      &#123;
-        label:&#39;alanmf&#39;,
-          click:()=&gt;&#123;console.log(&#39;shift+G&#39;)&#125;,
-          accelerator:&#39;shift+G&#39;//定义快捷键
-      &#125;
-    ]
-  &#125;
-]
-
-const menu = Menu.buildFromTemplate(template)//一般来说， template是一个options类型的数组，用于构建MenuItem。 使用方法可参考前文。还可以将其他字段附加到template，它们将成为菜单项的属性。
-Menu.setApplicationMenu(menu)//在macOS上将 menu设置成应用内菜单 在windows和Linux上，menu 将会被设置成窗口顶部菜单在Windows和Linux中
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125155603331.png"></p>
-<p>[Menu菜单文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu">https://www.electronjs.org/zh/docs/latest/api/menu</a> “<br>[role的属性值]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu-item#%E8%A7%92%E8%89%B2">https://www.electronjs.org/zh/docs/latest/api/menu-item#角色</a> “</p>
-<h4 id="5-系统托盘（Tray）"><a href="#5-系统托盘（Tray）" class="headerlink" title="5.系统托盘（Tray）"></a>5.系统托盘（Tray）</h4><blockquote>
-<p>添加图标和上下文菜单到系统通知区</p>
-</blockquote>
-<pre><code class="javascript">const &#123; app, Menu, Tray &#125; = require(&#39;electron&#39;)
-
-let tray = null
-app.whenReady().then(() =&gt; &#123;
-  tray = new Tray(&#39;/path/to/my/icon&#39;) //定义icon的路径
-  const contextMenu = Menu.buildFromTemplate([
-    &#123; label: &#39;Item1&#39;, type: &#39;radio&#39; &#125;,
-    &#123; label: &#39;Item2&#39;, type: &#39;radio&#39; &#125;,
-    &#123; label: &#39;Item3&#39;, type: &#39;radio&#39;, checked: true &#125;,
-    &#123; label: &#39;Item4&#39;, type: &#39;radio&#39; &#125;
-  ])
-  tray.setToolTip(&#39;This is my application.&#39;)//设置鼠标指针在托盘图标上悬停时显示的文本
-  tray.setContextMenu(contextMenu)//设置上下文菜单到托盘
-&#125;)
-</code></pre>
-<p>其实这个Tray跟Menu是布局差不太多的，所以学习起来也不是很难理解了。具体事件和方法也不是特别多，我们就直接看官方API文档吧！</p>
-<p>[Tray文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/tray">https://www.electronjs.org/zh/docs/latest/api/tray</a> “</p>
-<h4 id="6-触控板（TouchBar）"><a href="#6-触控板（TouchBar）" class="headerlink" title="6.触控板（TouchBar）"></a>6.触控板（TouchBar）</h4><p><strong>注意:</strong> TouchBar API目前为实验性质，可能会更改或删除。</p>
-<p>如果官网推荐的TouchBar模拟器下载失败，自己搜索一下即可。（如果下载的打不开，那就在应用程序-&gt;右键显示包内容-&gt;如下）执行就可以了</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172856290.png"></p>
-<pre><code class="javascript">//touchbar.js
-const &#123; app, BrowserWindow, TouchBar &#125; = require(&#39;electron&#39;)
-
-const &#123; TouchBarLabel, TouchBarButton, TouchBarSpacer &#125; = TouchBar
-
-let spinning = false
-
-// 类似老虎机的滚轴标签
-const reel1 = new TouchBarLabel()
-const reel2 = new TouchBarLabel()
-const reel3 = new TouchBarLabel()
-
-// 旋转结果标签
-const result = new TouchBarLabel()
-
-// 旋转按钮
-const spin = new TouchBarButton(&#123;
-  label: &#39;🎰 Spin&#39;,
-  backgroundColor: &#39;#7851A9&#39;,
-  click: () =&gt; &#123;
-    // Ignore clicks if already spinning
-    if (spinning) &#123;
-      return
-    &#125;
-
-    spinning = true
-    result.label = &#39;&#39;
-
-    let timeout = 10
-    const spinLength = 4 * 1000 // 4 seconds
-    const startTime = Date.now()
-
-    const spinReels = () =&gt; &#123;
-      updateReels()
-
-      if ((Date.now() - startTime) &gt;= spinLength) &#123;
-        finishSpin()
-      &#125; else &#123;
-        // Slow down a bit on each spin
-        timeout *= 1.1
-        setTimeout(spinReels, timeout)
-      &#125;
-    &#125;
-
-    spinReels()
-  &#125;
-&#125;)
-
-const getRandomValue = () =&gt; &#123;
-  const values = [&#39;🍒&#39;, &#39;💎&#39;, &#39;7️⃣&#39;, &#39;🍊&#39;, &#39;🔔&#39;, &#39;⭐&#39;, &#39;🍇&#39;, &#39;🍀&#39;]
-  return values[Math.floor(Math.random() * values.length)]
-&#125;
-
-const updateReels = () =&gt; &#123;
-  reel1.label = getRandomValue()
-  reel2.label = getRandomValue()
-  reel3.label = getRandomValue()
-&#125;
-
-const finishSpin = () =&gt; &#123;
-  const uniqueValues = new Set([reel1.label, reel2.label, reel3.label]).size
-  if (uniqueValues === 1) &#123;
-    // All 3 values are the same
-    result.label = &#39;💰 Jackpot!&#39;
-    result.textColor = &#39;#FDFF00&#39;
-  &#125; else if (uniqueValues === 2) &#123;
-    // 2个值相同
-    result.label = &#39;😍 Winner!&#39;
-    result.textColor = &#39;#FDFF00&#39;
-  &#125; else &#123;
-    // 没有值相同
-    result.label = &#39;🙁 Spin Again&#39;
-    result.textColor = null
-  &#125;
-  spinning = false
-&#125;
-
-const touchBar = new TouchBar(&#123;
-  items: [
-    spin,
-    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
-    reel1,
-    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
-    reel2,
-    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
-    reel3,
-    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
-    result
-  ]
-&#125;)
-
-let window
-
-app.whenReady().then(() =&gt; &#123;
-  window = new BrowserWindow(&#123;
-    frame: false,
-    titleBarStyle: &#39;hiddenInset&#39;,
-    width: 200,
-    height: 200,
-    backgroundColor: &#39;#000&#39;
-  &#125;)
-  window.loadURL(&#39;about:blank&#39;)
-  window.setTouchBar(touchBar)
-&#125;)
-</code></pre>
-<p>运行命令：</p>
-<pre><code class="ini">./node_modules/.bin/electron touchbar.js
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
-<p>[TouchBar文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
-]]></content>
-      <categories>
-        <category>Electron</category>
-        <category>Electron-d-2.0</category>
       </categories>
       <tags>
         <tag>electron</tag>
@@ -9223,6 +9223,173 @@ module.exports = &#123;
       </categories>
       <tags>
         <tag>面试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>加载优化（图像延迟加载）</title>
+    <url>/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="图像延迟加载"><a href="#图像延迟加载" class="headerlink" title="图像延迟加载"></a>图像延迟加载</h1><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>​		相要得到更好的性能体验，只靠资源压缩与恰当的文件格式选型，是很难满足期望的。我们还需要针对资源加载过程进行优化，该环节所要做的内容可概括为分清资源加载的优先级顺序，仅加载当前所必需的资源，并利用系统空闲提前加载可能会用利的资源。这便是本章将要探讨的内容:资源的优先级、延迟加载和预加载。</p>
+<p>​		什么是图像的延迟加载，如何高效地实现延迟加载。随着近些年视频资源越来越多的使用，也会捎带介绍视频资源的延迟加载。然后谈谈浏览器对于资源优先级的划分和控制，既然可以通过将非关键资源延迟加载来提升性能，那么是否可以利用系统使用的空闲，预先去加载可能会使用到的资源。</p>
+<p>​		本节介绍什么是延迟加载，以及这种优化策略产生的逻辑和实现原理。笔者认为只有先理解了一种原理或方法的缘起流变，才能知道怎样的实现方式是更高效的、更贴近业务场景的。</p>
+<h3 id="一、什么是延迟加载"><a href="#一、什么是延迟加载" class="headerlink" title="一、什么是延迟加载"></a>一、什么是延迟加载</h3><p>​		首先来想象一个场景，当浏览一个内容丰富的网站时，比如电商的商品列表页、主流视频网站的节目列表等，由于屏幕尺寸的限制，每次只能查看到视窗中的那部分内容，而要浏览完页面所包含的全部信息，就需要滚动页面，让屏幕视窗依次展示出个页面的所有局部内容。</p>
+<p>​		显而易见，对于首屏之外的内容，特别是图片和视频，一方面 由于资源文件很大，若是全部加载完，既费时又费力，还容易阻塞渲染引起卡顿:另一方面，就算加载完成，用户也不一定会滚动屏幕浏览到全部页面内容，如果首屏内容没能吸引住用户，那么很可能整个页面就将遭到关闭。</p>
+<p>​		既然如此，本着节约不浪费的原则，在首次打开网站时，应尽量只加载首屏内容所包含的资源，而首屏之外涉及的图片或视频，可以等到用户滚动视窗浏览时再去加载。</p>
+<p>​		以上就是延迟加载优化策略的产生逻辑，通过延迟加载“非关键”的图片及视频资源，使得页面内容更快地呈现在用户面前。这里的“非关键”资源指的就是首屏之外的图片或视频资源，相较于文本、脚本等其他资源来说，图片的资源大小不容小觑。这个优化策略在业界已经被广泛使用，接下来笔者就以天猫购物网站的商品列表页为例，具体看看延迟加载是如何实现的，如图所示。</p>
+<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209161519677.png"></p>
+<p>​		图左侧是手机端常见的电商购物平台的商品列表页，右侧是其对应的DOM树结构。其中在区域上方，整齐如排比句般的<div>结构，所对应的正是列表页中一行行的商品项。以其中一件商品为例， 展开它的DOM树，直到找到展示该商品图片的<img>标签。为了方便说明，笔者将这个<img>标签的相关细节摘录如下:</p>
+<pre><code class="html">&lt;img class=&quot;boom-item-item&quot; autowebp=&quot;false&quot; autopixelratio=&quot;true&quot; forceupdate=&quot;true&quot; data-bindkey=&quot;pic&quot; data-itemid=&quot;700023719087&quot; data-size=&quot;348x348&quot; data-rewrite=&quot;&#123;size:&#39;348x348&#39;&#125;&quot; data-lazy-type=&quot;img&quot; data-lazy-id=&quot;lazyId-11&quot; data-lazy-manager-id=&quot;gLazyM-1&quot; data-in-view-range=&quot;1&quot; src=&quot;//gw.alicdn.com/bao/uploaded/i3/3058655500/O1CN01CyNBBW1qV3AjEusqC_!!0-item_pic.jpg_360x360q75.jpg_.webp&quot;&gt;
+</code></pre>
+<p>​		这里主要关注其中的src属性，src 属性代表了一个CDN上的图片资源。要知道当<img>标签的src属性被赋予了一一个URL后，它就会立刻向该URL发起资源请求。所以这个商品的<img>标签代表的就是一个商品图片的占位符。</p>
+<p>​		接下来我们找到一个位于屏幕视窗外，还未加载的商品图片和已加载的图片，相比较看看二者标签上的属性值有何不同。首先保持左侧页面显示窗口不发生滚动，在DevTools工具的Elements页签下，寻找还未呈现在左侧视窗中的商品项，容易找到它的DOM结构。</p>
+<p>​		首先，我们依然关注<img>标签的src属性，这里并不是图片资源的外链URL,取而代之的是一个在图像优化章节中介绍过的Base64图片，与外链URL不同的是，Base64图片已经包含了图片的完全编码，可以直接拿来渲染，而无须发起任何网络请求。</p>
+<p>​		这意味着该Base64图片仅仅是在真实图片显示出来前用以占位的，同时注意到所有未展示在页面视窗中的商品，其图片占位src属性值均使用了相同的Base64的值.当页面发生滚动时，之前未出现在视窗中的商品出现在视窗中后，其商品图片的真实URL会被替换到<img>标签的src属性上，进而发起资源请求。</p>
+<p>​		我们知道了什么是延迟加载。以及为什么要使用延迟加载，并通过观察一个商品列表页的案例，基本清楚了延迟加载的处理过程，接下来将通过三种方法来具体实现延迟加载。</p>
+<h3 id="二、实现图片的延迟加载：传统方式"><a href="#二、实现图片的延迟加载：传统方式" class="headerlink" title="二、实现图片的延迟加载：传统方式"></a>二、实现图片的延迟加载：传统方式</h3><p>​		就是事件监听的方式，通过监听scroll事件与resize 事件，并在事件的回调函费中去判断，需要进行延迟加载的图片是否进入视窗区域。</p>
+<p>​		首先根据前面的例子，定义出将要实现延迟加载的<img>标签结构:</p>
+<p>我们只需要关注三个属性。</p>
+<ul>
+<li>class 属性，稍后会在JavaScript中使用类选择器选取需要延迟加载处理的<img>标签。</li>
+<li>src属性，加载前的占位符图片，可用Base64图片或低分辨率的图片。</li>
+<li>data-src属性，通过该自定义属性保存图片真实的URL外链。</li>
+</ul>
+<p>假设以三张图片为例进行延迟加载的<img>标签列表如下:</p>
+<pre><code class="html">&lt;img class=&quot;lazy&quot; src-&quot;data: image/gif;base64, iVBORwOKGg.. .BJRUErkJgqs-.data-src=&quot;https://res.cloudinary.com/ .../tacos-2x.jpg&quot;width=&quot;385&quot; height=&quot;108&quot; alt=&quot;Some tacos. &quot;&gt;
+
+&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg. . . BJRU5ErkJggg==&quot; data-src=&quot;https:// res.cloudinary.com/d. . ./modem-2x . png&quot; width=&quot;320&quot; height=&quot;176&quot; alt=&quot;A 56k modem. &quot;&gt;
+
+&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg.. . BJRU5ErkJggg==&quot; data-src=&quot;https ://res. cloudinary. com/ ../st-paul-2x. jpg&quot; width=&quot;400&quot; height=&quot;267&quot; alt=&quot;A city skyline. &quot;&gt;
+</code></pre>
+<p>​		具体的JvsSerpr实现逻辑如下，在文档的DOMContentLoaded事件中，添加延迟加载处理逻辑，首先获取class属性名为lazy的所有<img>标签，将这些标签看存在一个名为lazylmages 的数组中，表示需要进行延迟加载但还未加载的图片集合。当一个图片被加载后，便将其从lazylmages数组中移除，直到lazyImages数组为空时，表示所有待延迟加载的图片均已经加载完成，此时便可将页面滚动事件移除。</p>
+<p>​		接下来的关键就是判断图片是否出现在视窗中，这里使用了getBoundingClientRect()函数获取元素的相对位置，如图所示。它会返回图片元素的宽width和高height,及其与视窗的相对位置:元素上边缘与屏幕视窗顶部之间的距离top,元素左边缘和屏幕视窗左侧之间的距离left,元素下边缘和屏幕视窗顶部之间的距离bottom 以及元素右边缘和屏幕视窗左侧之间的距离right, 其具体含义可参考示意图，window.innerHeight 表示整个视窗的高度。</p>
+<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209164625464.png" alt="getBoundingClientRect()函数获取元素的相对位置"></p>
+<p>​		对于只可上下滚动的页面，判断一个图片 元素是否出现在屏幕视窗中的方法其实显而易见，即当元素上边缘距屏幕视窗顶部的top 值小于整个视窗的高度window.innerHeight时，预加载的事件处理代码如下:</p>
+<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
+  //获取所有需要延迟加载的图片
+  let lazyImages = [].sllce.call(document.querySelectorAll(&quot;img.1azy&quot;));
+  //限制函数频繁被调用
+  let active = false;
+  const lazyLoad = function () &#123;
+    if (active === false) &#123;
+      active = true;
+      setTimeout(function () &#123;
+        lazyImages.forEach(function (lazyImage) &#123;
+          //判断图片是否出现在视窗中
+          if (
+            lazyImage.getBoundingClientRect().top &lt;= window.innerHeight &amp;&amp;
+            lazyImage.getBoundingClientRect().bottom &gt;= 0 &amp;&amp;
+            getComputedstyle(lazyImage).display !== &quot;none&quot;
+          ) &#123;
+            // 将真实的图片URL赋值给src属性，发起请求加载资源
+
+            lazyImage.src = lazyImage.dataset.src;
+
+            //图片加载完成后，取消监控以防止重复加载
+
+            lazyImage.classList.remove(&quot;1azy&quot;);
+
+            lazyImages = lazyImages.filter(function (image) &#123;
+              return image !== lazyImage;
+            &#125;);
+
+            //所有延迟加载图片加载完成后，移除事件触发处理函数
+
+            if (lazyImages.length === 0) &#123;
+              document.removeEventListener(&quot;scroll&quot;, lazyLoad);
+              window.removeEventListener(&quot;resize&quot;, lazyload);
+              window.removeEventListener(&quot;orientationchange&quot;, lazyLoad);
+            &#125;
+          &#125;
+        &#125;);
+
+        active = false;
+      &#125;, 200);
+    &#125;
+  &#125;;
+
+  document.addEventListener(&quot;scroll&quot;, lazyLoad);
+  window.addEventListener(&quot;resize&quot;, lazyLoad);
+  window.addEventListener(&quot;orientationchange&quot;, lazyLoad);
+&#125;);
+</code></pre>
+<p>​	由于无法控制用户随心所欲地滑动鼠标滚轮，从而造成scroll 事件被触发地过于频繁，导致过多的冗余计算影响性能。所以此处笔者将延迟加载的处理过程置于一个200ms的异步定时器中，并在每次处理完成后，通过修改标志位active 的方式来对方法的执行进行限流。</p>
+<p>​		即便如此也有潜在的性能问题，因为重复的setTimeout调用是浪费的，虽然进行了触发限制，但当文档滚动或窗口大小调整时，不论图片是否出现在视窗中，每200ms都会运行一次检查，并且跟踪尚未加载的图片数量，以及完全加载完后，取消绑定滚动事件的处理函数等操作都需要开发者来考虑。</p>
+<p>​		如此来看，虽然传统的延迟加载实现方式具有更好的浏览器兼容性，但也存在如上所述不可逾越的性能问题与编码的烦琐性，这便有了下面一种新的实现方式。</p>
+<h3 id="三、实现图片的延迟加载-Intersection-Observer方式"><a href="#三、实现图片的延迟加载-Intersection-Observer方式" class="headerlink" title="三、实现图片的延迟加载: Intersection Observer方式"></a>三、实现图片的延迟加载: Intersection Observer方式</h3><p>​		现代浏览器已大多支持了Intersection Observer API,可以通过它来检查目标元素的可见性，这种方式的性能和效率都比较好。</p>
+<p>​		关于Intersection Observer的概念和用法，可以参考阅读相关文档，这里用一句话简述:每当因页面滚动或窗口尺寸发生变化，使得目标元素(target) 与设备视窗或其他指定元素产生交集时，便会触发通过Intersection Observer API配置的回调函数，在该回调函数中进行延迟加载的逻辑处理，会比传统方式显得更加简洁而高效。</p>
+<p>​		以下便是Intersection Observer 方式的具体实现，此方式仅需创建一个新的Observer,并在类名为lazy的<img>标签进入视窗后触发回调。</p>
+<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
+  var lazyImages = [].slice.call(document.querySelectorAll(&quot;img.lazy&quot;));
+  //判断浏览器兼容性
+  if (
+    &quot;Intersectionobserver&quot; in window &amp;&amp;
+    &quot;IntersectionObserverEntry&quot; in window &amp;&amp;
+    &quot;intersectionRatio&quot; in window.Intersection0bserverEntry.prototype
+  ) &#123;
+    //新建Intersectionobserver对象，并在其回调函数中实现关键加载逻辑
+    let lazyImageObserver = new IntersectionObserver(function (
+      entries,observer
+    ) &#123;
+      entries.forEach(function (entry) &#123;
+        //判断图片是否出现在视窗中
+        if (entry.isIntersecting) &#123;
+          let lazyImage = entry.target;
+
+          lazyImage.src = lazyImage.dataset.src;
+          //图片加载完成后，取消监控防止重复加载
+          lazyImage.classList.remove(&quot;lazy&quot;);
+          lazyImageObserver.unobserve(lazyImage);
+        &#125;
+      &#125;);
+    &#125;);
+    lazyImages.forEach(function (lazyImage) &#123;
+      lazyImageObserver.observe(lazyImage);
+    &#125;);
+  &#125;
+&#125;);
+</code></pre>
+<p>​		这种方式判断元素是否出现在视窗中更为简单直观，应在实际开发中尽量使用，但其问题是并非所有浏览器都能兼容。具其体的浏览器兼容情况可在站点上进行查看，根据网站用户的硬件分布情况来权衡是否使用，以及使用后是否需要进行兼容处理。在将这种方式引入项目之前，应当确保已做到以下两点。</p>
+<p>（1）做好尽量完备浏览器兼容性检查，对于兼容Intersection Observer API的浏览器，采用这种方式进行处理，而对于不兼容的浏览器，则切换回传统的实现方式进行处理。</p>
+<p>（2）使用相应兼容的polyfill插件，在W3C官方Git账号下就有提供。除此之外，还有第三种通过Css属性的实现方案。</p>
+<h3 id="四、实现图片的延迟加载：CSS类名方式"><a href="#四、实现图片的延迟加载：CSS类名方式" class="headerlink" title="四、实现图片的延迟加载：CSS类名方式"></a>四、实现图片的延迟加载：CSS类名方式</h3><p>​		这种实现方式通过css的 backgound-image 属性来加载图片，与判断<img>标签src属性是否有要请求图片的URL不同，Css中图片加载的行为建立在浏览器对文档分析基础之上。</p>
+<p>​		具体来说，当DOM树、CSSOM树及渲染树生成后，浏览器会去检查CSS以何种方式应用于文档，再决定是否请求外部资源。如果浏览器确定涉及外部资源请求的CSS规则在当前文档中不存在时，便不会去请求该资源。图片列表如下所示:</p>
+<pre><code class="html">&lt;div class=&quot;wrapper&quot;&gt;
+&lt;div class=&quot;lazy-background one&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;lazy-background two&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;lazy-background three&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>​		具体的实现方式是通过javascript来判断元素是否出现在视窗中的，当在视窗中出现的时候，为其class属性添加visible类名，而在css文件中，为同一类名元素定义出带 .visible和不带.visible的两种包含 background-image规则。</p>
+<p>​		不带 .visible的图片规则中的background-image属性可以是低分辨辨率的图片或Base64图片，而带.visible的图片规则中的background-image属性为为希望展示的真实图片URL.</p>
+<p>​		具体JavaScript的实现过程如下所示，判断图片元素是否出现在视窗内的逻辑，与上面的Intersection Observer 方式相同。同样为了确保浏览器的兼容性，在实际应用中应确保提供回退方案或polyfill。</p>
+<h3 id="五、原生的延迟加载支持"><a href="#五、原生的延迟加载支持" class="headerlink" title="五、原生的延迟加载支持"></a>五、原生的延迟加载支持</h3><p>​		除了上述通过开发者手动实现延迟加载逻辑的方式，从Chrome 75版本开始，已经可以通过 img 和 ifram e标签的loading属性原生支持延迟加载了，loading 属性包含以下三种取值。</p>
+<ul>
+<li>lazy: 进行延迟加载。</li>
+<li>eager: 立即加载。</li>
+<li>auto:浏览器自行决定是否进行延迟加载。</li>
+</ul>
+<p>若不指定任何属性值，loading 默认取值auto。</p>
+<p>​		之前讲到延迟加载的独发触发机，都是当目标图像文件经页面滚动出现在屏幕视窗中时，能发对图像资源的请求。但从体验上考虑，这样处理并不完美，因为当图像标签出现在屏幕视窗中时，还只是占位符图像。</p>
+<p>​		如果网络存在延迟或图像资源过大，那么它的请求加载过程是可以被用户感知的。更好的做法是在图像即将滚动出现在屏幕视窗之前一段距离， 就开始请求加载图像或iframe中的内容，这样能很好地缩短用户的等待加载时长。</p>
+<p>​		兼容性处理:通过使用新技术优化了延迟加载的实现方式，同时也应当注意新技本在不同览器之间的兼容性，在使用前需要对浏览器特性进行检查，如下所示:</p>
+<pre><code class="js">&lt;script&gt;
+if (&#39;loading&#39; in HTMLImageElement . prototype)&#123;
+//浏览器支持loading=&quot;lazy&quot;的延迟加载方式
+&#125; else &#123;
+//获取其他JavaScript库来实现延迟加载
+&#125;
+&lt;/script&gt;
+</code></pre>
+<p>​	当判断浏览器支持通过属性loading&#x3D;”lazy”来进行延迟加载时，我们就在JavaScript处理程序中，将真实图像资源的URL赋值在其src属性上。而对于不支持该属性配置的延迟加载方式，就需要默认将真实图像资源的URL挂在data-src 属性上，仅当延迟加载的滚动事件触发时，才将data-src属性上的值换到src属性上。</p>
+<p>​		这也正是我们在传统方式中实现的加载策略，其原因是如果浏览器不支持<img>标签的loading属性，便会立刻发起对src 属性上URL资源的网络请求。当然我们也可以使用CSS类名的方式触发对资源的加载。</p>
+<p>&lt; img data-src&#x3D; “photo.jpg” loading&#x3D;”lazy” class&#x3D;”lazyload” alt&#x3D;”photo” &#x2F;&gt;不过对于这种方式，笔者建议等到loading属性在浏览器的稳定版本中被引入后，再在项目的生产环境中使用。</p>
+<h3 id="参考书籍：前端性能优化"><a href="#参考书籍：前端性能优化" class="headerlink" title="参考书籍：前端性能优化"></a>参考书籍：前端性能优化</h3>]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>加载优化（图像延迟加载)</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+        <tag>加载优化</tag>
       </tags>
   </entry>
   <entry>

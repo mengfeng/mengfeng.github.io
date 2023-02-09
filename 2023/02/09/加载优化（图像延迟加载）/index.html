@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>加载优化（图像延迟加载） |  艺术码畜</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+
+ 
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
+</head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-加载优化（图像延迟加载）"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  加载优化（图像延迟加载）
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/" class="article-date">
+  <time datetime="2023-02-09T09:50:24.000Z" itemprop="datePublished">2023-02-09</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD/">加载优化（图像延迟加载)</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">4.4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">16 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="图像延迟加载"><a href="#图像延迟加载" class="headerlink" title="图像延迟加载"></a>图像延迟加载</h1><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>​		相要得到更好的性能体验，只靠资源压缩与恰当的文件格式选型，是很难满足期望的。我们还需要针对资源加载过程进行优化，该环节所要做的内容可概括为分清资源加载的优先级顺序，仅加载当前所必需的资源，并利用系统空闲提前加载可能会用利的资源。这便是本章将要探讨的内容:资源的优先级、延迟加载和预加载。</p>
+<p>​		什么是图像的延迟加载，如何高效地实现延迟加载。随着近些年视频资源越来越多的使用，也会捎带介绍视频资源的延迟加载。然后谈谈浏览器对于资源优先级的划分和控制，既然可以通过将非关键资源延迟加载来提升性能，那么是否可以利用系统使用的空闲，预先去加载可能会使用到的资源。</p>
+<p>​		本节介绍什么是延迟加载，以及这种优化策略产生的逻辑和实现原理。笔者认为只有先理解了一种原理或方法的缘起流变，才能知道怎样的实现方式是更高效的、更贴近业务场景的。</p>
+<h3 id="一、什么是延迟加载"><a href="#一、什么是延迟加载" class="headerlink" title="一、什么是延迟加载"></a>一、什么是延迟加载</h3><p>​		首先来想象一个场景，当浏览一个内容丰富的网站时，比如电商的商品列表页、主流视频网站的节目列表等，由于屏幕尺寸的限制，每次只能查看到视窗中的那部分内容，而要浏览完页面所包含的全部信息，就需要滚动页面，让屏幕视窗依次展示出个页面的所有局部内容。</p>
+<p>​		显而易见，对于首屏之外的内容，特别是图片和视频，一方面 由于资源文件很大，若是全部加载完，既费时又费力，还容易阻塞渲染引起卡顿:另一方面，就算加载完成，用户也不一定会滚动屏幕浏览到全部页面内容，如果首屏内容没能吸引住用户，那么很可能整个页面就将遭到关闭。</p>
+<p>​		既然如此，本着节约不浪费的原则，在首次打开网站时，应尽量只加载首屏内容所包含的资源，而首屏之外涉及的图片或视频，可以等到用户滚动视窗浏览时再去加载。</p>
+<p>​		以上就是延迟加载优化策略的产生逻辑，通过延迟加载“非关键”的图片及视频资源，使得页面内容更快地呈现在用户面前。这里的“非关键”资源指的就是首屏之外的图片或视频资源，相较于文本、脚本等其他资源来说，图片的资源大小不容小觑。这个优化策略在业界已经被广泛使用，接下来笔者就以天猫购物网站的商品列表页为例，具体看看延迟加载是如何实现的，如图所示。</p>
+<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209161519677.png"></p>
+<p>​		图左侧是手机端常见的电商购物平台的商品列表页，右侧是其对应的DOM树结构。其中在区域上方，整齐如排比句般的<div>结构，所对应的正是列表页中一行行的商品项。以其中一件商品为例， 展开它的DOM树，直到找到展示该商品图片的<img>标签。为了方便说明，笔者将这个<img>标签的相关细节摘录如下:</p>
+<pre><code class="html">&lt;img class=&quot;boom-item-item&quot; autowebp=&quot;false&quot; autopixelratio=&quot;true&quot; forceupdate=&quot;true&quot; data-bindkey=&quot;pic&quot; data-itemid=&quot;700023719087&quot; data-size=&quot;348x348&quot; data-rewrite=&quot;&#123;size:&#39;348x348&#39;&#125;&quot; data-lazy-type=&quot;img&quot; data-lazy-id=&quot;lazyId-11&quot; data-lazy-manager-id=&quot;gLazyM-1&quot; data-in-view-range=&quot;1&quot; src=&quot;//gw.alicdn.com/bao/uploaded/i3/3058655500/O1CN01CyNBBW1qV3AjEusqC_!!0-item_pic.jpg_360x360q75.jpg_.webp&quot;&gt;
+</code></pre>
+<p>​		这里主要关注其中的src属性，src 属性代表了一个CDN上的图片资源。要知道当<img>标签的src属性被赋予了一一个URL后，它就会立刻向该URL发起资源请求。所以这个商品的<img>标签代表的就是一个商品图片的占位符。</p>
+<p>​		接下来我们找到一个位于屏幕视窗外，还未加载的商品图片和已加载的图片，相比较看看二者标签上的属性值有何不同。首先保持左侧页面显示窗口不发生滚动，在DevTools工具的Elements页签下，寻找还未呈现在左侧视窗中的商品项，容易找到它的DOM结构。</p>
+<p>​		首先，我们依然关注<img>标签的src属性，这里并不是图片资源的外链URL,取而代之的是一个在图像优化章节中介绍过的Base64图片，与外链URL不同的是，Base64图片已经包含了图片的完全编码，可以直接拿来渲染，而无须发起任何网络请求。</p>
+<p>​		这意味着该Base64图片仅仅是在真实图片显示出来前用以占位的，同时注意到所有未展示在页面视窗中的商品，其图片占位src属性值均使用了相同的Base64的值.当页面发生滚动时，之前未出现在视窗中的商品出现在视窗中后，其商品图片的真实URL会被替换到<img>标签的src属性上，进而发起资源请求。</p>
+<p>​		我们知道了什么是延迟加载。以及为什么要使用延迟加载，并通过观察一个商品列表页的案例，基本清楚了延迟加载的处理过程，接下来将通过三种方法来具体实现延迟加载。</p>
+<h3 id="二、实现图片的延迟加载：传统方式"><a href="#二、实现图片的延迟加载：传统方式" class="headerlink" title="二、实现图片的延迟加载：传统方式"></a>二、实现图片的延迟加载：传统方式</h3><p>​		就是事件监听的方式，通过监听scroll事件与resize 事件，并在事件的回调函费中去判断，需要进行延迟加载的图片是否进入视窗区域。</p>
+<p>​		首先根据前面的例子，定义出将要实现延迟加载的<img>标签结构:</p>
+<p>我们只需要关注三个属性。</p>
+<ul>
+<li>class 属性，稍后会在JavaScript中使用类选择器选取需要延迟加载处理的<img>标签。</li>
+<li>src属性，加载前的占位符图片，可用Base64图片或低分辨率的图片。</li>
+<li>data-src属性，通过该自定义属性保存图片真实的URL外链。</li>
+</ul>
+<p>假设以三张图片为例进行延迟加载的<img>标签列表如下:</p>
+<pre><code class="html">&lt;img class=&quot;lazy&quot; src-&quot;data: image/gif;base64, iVBORwOKGg.. .BJRUErkJgqs-.data-src=&quot;https://res.cloudinary.com/ .../tacos-2x.jpg&quot;width=&quot;385&quot; height=&quot;108&quot; alt=&quot;Some tacos. &quot;&gt;
+
+&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg. . . BJRU5ErkJggg==&quot; data-src=&quot;https:// res.cloudinary.com/d. . ./modem-2x . png&quot; width=&quot;320&quot; height=&quot;176&quot; alt=&quot;A 56k modem. &quot;&gt;
+
+&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg.. . BJRU5ErkJggg==&quot; data-src=&quot;https ://res. cloudinary. com/ ../st-paul-2x. jpg&quot; width=&quot;400&quot; height=&quot;267&quot; alt=&quot;A city skyline. &quot;&gt;
+</code></pre>
+<p>​		具体的JvsSerpr实现逻辑如下，在文档的DOMContentLoaded事件中，添加延迟加载处理逻辑，首先获取class属性名为lazy的所有<img>标签，将这些标签看存在一个名为lazylmages 的数组中，表示需要进行延迟加载但还未加载的图片集合。当一个图片被加载后，便将其从lazylmages数组中移除，直到lazyImages数组为空时，表示所有待延迟加载的图片均已经加载完成，此时便可将页面滚动事件移除。</p>
+<p>​		接下来的关键就是判断图片是否出现在视窗中，这里使用了getBoundingClientRect()函数获取元素的相对位置，如图所示。它会返回图片元素的宽width和高height,及其与视窗的相对位置:元素上边缘与屏幕视窗顶部之间的距离top,元素左边缘和屏幕视窗左侧之间的距离left,元素下边缘和屏幕视窗顶部之间的距离bottom 以及元素右边缘和屏幕视窗左侧之间的距离right, 其具体含义可参考示意图，window.innerHeight 表示整个视窗的高度。</p>
+<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209164625464.png" alt="getBoundingClientRect()函数获取元素的相对位置"></p>
+<p>​		对于只可上下滚动的页面，判断一个图片 元素是否出现在屏幕视窗中的方法其实显而易见，即当元素上边缘距屏幕视窗顶部的top 值小于整个视窗的高度window.innerHeight时，预加载的事件处理代码如下:</p>
+<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
+  //获取所有需要延迟加载的图片
+  let lazyImages = [].sllce.call(document.querySelectorAll(&quot;img.1azy&quot;));
+  //限制函数频繁被调用
+  let active = false;
+  const lazyLoad = function () &#123;
+    if (active === false) &#123;
+      active = true;
+      setTimeout(function () &#123;
+        lazyImages.forEach(function (lazyImage) &#123;
+          //判断图片是否出现在视窗中
+          if (
+            lazyImage.getBoundingClientRect().top &lt;= window.innerHeight &amp;&amp;
+            lazyImage.getBoundingClientRect().bottom &gt;= 0 &amp;&amp;
+            getComputedstyle(lazyImage).display !== &quot;none&quot;
+          ) &#123;
+            // 将真实的图片URL赋值给src属性，发起请求加载资源
+
+            lazyImage.src = lazyImage.dataset.src;
+
+            //图片加载完成后，取消监控以防止重复加载
+
+            lazyImage.classList.remove(&quot;1azy&quot;);
+
+            lazyImages = lazyImages.filter(function (image) &#123;
+              return image !== lazyImage;
+            &#125;);
+
+            //所有延迟加载图片加载完成后，移除事件触发处理函数
+
+            if (lazyImages.length === 0) &#123;
+              document.removeEventListener(&quot;scroll&quot;, lazyLoad);
+              window.removeEventListener(&quot;resize&quot;, lazyload);
+              window.removeEventListener(&quot;orientationchange&quot;, lazyLoad);
+            &#125;
+          &#125;
+        &#125;);
+
+        active = false;
+      &#125;, 200);
+    &#125;
+  &#125;;
+
+  document.addEventListener(&quot;scroll&quot;, lazyLoad);
+  window.addEventListener(&quot;resize&quot;, lazyLoad);
+  window.addEventListener(&quot;orientationchange&quot;, lazyLoad);
+&#125;);
+</code></pre>
+<p>​	由于无法控制用户随心所欲地滑动鼠标滚轮，从而造成scroll 事件被触发地过于频繁，导致过多的冗余计算影响性能。所以此处笔者将延迟加载的处理过程置于一个200ms的异步定时器中，并在每次处理完成后，通过修改标志位active 的方式来对方法的执行进行限流。</p>
+<p>​		即便如此也有潜在的性能问题，因为重复的setTimeout调用是浪费的，虽然进行了触发限制，但当文档滚动或窗口大小调整时，不论图片是否出现在视窗中，每200ms都会运行一次检查，并且跟踪尚未加载的图片数量，以及完全加载完后，取消绑定滚动事件的处理函数等操作都需要开发者来考虑。</p>
+<p>​		如此来看，虽然传统的延迟加载实现方式具有更好的浏览器兼容性，但也存在如上所述不可逾越的性能问题与编码的烦琐性，这便有了下面一种新的实现方式。</p>
+<h3 id="三、实现图片的延迟加载-Intersection-Observer方式"><a href="#三、实现图片的延迟加载-Intersection-Observer方式" class="headerlink" title="三、实现图片的延迟加载: Intersection Observer方式"></a>三、实现图片的延迟加载: Intersection Observer方式</h3><p>​		现代浏览器已大多支持了Intersection Observer API,可以通过它来检查目标元素的可见性，这种方式的性能和效率都比较好。</p>
+<p>​		关于Intersection Observer的概念和用法，可以参考阅读相关文档，这里用一句话简述:每当因页面滚动或窗口尺寸发生变化，使得目标元素(target) 与设备视窗或其他指定元素产生交集时，便会触发通过Intersection Observer API配置的回调函数，在该回调函数中进行延迟加载的逻辑处理，会比传统方式显得更加简洁而高效。</p>
+<p>​		以下便是Intersection Observer 方式的具体实现，此方式仅需创建一个新的Observer,并在类名为lazy的<img>标签进入视窗后触发回调。</p>
+<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
+  var lazyImages = [].slice.call(document.querySelectorAll(&quot;img.lazy&quot;));
+  //判断浏览器兼容性
+  if (
+    &quot;Intersectionobserver&quot; in window &amp;&amp;
+    &quot;IntersectionObserverEntry&quot; in window &amp;&amp;
+    &quot;intersectionRatio&quot; in window.Intersection0bserverEntry.prototype
+  ) &#123;
+    //新建Intersectionobserver对象，并在其回调函数中实现关键加载逻辑
+    let lazyImageObserver = new IntersectionObserver(function (
+      entries,observer
+    ) &#123;
+      entries.forEach(function (entry) &#123;
+        //判断图片是否出现在视窗中
+        if (entry.isIntersecting) &#123;
+          let lazyImage = entry.target;
+
+          lazyImage.src = lazyImage.dataset.src;
+          //图片加载完成后，取消监控防止重复加载
+          lazyImage.classList.remove(&quot;lazy&quot;);
+          lazyImageObserver.unobserve(lazyImage);
+        &#125;
+      &#125;);
+    &#125;);
+    lazyImages.forEach(function (lazyImage) &#123;
+      lazyImageObserver.observe(lazyImage);
+    &#125;);
+  &#125;
+&#125;);
+</code></pre>
+<p>​		这种方式判断元素是否出现在视窗中更为简单直观，应在实际开发中尽量使用，但其问题是并非所有浏览器都能兼容。具其体的浏览器兼容情况可在站点上进行查看，根据网站用户的硬件分布情况来权衡是否使用，以及使用后是否需要进行兼容处理。在将这种方式引入项目之前，应当确保已做到以下两点。</p>
+<p>（1）做好尽量完备浏览器兼容性检查，对于兼容Intersection Observer API的浏览器，采用这种方式进行处理，而对于不兼容的浏览器，则切换回传统的实现方式进行处理。</p>
+<p>（2）使用相应兼容的polyfill插件，在W3C官方Git账号下就有提供。除此之外，还有第三种通过Css属性的实现方案。</p>
+<h3 id="四、实现图片的延迟加载：CSS类名方式"><a href="#四、实现图片的延迟加载：CSS类名方式" class="headerlink" title="四、实现图片的延迟加载：CSS类名方式"></a>四、实现图片的延迟加载：CSS类名方式</h3><p>​		这种实现方式通过css的 backgound-image 属性来加载图片，与判断<img>标签src属性是否有要请求图片的URL不同，Css中图片加载的行为建立在浏览器对文档分析基础之上。</p>
+<p>​		具体来说，当DOM树、CSSOM树及渲染树生成后，浏览器会去检查CSS以何种方式应用于文档，再决定是否请求外部资源。如果浏览器确定涉及外部资源请求的CSS规则在当前文档中不存在时，便不会去请求该资源。图片列表如下所示:</p>
+<pre><code class="html">&lt;div class=&quot;wrapper&quot;&gt;
+&lt;div class=&quot;lazy-background one&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;lazy-background two&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;lazy-background three&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>​		具体的实现方式是通过javascript来判断元素是否出现在视窗中的，当在视窗中出现的时候，为其class属性添加visible类名，而在css文件中，为同一类名元素定义出带 .visible和不带.visible的两种包含 background-image规则。</p>
+<p>​		不带 .visible的图片规则中的background-image属性可以是低分辨辨率的图片或Base64图片，而带.visible的图片规则中的background-image属性为为希望展示的真实图片URL.</p>
+<p>​		具体JavaScript的实现过程如下所示，判断图片元素是否出现在视窗内的逻辑，与上面的Intersection Observer 方式相同。同样为了确保浏览器的兼容性，在实际应用中应确保提供回退方案或polyfill。</p>
+<h3 id="五、原生的延迟加载支持"><a href="#五、原生的延迟加载支持" class="headerlink" title="五、原生的延迟加载支持"></a>五、原生的延迟加载支持</h3><p>​		除了上述通过开发者手动实现延迟加载逻辑的方式，从Chrome 75版本开始，已经可以通过 img 和 ifram e标签的loading属性原生支持延迟加载了，loading 属性包含以下三种取值。</p>
+<ul>
+<li>lazy: 进行延迟加载。</li>
+<li>eager: 立即加载。</li>
+<li>auto:浏览器自行决定是否进行延迟加载。</li>
+</ul>
+<p>若不指定任何属性值，loading 默认取值auto。</p>
+<p>​		之前讲到延迟加载的独发触发机，都是当目标图像文件经页面滚动出现在屏幕视窗中时，能发对图像资源的请求。但从体验上考虑，这样处理并不完美，因为当图像标签出现在屏幕视窗中时，还只是占位符图像。</p>
+<p>​		如果网络存在延迟或图像资源过大，那么它的请求加载过程是可以被用户感知的。更好的做法是在图像即将滚动出现在屏幕视窗之前一段距离， 就开始请求加载图像或iframe中的内容，这样能很好地缩短用户的等待加载时长。</p>
+<p>​		兼容性处理:通过使用新技术优化了延迟加载的实现方式，同时也应当注意新技本在不同览器之间的兼容性，在使用前需要对浏览器特性进行检查，如下所示:</p>
+<pre><code class="js">&lt;script&gt;
+if (&#39;loading&#39; in HTMLImageElement . prototype)&#123;
+//浏览器支持loading=&quot;lazy&quot;的延迟加载方式
+&#125; else &#123;
+//获取其他JavaScript库来实现延迟加载
+&#125;
+&lt;/script&gt;
+</code></pre>
+<p>​	当判断浏览器支持通过属性loading&#x3D;”lazy”来进行延迟加载时，我们就在JavaScript处理程序中，将真实图像资源的URL赋值在其src属性上。而对于不支持该属性配置的延迟加载方式，就需要默认将真实图像资源的URL挂在data-src 属性上，仅当延迟加载的滚动事件触发时，才将data-src属性上的值换到src属性上。</p>
+<p>​		这也正是我们在传统方式中实现的加载策略，其原因是如果浏览器不支持<img>标签的loading属性，便会立刻发起对src 属性上URL资源的网络请求。当然我们也可以使用CSS类名的方式触发对资源的加载。</p>
+<p>&lt; img data-src&#x3D; “photo.jpg” loading&#x3D;”lazy” class&#x3D;”lazyload” alt&#x3D;”photo” &#x2F;&gt;不过对于这种方式，笔者建议等到loading属性在浏览器的稳定版本中被引入后，再在项目的生产环境中使用。</p>
+<h3 id="参考书籍：前端性能优化"><a href="#参考书籍：前端性能优化" class="headerlink" title="参考书籍：前端性能优化"></a>参考书籍：前端性能优化</h3> 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96/" rel="tag">加载优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">图像优化</div>
+      </a>
+    
+  </nav>
+
+  
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022-2023
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="艺术码畜"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="https://www.zcool.com.cn/u/21686563">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/player">播放器</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/zfb.jpeg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wx.jpeg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+</body>
+
+</html>

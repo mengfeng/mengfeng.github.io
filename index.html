@@ -177,6 +177,119 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-加载优化（视频加载）"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/"
+    >加载优化（视频加载）</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/" class="article-date">
+  <time datetime="2023-02-16T03:09:10.000Z" itemprop="datePublished">2023-02-16</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/">加载优化（视频加载）</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="视频加载"><a href="#视频加载" class="headerlink" title="视频加载"></a>视频加载</h2><blockquote>
+<p>与延迟加载图像资源类似，通过视频标签引入的视频资源也可进行延迟加载，但通常都会根据需求场景进行具体的处理，下面就来探讨一 些关于 视频加载的优化内容。</p>
+</blockquote>
+<h3 id="一、不需要自动播放"><a href="#一、不需要自动播放" class="headerlink" title="一、不需要自动播放"></a>一、不需要自动播放</h3><p>​		由于Chrome等一些浏览器会对视频资源进行预加载，即在HTML完成加载和解析时触发DOMContentLoaded 事件开始请求视频资源，当请求完成后触发window. onload事件开始页面渲染，过程如图所示。</p>
+<p><img src="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230216103841965.png" alt="视频资源的加载"></p>
+<p>为了使页面更快地加载并渲染出来，可以阻止不需要自动播放的视频的预加载:其方法是通过视频标签的preload进行控制:</p>
+<pre><code class="html">&lt;video controls preload-&quot;none&quot; poster=&quot;default.1po9&quot;&gt;
+        &lt;source src=&quot;simply.webm&quot; type-&quot;video/webm&quot;&gt;
+        &lt;source src=&quot;simply.mp4&quot; tye-&quot;video/mp4&quot;&gt;
+&lt;/video&gt;
+</code></pre>
+<p>标签的preload属性通常的默认值为auto，表示无论用户是否希望，所有视频文件都会被自动下载，这里将其设置为none，来阻止视频的自动加载。同时这里还通过poster属性为视频提供占位符图片，它的作用是当视频未加载出来时，不至于在页面中呈现一块让用户未知的空白。考虑类似边缘异常场最是必要的，因为浏览器对视烦的加载行为可能存在较大差别。</p>
+<ul>
+<li>Chrome之前的版本中，preload的默认值是auto,从64版本以后其默人值改为了metadata, 表示仅加载视频的元数据，Firefox、 IE11和Edge等浏览器的行为类似。</li>
+<li>Safari 11.0的Mac版会默认进行部分视频资源预加载，11.2的Mac版后仅可预加载元数据，但ios的Safari不会对视频预加载。</li>
+<li>若浏览器开启了流量节省模式后，preload 将默认设置为none.</li>
+</ul>
+<p>​		当浏览器支持preload的metadata属性值后，这将会是一种兼顾了 性能与体验后更优的方式，因为从体验上讲，对于不自动播放的视频场景，在单击播放之前，若能提前告知视频的播放时长、播放列表等元数据，便能带给用户更好的可控感，同时又不至于提前加载了过多资源而阻塞页面渲染。</p>
+<p>另外， 如果你的站点中包含了同一域名下的多个视频资源，那么推荐最好将preload属性设置为metadata,或者定义poster属性值时将preload设置为none,这样能很好地避免HTTP的最大连接数，因为通常HTTP 1.1协议规定同一城名下的最大连接数为6,如果同时有超过此数量的资源请求连接，那么多余的连接便会被挂起，这无疑也会对性能造成负面影响。</p>
+<h3 id="二、视频代替GIF动画"><a href="#二、视频代替GIF动画" class="headerlink" title="二、视频代替GIF动画"></a>二、视频代替GIF动画</h3><p>​		另一种视频的使用场最是在前面章节讲到的:应当尽量用视频代替尺寸过大的GIF动画，虽然GIF动画的应用历史和范围都很广泛，但其在输出文件大小、图像色彩质量等许多方面的表现均不如视频。GIF动画相对于视频具有三个附加的特性:没有音轨、连续循环播放、加载完自动播放，替换成视频后类似于:</p>
+<pre><code class="html">&lt;video autoplay muted loop playsinline&gt;
+        &lt;source src-&quot;video.webm&quot; type-&quot;video/webm&quot;&gt;
+        &lt;source srC-&quot;video .mp4&quot;type-&quot;video/mp4&quot;&gt;
+&lt;/video&gt;
+</code></pre>
+<p>​		其中在视频标签中附加的属性含义分别为:autoplay自动播放、muted 静音播放及loop循环播放，而playsinline属性则是用于在ios中指定自动播放的。虽然有了GIF图像的替代方案，但并非所有浏览器都像Chrome一样， 能自动进行延迟加载。接下来就需要进行一些配置开发， 使该场最的视频也能延迟加载。首先修改HTML标签如下:</p>
+<pre><code class="html">&lt;video autoplay muted loop playsinline width=&quot;610&quot; height=&quot;254&quot; poster=&quot;video-poster.jpg&quot;&gt;
+        &lt;source data-src=&quot;video. webm&quot; type=&quot;video/webm&quot;&gt;
+        &lt;source data-src=&quot;video .mp4&quot; type=&quot;video/mp4&quot;&gt;
+&lt;/video&gt;
+</code></pre>
+<p>​		这里进行了两处修改:首先是为视频标签添加了poster 属性，意为使用poster中指定的图片作为视频延迟加载出现前的占位;其次是使用了类似应对图像延迟加载的方式，将真实视频资源的URL放在data-src属性中，然后基于Intersection Observer用JavaScript实现对延迟加载的控制:</p>
+<pre><code class="js">Document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; &#123;
+  const lazyVideos = [].slice.call(document.querySelectorAll(&quot;video.lazy&quot;));
+  if (&quot;IntersectionObserver&quot; in window) &#123;
+    const lazyVideoObserver = new IntersectionObserver((entries, observer) =&gt; &#123;
+      entries.forEach((video) =&gt; &#123;
+        if (video.isIntersecting) &#123;
+          for (const source in video.target.children) &#123;
+            const videoSrc = video.target.children[source];
+            if (
+              typeof videoSrc.tagName === &quot;string&quot; &amp;&amp;
+              videoSrc.tagName === &quot;source&quot;
+            ) &#123;
+              videoSrc.src = videoSrc.dataset.src;
+            &#125;
+          &#125;
+          video.target.load();
+          video.target.classList.remove(&quot;lazy&quot;);
+          lazyVideoObserver.unobserve(video.target);
+        &#125;
+      &#125;);
+    &#125;);
+
+    lazyVideos.forEach((lazyVideo) =&gt; &#123;
+      lazyVideoObserver.observe(lazyVideo);
+    &#125;);
+  &#125;
+&#125;);
+</code></pre>
+<p>​		对视频标签的延迟加载有点类似<picture>,需要对所有<source> 子元素进行选代解析，将data-src上的属性值迁移到src属性上。不同的是，需要额外显示调用元素的load方法来触发加载，然后视频才会根据autoplay属性开始进行自动播放。如此便可使用低于GIF动画的流量消耗，进行资源的延迟加载。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD/" rel="tag">视频加载</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-加载优化（图像延迟加载）"
   class="article article-type-post"
   itemscope
@@ -3967,117 +4080,6 @@ export default &#123;
 </tr>
 </tbody></table>
 <h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[uniapp]: 	“<a target="_blank" rel="noopener" href="https://zh.uniapp.dcloud.io/tutorial/page.html#lifecycle">https://zh.uniapp.dcloud.io/tutorial/page.html#lifecycle</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/uniapp/" rel="tag">uniapp</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-uniapp安装及调试"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/"
-    >uniapp安装及调试</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/" class="article-date">
-  <time datetime="2022-12-18T02:50:45.000Z" itemprop="datePublished">2022-12-18</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/uniapp/">uniapp</a> / <a class="article-category-link" href="/categories/uniapp/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/">uniapp安装及调试</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="uniapp安装及调试"><a href="#uniapp安装及调试" class="headerlink" title="uniapp安装及调试"></a>uniapp安装及调试</h1><blockquote>
-<p>我们本篇文章主要讲解uniapp的项目创建</p>
-<p>真机调试、ios模拟器调试、微信小程序调试</p>
-</blockquote>
-<h3 id="一、下载HBuilder-X"><a href="#一、下载HBuilder-X" class="headerlink" title="一、下载HBuilder X"></a>一、下载HBuilder X</h3><p>[HBuilder X]: 	“<a target="_blank" rel="noopener" href="https://www.dcloud.io/hbuilderx.html">https://www.dcloud.io/hbuilderx.html</a> “</p>
-<p>我们可以下载我们需要的版本</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095304650.png"></p>
-<h3 id="二、安装运行并创建项目"><a href="#二、安装运行并创建项目" class="headerlink" title="二、安装运行并创建项目"></a>二、安装运行并创建项目</h3><p>第一次打开HBuilder X，我们可以去定义一下我们的配置，macos是去偏好设置，windows的在工具-&gt;设置</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095514743.png"></p>
-<p>我们可以去新建项目弹出窗口配置我们项目信息，项目名称和vue版本，这里我现在的是vue3，vue3的绑定预设是vite。</p>
-<p>我们也可以去选择不一样的模板。</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095735225.png"></p>
-<h3 id="三、运行项目"><a href="#三、运行项目" class="headerlink" title="三、运行项目"></a>三、运行项目</h3><p>当我们打开项目的时候，准备运行的时候，我们可以选择将我们的项目运行到哪里，它会提示你安装相对应的插件，如果安装完插件，我们的软件没有识别到我们的插件，那我们可以选择重启我们的软件。</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100111748.png"></p>
-<p>这里先演示一下运行到内置浏览器（第一次运行我们可能要稍等一下）</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100428208.png"></p>
-<h3 id="四、调试"><a href="#四、调试" class="headerlink" title="四、调试"></a>四、调试</h3><h4 id="1-ios模拟器调试"><a href="#1-ios模拟器调试" class="headerlink" title="1.ios模拟器调试"></a>1.ios模拟器调试</h4><blockquote>
-<p>当然，在ios模拟器调试的前提是要是macos环境，并且下载了xcode（提前准备一下哦）因为我没有ios手机🫠</p>
-</blockquote>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100850001.png"></p>
-<p>我们选择运行到ios模拟器 App基座（loading…）</p>
-<p>选择我们的模拟器手机型号</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218101003209.png"></p>
-<p>现在我就可以看到程序运行到了我们的iPhone 14 Pro Max（香得嘞）</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218101115311.png"></p>
-<p>当我们修改我们的程序代码并保存，就可以看见我们的视图更新了</p>
-<h4 id="2-Android手机真机调试"><a href="#2-Android手机真机调试" class="headerlink" title="2.Android手机真机调试"></a>2.Android手机真机调试</h4><blockquote>
-<p>当然，没有Android手机的也可以借其他同学的（Android模拟器配置有点麻烦，就先不配置了，想配置的同学先自行打开搜索🔍）</p>
-</blockquote>
-<p>手机真机调试的前提是要打开你的手机的开发者模式，不同的手机开启的方式也是不一样的，我的手机是红米K20 pro</p>
-<p>具体打开流程为设置-&gt;我的设备-&gt;全部参数-&gt;点击MIUI版本3下（连击）系统提示进入开发者模式-&gt;返回到更多设置-&gt;开发者选项-&gt;打开usb调试</p>
-<p>当我们选择运行到Android App基座，就会识别你的手机（记得用数据线将手机连接到电脑），点击运行</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218102154748.png"></p>
-<p>第一次运行，手机会让你安装，点击安装就可以了</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/WechatIMG125.jpeg"></p>
-<h4 id="3-微信小程序开发者工具调试"><a href="#3-微信小程序开发者工具调试" class="headerlink" title="3.微信小程序开发者工具调试"></a>3.微信小程序开发者工具调试</h4><blockquote>
-<p>这个调试的方式的前提是要有一个开发者账号，没有的同学要先去注册一个</p>
-<p>[注册]: 	“<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;lang=zh_CN">https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;lang=zh_CN</a> “</p>
-<p>然后利用注册绑定的微信登陆我们的微信公众平台</p>
-<p>没有下载微信开发者工具的同学也要下载一个</p>
-</blockquote>
-<p>然后在我们的开发-&gt;开发管理-&gt;开发设置下面有我们的开发者ID（等会要用）</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218102931643.png"></p>
-<p>当我们点击发行-&gt;小程序-微信的时候，会让你配置你的开发者ID，然后项目就会自动打包</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103403063.png"></p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103530235.png"></p>
-<p>第一次编译的时候，我们可以根据编译完成的项目路径去手动导入我们的微信开发者工具去调试</p>
-<p>注意：不要在微信开发者工具去修改我们的代码，因为下一次发行编译会覆盖掉我们的修改</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103710649.png"></p>
-<p>当然，我们还有另一种导入方法，那就是自动导入</p>
-<p>首先我们要将微信开发者工具的安全设置的服务端口打开</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104049483.png"></p>
-<p>再到HBuilder X去配置微信开发者工具的路径（这里的路径可以查看自己的安装路径）</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104502864.png"></p>
-<p>到这我们的配置就完成了</p>
-<p>接下来我们再发行微信小程序</p>
-<p>我们就可以看见微信开发者工具自动打开并运行我们的项目了</p>
-<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104719407.png"></p>
-<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>到目前为止，我们开发时候的调试就可以轻松掌握了</p>
  
       <!-- reward -->
       

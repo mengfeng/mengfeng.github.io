@@ -177,6 +177,129 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-playcanvas初识"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/"
+    >playcanvas初识</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/" class="article-date">
+  <time datetime="2022-12-03T08:31:14.000Z" itemprop="datePublished">2022-12-03</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/playcanvas/">playcanvas</a> / <a class="article-category-link" href="/categories/Web3D/playcanvas/playcanvas%E5%88%9D%E8%AF%86/">playcanvas初识</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="playcanvas（基于WebGL的游戏引擎）"><a href="#playcanvas（基于WebGL的游戏引擎）" class="headerlink" title="playcanvas（基于WebGL的游戏引擎）"></a>playcanvas（基于WebGL的游戏引擎）</h1><p>PlayCanvas 是一款使用 HTML5 和 WebGL 技术运行游戏以及其他 3D 内容的开源游戏引擎，PlayCanvas 以其独特的性能实现了在任何手机移动端和桌面浏览器端均可以流畅运行。</p>
+<p>PlayCanvas 引擎是一款可以基于浏览器的用于制作游戏以及 3D 可视化的开源引擎。除此之外，还开发了<a target="_blank" rel="noopener" href="https://playcanvas.com/">PlayCanvas 开发平台</a>， 为用户提供了可视化编辑器，资源管理，代码编辑，代码托管以及发布等服务。</p>
+<blockquote>
+<p>目前中文的教程很少，所以英语好的同学可以去看一下国外的那些教程，但是还是有<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/zh/">中文文档</a>的。</p>
+</blockquote>
+<p>可视化平台操作上倒是没什么难度，就是和正常的建模操作大同小异，一个可视化的一个操作平台，可以进一步的提高我们工作的效率吧。</p>
+<h3 id="一、注册账户"><a href="#一、注册账户" class="headerlink" title="一、注册账户"></a>一、注册账户</h3><blockquote>
+<p>注册账户的方式很简单，根据提示去注册就可以了</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203152809943.png"></p>
+<h3 id="二、新建项目"><a href="#二、新建项目" class="headerlink" title="二、新建项目"></a>二、新建项目</h3><blockquote>
+<p>1.我们点击NEW，即可创建新项目</p>
+<p>2.点击我们的项目就可以进入项目界面</p>
+<p>3.点击EDITOR就可以进入可视化操作平台，去操作我们的项目</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203153658606.png"></p>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203153755107.png"></p>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203152450815.png"></p>
+<h3 id="三、导出项目"><a href="#三、导出项目" class="headerlink" title="三、导出项目"></a>三、导出项目</h3><blockquote>
+<p>1.导出项目前，我们得先pulish</p>
+<p>2.点击下载 .zip 包</p>
+<p>3.将包用vsCode打开，运行index.html</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203155914469.png"></p>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160109159.png"></p>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160208211.png"></p>
+<h3 id="四、其他界面菜单"><a href="#四、其他界面菜单" class="headerlink" title="四、其他界面菜单"></a>四、其他界面菜单</h3><p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160737778.png"></p>
+<h4 id="1-工具栏和菜单栏"><a href="#1-工具栏和菜单栏" class="headerlink" title="1.工具栏和菜单栏"></a>1.工具栏和菜单栏</h4><blockquote>
+<p>点击 PLAYCANVAS 图标会显示所有的可用功能，可以使用这些功能编辑场景。如果找不到某个按钮或者快捷键，肯定是能在菜单里找到对应功能的。</p>
+<p>工具栏提供快捷访问的常用功能，其中包含最重要的运行按钮。运行按钮会在一个独立的浏览器窗口中启动游戏并且加载当前的场景，可以立即开始游戏测试。可以从属性编辑栏中看到运行中游戏的实时参数变化。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161229021.png"></p>
+<h4 id="2-层级树"><a href="#2-层级树" class="headerlink" title="2.层级树"></a>2.层级树</h4><blockquote>
+<p>场景是由层级结构的实体组成，场景层级树显示了当前整个场景的树形结构。一个场景永远包含一个根节点实体，位于层级树的最顶端。所有其他的实体都是由开发者逐步加入的。</p>
+<p>层级树面板包含了场景中的全部实体，可以在其中快速定位实体，而不必在场景中搜寻。点击层级树上的实体将会选中它。</p>
+<h2 id="创建和删除实体"><a href="#创建和删除实体" class="headerlink" title="创建和删除实体"></a>创建和删除实体</h2><p>当在层级树中选中一个实体时，用户可以创建一个新的实体或者选出这个所选中的选项。或者使用位于层级树面板左上角的各种按钮，又或者通过点击操作打开内容目录来进行操作。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161304494.png"></p>
+<h4 id="3-检测器"><a href="#3-检测器" class="headerlink" title="3.检测器"></a>3.检测器</h4><blockquote>
+<p>检查器面板会显示当前选定对象的属性值。</p>
+<p>根据选择的不同，会现实不同的检查器面板。目前有</p>
+<ul>
+<li><strong>实体&#x2F;组件检查器</strong></li>
+<li><strong>纹理检查器</strong></li>
+<li><strong>材质检查器</strong></li>
+<li><strong>Cubemap检查器</strong></li>
+</ul>
+<p>修改这些数值用以特制化实体的行为。譬如可以设置 Model 组件所渲染的模型，或灯光的颜色等灯。</p>
+<p>有些参数是简单的文字或数值，通过标准的文字框和滑动条来进行修改。有些值需要特殊的编辑方式，譬如从资源面板中选取一个高亮的资源之类（选取纹理等）。有些值可以通过视口进行可视化编辑，譬如可以直接在视口中用Gizmo平移旋转缩放一个实体的变换属性.</p>
+<p>在应用和编辑器同时运行的情况下，对实体属性的修改将会传递到运行中的应用中。一个绝佳的迭代方式是在应用运行起来之后，并排打开编辑器和应用窗口，实时的对想要的调整的值进行修正。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161602442.png"></p>
+<h4 id="4-视口"><a href="#4-视口" class="headerlink" title="4.视口"></a>4.视口</h4><blockquote>
+<p>视口展示了当前场景的可视化状态。你可以通过移动摄影机在场景中自由漫游。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161643712.png"></p>
+<blockquote>
+<h2 id="摄影机"><a href="#摄影机" class="headerlink" title="摄影机"></a>摄影机</h2><p>初始情况下，编辑器会采用 <strong>透视</strong> 摄影机。这种摄影机如同电影摄影机一般漂浮在场景之中。可以使用摄影机选择菜单选择场景中的不同摄影机。 <strong>正交</strong> 摄影机包含几个确定的机位：顶视图，底视图，前视图，后视图，左视图，右视图。通过这些机位可以无透视的观察场景，特别方便用来调整场景中的实体位置之类。</p>
+<p>在摄影机菜单中选择摄影机的同时，场景中的摄影机实体会被显示为高亮状态。可以利用这个特性精确的设置摄影机位置。</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161804927.png"></p>
+<h4 id="5-资源"><a href="#5-资源" class="headerlink" title="5.资源"></a>5.资源</h4><blockquote>
+<p>资源面板管理了所有的项目中的可用资源。从这个面板可以创建，上传，删除，查看和编辑任何资源</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161917993.png"></p>
+<h3 id="五、小结"><a href="#五、小结" class="headerlink" title="五、小结"></a>五、小结</h3><blockquote>
+<p>three.js还是比PlayCanvas活跃的，当然，如果感兴趣并且有精力的话，还是建议都了解了解</p>
+<p>毕竟知识是无穷无尽的</p>
+</blockquote>
+<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203162850169.png"></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[playcanvas-github]: 	“<a target="_blank" rel="noopener" href="https://github.com/playcanvas/engine/blob/main/README-zh.md">https://github.com/playcanvas/engine/blob/main/README-zh.md</a> “<br>[playcanvas中文]: 	“<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/zh/">https://developer.playcanvas.com/zh/</a> “</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/playcanvas/" rel="tag">playcanvas</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-threejs-d-5-0"
   class="article article-type-post"
   itemscope
@@ -2895,235 +3018,6 @@ ipcMain.on(&#39;counter-value&#39;, (_event, value) =&gt; &#123;
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/electron/" rel="tag">electron</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-pinia"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/23/pinia/"
-    >pinia</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/23/pinia/" class="article-date">
-  <time datetime="2022-11-23T02:21:26.000Z" itemprop="datePublished">2022-11-23</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Electron/">Electron</a> / <a class="article-category-link" href="/categories/Electron/Pinia/">Pinia</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="pinia"><a href="#pinia" class="headerlink" title="pinia"></a>pinia</h1><h3 id="一、Vuex-与-Pinia-核心思想与用法"><a href="#一、Vuex-与-Pinia-核心思想与用法" class="headerlink" title="一、Vuex 与 Pinia 核心思想与用法"></a>一、Vuex 与 Pinia 核心思想与用法</h3><h4 id="Flux-架构"><a href="#Flux-架构" class="headerlink" title="Flux 架构"></a>Flux 架构</h4><p>Flux 是 Facebook 在构建大型 Web 应用程序时为了解决数据一致性问题而设计出的一种架构，它是一种描述状态管理的设计模式。绝大多数前端领域的状态管理工具都遵循这种架构，或者以它为参考原型。</p>
-<p>Flux 架构主要有四个组成部分：</p>
-<ul>
-<li>📦 <strong>store</strong>：状态数据的存储管理中心，可以有多个，可以接受 action 做出响应。</li>
-<li>🖼 <strong>view</strong>：视图，根据 store 中的数据渲染生成页面，与 store 之间存在发布订阅关系。</li>
-<li>🛠 <strong>action</strong>：一种描述动作行为的数据对象，通常会包含动作类型 type 和需要传递的参数 payload 等属性。</li>
-<li>📮 <strong>dispatcher</strong>：调度器，接收 action 并分发至 store。</li>
-</ul>
-<p><img src="/2022/11/23/pinia/b55512a3f1be47b2.png"></p>
-<p>整个数据流动关系为：</p>
-<p>1、view 视图中的交互行为会创建 action，交由 dispatcher 调度器。</p>
-<p>2、dispatcher 接收到 action 后会分发至对应的 store。</p>
-<p>3、store 接收到 action 后做出响应动作，并触发 change 事件，通知与其关联的 view 重新渲染内容。</p>
-<p>这就是 Flux 架构最核心的特点：单向数据流。</p>
-<p>与传统的 MVC 架构相比，单向数据流也带来了一个好处：可预测性。</p>
-<p>所有对于状态的修改都需要经过 dispatcher 派发的 action 来触发的，每一个 action 都是一个单独的数据对象实体，可序列化，操作记录可追踪，更易于调试。</p>
-<p>Vuex 与 Pinia 大体上沿用 Flux 的思想，并针对 Vue 框架单独进行了一些设计上的优化。</p>
-<h4 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h4><p><img src="/2022/11/23/pinia/f9ae36a64955b220.png"></p>
-<ul>
-<li>📦 <strong>state</strong>：整个应用的状态管理单例，等效于 Vue 组件中的 data，对应了 Flux 架构中的 store。</li>
-<li>🧮 <strong>getter</strong>：可以由 state 中的数据派生而成，等效于 Vue 组件中的计算属性。它会自动收集依赖，以实现计算属性的缓存。</li>
-<li>🛠 <strong>mutation</strong>：类似于事件，包含一个类型名和对应的回调函数，在回调函数中可以对 state 中的数据进行同步修改。<ul>
-<li>Vuex 不允许直接调用该函数，而是需要通过 <code>store.commit</code> 方法提交一个操作，并将参数传入回调函数。</li>
-<li>commit 的参数也可以是一个数据对象，正如 Flux 架构中的 action 对象一样，它包含了类型名 <code>type</code> 和负载 <code>payload</code>。</li>
-<li>这里要求 mutation 中回调函数的操作一定是同步的，这是因为同步的、可序列化的操作步骤能保证生成唯一的日志记录，才能使得 devtools 能够实现对状态的追踪，实现 time-travel。</li>
-</ul>
-</li>
-<li>🔨 <strong>action</strong>：action 内部的操作不受限制，可以进行任意的异步操作。我们需要通过 <code>dispatch</code> 方法来触发 action 操作，同样的，参数包含了类型名 <code>type</code> 和负载 <code>payload</code>。<ul>
-<li>action 的操作本质上已经脱离了 Vuex 本身，假如将它剥离出来，仅仅在用户（开发者）代码中调用 <code>commit</code> 来提交 mutation 也能达到一样的效果。</li>
-</ul>
-</li>
-<li>📁 <strong>module</strong>：store 的分割，每个 module 都具有独立的 state、getter、mutation 和 action。<ul>
-<li>可以使用 <code>module.registerModule</code> 动态注册模块。</li>
-<li>支持模块相互嵌套，可以通过设置命名空间来进行数据和操作隔离。</li>
-</ul>
-</li>
-</ul>
-<h4 id="Pinia"><a href="#Pinia" class="headerlink" title="Pinia"></a>Pinia</h4><p><img src="/2022/11/23/pinia/image-20221123084525884.png"></p>
-<p>保留：</p>
-<ul>
-<li>📦 <strong>state</strong>：store 的核心，与 Vue 中的 data 一致，可以直接对其中的数据进行读写。</li>
-<li>🧮 <strong>getters</strong>：与 Vue 中的计算属性相同，支持缓存。</li>
-<li>🔨 <strong>actions</strong>：操作不受限制，可以创建异步任务，可以直接被调用，不再需要 commit、dispatch 等方法。</li>
-</ul>
-<p>舍弃：</p>
-<ul>
-<li>🛠 <strong>mutation</strong>：Pinia 并非完全抛弃了 mutation，而是将对 state 中单个数据进行修改的操作封装为一个 mutation，但不对外开放接口。可以在 devtools 中观察到 mutation。</li>
-<li>📁 <strong>module</strong>：Pinia 通过在创建 store 时指定 name 来区分不同的 store，不再需要 module。</li>
-</ul>
-<h3 id="二、使用Pinia"><a href="#二、使用Pinia" class="headerlink" title="二、使用Pinia"></a>二、使用Pinia</h3><h4 id="1-安装pinia"><a href="#1-安装pinia" class="headerlink" title="1.安装pinia"></a>1.安装pinia</h4><pre><code class="ini">npm i pinia -S //安装pinia依赖
-</code></pre>
-<h4 id="2-main-js组册"><a href="#2-main-js组册" class="headerlink" title="2.main.js组册"></a>2.main.js组册</h4><pre><code class="javascript">//main.js
-import &#123; createApp &#125; from &#39;vue&#39;
-import &#39;./style.css&#39;
-import App from &#39;./App.vue&#39;
-import &#123; createPinia &#125; from &#39;pinia&#39;
-
-createApp(App)
-.use(createPinia())
-.mount(&#39;#app&#39;)
-</code></pre>
-<h4 id="3-创建store"><a href="#3-创建store" class="headerlink" title="3.创建store"></a>3.创建store</h4><p><img src="/2022/11/23/pinia/image-20221123090656211.png"></p>
-<pre><code class="javascript">//countStore.js
-import &#123; defineStore &#125; from &#39;pinia&#39;
-const useCountStore = defineStore(&#39;countStore&#39;,&#123;
-    state()&#123;
-        return &#123;
-            count:0
-        &#125;
-    &#125;
-&#125; )
-export default useCountStore; //导出
-</code></pre>
-<h4 id="4-新建组件使用state"><a href="#4-新建组件使用state" class="headerlink" title="4.新建组件使用state"></a>4.新建组件使用state</h4><pre><code class="vue">//components/Count.vue
-&lt;script setup&gt;
-import useCountStore from &#39;../store/countStore&#39;
-const countStore = useCountStore();
-console.log(countStore)
-&lt;/script&gt;
-&lt;template&gt;
-  &lt;div&gt;
-    &#123;&#123;countStore.count&#125;&#125;
-  &lt;/div&gt;
-&lt;/template&gt;
-&lt;style lang=&quot;css&quot;&gt;
-div&#123;
-    width: 100px;
-    height: 30px;
-    border:1px solid black;
-    border-radius: 5px;
-&#125;
-&lt;/style&gt;
-</code></pre>
-<pre><code class="vue">//App.vue
-&lt;script setup&gt;
-// This starter template is using Vue 3 &lt;script setup&gt; SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Count from &#39;./components/Count.vue&#39;
-&lt;/script&gt;
-
-&lt;template&gt;
-  &lt;div&gt;
-    &lt;Count/&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;style scoped&gt;
-.logo &#123;
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-&#125;
-.logo:hover &#123;
-  filter: drop-shadow(0 0 2em #646cffaa);
-&#125;
-.logo.vue:hover &#123;
-  filter: drop-shadow(0 0 2em #42b883aa);
-&#125;
-&lt;/style&gt;
-</code></pre>
-<p><img src="/2022/11/23/pinia/image-20221123091224524.png" alt="countStore"></p>
-<p>我们可以直接使用就可以了，根据上面控制台输出可以看清楚countStore</p>
-<p>到现在已经实现了创建store及使用</p>
-<h4 id="5-更新store"><a href="#5-更新store" class="headerlink" title="5.更新store"></a>5.更新store</h4><p>1.我们添加一个action方法</p>
-<pre><code class="javascript">//countStore.js
-import &#123; defineStore &#125; from &#39;pinia&#39;
-
-const useCountStore = defineStore(&#39;countStore&#39;,&#123;
-    //定义state
-    state()&#123;
-        return &#123;
-            count:0
-        &#125;
-    &#125;,
-    //定义action方法
-    actions:&#123;
-        add()&#123;
-            this.count++
-        &#125;
-    &#125;
-&#125; )
-
-export default useCountStore;
-</code></pre>
-<p>2.解构方法和state</p>
-<pre><code class="vue">//Count.vue
-&lt;script setup&gt;
-import &#123; storeToRefs &#125; from &#39;pinia&#39;
-import useCountStore from &#39;../store/countStore&#39;
-const &#123;count,add&#125; = storeToRefs(useCountStore());
-&lt;/script&gt;
-&lt;template&gt;
-  &lt;div&gt;
-    &#123;&#123;count&#125;&#125;
-  &lt;/div&gt;
-  &lt;button @click=&quot;add()&quot;&gt;Add&lt;/button&gt;
-&lt;/template&gt;
-&lt;style lang=&quot;css&quot;&gt;
-div&#123;
-    width: 100px;
-    height: 30px;
-    border:1px solid black;
-    border-radius: 5px;
-    text-align: center;
-&#125;
-button&#123;
-    position: relative;
-    bottom: -30px;
-&#125;
-&lt;/style&gt; 
-</code></pre>
-<p>如果我们不使用 storeToRefs 来转发，那么页面将不会有任何响应</p>
-<p>但是我们包裹了useCountStore()并且解构了，发现控制台输出错误error</p>
-<p><img src="/2022/11/23/pinia/image-20221123094109387.png"></p>
-<p>经过修改发现，actions方法不可以通过解构来使用，只能通过另一种方法</p>
-<p><img src="/2022/11/23/pinia/image-20221123094416363.png"> </p>
-<h3 id="参考文档："><a href="#参考文档：" class="headerlink" title="参考文档："></a>参考文档：</h3><p>[Pinia中文文档]: 	“<a target="_blank" rel="noopener" href="https://pinia.web3doc.top/">https://pinia.web3doc.top/</a> “<br>[Vite中文文档]: 	“<a target="_blank" rel="noopener" href="https://vitejs.cn/">https://vitejs.cn/</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pinia/" rel="tag">Pinia</a></li></ul>
 
     </footer>
   </div>

@@ -177,6 +177,235 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-pinia"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/11/23/pinia/"
+    >pinia</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/23/pinia/" class="article-date">
+  <time datetime="2022-11-23T02:21:26.000Z" itemprop="datePublished">2022-11-23</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Electron/">Electron</a> / <a class="article-category-link" href="/categories/Electron/Pinia/">Pinia</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="pinia"><a href="#pinia" class="headerlink" title="pinia"></a>pinia</h1><h3 id="一、Vuex-与-Pinia-核心思想与用法"><a href="#一、Vuex-与-Pinia-核心思想与用法" class="headerlink" title="一、Vuex 与 Pinia 核心思想与用法"></a>一、Vuex 与 Pinia 核心思想与用法</h3><h4 id="Flux-架构"><a href="#Flux-架构" class="headerlink" title="Flux 架构"></a>Flux 架构</h4><p>Flux 是 Facebook 在构建大型 Web 应用程序时为了解决数据一致性问题而设计出的一种架构，它是一种描述状态管理的设计模式。绝大多数前端领域的状态管理工具都遵循这种架构，或者以它为参考原型。</p>
+<p>Flux 架构主要有四个组成部分：</p>
+<ul>
+<li>📦 <strong>store</strong>：状态数据的存储管理中心，可以有多个，可以接受 action 做出响应。</li>
+<li>🖼 <strong>view</strong>：视图，根据 store 中的数据渲染生成页面，与 store 之间存在发布订阅关系。</li>
+<li>🛠 <strong>action</strong>：一种描述动作行为的数据对象，通常会包含动作类型 type 和需要传递的参数 payload 等属性。</li>
+<li>📮 <strong>dispatcher</strong>：调度器，接收 action 并分发至 store。</li>
+</ul>
+<p><img src="/2022/11/23/pinia/b55512a3f1be47b2.png"></p>
+<p>整个数据流动关系为：</p>
+<p>1、view 视图中的交互行为会创建 action，交由 dispatcher 调度器。</p>
+<p>2、dispatcher 接收到 action 后会分发至对应的 store。</p>
+<p>3、store 接收到 action 后做出响应动作，并触发 change 事件，通知与其关联的 view 重新渲染内容。</p>
+<p>这就是 Flux 架构最核心的特点：单向数据流。</p>
+<p>与传统的 MVC 架构相比，单向数据流也带来了一个好处：可预测性。</p>
+<p>所有对于状态的修改都需要经过 dispatcher 派发的 action 来触发的，每一个 action 都是一个单独的数据对象实体，可序列化，操作记录可追踪，更易于调试。</p>
+<p>Vuex 与 Pinia 大体上沿用 Flux 的思想，并针对 Vue 框架单独进行了一些设计上的优化。</p>
+<h4 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h4><p><img src="/2022/11/23/pinia/f9ae36a64955b220.png"></p>
+<ul>
+<li>📦 <strong>state</strong>：整个应用的状态管理单例，等效于 Vue 组件中的 data，对应了 Flux 架构中的 store。</li>
+<li>🧮 <strong>getter</strong>：可以由 state 中的数据派生而成，等效于 Vue 组件中的计算属性。它会自动收集依赖，以实现计算属性的缓存。</li>
+<li>🛠 <strong>mutation</strong>：类似于事件，包含一个类型名和对应的回调函数，在回调函数中可以对 state 中的数据进行同步修改。<ul>
+<li>Vuex 不允许直接调用该函数，而是需要通过 <code>store.commit</code> 方法提交一个操作，并将参数传入回调函数。</li>
+<li>commit 的参数也可以是一个数据对象，正如 Flux 架构中的 action 对象一样，它包含了类型名 <code>type</code> 和负载 <code>payload</code>。</li>
+<li>这里要求 mutation 中回调函数的操作一定是同步的，这是因为同步的、可序列化的操作步骤能保证生成唯一的日志记录，才能使得 devtools 能够实现对状态的追踪，实现 time-travel。</li>
+</ul>
+</li>
+<li>🔨 <strong>action</strong>：action 内部的操作不受限制，可以进行任意的异步操作。我们需要通过 <code>dispatch</code> 方法来触发 action 操作，同样的，参数包含了类型名 <code>type</code> 和负载 <code>payload</code>。<ul>
+<li>action 的操作本质上已经脱离了 Vuex 本身，假如将它剥离出来，仅仅在用户（开发者）代码中调用 <code>commit</code> 来提交 mutation 也能达到一样的效果。</li>
+</ul>
+</li>
+<li>📁 <strong>module</strong>：store 的分割，每个 module 都具有独立的 state、getter、mutation 和 action。<ul>
+<li>可以使用 <code>module.registerModule</code> 动态注册模块。</li>
+<li>支持模块相互嵌套，可以通过设置命名空间来进行数据和操作隔离。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Pinia"><a href="#Pinia" class="headerlink" title="Pinia"></a>Pinia</h4><p><img src="/2022/11/23/pinia/image-20221123084525884.png"></p>
+<p>保留：</p>
+<ul>
+<li>📦 <strong>state</strong>：store 的核心，与 Vue 中的 data 一致，可以直接对其中的数据进行读写。</li>
+<li>🧮 <strong>getters</strong>：与 Vue 中的计算属性相同，支持缓存。</li>
+<li>🔨 <strong>actions</strong>：操作不受限制，可以创建异步任务，可以直接被调用，不再需要 commit、dispatch 等方法。</li>
+</ul>
+<p>舍弃：</p>
+<ul>
+<li>🛠 <strong>mutation</strong>：Pinia 并非完全抛弃了 mutation，而是将对 state 中单个数据进行修改的操作封装为一个 mutation，但不对外开放接口。可以在 devtools 中观察到 mutation。</li>
+<li>📁 <strong>module</strong>：Pinia 通过在创建 store 时指定 name 来区分不同的 store，不再需要 module。</li>
+</ul>
+<h3 id="二、使用Pinia"><a href="#二、使用Pinia" class="headerlink" title="二、使用Pinia"></a>二、使用Pinia</h3><h4 id="1-安装pinia"><a href="#1-安装pinia" class="headerlink" title="1.安装pinia"></a>1.安装pinia</h4><pre><code class="ini">npm i pinia -S //安装pinia依赖
+</code></pre>
+<h4 id="2-main-js组册"><a href="#2-main-js组册" class="headerlink" title="2.main.js组册"></a>2.main.js组册</h4><pre><code class="javascript">//main.js
+import &#123; createApp &#125; from &#39;vue&#39;
+import &#39;./style.css&#39;
+import App from &#39;./App.vue&#39;
+import &#123; createPinia &#125; from &#39;pinia&#39;
+
+createApp(App)
+.use(createPinia())
+.mount(&#39;#app&#39;)
+</code></pre>
+<h4 id="3-创建store"><a href="#3-创建store" class="headerlink" title="3.创建store"></a>3.创建store</h4><p><img src="/2022/11/23/pinia/image-20221123090656211.png"></p>
+<pre><code class="javascript">//countStore.js
+import &#123; defineStore &#125; from &#39;pinia&#39;
+const useCountStore = defineStore(&#39;countStore&#39;,&#123;
+    state()&#123;
+        return &#123;
+            count:0
+        &#125;
+    &#125;
+&#125; )
+export default useCountStore; //导出
+</code></pre>
+<h4 id="4-新建组件使用state"><a href="#4-新建组件使用state" class="headerlink" title="4.新建组件使用state"></a>4.新建组件使用state</h4><pre><code class="vue">//components/Count.vue
+&lt;script setup&gt;
+import useCountStore from &#39;../store/countStore&#39;
+const countStore = useCountStore();
+console.log(countStore)
+&lt;/script&gt;
+&lt;template&gt;
+  &lt;div&gt;
+    &#123;&#123;countStore.count&#125;&#125;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;style lang=&quot;css&quot;&gt;
+div&#123;
+    width: 100px;
+    height: 30px;
+    border:1px solid black;
+    border-radius: 5px;
+&#125;
+&lt;/style&gt;
+</code></pre>
+<pre><code class="vue">//App.vue
+&lt;script setup&gt;
+// This starter template is using Vue 3 &lt;script setup&gt; SFCs
+// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
+import Count from &#39;./components/Count.vue&#39;
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;Count/&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+.logo &#123;
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+&#125;
+.logo:hover &#123;
+  filter: drop-shadow(0 0 2em #646cffaa);
+&#125;
+.logo.vue:hover &#123;
+  filter: drop-shadow(0 0 2em #42b883aa);
+&#125;
+&lt;/style&gt;
+</code></pre>
+<p><img src="/2022/11/23/pinia/image-20221123091224524.png" alt="countStore"></p>
+<p>我们可以直接使用就可以了，根据上面控制台输出可以看清楚countStore</p>
+<p>到现在已经实现了创建store及使用</p>
+<h4 id="5-更新store"><a href="#5-更新store" class="headerlink" title="5.更新store"></a>5.更新store</h4><p>1.我们添加一个action方法</p>
+<pre><code class="javascript">//countStore.js
+import &#123; defineStore &#125; from &#39;pinia&#39;
+
+const useCountStore = defineStore(&#39;countStore&#39;,&#123;
+    //定义state
+    state()&#123;
+        return &#123;
+            count:0
+        &#125;
+    &#125;,
+    //定义action方法
+    actions:&#123;
+        add()&#123;
+            this.count++
+        &#125;
+    &#125;
+&#125; )
+
+export default useCountStore;
+</code></pre>
+<p>2.解构方法和state</p>
+<pre><code class="vue">//Count.vue
+&lt;script setup&gt;
+import &#123; storeToRefs &#125; from &#39;pinia&#39;
+import useCountStore from &#39;../store/countStore&#39;
+const &#123;count,add&#125; = storeToRefs(useCountStore());
+&lt;/script&gt;
+&lt;template&gt;
+  &lt;div&gt;
+    &#123;&#123;count&#125;&#125;
+  &lt;/div&gt;
+  &lt;button @click=&quot;add()&quot;&gt;Add&lt;/button&gt;
+&lt;/template&gt;
+&lt;style lang=&quot;css&quot;&gt;
+div&#123;
+    width: 100px;
+    height: 30px;
+    border:1px solid black;
+    border-radius: 5px;
+    text-align: center;
+&#125;
+button&#123;
+    position: relative;
+    bottom: -30px;
+&#125;
+&lt;/style&gt; 
+</code></pre>
+<p>如果我们不使用 storeToRefs 来转发，那么页面将不会有任何响应</p>
+<p>但是我们包裹了useCountStore()并且解构了，发现控制台输出错误error</p>
+<p><img src="/2022/11/23/pinia/image-20221123094109387.png"></p>
+<p>经过修改发现，actions方法不可以通过解构来使用，只能通过另一种方法</p>
+<p><img src="/2022/11/23/pinia/image-20221123094416363.png"> </p>
+<h3 id="参考文档："><a href="#参考文档：" class="headerlink" title="参考文档："></a>参考文档：</h3><p>[Pinia中文文档]: 	“<a target="_blank" rel="noopener" href="https://pinia.web3doc.top/">https://pinia.web3doc.top/</a> “<br>[Vite中文文档]: 	“<a target="_blank" rel="noopener" href="https://vitejs.cn/">https://vitejs.cn/</a> “</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pinia/" rel="tag">Pinia</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-vite配置"
   class="article article-type-post"
   itemscope
@@ -2364,142 +2593,6 @@ DRONE_GITHUB_CLIENT_SECRET=
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CI/" rel="tag">CI</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-Docker部署Drone"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/"
-    >Docker部署Drone</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/" class="article-date">
-  <time datetime="2022-11-13T11:43:16.000Z" itemprop="datePublished">2022-11-13</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/CI-CD/">CI/CD</a> / <a class="article-category-link" href="/categories/CI-CD/Docker%E9%83%A8%E7%BD%B2Drone/">Docker部署Drone</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Docker部署Drone"><a href="#Docker部署Drone" class="headerlink" title="Docker部署Drone"></a>Docker部署Drone</h1><h3 id="一、新建-GitHub-应用"><a href="#一、新建-GitHub-应用" class="headerlink" title="一、新建 GitHub 应用"></a>一、新建 GitHub 应用</h3><p>具体顺序Settings-&gt;Developer settings-&gt;OAuth Apps-&gt;New OAuth App</p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155624239.png"></p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155447805.png" alt="image-20221113155447805"></p>
-<p>新建完成后记住Client ID和Client secrets，后面配置需要</p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155825926.png"></p>
-<h3 id="二、下载drone"><a href="#二、下载drone" class="headerlink" title="二、下载drone"></a>二、下载drone</h3><pre><code class="ini">docker pull drone/drone //下载drone
-</code></pre>
-<h3 id="三、配置-Drone"><a href="#三、配置-Drone" class="headerlink" title="三、配置 Drone"></a>三、配置 Drone</h3><p>通过使用 <code>Docker Compose</code> 来启动 <code>Drone</code>，编写 <code>docker-compose.yml</code> 文件（这个文件直接新建就可以了）</p>
-<pre><code class="ini">touch docker-compose.yml //新建文件
-vim docker-compose.yml  //配置文件
-</code></pre>
-<pre><code class="javascript">//docker-compose.yml 文件不用修改
-version: &#39;3&#39;
-
-services:
-
-  drone-server:
-    image: drone/drone:2.3.1
-    ports:
-      - 443:443
-      - 80:80
-    volumes:
-      - drone-data:/data:rw
-      - ./ssl:/etc/certs
-    restart: always
-    environment:
-      - DRONE_SERVER_HOST=$&#123;DRONE_SERVER_HOST:-https://drone.yeasy.com&#125;
-      - DRONE_SERVER_PROTO=$&#123;DRONE_SERVER_PROTO:-https&#125;
-      - DRONE_RPC_SECRET=$&#123;DRONE_RPC_SECRET:-secret&#125;
-      - DRONE_GITHUB_SERVER=https://github.com
-      - DRONE_GITHUB_CLIENT_ID=$&#123;DRONE_GITHUB_CLIENT_ID&#125;
-      - DRONE_GITHUB_CLIENT_SECRET=$&#123;DRONE_GITHUB_CLIENT_SECRET&#125;
-
-  drone-agent:
-    image: drone/drone-runner-docker:1
-    restart: always
-    depends_on:
-      - drone-server
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:rw
-    environment:
-      - DRONE_RPC_PROTO=http
-      - DRONE_RPC_HOST=drone-server
-      - DRONE_RPC_SECRET=$&#123;DRONE_RPC_SECRET:-secret&#125;
-      - DRONE_RUNNER_NAME=$&#123;HOSTNAME:-demo&#125;
-      - DRONE_RUNNER_CAPACITY=2
-    dns: 114.114.114.114
-
-volumes:
-  drone-data:
-</code></pre>
-<p>新建 <code>.env</code> 文件，输入变量及其值（上面docker-compose.yml文件配置会默认读取 .env 文件变量）</p>
-<pre><code class="ini">touch .env //新建文件
-</code></pre>
-<pre><code class="ini">//.env
-# 必填 服务器地址，例如 drone.domain.com
-DRONE_SERVER_HOST=
-DRONE_SERVER_PROTO=https
-DRONE_RPC_SECRET=secret
-HOSTNAME=demo
-# 必填 在 GitHub 应用页面查看
-DRONE_GITHUB_CLIENT_ID=
-# 必填 在 GitHub 应用页面查看
-DRONE_GITHUB_CLIENT_SECRET=
-</code></pre>
-<pre><code class="ini">#我的配置（参考）
-# 必填 服务器地址，例如 drone.domain.com
-DRONE_SERVER_HOST=localhost
-DRONE_SERVER_PROTO=http
-DRONE_RPC_SECRET=secret
-HOSTNAME=demo
-# 必填 在 GitHub 应用页面查看
-DRONE_GITHUB_CLIENT_ID=
-# 必填 在 GitHub 应用页面查看
-DRONE_GITHUB_CLIENT_SECRET=
-</code></pre>
-<h3 id="四、启动Drone"><a href="#四、启动Drone" class="headerlink" title="四、启动Drone"></a>四、启动Drone</h3><pre><code class="ini">docker-compose up -d
-</code></pre>
-<p>访问http:localhost:80（我配置的，你和我配置一样就可以打开）就成功了</p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113161124001.png"></p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113155240845-8325994.png"></p>
-<p>等到验证完成就可以了（如果出现错误，关机重启，重新配置就可以了）</p>
-<p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113165243948.png"></p>
-<h3 id="五、激活仓库-具体看下一篇"><a href="#五、激活仓库-具体看下一篇" class="headerlink" title="五、激活仓库(具体看下一篇)"></a>五、激活仓库(具体看下一篇)</h3><p><img src="/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/image-20221113171114692.png"></p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/drone-ci/" rel="tag">drone ci</a></li></ul>
 
     </footer>
   </div>

@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>加载优化（视频加载） |  艺术码畜</title>
+      <title>加载优化（加载注意事项） |  艺术码畜</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -84,7 +84,7 @@ var _hmt = _hmt || [];
     <main class="content on">
       <section class="outer">
   <article
-  id="post-加载优化（视频加载）"
+  id="post-加载优化（加载注意事项）"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -95,7 +95,7 @@ var _hmt = _hmt || [];
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  加载优化（视频加载）
+  加载优化（加载注意事项）
 </h1>
  
 
@@ -103,11 +103,11 @@ var _hmt = _hmt || [];
     </header>
      
     <div class="article-meta">
-      <a href="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/" class="article-date">
-  <time datetime="2023-02-16T03:09:10.000Z" itemprop="datePublished">2023-02-16</time>
+      <a href="/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/" class="article-date">
+  <time datetime="2023-02-17T01:45:34.000Z" itemprop="datePublished">2023-02-17</time>
 </a> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/">加载优化（视频加载）</a>
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/">加载优化（加载注意事项）</a>
   </div>
   
 <div class="word_count">
@@ -115,7 +115,7 @@ var _hmt = _hmt || [];
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">1.4k</span>
+            <span class="post-count">2.5k</span>
         </span>
     </span>
 
@@ -124,7 +124,7 @@ var _hmt = _hmt || [];
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">5 min</span>
+            <span class="post-count">9 min</span>
         </span>
     </span>
 </div>
@@ -139,67 +139,88 @@ var _hmt = _hmt || [];
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h2 id="视频加载"><a href="#视频加载" class="headerlink" title="视频加载"></a>视频加载</h2><blockquote>
-<p>与延迟加载图像资源类似，通过视频标签引入的视频资源也可进行延迟加载，但通常都会根据需求场景进行具体的处理，下面就来探讨一 些关于 视频加载的优化内容。</p>
+  <h2 id="加载注意事项"><a href="#加载注意事项" class="headerlink" title="加载注意事项"></a>加载注意事项</h2><blockquote>
+<p>对图像与视频的延迟加载，从理论上看必然会对性能产生重要的影响，但在实现过程中有许多细节需需要注意，稍有差池都可能就会产生意想不到的结果。因此，总结以下几点注意事项。</p>
 </blockquote>
-<h3 id="一、不需要自动播放"><a href="#一、不需要自动播放" class="headerlink" title="一、不需要自动播放"></a>一、不需要自动播放</h3><p>​		由于Chrome等一些浏览器会对视频资源进行预加载，即在HTML完成加载和解析时触发DOMContentLoaded 事件开始请求视频资源，当请求完成后触发window. onload事件开始页面渲染，过程如图所示。</p>
-<p><img src="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230216103841965.png" alt="视频资源的加载"></p>
-<p>为了使页面更快地加载并渲染出来，可以阻止不需要自动播放的视频的预加载:其方法是通过视频标签的preload进行控制:</p>
-<pre><code class="html">&lt;video controls preload-&quot;none&quot; poster=&quot;default.1po9&quot;&gt;
-        &lt;source src=&quot;simply.webm&quot; type-&quot;video/webm&quot;&gt;
-        &lt;source src=&quot;simply.mp4&quot; tye-&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
+<h3 id="一、首屏加载"><a href="#一、首屏加载" class="headerlink" title="一、首屏加载"></a>一、首屏加载</h3><p>​		当我们了解了延迟加载的诸多优点之后，读者是否有使用JavaScript对页面上所有的图像和视频资源都进行延迟加我的冲动?在采取该优化措施前，要想提醒的是，对性能优化工作来说，不存在一蹴而就的解决方案， 而是需要根据具体场景采用恰当的方式。比如对于首屏上的内容就不应当进行延迟加载，而应使用正常加载的方式，这样处理的原因是，延迟加载会将图像或视频等媒体资源延迟到DOM可交互之后，即脚本完成加载并开始执行时才会进行。所以对首屏视窗之外的媒体资源采用延迟加载，而对首屏内的媒体资源采用正常的方式加载，会带来更好的整体性能体验。</p>
+<p>​		由于网站页面所呈现的设备屏幕尺寸多种多样，因此如何判断首屏视窗的边界，就会因设备的不同而有所不同。台式机电脑首屏视窗中的内容，可能换到移动设备上就会位于首屏视窗之外。目前也没有完全行之有效的方法来完美地处理每种设备的情况。</p>
+<p>​		此外，若将首屏视窗边界线作为延迟加载触发的阈值，其实井非最佳的性能考虑。更理想的做法是，在延迟加载的媒体资源到达首屏边界之前设置一个缓冲区，以便媒体资源在进入视窗之前就开始进行加载。</p>
+<p>​		例如在使用lntersection Observer方式实现延迟加载判断时，可以通过配置options对象中的rootMargin属性来建立缓冲区:</p>
+<pre><code class="js">const lazyImageObserver = new IntersectionObserver((entries, observer) =&gt; &#123;
+//此处省略延迟加载的具体处理流程
+  ...&#125;,&#123;
+rootMargin:”0 0 256px 0&quot;
+&#125;:
 </code></pre>
-<p>标签的preload属性通常的默认值为auto，表示无论用户是否希望，所有视频文件都会被自动下载，这里将其设置为none，来阻止视频的自动加载。同时这里还通过poster属性为视频提供占位符图片，它的作用是当视频未加载出来时，不至于在页面中呈现一块让用户未知的空白。考虑类似边缘异常场最是必要的，因为浏览器对视烦的加载行为可能存在较大差别。</p>
-<ul>
-<li>Chrome之前的版本中，preload的默认值是auto,从64版本以后其默人值改为了metadata, 表示仅加载视频的元数据，Firefox、 IE11和Edge等浏览器的行为类似。</li>
-<li>Safari 11.0的Mac版会默认进行部分视频资源预加载，11.2的Mac版后仅可预加载元数据，但ios的Safari不会对视频预加载。</li>
-<li>若浏览器开启了流量节省模式后，preload 将默认设置为none.</li>
-</ul>
-<p>​		当浏览器支持preload的metadata属性值后，这将会是一种兼顾了 性能与体验后更优的方式，因为从体验上讲，对于不自动播放的视频场景，在单击播放之前，若能提前告知视频的播放时长、播放列表等元数据，便能带给用户更好的可控感，同时又不至于提前加载了过多资源而阻塞页面渲染。</p>
-<p>另外， 如果你的站点中包含了同一域名下的多个视频资源，那么推荐最好将preload属性设置为metadata,或者定义poster属性值时将preload设置为none,这样能很好地避免HTTP的最大连接数，因为通常HTTP 1.1协议规定同一城名下的最大连接数为6,如果同时有超过此数量的资源请求连接，那么多余的连接便会被挂起，这无疑也会对性能造成负面影响。</p>
-<h3 id="二、视频代替GIF动画"><a href="#二、视频代替GIF动画" class="headerlink" title="二、视频代替GIF动画"></a>二、视频代替GIF动画</h3><p>​		另一种视频的使用场最是在前面章节讲到的:应当尽量用视频代替尺寸过大的GIF动画，虽然GIF动画的应用历史和范围都很广泛，但其在输出文件大小、图像色彩质量等许多方面的表现均不如视频。GIF动画相对于视频具有三个附加的特性:没有音轨、连续循环播放、加载完自动播放，替换成视频后类似于:</p>
-<pre><code class="html">&lt;video autoplay muted loop playsinline&gt;
-        &lt;source src-&quot;video.webm&quot; type-&quot;video/webm&quot;&gt;
-        &lt;source srC-&quot;video .mp4&quot;type-&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
+<p>​		观察可知rootMargin的值与CSS中margin属性值类似，上述代码中 在屏幕视窗下设置了一个宽度为256px的缓冲区，这意味着当媒体元素距离视窗下边界小于256px时，回调函数就会执行开始资源的请求加载。而对于使用滚动事件处理来实现延迟加载的传统实现方式，也只需要更改getBoundingClientRect的设置，包括进入一个缓冲区即可实现类似的效果。</p>
+<h3 id="二、资源占位"><a href="#二、资源占位" class="headerlink" title="二、资源占位"></a>二、资源占位</h3><p>​		当延迟加载的媒体资源未渲染出来之前，应当在页面中使用相同尺寸的占位图像。如果不使用占位符，图像延迟显示出来后，尺寸更改可能会使页面布局出现移位。这种现象不仅会对用户体验带来困感，更严重的还会触发浏览器成本高昂的回流机制，进而增加系统资源开销造成卡顿。而用来占位的图像解决方案也有多种，十分简单的方式是使用一个与目标媒体资源长宽相同的纯色占位符，或者像之前使用的Base64图片，当然也可以采用LQIP或SQIP等方法。</p>
+<p>​		其中LQIP的全称是低质量图片占位符，即使用原图的较低分辨率版本来占位，SQIP则是一种基于 SVG的LIQP技术，我们可以通过对比来感知它们和原图之间的差别，如图所示。</p>
+<p><img src="/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/image-20230216120651723.png" alt="各种LQIP的效果"></p>
+<p>​		其实就是以最小的带宽消耗，告知用户此处将要展示一个媒体资源，可能由于资源尺寸较大还在加载。对于使用&lt;img标记的图像资源，应将用于占位的初始图像指给src属性，直到更新为所需的最终图像为止。而对于使用&lt;video标记的视频资源，则应将占位图像指给poster属性，除此之外，最好可以在&lt;img和&lt;video标签上添加表示宽width和高height的属性，如此便可确保不会在占位符转化为最终媒体资源时，发生元素渲染大小的改变。</p>
+<h3 id="三、内容加载失败"><a href="#三、内容加载失败" class="headerlink" title="三、内容加载失败"></a>三、内容加载失败</h3><p>​		在进行延迟加载过程中，可能会因为某种原因而造成媒体资源加载失败，进而导致错误的情况。比如用户访问某个网站后，保持浏览器该选项卡打开后长时间离开，等再返回继续浏览网页内容时，可能在此过程中网站已经进行了重新部署，原先访问的页面中包含的部分媒体资源由于哈希的版本控制发生更改，或者已被移除。那么用户滚动浏览页面，遇到延迟加载的媒体资源，可能就已经不可使用了。</p>
+<p>​	虽然类似情况发生的概率不高，但考虑网站对用户的可用性，开发者也应当考虑好后备方案，以防止类似延迟加载可能遇到的失败。例如，图像资源可以采取如下方案进行规避:</p>
+<pre><code class="js">const newImage = new Image();
+newImage.src = &quot;photo.jpg&quot;;
+//当发生故障时的处理措施
+newImage.onerror = (err) =&gt; &#123;
+&#125;;
+//图像加载后的回调
+newImage.onload = ()= &gt; &#123;
+&#125;;
 </code></pre>
-<p>​		其中在视频标签中附加的属性含义分别为:autoplay自动播放、muted 静音播放及loop循环播放，而playsinline属性则是用于在ios中指定自动播放的。虽然有了GIF图像的替代方案，但并非所有浏览器都像Chrome一样， 能自动进行延迟加载。接下来就需要进行一些配置开发， 使该场最的视频也能延迟加载。首先修改HTML标签如下:</p>
-<pre><code class="html">&lt;video autoplay muted loop playsinline width=&quot;610&quot; height=&quot;254&quot; poster=&quot;video-poster.jpg&quot;&gt;
-        &lt;source data-src=&quot;video. webm&quot; type=&quot;video/webm&quot;&gt;
-        &lt;source data-src=&quot;video .mp4&quot; type=&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
-</code></pre>
-<p>​		这里进行了两处修改:首先是为视频标签添加了poster 属性，意为使用poster中指定的图片作为视频延迟加载出现前的占位;其次是使用了类似应对图像延迟加载的方式，将真实视频资源的URL放在data-src属性中，然后基于Intersection Observer用JavaScript实现对延迟加载的控制:</p>
-<pre><code class="js">Document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; &#123;
-  const lazyVideos = [].slice.call(document.querySelectorAll(&quot;video.lazy&quot;));
-  if (&quot;IntersectionObserver&quot; in window) &#123;
-    const lazyVideoObserver = new IntersectionObserver((entries, observer) =&gt; &#123;
-      entries.forEach((video) =&gt; &#123;
-        if (video.isIntersecting) &#123;
-          for (const source in video.target.children) &#123;
-            const videoSrc = video.target.children[source];
-            if (
-              typeof videoSrc.tagName === &quot;string&quot; &amp;&amp;
-              videoSrc.tagName === &quot;source&quot;
-            ) &#123;
-              videoSrc.src = videoSrc.dataset.src;
-            &#125;
-          &#125;
-          video.target.load();
-          video.target.classList.remove(&quot;lazy&quot;);
-          lazyVideoObserver.unobserve(video.target);
-        &#125;
-      &#125;);
-    &#125;);
-
-    lazyVideos.forEach((lazyVideo) =&gt; &#123;
-      lazyVideoObserver.observe(lazyVideo);
-    &#125;);
-  &#125;
+<p>​		当图片资源未能按预期成功加载时，所采取的具体处理措施应当依据应用场景而定。比如，当请求的媒体资源无法加载时，可将使用的图像占位符替换为按钮。让用户单击以尝试重新加载所需的媒体资源，或者在占位符区域显示错误的提示信息。总之，在发生任何资源加载故障时，给予用户必要的通知提示，总好过直接让用户无奈地面对故障。</p>
+<h3 id="四、图像解码延迟"><a href="#四、图像解码延迟" class="headerlink" title="四、图像解码延迟"></a>四、图像解码延迟</h3><p>​		在前面章节介绍JPEG图像的编解码时，我们知道渐进式的JPEG会先呈现出个低像素的图像版本，随后会慢慢呈现出原图的样貌。这是因为图像从被浏览器请求获取，再到最终完整呈现在屏幕上，需要经历一个解码的过程，图像的尺寸越大，所需要的解码时间就越长。如果在JavaScript 中请求加载较大的图像文件，并把它直接放入DOM结构中后，那么将有可能占用浏览器的主进程，进而导致解码期间用户界面出现短暂的无响应。</p>
+<p>​		为减少此类卡顿现象，可以采用decode方法进行异步图像解码后，再将其插入DOM结构中。但目前这种方式在跨浏览器场景下并不通用，同时也会复杂化原本对于媒体资源延迟加载的处理逻辑，所以在使用中应进行必要的可用性检查。下面是一个使用Image.decode()函数来实现异步解码的示例:</p>
+<pre><code class="js">&lt;button id=&quot;load-image&quot;&gt;加载图像&lt;/button&gt;
+&lt;div id=&quot;image-container&quot;&gt;&lt;/div&gt;
+//对应的JavaScript事件处理代码如下:
+document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; &#123;
+  const loadButton = document.getElementById(&quot;load-image&quot;);
+  const imageContainer = document.getElementById(&quot;image-container&quot;);
+  const newImage = new Image();
+  newImage.src = &quot;https://xx. cdn/very-big-photo.jpg&quot;;
+  loadButton.addEventListener(
+    &quot;click&quot;,
+    function () &#123;
+      if (&quot;decode&quot; in newImage) &#123;
+        //异步解码方式
+        newImage.decode().then(function () &#123;
+          imageContainer.appendChild(newImage);
+        &#125;);
+      &#125; else &#123;
+        //正常图像加载方式
+        imageContainer.appendChild(newImage);
+      &#125;
+    &#125;,
+    &#123;
+      once: true,
+    &#125;
+  );
 &#125;);
 </code></pre>
-<p>​		对视频标签的延迟加载有点类似<picture>,需要对所有<source> 子元素进行选代解析，将data-src上的属性值迁移到src属性上。不同的是，需要额外显示调用元素的load方法来触发加载，然后视频才会根据autoplay属性开始进行自动播放。如此便可使用低于GIF动画的流量消耗，进行资源的延迟加载。</p>
+<p>​		需要说明的是，如果网站所包含的大部分图像尺寸都很小，那么使用这种方式的帮助并不会很大，同时还会增加代码的复杂性。但可以肯定的是这么做会减少延迟加载大型图像文件所带来的卡顿。</p>
+<h3 id="五、JavaScript-是否可用"><a href="#五、JavaScript-是否可用" class="headerlink" title="五、JavaScript 是否可用"></a>五、JavaScript 是否可用</h3><p>​		在通常情况下，我们都会假定JavaScript始终可用，但在一些异常不可用的物可用的情况下，开发者应当做好适配，不能始终在延迟加载的图像位置上展示占位符。可以考虑使用&lt;noscript标记，在JavaScript不可用时提供图像的真实展示:</p>
+<pre><code class="html">&lt;!-使用延迟加载的图像文件标签--&gt;
+&lt; img class=&quot;lazy&quot; src=&quot;placeholder-image.jpg&quot; data-src=&quot;image-to-lazy-load.jpg&quot; alt=&quot;I&#39;m an image!&quot;&gt;
+&lt;!一当JavaScript不可用时，原生展示目标團像--&gt;
+&lt;noscript&gt;
+&lt; img src=&quot;image-to-lazy-load.jpg&quot; alt=&quot;I&#39;m an image!&quot;&gt;
+&lt;/noscript&gt;
+</code></pre>
+<p>如果上述代码同时存在，当JavaScript不可用时，页面中会同时展示图像占位符和&lt;noscript中包含的图像，为此我们可以给&lt;html标签添加一个 no-js类:</p>
+<pre><code class="html">&lt;html class=&quot;no-js&quot;&gt;
+</code></pre>
+<p>在由&lt;link标签请求CSS文件之前，在&lt;head标签结构中放置一段内联脚本， 当JavaScript可用时，用于移除no-js类:</p>
+<pre><code class="js">&lt;script&gt;
+  document. documentElement.classList. remove (&quot;no-js&quot;);
+&lt;/script&gt;
+</code></pre>
+<p>以及添加必要的CSS样式，使得在JavaScript不可用时屏蔽包含 .lazy类元素的显示:</p>
+<pre><code class="css">.no-js .1azy &#123;
+display: none;
+&#125;
+</code></pre>
+<p>​		当然这样并不会阻止占位符图像的加载，只是让占位符图像在JavaScript不可用时不可见，但其体验效果会比让用户只看到占位符图像和没有意义的图像内容要好许多。</p>
  
       <!-- reward -->
       
@@ -270,12 +291,12 @@ var _hmt = _hmt || [];
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>  
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD/" rel="tag">视频加载</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" rel="tag">加载注意事项</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li></ul>
 
     </footer>
   </div>
@@ -283,19 +304,10 @@ var _hmt = _hmt || [];
    
   <nav class="article-nav">
     
-      <a href="/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            加载优化（加载注意事项）
-          
-        </div>
-      </a>
     
-    
-      <a href="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/" class="article-nav-link">
+      <a href="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">加载优化（图像延迟加载）</div>
+        <div class="article-nav-title">加载优化（视频加载）</div>
       </a>
     
   </nav>

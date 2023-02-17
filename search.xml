@@ -1,76 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Apifox和Leancloud</title>
-    <url>/2022/12/25/Apifox%E5%92%8CLeancloud/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Apifox和Leancloud"><a href="#Apifox和Leancloud" class="headerlink" title="Apifox和Leancloud"></a>Apifox和Leancloud</h1><blockquote>
-<p>我们为什么选择Apifox和Leancloud的组合呢</p>
-<p>Apifox也是一款可以模拟接口的一款工具，当然也不只可以模拟接口</p>
-<p>Leancloud选择是当我们去开发一些小的应用的时候，我们降低开发成本的时候，我们就可以去选择Leancloud去当我们的平台进行数据存储，还是比较方便的。</p>
-</blockquote>
-<h3 id="一、Apifox下载"><a href="#一、Apifox下载" class="headerlink" title="一、Apifox下载"></a>一、Apifox下载</h3><p>访问<a href="https://www.apifox.cn/">官网</a>进行下载</p>
-<p>有付费和免费的，根据需求下载</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225090853860.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225091357277.png"></p>
-<p>我们可以去新建我们的项目和接口</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225092715766.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093542358.png"></p>
-<p>下面会讲如何设置和填写参数以便于和Leancloud去交互请求</p>
-<h3 id="二、Leancloud注册登陆"><a href="#二、Leancloud注册登陆" class="headerlink" title="二、Leancloud注册登陆"></a>二、Leancloud注册登陆</h3><p>我们访问<a href="https://www.leancloud.cn/">官网</a>注册登陆</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093702335.png"></p>
-<p>然后来到我们的控制台创建我们的应用</p>
-<p>我们可以对我们每个应用分开管理</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093850074.png"></p>
-<p>我们每个应用都有自己的信息</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094016973.png"></p>
-<p>大家测试的时候可以使用自己的应用信息配置</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094046589.png"></p>
-<h3 id="三、配置Apifox"><a href="#三、配置Apifox" class="headerlink" title="三、配置Apifox"></a>三、配置Apifox</h3><blockquote>
-<p>当我们应用和Apifox环境准备完毕，那么我们就可以根据文档来配置了</p>
-</blockquote>
-<p>文档-&gt;REST API-&gt;数据存储</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094258347.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094449937.png"></p>
-<h4 id="1-新建接口"><a href="#1-新建接口" class="headerlink" title="1.新建接口"></a>1.新建接口</h4><p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094537626.png"></p>
-<p>在配置我们的接口的前提是要选好我们接口运行的环境</p>
-<p>让我们先配置一下环境</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094638510.png"></p>
-<p>我们可以将我们的服务改成我们Leancloud平台的开放服务地址（后续我们可以改成我们的域名）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094725724.png"></p>
-<p>根据文档来配置</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095251514.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095213854.png"></p>
-<p>Header-&gt;批量编辑-&gt;冒号模式（然后将负责的配置修改成下面这种格式就可以了）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095423023.png"></p>
-<p>下一步我们来携带参数body</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095604642.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095717122.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095746960.png"></p>
-<p>修改状态码并添加响应示例</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095819827.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095940926.png"></p>
-<p>保存运行</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100023787.png"></p>
-<p>出error了，修复它（给body添加示例值就可以了）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100109578.png"></p>
-<h4 id="2-发起请求"><a href="#2-发起请求" class="headerlink" title="2.发起请求"></a>2.发起请求</h4><p>我们发送（响应成功）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101014178.png"></p>
-<h3 id="四、Leancloud"><a href="#四、Leancloud" class="headerlink" title="四、Leancloud"></a>四、Leancloud</h3><p>当我们查看Leancloud应用的时候，发现我们多了一张表和数据，表示我们的请求已经成功</p>
-<blockquote>
-<p>我们还可以根据文档来修改，查找，删除我们的数据表，代码中的配置也是一样的，这样我们就可以利用LeanCloud来搭建我们一个小应用的数据表了。</p>
-</blockquote>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101228952.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101502303.png"></p>
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
-      <categories>
-        <category>uniapp</category>
-        <category>Apifox和Leancloud</category>
-      </categories>
-      <tags>
-        <tag>leancloud</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Docker部署Drone</title>
     <url>/2022/11/13/Docker%E9%83%A8%E7%BD%B2Drone/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Docker部署Drone"><a href="#Docker部署Drone" class="headerlink" title="Docker部署Drone"></a>Docker部署Drone</h1><h3 id="一、新建-GitHub-应用"><a href="#一、新建-GitHub-应用" class="headerlink" title="一、新建 GitHub 应用"></a>一、新建 GitHub 应用</h3><p>具体顺序Settings-&gt;Developer settings-&gt;OAuth Apps-&gt;New OAuth App</p>
@@ -164,6 +94,76 @@ DRONE_GITHUB_CLIENT_SECRET=
       </categories>
       <tags>
         <tag>drone ci</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Apifox和Leancloud</title>
+    <url>/2022/12/25/Apifox%E5%92%8CLeancloud/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Apifox和Leancloud"><a href="#Apifox和Leancloud" class="headerlink" title="Apifox和Leancloud"></a>Apifox和Leancloud</h1><blockquote>
+<p>我们为什么选择Apifox和Leancloud的组合呢</p>
+<p>Apifox也是一款可以模拟接口的一款工具，当然也不只可以模拟接口</p>
+<p>Leancloud选择是当我们去开发一些小的应用的时候，我们降低开发成本的时候，我们就可以去选择Leancloud去当我们的平台进行数据存储，还是比较方便的。</p>
+</blockquote>
+<h3 id="一、Apifox下载"><a href="#一、Apifox下载" class="headerlink" title="一、Apifox下载"></a>一、Apifox下载</h3><p>访问<a href="https://www.apifox.cn/">官网</a>进行下载</p>
+<p>有付费和免费的，根据需求下载</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225090853860.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225091357277.png"></p>
+<p>我们可以去新建我们的项目和接口</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225092715766.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093542358.png"></p>
+<p>下面会讲如何设置和填写参数以便于和Leancloud去交互请求</p>
+<h3 id="二、Leancloud注册登陆"><a href="#二、Leancloud注册登陆" class="headerlink" title="二、Leancloud注册登陆"></a>二、Leancloud注册登陆</h3><p>我们访问<a href="https://www.leancloud.cn/">官网</a>注册登陆</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093702335.png"></p>
+<p>然后来到我们的控制台创建我们的应用</p>
+<p>我们可以对我们每个应用分开管理</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093850074.png"></p>
+<p>我们每个应用都有自己的信息</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094016973.png"></p>
+<p>大家测试的时候可以使用自己的应用信息配置</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094046589.png"></p>
+<h3 id="三、配置Apifox"><a href="#三、配置Apifox" class="headerlink" title="三、配置Apifox"></a>三、配置Apifox</h3><blockquote>
+<p>当我们应用和Apifox环境准备完毕，那么我们就可以根据文档来配置了</p>
+</blockquote>
+<p>文档-&gt;REST API-&gt;数据存储</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094258347.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094449937.png"></p>
+<h4 id="1-新建接口"><a href="#1-新建接口" class="headerlink" title="1.新建接口"></a>1.新建接口</h4><p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094537626.png"></p>
+<p>在配置我们的接口的前提是要选好我们接口运行的环境</p>
+<p>让我们先配置一下环境</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094638510.png"></p>
+<p>我们可以将我们的服务改成我们Leancloud平台的开放服务地址（后续我们可以改成我们的域名）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094725724.png"></p>
+<p>根据文档来配置</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095251514.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095213854.png"></p>
+<p>Header-&gt;批量编辑-&gt;冒号模式（然后将负责的配置修改成下面这种格式就可以了）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095423023.png"></p>
+<p>下一步我们来携带参数body</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095604642.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095717122.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095746960.png"></p>
+<p>修改状态码并添加响应示例</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095819827.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095940926.png"></p>
+<p>保存运行</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100023787.png"></p>
+<p>出error了，修复它（给body添加示例值就可以了）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100109578.png"></p>
+<h4 id="2-发起请求"><a href="#2-发起请求" class="headerlink" title="2.发起请求"></a>2.发起请求</h4><p>我们发送（响应成功）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101014178.png"></p>
+<h3 id="四、Leancloud"><a href="#四、Leancloud" class="headerlink" title="四、Leancloud"></a>四、Leancloud</h3><p>当我们查看Leancloud应用的时候，发现我们多了一张表和数据，表示我们的请求已经成功</p>
+<blockquote>
+<p>我们还可以根据文档来修改，查找，删除我们的数据表，代码中的配置也是一样的，这样我们就可以利用LeanCloud来搭建我们一个小应用的数据表了。</p>
+</blockquote>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101228952.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101502303.png"></p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
+      <categories>
+        <category>uniapp</category>
+        <category>Apifox和Leancloud</category>
+      </categories>
+      <tags>
+        <tag>leancloud</tag>
       </tags>
   </entry>
   <entry>
@@ -2237,67 +2237,6 @@ npm start //启动electron
       </tags>
   </entry>
   <entry>
-    <title>npm命令详解</title>
-    <url>/2022/11/09/npm%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="npm命令详解"><a href="#npm命令详解" class="headerlink" title="npm命令详解"></a>npm命令详解</h1><h3 id="一、npm配置命令"><a href="#一、npm配置命令" class="headerlink" title="一、npm配置命令"></a>一、npm配置命令</h3><pre><code class="css">npm install -g cnpm --registry=https://registry.npm.taobao.org  #通过cnpm使用淘宝镜像
-npm config set registry https://registry.npm.taobao.org #将npm设置为淘宝镜像
-npm config set registry https://registry.npmjs.org #切换回默认全局镜像
-npm config get registry #查看npm镜像设置
-npm config list #查看npm配置
-cnpm config list #查看cnpm配置
-npm -v #查看npm版本
-</code></pre>
-<p>方便统一和阅读，文中全部使用简写方式。</p>
-<blockquote>
-<p>-g： 为 –global 的缩写，表示安装到全局目录里<br>-S： 为 –save 的缩写，表示安装的包将写入package.json里面的dependencies<br>-D： 为 –save-dev 的缩写，表示将安装的包将写入packege.json里面的devDependencies<br> i： 为install的缩写，表示安装</p>
-</blockquote>
-<h3 id="二、npm安装命令"><a href="#二、npm安装命令" class="headerlink" title="二、npm安装命令"></a>二、npm安装命令</h3><pre><code class="css">npm init  # npm 初始化当前目录
-npm i  # 安装所有依赖
-npm i express  # 安装模块到默认dependencies
-npm i express -g  # 会安装到配置的全局目录下
-npm i express -S  # 安装包信息将加入到dependencies生产依赖
-npm i express -D  # 安装包信息将加入到devDependencies开发依赖
-npm i jquery@1.8.3  # 安装jquery指定的1.8.3版本
-</code></pre>
-<h3 id="三、npm更新命令"><a href="#三、npm更新命令" class="headerlink" title="三、npm更新命令"></a>三、npm更新命令</h3><pre><code class="css">npm update jquery  # 更新最新版本的jquery
-npm update jquery@2.1.0  # 更新到指定版本号的jquery
-npm install jquery@latest  # 可以直接更新到最后一个新版本
-</code></pre>
-<h3 id="四、npm卸载命令"><a href="#四、npm卸载命令" class="headerlink" title="四、npm卸载命令"></a>四、npm卸载命令</h3><pre><code class="css">npm uninstall express  # 卸载模块，但不卸载模块留在package.json中的对应信息
-npm uninstall express -g  # 卸载全局模块
-npm uninstall express --save  # 卸载模块，同时卸载留在package.json中dependencies下的信息
-npm uninstall express --save-dev  # 卸载模块，同时卸载留在package.json中devDependencies下的信息
-</code></pre>
-<h3 id="五、npm查看命令"><a href="#五、npm查看命令" class="headerlink" title="五、npm查看命令"></a>五、npm查看命令</h3><pre><code class="css">npm root  # 查看项目中模块所在的目录
-npm root -g  # 查看全局安装的模块所在目录
-npm list 或者 npm ls  # 查看本地已安装模块的清单列表
-npm view jquery dependencies  # 查看某个包对于各种包的依赖关系
-npm view jquery version  # 查看jquery最新的版本号
-npm view jquery versions  # 查看所有jquery历史版本号（很实用）
-npm view jquery  # 查看最新的jquery版本的信息
-npm info jquery  # 查看jquery的详细信息，等同于上面的npm view jquery
-npm list jquery 或 npm ls jquery  # 查看本地已安装的jquery的详细信息
-npm view jquery repository.url  # 查看jquery包的来源地址
-</code></pre>
-<h3 id="六、其他命令"><a href="#六、其他命令" class="headerlink" title="六、其他命令"></a>六、其他命令</h3><pre><code class="css">npm cache clean  # 清除npm的缓存
-npm prune  # 清除项目中没有被使用的包
-npm outdated  # 检查模块是否已经过时
-npm repo jquery  # 会打开默认浏览器跳转到github中jquery的页面
-npm docs jquery  # 会打开默认浏览器跳转到github中jquery的README.MD文件信息
-npm home jquery  # 会打开默认浏览器跳转到github中jquery的主页
-</code></pre>
-<h3 id="七、package-json字段"><a href="#七、package-json字段" class="headerlink" title="七、package.json字段"></a>七、package.json字段</h3><p>[package.json字段详解]: 	“<a href="https://docs.npmjs.com/cli/v8/configuring-npm/package-json">https://docs.npmjs.com/cli/v8/configuring-npm/package-json</a> “</p>
-<h3 id="链接："><a href="#链接：" class="headerlink" title="链接："></a>链接：</h3><p>[npm官网]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
-]]></content>
-      <categories>
-        <category>npm&amp;yarn</category>
-        <category>npm常用命令</category>
-      </categories>
-      <tags>
-        <tag>npm</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>pinia</title>
     <url>/2022/11/23/pinia/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="pinia"><a href="#pinia" class="headerlink" title="pinia"></a>pinia</h1><h3 id="一、Vuex-与-Pinia-核心思想与用法"><a href="#一、Vuex-与-Pinia-核心思想与用法" class="headerlink" title="一、Vuex 与 Pinia 核心思想与用法"></a>一、Vuex 与 Pinia 核心思想与用法</h3><h4 id="Flux-架构"><a href="#Flux-架构" class="headerlink" title="Flux 架构"></a>Flux 架构</h4><p>Flux 是 Facebook 在构建大型 Web 应用程序时为了解决数据一致性问题而设计出的一种架构，它是一种描述状态管理的设计模式。绝大多数前端领域的状态管理工具都遵循这种架构，或者以它为参考原型。</p>
@@ -2484,6 +2423,67 @@ button&#123;
       </categories>
       <tags>
         <tag>Pinia</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>npm命令详解</title>
+    <url>/2022/11/09/npm%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="npm命令详解"><a href="#npm命令详解" class="headerlink" title="npm命令详解"></a>npm命令详解</h1><h3 id="一、npm配置命令"><a href="#一、npm配置命令" class="headerlink" title="一、npm配置命令"></a>一、npm配置命令</h3><pre><code class="css">npm install -g cnpm --registry=https://registry.npm.taobao.org  #通过cnpm使用淘宝镜像
+npm config set registry https://registry.npm.taobao.org #将npm设置为淘宝镜像
+npm config set registry https://registry.npmjs.org #切换回默认全局镜像
+npm config get registry #查看npm镜像设置
+npm config list #查看npm配置
+cnpm config list #查看cnpm配置
+npm -v #查看npm版本
+</code></pre>
+<p>方便统一和阅读，文中全部使用简写方式。</p>
+<blockquote>
+<p>-g： 为 –global 的缩写，表示安装到全局目录里<br>-S： 为 –save 的缩写，表示安装的包将写入package.json里面的dependencies<br>-D： 为 –save-dev 的缩写，表示将安装的包将写入packege.json里面的devDependencies<br> i： 为install的缩写，表示安装</p>
+</blockquote>
+<h3 id="二、npm安装命令"><a href="#二、npm安装命令" class="headerlink" title="二、npm安装命令"></a>二、npm安装命令</h3><pre><code class="css">npm init  # npm 初始化当前目录
+npm i  # 安装所有依赖
+npm i express  # 安装模块到默认dependencies
+npm i express -g  # 会安装到配置的全局目录下
+npm i express -S  # 安装包信息将加入到dependencies生产依赖
+npm i express -D  # 安装包信息将加入到devDependencies开发依赖
+npm i jquery@1.8.3  # 安装jquery指定的1.8.3版本
+</code></pre>
+<h3 id="三、npm更新命令"><a href="#三、npm更新命令" class="headerlink" title="三、npm更新命令"></a>三、npm更新命令</h3><pre><code class="css">npm update jquery  # 更新最新版本的jquery
+npm update jquery@2.1.0  # 更新到指定版本号的jquery
+npm install jquery@latest  # 可以直接更新到最后一个新版本
+</code></pre>
+<h3 id="四、npm卸载命令"><a href="#四、npm卸载命令" class="headerlink" title="四、npm卸载命令"></a>四、npm卸载命令</h3><pre><code class="css">npm uninstall express  # 卸载模块，但不卸载模块留在package.json中的对应信息
+npm uninstall express -g  # 卸载全局模块
+npm uninstall express --save  # 卸载模块，同时卸载留在package.json中dependencies下的信息
+npm uninstall express --save-dev  # 卸载模块，同时卸载留在package.json中devDependencies下的信息
+</code></pre>
+<h3 id="五、npm查看命令"><a href="#五、npm查看命令" class="headerlink" title="五、npm查看命令"></a>五、npm查看命令</h3><pre><code class="css">npm root  # 查看项目中模块所在的目录
+npm root -g  # 查看全局安装的模块所在目录
+npm list 或者 npm ls  # 查看本地已安装模块的清单列表
+npm view jquery dependencies  # 查看某个包对于各种包的依赖关系
+npm view jquery version  # 查看jquery最新的版本号
+npm view jquery versions  # 查看所有jquery历史版本号（很实用）
+npm view jquery  # 查看最新的jquery版本的信息
+npm info jquery  # 查看jquery的详细信息，等同于上面的npm view jquery
+npm list jquery 或 npm ls jquery  # 查看本地已安装的jquery的详细信息
+npm view jquery repository.url  # 查看jquery包的来源地址
+</code></pre>
+<h3 id="六、其他命令"><a href="#六、其他命令" class="headerlink" title="六、其他命令"></a>六、其他命令</h3><pre><code class="css">npm cache clean  # 清除npm的缓存
+npm prune  # 清除项目中没有被使用的包
+npm outdated  # 检查模块是否已经过时
+npm repo jquery  # 会打开默认浏览器跳转到github中jquery的页面
+npm docs jquery  # 会打开默认浏览器跳转到github中jquery的README.MD文件信息
+npm home jquery  # 会打开默认浏览器跳转到github中jquery的主页
+</code></pre>
+<h3 id="七、package-json字段"><a href="#七、package-json字段" class="headerlink" title="七、package.json字段"></a>七、package.json字段</h3><p>[package.json字段详解]: 	“<a href="https://docs.npmjs.com/cli/v8/configuring-npm/package-json">https://docs.npmjs.com/cli/v8/configuring-npm/package-json</a> “</p>
+<h3 id="链接："><a href="#链接：" class="headerlink" title="链接："></a>链接：</h3><p>[npm官网]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
+]]></content>
+      <categories>
+        <category>npm&amp;yarn</category>
+        <category>npm常用命令</category>
+      </categories>
+      <tags>
+        <tag>npm</tag>
       </tags>
   </entry>
   <entry>
@@ -2879,6 +2879,199 @@ npm run build //打包项目
       </tags>
   </entry>
   <entry>
+    <title>threejs-d-2.0</title>
+    <url>/2022/11/29/threejs-d-2-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-2-0"><a href="#threejs-d-2-0" class="headerlink" title="threejs-d-2.0"></a>threejs-d-2.0</h1><h3 id="一、创建第一个threejs应用"><a href="#一、创建第一个threejs应用" class="headerlink" title="一、创建第一个threejs应用"></a>一、创建第一个threejs应用</h3><p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+
+const scene = new THREE.Scene();//创建场景
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//创建透视相机（相机中的一种）
+const renderer = new THREE.WebGLRenderer();//创建渲染器
+renderer.setSize( window.innerWidth, window.innerHeight );//将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小
+document.body.appendChild( renderer.domElement );//将renderer（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中
+
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );//创建几何体
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );//创建基础网格材质
+const cube = new THREE.Mesh( geometry, material );//使用构造器
+scene.add( cube );//将几何体添加到场景
+camera.position.z = 5;//调整相机位置（默认0，0，0）
+
+//几何体循环旋转动画
+function animate() &#123;
+    requestAnimationFrame( animate );
+  //旋转坐标变换
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+  //重新渲染几何体
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<h4 id="1-创建场景、相机、渲染器"><a href="#1-创建场景、相机、渲染器" class="headerlink" title="1.创建场景、相机、渲染器"></a>1.创建场景、相机、渲染器</h4><blockquote>
+<p>如果我们有玩过三维软件的同学应该不会陌生这几个概念</p>
+<p>我们下面以三维软件C4D来简单认识一下吧</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129085326176.png"></p>
+<p>我们花一点点时间来解释一下这里发生了什么。我们现在建立了场景、相机和渲染器。</p>
+<pre><code class="javascript">const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>three.js里有几种不同的相机，在这里，我们使用的是<strong>PerspectiveCamera</strong>（透视摄像机）。</p>
+<p>第一个参数是<strong>视野角度（FOV）</strong>。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的单位是角度(与弧度区分开)。</p>
+<p>第二个参数是<strong>长宽比（aspect ratio）</strong>。 也就是你用一个物体的宽除以它的高的值。比如说，当你在一个宽屏电视上播放老电影时，可以看到图像仿佛是被压扁的。</p>
+<p>接下来的两个参数是<strong>近截面</strong>（near）和<strong>远截面</strong>（far）。 当物体某些部分比摄像机的<strong>远截面</strong>远或者比<strong>近截面</strong>近的时候，该这些部分将不会被渲染到场景中。或许现在你不用担心这个值的影响，但未来为了获得更好的渲染性能，你将可以在你的应用程序里去设置它。</p>
+<p>接下来是渲染器。这里是施展魔法的地方。除了我们在这里用到的WebGLRenderer渲染器之外，Three.js同时提供了其他几种渲染器，当用户所使用的浏览器过于老旧，或者由于其他原因不支持WebGL时，可以使用这几种渲染器进行降级。</p>
+<p>除了创建一个渲染器的实例之外，我们还需要在我们的应用程序里设置一个渲染器的尺寸。比如说，我们可以使用所需要的渲染区域的宽高，来让渲染器渲染出的场景填充满我们的应用程序。因此，我们可以将渲染器宽高设置为浏览器窗口宽高。对于性能比较敏感的应用程序来说，你可以使用<strong>setSize</strong>传入一个较小的值，例如<strong>window.innerWidth&#x2F;2</strong>和<strong>window.innerHeight&#x2F;2</strong>，这将使得应用程序在渲染时，以一半的长宽尺寸渲染场景。</p>
+<p>如果你希望保持你的应用程序的尺寸，但是以较低的分辨率来渲染，你可以在调用<strong>setSize</strong>时，将<strong>updateStyle</strong>（第三个参数）设为false。例如，假设你的<canvas> 标签现在已经具有了100%的宽和高，调用**setSize(window.innerWidth&#x2F;2, window.innerHeight&#x2F;2, false)**将使得你的应用程序以一半的分辨率来进行渲染。</p>
+<pre><code class="javascript">document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>最后一步很重要，我们将<strong>renderer</strong>（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中。这就是渲染器用来显示场景给我们看的<canvas>元素。</p>
+<h4 id="2-创建几何体、材质"><a href="#2-创建几何体、材质" class="headerlink" title="2.创建几何体、材质"></a>2.创建几何体、材质</h4><blockquote>
+<p>对于材质这块，就是给一个没有任何属性的物体添加属性，玻璃、金属、玉、有颜色的立方体。</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129090339038.png"></p>
+<p>要创建一个立方体，我们需要一个<strong>BoxGeometry</strong>（立方体）对象. 这个对象包含了一个立方体中所有的顶点（<strong>vertices</strong>）和面（<strong>faces</strong>）。未来我们将在这方面进行更多的探索。</p>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+camera.position.z = 5;
+</code></pre>
+<p>接下来，对于这个立方体，我们需要给它一个材质，来让它有颜色。Three.js自带了几种材质，在这里我们使用的是<strong>MeshBasicMaterial</strong>。所有的材质都存有应用于他们的属性的对象。在这里为了简单起见，我们只设置一个color属性，值为<strong>0x00ff00</strong>，也就是绿色。这里所做的事情，和在CSS或者Photoshop中使用十六进制(<strong>hex colors</strong>)颜色格式来设置颜色的方式一致。</p>
+<p>第三步，我们需要一个<strong>Mesh</strong>（网格）。 网格包含一个几何体以及作用在此几何体上的材质，我们可以直接将网格对象放入到我们的场景中，并让它在场景中自由移动。</p>
+<p>默认情况下，当我们调用**scene.add()<strong>的时候，物体将会被添加到</strong>(0,0,0)**坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。</p>
+<h4 id="3-创建渲染"><a href="#3-创建渲染" class="headerlink" title="3.创建渲染"></a>3.创建渲染</h4><blockquote>
+<p>这个就比较好理解了，添加x，y，z方向的位置变化</p>
+</blockquote>
+<p>现在，如果将之前写好的代码复制到HTML文件中，你不会在页面中看到任何东西。这是因为我们还没有对它进行真正的渲染。为此，我们需要使用一个被叫做“<strong>渲染循环</strong>”（render loop）或者“<strong>动画循环</strong>”（animate loop）的东西。</p>
+<pre><code class="javascript">function animate() &#123; 
+requestAnimationFrame( animate ); 
+renderer.render( scene, camera ); 
+&#125; 
+animate();
+</code></pre>
+<p>在这里我们创建了一个使渲染器能够在每次屏幕刷新时对场景进行绘制的循环（在大多数屏幕上，刷新率一般是60次&#x2F;秒）。如果你是一个浏览器游戏开发的新手，你或许会说<em>“为什么我们不直接用setInterval来实现刷新的功能呢？”</em>当然啦，我们的确可以用setInterval，但是，<strong>requestAnimationFrame</strong>有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。</p>
+<p>在开始之前，如果你已经将上面的代码写入到了你所创建的文件中，你可以看到一个绿色的方块。让我们来做一些更加有趣的事 —— 让它旋转起来。</p>
+<p>将下列代码添加到animate()函数中<strong>renderer.render</strong>调用的上方：</p>
+<pre><code class="javascript">cube.rotation.x += 0.01; 
+cube.rotation.y += 0.01;
+</code></pre>
+<p>这段代码每帧都会执行（正常情况下是60次&#x2F;秒），这就让立方体有了一个看起来很不错的旋转动画。基本上来说，当应用程序运行时，如果你想要移动或者改变任何场景中的东西，都必须要经过这个动画循环。当然，你可以在这个动画循环里调用别的函数，这样你就不会写出有上百行代码的<strong>animate</strong>函数。</p>
+<h4 id="效果演示："><a href="#效果演示：" class="headerlink" title="效果演示："></a>效果演示：</h4><p><img src="/2022/11/29/threejs-d-2-0/image-20221129090831716.png"></p>
+<h3 id="二、控制器（轨道控制器）"><a href="#二、控制器（轨道控制器）" class="headerlink" title="二、控制器（轨道控制器）"></a>二、控制器（轨道控制器）</h3><blockquote>
+<p>控制器有许多，我们这先说这一种</p>
+<p>轨道控制器是以物体为中心，对物体做环绕运动</p>
+</blockquote>
+<p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; //导入轨道控制器
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+const controls = new OrbitControls( camera,renderer.domElement  );
+camera.position.set(0,20,100);
+controls.update();//更新控制器。必须在摄像机的变换发生任何手动改变后调用
+function animate() &#123;
+    requestAnimationFrame( animate );
+    controls.update();//循环更新轨道控制器
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<p>OrbitControls( object : Camera, domElement : HTMLDOMElement )</p>
+<p>object: （必须）将要被控制的相机。该相机不允许是其他任何对象的子级，除非该对象是场景自身。</p>
+<p>domElement: 用于事件监听的HTML元素。</p>
+<p>那我们现在就可以移动我们的相机来观察我们的物体了。</p>
+<h3 id="三、添加辅助器"><a href="#三、添加辅助器" class="headerlink" title="三、添加辅助器"></a>三、添加辅助器</h3><blockquote>
+<p>这个来自与我们help里面的东西，文档里查就可以了</p>
+<p>添加辅助器的用处是为了更好的去开发</p>
+</blockquote>
+<h4 id="1-坐标辅助器"><a href="#1-坐标辅助器" class="headerlink" title="1.坐标辅助器"></a>1.坐标辅助器</h4><blockquote>
+<p>用于简单模拟3个坐标轴的对象.<br>红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.</p>
+</blockquote>
+<pre><code class="javascript">const axesHelper = new THREE.AxesHelper( 5 );//轴的线段长度. 默认为 1.
+scene.add( axesHelper );//添加到场景
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155031932.png"></p>
+<h4 id="2-相机辅助器"><a href="#2-相机辅助器" class="headerlink" title="2.相机辅助器"></a>2.相机辅助器</h4><blockquote>
+<p>用于模拟相机视锥体的辅助对象.<br>它使用 LineSegments 来模拟相机视锥体.</p>
+</blockquote>
+<pre><code class="javascript">const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const helper = new THREE.CameraHelper( camera );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155852737.png"></p>
+<p>CameraHelper( camera : Camera )</p>
+<p>camera – 被模拟的相机.</p>
+<p>为指定相机创建一个新的相机辅助对象 CameraHelper .</p>
+<h4 id="3-平面辅助器"><a href="#3-平面辅助器" class="headerlink" title="3.平面辅助器"></a>3.平面辅助器</h4><blockquote>
+<p>用于模拟平面 Plane 的辅助对象.</p>
+</blockquote>
+<pre><code class="javascript">const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
+const helper = new THREE.PlaneHelper( plane, 100, 0xffff00 );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160213446.png"></p>
+<p>PlaneHelper( plane : Plane, size : Float, hex : Color )</p>
+<p>plane – 被模拟的平面.<br>size – (可选的) 辅助对象的单边长度. 默认为 1.<br>color – (可选的) 辅助对象的颜色. 默认为 0xffff00.</p>
+<p>创建一个线框辅助对象来表示指定平面.</p>
+<h4 id="终结："><a href="#终结：" class="headerlink" title="终结："></a>终结：</h4><p>其他的辅助器，我们就自己按照需求去加吧，这个就是做一个参照</p>
+<h3 id="四、物体的属性"><a href="#四、物体的属性" class="headerlink" title="四、物体的属性"></a>四、物体的属性</h3><blockquote>
+<p>物体的属性，那我们要看一下cube是什么了</p>
+<p>根据控制台打印，它是个Mesh类，下面有许多属性</p>
+</blockquote>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160944920.png"></p>
+<h4 id="1-物体的位移"><a href="#1-物体的位移" class="headerlink" title="1.物体的位移"></a>1.物体的位移</h4><blockquote>
+<p>控制物体的位置</p>
+</blockquote>
+<pre><code class="javascript">cube.position.set(10,0,0)//默认为x，y，z方向
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161420179.png"></p>
+<h4 id="2-物体的旋转"><a href="#2-物体的旋转" class="headerlink" title="2.物体的旋转"></a>2.物体的旋转</h4><blockquote>
+<p>控制问题的旋转角度</p>
+<p>这个不是单纯的三维向量了</p>
+<p>是一个Euler类</p>
+</blockquote>
+<pre><code class="javascript">cube.rotation.set(Math.PI/4,0,0,&#39;XYZ&#39;)//默认为‘xyz’
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129162730828.png"></p>
+<p>Euler( x : Float, y : Float, z : Float, order : String )</p>
+<p>x - (optional) 用弧度表示x轴旋转量。 默认值是 <strong>0</strong>。<br>y - (optional) 用弧度表示y轴旋转量。 默认值是 <strong>0</strong>。<br>z - (optional) 用弧度表示z轴旋转量。 默认值是 <strong>0</strong>。<br>order - (optional) 表示旋转顺序的字符串，默认为’XYZ’（必须是大写）。</p>
+<h4 id="3-物体的缩放"><a href="#3-物体的缩放" class="headerlink" title="3.物体的缩放"></a>3.物体的缩放</h4><blockquote>
+<p>控制物体缩放</p>
+</blockquote>
+<pre><code class="javascript">cube.scale.set(3,2,1)
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161943968.png"></p>
+]]></content>
+      <categories>
+        <category>Web3D</category>
+        <category>Three.js</category>
+        <category>threejs-d-2.0</category>
+      </categories>
+      <tags>
+        <tag>threejs</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>threejs-d-3.0</title>
     <url>/2022/11/30/threejs-d-3-0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-3-0"><a href="#threejs-d-3-0" class="headerlink" title="threejs-d-3.0"></a>threejs-d-3.0</h1><h3 id="一、通过Clock跟踪时间处理动画"><a href="#一、通过Clock跟踪时间处理动画" class="headerlink" title="一、通过Clock跟踪时间处理动画"></a>一、通过Clock跟踪时间处理动画</h3><blockquote>
@@ -3096,196 +3289,118 @@ window.addEventListener(&#39;resize&#39;,()=&gt;&#123;
       </tags>
   </entry>
   <entry>
-    <title>threejs-d-2.0</title>
-    <url>/2022/11/29/threejs-d-2-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="threejs-d-2-0"><a href="#threejs-d-2-0" class="headerlink" title="threejs-d-2.0"></a>threejs-d-2.0</h1><h3 id="一、创建第一个threejs应用"><a href="#一、创建第一个threejs应用" class="headerlink" title="一、创建第一个threejs应用"></a>一、创建第一个threejs应用</h3><p>代码汇总：</p>
-<pre><code class="javascript">//main.js
-import * as THREE from &#39;three&#39;
-
-const scene = new THREE.Scene();//创建场景
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//创建透视相机（相机中的一种）
-const renderer = new THREE.WebGLRenderer();//创建渲染器
-renderer.setSize( window.innerWidth, window.innerHeight );//将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小
-document.body.appendChild( renderer.domElement );//将renderer（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中
-
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );//创建几何体
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );//创建基础网格材质
-const cube = new THREE.Mesh( geometry, material );//使用构造器
-scene.add( cube );//将几何体添加到场景
-camera.position.z = 5;//调整相机位置（默认0，0，0）
-
-//几何体循环旋转动画
-function animate() &#123;
-    requestAnimationFrame( animate );
-  //旋转坐标变换
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-  //重新渲染几何体
-    renderer.render( scene, camera );
+    <title>umi-4.0</title>
+    <url>/2023/01/02/umi-4-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="umi-4-0"><a href="#umi-4-0" class="headerlink" title="umi 4.0"></a>umi 4.0</h1><h2 id="Umi-4-有什么新功能？"><a href="#Umi-4-有什么新功能？" class="headerlink" title="Umi 4 有什么新功能？"></a>Umi 4 有什么新功能？</h2><p><img src="/2023/01/02/umi-4-0/image-20230102100825501.png"></p>
+<h2 id="多构建引擎"><a href="#多构建引擎" class="headerlink" title="多构建引擎"></a>多构建引擎</h2><p> Umi 4 同时支持 Vite 和 Webpack 两种构建方式，并尽量确保他们之间功能的一致性，让开发者可以通过一行配置进行切换。可能有些同学会喜欢 dev 用 vite，build 用 webpack 这样的组合。同时我们也在探索包括 ESMi 在内的其他构建方案的探索。</p>
+<pre><code class="javascript">export default &#123;
+  vite: &#123;&#125;
 &#125;
-animate();
 </code></pre>
-<h4 id="1-创建场景、相机、渲染器"><a href="#1-创建场景、相机、渲染器" class="headerlink" title="1.创建场景、相机、渲染器"></a>1.创建场景、相机、渲染器</h4><blockquote>
-<p>如果我们有玩过三维软件的同学应该不会陌生这几个概念</p>
-<p>我们下面以三维软件C4D来简单认识一下吧</p>
-</blockquote>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129085326176.png"></p>
-<p>我们花一点点时间来解释一下这里发生了什么。我们现在建立了场景、相机和渲染器。</p>
-<pre><code class="javascript">const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+<h2 id="默认快"><a href="#默认快" class="headerlink" title="默认快"></a>默认快</h2><p>默认快是多维度的，我们通过 MFSU V3 + Webpack 5 缓存解 Dev 时编译慢的问题；内网还有通过 Webpack 5 物理缓存和 CD 平台结合解 Build 时编译慢的问题；有使用 esbuild 做 js 和 css 的压缩器、配置和 MOCK 文件的读取、jest 的 transformer，让除构建之外的其他环节也飞快；此外还有运行时速度也有考虑。</p>
+<h2 id="MFSU-V3"><a href="#MFSU-V3" class="headerlink" title="MFSU V3"></a>MFSU V3</h2><p>Umi 3 的 MFSU 大家可能多少有接触过，虽然有用，但 DX 不够好。用的时候会遇到一些坑，以至于很多同学都掌握了一项特殊技能，遇到问题时 rm -rf src&#x2F;.umi。大家可能会遇到 monorepo 不支持、热更新导致 Tab 卡死、请求多导致页面打开慢、一些语法不支持的问题。以上问题在 MFSU V3 中全解！基于此，我们非常有信心地在 Umi 4 中默认开启 MFSU 功能。当然，如果你不喜欢，会保留手动配置 mfsu: false 关闭的口子。同时，MFSU V3 还可脱离 Umi 独立使用。</p>
+<p><img src="/2023/01/02/umi-4-0/42ccadf17ce44ef48af14f70a9071303.png"></p>
+<h2 id="Umi-Max"><a href="#Umi-Max" class="headerlink" title="Umi Max"></a>Umi Max</h2><p>这是内部 Bigfish 框架的对外版本，解我们自己的问题，同时也给社区另一个集中化框架的选择，定位是中后台框架，包含了中后台相关的大量最佳实践的插件。如果有定制需求，大家可以参考他来实现内网框架的定制，比如快手团队就有基于 Umi 4 的框架定制，还有 Alita 也是基于 Umi 定制的面向移动端的框架。</p>
+<pre><code class="ini">$ npm i @umijs/max -D
 </code></pre>
-<p>three.js里有几种不同的相机，在这里，我们使用的是<strong>PerspectiveCamera</strong>（透视摄像机）。</p>
-<p>第一个参数是<strong>视野角度（FOV）</strong>。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的单位是角度(与弧度区分开)。</p>
-<p>第二个参数是<strong>长宽比（aspect ratio）</strong>。 也就是你用一个物体的宽除以它的高的值。比如说，当你在一个宽屏电视上播放老电影时，可以看到图像仿佛是被压扁的。</p>
-<p>接下来的两个参数是<strong>近截面</strong>（near）和<strong>远截面</strong>（far）。 当物体某些部分比摄像机的<strong>远截面</strong>远或者比<strong>近截面</strong>近的时候，该这些部分将不会被渲染到场景中。或许现在你不用担心这个值的影响，但未来为了获得更好的渲染性能，你将可以在你的应用程序里去设置它。</p>
-<p>接下来是渲染器。这里是施展魔法的地方。除了我们在这里用到的WebGLRenderer渲染器之外，Three.js同时提供了其他几种渲染器，当用户所使用的浏览器过于老旧，或者由于其他原因不支持WebGL时，可以使用这几种渲染器进行降级。</p>
-<p>除了创建一个渲染器的实例之外，我们还需要在我们的应用程序里设置一个渲染器的尺寸。比如说，我们可以使用所需要的渲染区域的宽高，来让渲染器渲染出的场景填充满我们的应用程序。因此，我们可以将渲染器宽高设置为浏览器窗口宽高。对于性能比较敏感的应用程序来说，你可以使用<strong>setSize</strong>传入一个较小的值，例如<strong>window.innerWidth&#x2F;2</strong>和<strong>window.innerHeight&#x2F;2</strong>，这将使得应用程序在渲染时，以一半的长宽尺寸渲染场景。</p>
-<p>如果你希望保持你的应用程序的尺寸，但是以较低的分辨率来渲染，你可以在调用<strong>setSize</strong>时，将<strong>updateStyle</strong>（第三个参数）设为false。例如，假设你的<canvas> 标签现在已经具有了100%的宽和高，调用**setSize(window.innerWidth&#x2F;2, window.innerHeight&#x2F;2, false)**将使得你的应用程序以一半的分辨率来进行渲染。</p>
-<pre><code class="javascript">document.body.appendChild( renderer.domElement );
+<h2 id="React-Router-6"><a href="#React-Router-6" class="headerlink" title="React Router 6"></a>React Router 6</h2><p>我们升级了路由方案到 React Router 6，喜忧参半。好消息是，React Router 6 是 Remix 的基础库，面向框架层做了很多优化，路由实现层更优雅，Umi 得以删除大量路由渲染的代码；坏消息是，带来不少 Break Change，比如之前父路由渲染子路由用 children，得换成 。</p>
+<pre><code class="javascript">- &#123; props.children &#125;
++ &lt;Outlet /&gt;
 </code></pre>
-<p>最后一步很重要，我们将<strong>renderer</strong>（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中。这就是渲染器用来显示场景给我们看的<canvas>元素。</p>
-<h4 id="2-创建几何体、材质"><a href="#2-创建几何体、材质" class="headerlink" title="2.创建几何体、材质"></a>2.创建几何体、材质</h4><blockquote>
-<p>对于材质这块，就是给一个没有任何属性的物体添加属性，玻璃、金属、玉、有颜色的立方体。</p>
-</blockquote>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129090339038.png"></p>
-<p>要创建一个立方体，我们需要一个<strong>BoxGeometry</strong>（立方体）对象. 这个对象包含了一个立方体中所有的顶点（<strong>vertices</strong>）和面（<strong>faces</strong>）。未来我们将在这方面进行更多的探索。</p>
-<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-camera.position.z = 5;
+<h2 id="支持-Vue"><a href="#支持-Vue" class="headerlink" title="支持 Vue"></a>支持 Vue</h2><p>Umi 4 中提供了 Vue 支持，记得我在 Umi 2 时画过一张架构图，其中就有 Vue 的一环，Umi 3 时也有过尝试，但那会 Vue 3 还不太成熟，接入时遇到不少坑，这个坑今天总算是补上了。此功能由社区同学操刀，只需装载一个 preset 即可切换到 Vue。</p>
+<pre><code class="javascript">export default &#123;
+  presets: [&#39;@umijs/preset-vue&#39;],
+&#125;;
 </code></pre>
-<p>接下来，对于这个立方体，我们需要给它一个材质，来让它有颜色。Three.js自带了几种材质，在这里我们使用的是<strong>MeshBasicMaterial</strong>。所有的材质都存有应用于他们的属性的对象。在这里为了简单起见，我们只设置一个color属性，值为<strong>0x00ff00</strong>，也就是绿色。这里所做的事情，和在CSS或者Photoshop中使用十六进制(<strong>hex colors</strong>)颜色格式来设置颜色的方式一致。</p>
-<p>第三步，我们需要一个<strong>Mesh</strong>（网格）。 网格包含一个几何体以及作用在此几何体上的材质，我们可以直接将网格对象放入到我们的场景中，并让它在场景中自由移动。</p>
-<p>默认情况下，当我们调用**scene.add()<strong>的时候，物体将会被添加到</strong>(0,0,0)**坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。</p>
-<h4 id="3-创建渲染"><a href="#3-创建渲染" class="headerlink" title="3.创建渲染"></a>3.创建渲染</h4><blockquote>
-<p>这个就比较好理解了，添加x，y，z方向的位置变化</p>
-</blockquote>
-<p>现在，如果将之前写好的代码复制到HTML文件中，你不会在页面中看到任何东西。这是因为我们还没有对它进行真正的渲染。为此，我们需要使用一个被叫做“<strong>渲染循环</strong>”（render loop）或者“<strong>动画循环</strong>”（animate loop）的东西。</p>
-<pre><code class="javascript">function animate() &#123; 
-requestAnimationFrame( animate ); 
-renderer.render( scene, camera ); 
-&#125; 
-animate();
-</code></pre>
-<p>在这里我们创建了一个使渲染器能够在每次屏幕刷新时对场景进行绘制的循环（在大多数屏幕上，刷新率一般是60次&#x2F;秒）。如果你是一个浏览器游戏开发的新手，你或许会说<em>“为什么我们不直接用setInterval来实现刷新的功能呢？”</em>当然啦，我们的确可以用setInterval，但是，<strong>requestAnimationFrame</strong>有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。</p>
-<p>在开始之前，如果你已经将上面的代码写入到了你所创建的文件中，你可以看到一个绿色的方块。让我们来做一些更加有趣的事 —— 让它旋转起来。</p>
-<p>将下列代码添加到animate()函数中<strong>renderer.render</strong>调用的上方：</p>
-<pre><code class="javascript">cube.rotation.x += 0.01; 
-cube.rotation.y += 0.01;
-</code></pre>
-<p>这段代码每帧都会执行（正常情况下是60次&#x2F;秒），这就让立方体有了一个看起来很不错的旋转动画。基本上来说，当应用程序运行时，如果你想要移动或者改变任何场景中的东西，都必须要经过这个动画循环。当然，你可以在这个动画循环里调用别的函数，这样你就不会写出有上百行代码的<strong>animate</strong>函数。</p>
-<h4 id="效果演示："><a href="#效果演示：" class="headerlink" title="效果演示："></a>效果演示：</h4><p><img src="/2022/11/29/threejs-d-2-0/image-20221129090831716.png"></p>
-<h3 id="二、控制器（轨道控制器）"><a href="#二、控制器（轨道控制器）" class="headerlink" title="二、控制器（轨道控制器）"></a>二、控制器（轨道控制器）</h3><blockquote>
-<p>控制器有许多，我们这先说这一种</p>
-<p>轨道控制器是以物体为中心，对物体做环绕运动</p>
-</blockquote>
-<p>代码汇总：</p>
-<pre><code class="javascript">//main.js
-import * as THREE from &#39;three&#39;
-import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; //导入轨道控制器
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-
-const geometry = new THREE.BoxGeometry( 5, 5, 5 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
-const controls = new OrbitControls( camera,renderer.domElement  );
-camera.position.set(0,20,100);
-controls.update();//更新控制器。必须在摄像机的变换发生任何手动改变后调用
-function animate() &#123;
-    requestAnimationFrame( animate );
-    controls.update();//循环更新轨道控制器
-    renderer.render( scene, camera );
+<h2 id="默认最快的-CSR-请求"><a href="#默认最快的-CSR-请求" class="headerlink" title="默认最快的 CSR 请求"></a>默认最快的 CSR 请求</h2><p>项目构建快解的是 DX 问题，但同时也应该关注 UX。Client Loader 的目的是让应用加载默认快，避免 React 项目经典的 Render-Then-Fetch 的加载瀑布流问题。效果见下图，示例项目的从 9s 降到 6s，这 6s 还是之前截的图，上了 Preload 功能之后其实已更快。</p>
+<pre><code class="javascript">export default function() &#123;
+  // 使用请求数据
+  useClientLoaderData()
 &#125;
-animate();
+// 声明请求
+export function clientLoader() &#123;&#125;
 </code></pre>
-<p>OrbitControls( object : Camera, domElement : HTMLDOMElement )</p>
-<p>object: （必须）将要被控制的相机。该相机不允许是其他任何对象的子级，除非该对象是场景自身。</p>
-<p>domElement: 用于事件监听的HTML元素。</p>
-<p>那我们现在就可以移动我们的相机来观察我们的物体了。</p>
-<h3 id="三、添加辅助器"><a href="#三、添加辅助器" class="headerlink" title="三、添加辅助器"></a>三、添加辅助器</h3><blockquote>
-<p>这个来自与我们help里面的东西，文档里查就可以了</p>
-<p>添加辅助器的用处是为了更好的去开发</p>
-</blockquote>
-<h4 id="1-坐标辅助器"><a href="#1-坐标辅助器" class="headerlink" title="1.坐标辅助器"></a>1.坐标辅助器</h4><blockquote>
-<p>用于简单模拟3个坐标轴的对象.<br>红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.</p>
-</blockquote>
-<pre><code class="javascript">const axesHelper = new THREE.AxesHelper( 5 );//轴的线段长度. 默认为 1.
-scene.add( axesHelper );//添加到场景
+<p><img src="/2023/01/02/umi-4-0/96cb23f5545845f6bcd7430b9ddd35a7.png"></p>
+<h2 id="白盒文档的-Lint。"><a href="#白盒文档的-Lint。" class="headerlink" title="白盒文档的 Lint。"></a>白盒文档的 Lint。</h2><p> Umi 4 里内置了我们精挑细选的 lint 规则，只有质量类不开可能会导致项目问题的规则，不包含风格类的规则，不包含 TypeScript 中 type-aware 类的规则，这类规则需要跑整个项目，会导致性能问题；同时，我们通过 @rushstack&#x2F;eslint-pach 的方式锁定了 config 里找 plugin 的规则，确保规则是长期稳定的。</p>
+<h2 id="SSR。"><a href="#SSR。" class="headerlink" title="SSR。"></a>SSR。</h2><p> Umi 4 重写了 SSR 功能，目前此功能还在 beta 阶段，请勿将其用于生产环境。Umi 4 的 SSR 有以下特点，1）server 代码的构建基于 esbuild，所以极快，2）请求的处理类似 next.js 的 getServerSideProps 和 remix 的 loader，只在服务端跑，3）基于 react 18 的 suspense 和 renderToPipeableStream。实现原因，部署层目前仅实现了 vercel 的 adapter。这里有个简单的 Todos 示例：<a href="https://link.juejin.cn/?target=https://test-vercel-chencheng.vercel.app/">test-vercel-chencheng.vercel.app&#x2F;</a></p>
+<pre><code class="javascript">export default &#123;
+  ssr: &#123; platform: &#39;vercel&#39; &#125;
+&#125;
 </code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155031932.png"></p>
-<h4 id="2-相机辅助器"><a href="#2-相机辅助器" class="headerlink" title="2.相机辅助器"></a>2.相机辅助器</h4><blockquote>
-<p>用于模拟相机视锥体的辅助对象.<br>它使用 LineSegments 来模拟相机视锥体.</p>
-</blockquote>
-<pre><code class="javascript">const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const helper = new THREE.CameraHelper( camera );
-scene.add( helper );
+<h2 id="API-路由"><a href="#API-路由" class="headerlink" title="API 路由"></a>API 路由</h2><p>Umi 4 约定 src&#x2F;api 目录下存放的 Serverless Function 格式的文件即为 API 路由。这部分路由会打包成不同平台支持的 Serverless Function 产物。场景比如带 token 的 API 调用、动态数据源、基于 Notion API 的 Blog、Hackernews Clone 等等。基于此，Umi 能做的事的边界就大了很多。不再只是写写中后台，实现静态页面。</p>
+<pre><code class="javascript">export default &#123;
+  apiRoute: &#123;&#125;,
+&#125;
 </code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155852737.png"></p>
-<p>CameraHelper( camera : Camera )</p>
-<p>camera – 被模拟的相机.</p>
-<p>为指定相机创建一个新的相机辅助对象 CameraHelper .</p>
-<h4 id="3-平面辅助器"><a href="#3-平面辅助器" class="headerlink" title="3.平面辅助器"></a>3.平面辅助器</h4><blockquote>
-<p>用于模拟平面 Plane 的辅助对象.</p>
-</blockquote>
-<pre><code class="javascript">const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
-const helper = new THREE.PlaneHelper( plane, 100, 0xffff00 );
-scene.add( helper );
+<h2 id="微生成器"><a href="#微生成器" class="headerlink" title="微生成器"></a>微生成器</h2><p>此概念来自 Modern.js。Modern.js 引入很多新概念，其中「微生成器」还是非常贴切的。他包含两个功能，1）小型脚手架，2）功能的开启与关闭。Umi 3 虽然也有 generate 命令，但只包含功能 1。Umi 4 拓展了下 generate（alias 为 g）命令。除了支持更多类型的小型脚手架生成，还支持功能的开启与关闭，以及比如 Monorepo、react 和 antd 版本等的功能切换。</p>
+<pre><code class="ini">$ npx umi g
+? Pick generator type › - Use arrow-keys. Return to submit.
+❯   创建页面 -- Create a umi page by page name
+    创建组件 -- .
+    创建 mock 代码 -- .
+    创建 model 代码 -- .
+    启用 Prettier -- Setup Prettier Configurations
+    启用 Jest -- Setup Jest Configuration
+    启用 E2E 测试 -- .
+    启用 Tailwind CSS -- Setup Tailwind CSS configuration
+    启用 SSR -- .
+    启用 Low Import 研发模式 -- .
+    启用权限方案 -- .
+    启用 Monaco 编辑器 -- .
+    关闭 Dva 数据流 -- Configuration, Dependencies, and Model Files for Dva
+    关闭 MFSU -- .
+    切换为 Monorepo 项目 -- .
+    切换 React 为 18 -- .
+    切换 Antd 为 5 -- .
 </code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160213446.png"></p>
-<p>PlaneHelper( plane : Plane, size : Float, hex : Color )</p>
-<p>plane – 被模拟的平面.<br>size – (可选的) 辅助对象的单边长度. 默认为 1.<br>color – (可选的) 辅助对象的颜色. 默认为 0xffff00.</p>
-<p>创建一个线框辅助对象来表示指定平面.</p>
-<h4 id="终结："><a href="#终结：" class="headerlink" title="终结："></a>终结：</h4><p>其他的辅助器，我们就自己按照需求去加吧，这个就是做一个参照</p>
-<h3 id="四、物体的属性"><a href="#四、物体的属性" class="headerlink" title="四、物体的属性"></a>四、物体的属性</h3><blockquote>
-<p>物体的属性，那我们要看一下cube是什么了</p>
-<p>根据控制台打印，它是个Mesh类，下面有许多属性</p>
-</blockquote>
-<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 5, 5, 5 );
-const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+<p>除此之外，我们还有非常多小而美的 DX 改进。</p>
+<h2 id="自动-https"><a href="#自动-https" class="headerlink" title="自动 https"></a>自动 https</h2><p> Umi 4 的 https dev server 的实现基于 mkcert，启动过程中会基于 hosts 自动生成对应的 key 和 cert。开发者除了安装前置的 mkcert，其他无需关心。</p>
+<p><img src="/2023/01/02/umi-4-0/1dd8df4ee5a346818acba7bd6a0f3a47.png"></p>
+<h2 id="浏览器里的构建进度条。"><a href="#浏览器里的构建进度条。" class="headerlink" title="浏览器里的构建进度条。"></a>浏览器里的构建进度条。</h2><p>如果首次构建没有完成就在浏览器里打开，你会看到一个构建进度条，支持 webpack 多实例，支持 MFSU，完成初始构建后会自动跳转到项目页。</p>
+<p><img src="/2023/01/02/umi-4-0/ae6c76af39ae4dcbad21e186de7e1d29.png"></p>
+<h2 id="Terminal-中的日志"><a href="#Terminal-中的日志" class="headerlink" title="Terminal 中的日志"></a>Terminal 中的日志</h2><p>有些开发者会更希望在命令行里看到项目里通过 console 输出的日志，比如我。因为命令行日志不会随着刷新而失效，大家可能都经历过一些一闪而过的页面，想截屏都难；同时命令行日志还可以做物理存储，导出后可以方便他人排查。此功能复刻自 <a href="https://link.juejin.cn/?target=https://github.com/patak-dev/vite-plugin-terminal%E3%80%82">github.com&#x2F;patak-dev&#x2F;v…</a></p>
+<pre><code class="ini">import &#123; terminal &#125; from &#39;umi&#39;;
+terminal.log(`Some info from the app`);
 </code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160944920.png"></p>
-<h4 id="1-物体的位移"><a href="#1-物体的位移" class="headerlink" title="1.物体的位移"></a>1.物体的位移</h4><blockquote>
-<p>控制物体的位置</p>
-</blockquote>
-<pre><code class="javascript">cube.position.set(10,0,0)//默认为x，y，z方向
+<p>然后就可以在命令行中看到日志，</p>
+<p><img src="/2023/01/02/umi-4-0/53371b8fabe340eaabc9b00abecd7623.png"></p>
+<h2 id="umi-js-产物调试"><a href="#umi-js-产物调试" class="headerlink" title="umi.js 产物调试"></a>umi.js 产物调试</h2><p>不知大家是否会有这样的需求，开发项目时发现一些比较复杂的问题时，需要调整构建产物的代码。而 Umi 基于 webpack-dev-server，在 dev 阶段所有文件都存于内存中，没有物理文件的形式，并不方便直接修改后验证效果。如果大家用 Umi 4，可以把 umi.js 等产物文件保存到项目根目录，然后可以直接修改即生效。</p>
+<p><img src="/2023/01/02/umi-4-0/e11af2c3f8cb4e5c84b697000c41e7c5.png"></p>
+<h2 id="项目级插件：plugin-ts"><a href="#项目级插件：plugin-ts" class="headerlink" title="项目级插件：plugin.ts"></a>项目级插件：plugin.ts</h2><p> 为进一步降低项目中使用插件的门槛，Umi 4 中约定项目根目录下的 plugin.ts 为插件，开发者可在此直接调用插件 API，无需注册，支持 TypeScript。有了这个文件，我们可以在项目级做很多事。比如，</p>
+<pre><code class="javascript">import &#123; IApi &#125; from &#39;umi&#39;;
+export default (api: IApi) =&gt; &#123;
+  // 比如修改 HTML
+  api.modifyHTML($ =&gt; &#123;
+    return $;
+  &#125;);
+  // 比如在入口的 umi.ts 中添加代码
+  api.addEntryCodeAhead(() =&gt; [`console.log(&#39;entry code ahead&#39;)`]);
+  api.addEntryCode(() =&gt; [`console.log(&#39;entry code&#39;)`]);
+  // 比如在构建完成时做额外的事
+  api.onBuildComplete((opts) =&gt; &#123;&#125;);
+  // 比如在启动阶段做额外的事
+  api.onStart((opts) =&gt; &#123;&#125;);
+  // 比如校验每个 JavaScript/TypeScript 代码
+  api.onCheckCode((args) =&gt; &#123;&#125;);
+  // 比如动态修改路由
+  api.modifyRoutes((routes) =&gt; &#123;&#125;);
+&#125;
 </code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161420179.png"></p>
-<h4 id="2-物体的旋转"><a href="#2-物体的旋转" class="headerlink" title="2.物体的旋转"></a>2.物体的旋转</h4><blockquote>
-<p>控制问题的旋转角度</p>
-<p>这个不是单纯的三维向量了</p>
-<p>是一个Euler类</p>
-</blockquote>
-<pre><code class="javascript">cube.rotation.set(Math.PI/4,0,0,&#39;XYZ&#39;)//默认为‘xyz’
+<h2 id="deadCode-检测"><a href="#deadCode-检测" class="headerlink" title="deadCode 检测"></a>deadCode 检测</h2><p> 项目中通常会有未使用的文件或导出，Umi 4 中通过配置 deadCode: {} 即可在 build 阶段做检测。如有发现，会有类似信息抛出。</p>
+<pre><code class="javascript">Warning: There are 3 unused files:
+ 1. /mock/a.ts
+ 2. /mock/b.ts
+ 3. /pages/index.module.less
+ Please be careful if you want to remove them (¬º-°)¬.
 </code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129162730828.png"></p>
-<p>Euler( x : Float, y : Float, z : Float, order : String )</p>
-<p>x - (optional) 用弧度表示x轴旋转量。 默认值是 <strong>0</strong>。<br>y - (optional) 用弧度表示y轴旋转量。 默认值是 <strong>0</strong>。<br>z - (optional) 用弧度表示z轴旋转量。 默认值是 <strong>0</strong>。<br>order - (optional) 表示旋转顺序的字符串，默认为’XYZ’（必须是大写）。</p>
-<h4 id="3-物体的缩放"><a href="#3-物体的缩放" class="headerlink" title="3.物体的缩放"></a>3.物体的缩放</h4><blockquote>
-<p>控制物体缩放</p>
-</blockquote>
-<pre><code class="javascript">cube.scale.set(3,2,1)
-</code></pre>
-<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161943968.png"></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[umi仓库]: 	“<a href="https://github.com/umijs/umi">https://github.com/umijs/umi</a> “</p>
 ]]></content>
       <categories>
-        <category>Web3D</category>
-        <category>Three.js</category>
-        <category>threejs-d-2.0</category>
+        <category>umi.js</category>
+        <category>umi-4.0</category>
       </categories>
       <tags>
-        <tag>threejs</tag>
+        <tag>umi</tag>
       </tags>
   </entry>
   <entry>
@@ -5289,6 +5404,101 @@ console.log(result)             //  faild    faild耗时短
       </tags>
   </entry>
   <entry>
+    <title>加载优化（加载注意事项）</title>
+    <url>/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="加载注意事项"><a href="#加载注意事项" class="headerlink" title="加载注意事项"></a>加载注意事项</h2><blockquote>
+<p>对图像与视频的延迟加载，从理论上看必然会对性能产生重要的影响，但在实现过程中有许多细节需需要注意，稍有差池都可能就会产生意想不到的结果。因此，总结以下几点注意事项。</p>
+</blockquote>
+<h3 id="一、首屏加载"><a href="#一、首屏加载" class="headerlink" title="一、首屏加载"></a>一、首屏加载</h3><p>​		当我们了解了延迟加载的诸多优点之后，读者是否有使用JavaScript对页面上所有的图像和视频资源都进行延迟加我的冲动?在采取该优化措施前，要想提醒的是，对性能优化工作来说，不存在一蹴而就的解决方案， 而是需要根据具体场景采用恰当的方式。比如对于首屏上的内容就不应当进行延迟加载，而应使用正常加载的方式，这样处理的原因是，延迟加载会将图像或视频等媒体资源延迟到DOM可交互之后，即脚本完成加载并开始执行时才会进行。所以对首屏视窗之外的媒体资源采用延迟加载，而对首屏内的媒体资源采用正常的方式加载，会带来更好的整体性能体验。</p>
+<p>​		由于网站页面所呈现的设备屏幕尺寸多种多样，因此如何判断首屏视窗的边界，就会因设备的不同而有所不同。台式机电脑首屏视窗中的内容，可能换到移动设备上就会位于首屏视窗之外。目前也没有完全行之有效的方法来完美地处理每种设备的情况。</p>
+<p>​		此外，若将首屏视窗边界线作为延迟加载触发的阈值，其实井非最佳的性能考虑。更理想的做法是，在延迟加载的媒体资源到达首屏边界之前设置一个缓冲区，以便媒体资源在进入视窗之前就开始进行加载。</p>
+<p>​		例如在使用lntersection Observer方式实现延迟加载判断时，可以通过配置options对象中的rootMargin属性来建立缓冲区:</p>
+<pre><code class="js">const lazyImageObserver = new IntersectionObserver((entries, observer) =&gt; &#123;
+//此处省略延迟加载的具体处理流程
+  ...&#125;,&#123;
+rootMargin:”0 0 256px 0&quot;
+&#125;:
+</code></pre>
+<p>​		观察可知rootMargin的值与CSS中margin属性值类似，上述代码中 在屏幕视窗下设置了一个宽度为256px的缓冲区，这意味着当媒体元素距离视窗下边界小于256px时，回调函数就会执行开始资源的请求加载。而对于使用滚动事件处理来实现延迟加载的传统实现方式，也只需要更改getBoundingClientRect的设置，包括进入一个缓冲区即可实现类似的效果。</p>
+<h3 id="二、资源占位"><a href="#二、资源占位" class="headerlink" title="二、资源占位"></a>二、资源占位</h3><p>​		当延迟加载的媒体资源未渲染出来之前，应当在页面中使用相同尺寸的占位图像。如果不使用占位符，图像延迟显示出来后，尺寸更改可能会使页面布局出现移位。这种现象不仅会对用户体验带来困感，更严重的还会触发浏览器成本高昂的回流机制，进而增加系统资源开销造成卡顿。而用来占位的图像解决方案也有多种，十分简单的方式是使用一个与目标媒体资源长宽相同的纯色占位符，或者像之前使用的Base64图片，当然也可以采用LQIP或SQIP等方法。</p>
+<p>​		其中LQIP的全称是低质量图片占位符，即使用原图的较低分辨率版本来占位，SQIP则是一种基于 SVG的LIQP技术，我们可以通过对比来感知它们和原图之间的差别，如图所示。</p>
+<p><img src="/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/image-20230216120651723.png" alt="各种LQIP的效果"></p>
+<p>​		其实就是以最小的带宽消耗，告知用户此处将要展示一个媒体资源，可能由于资源尺寸较大还在加载。对于使用&lt;img标记的图像资源，应将用于占位的初始图像指给src属性，直到更新为所需的最终图像为止。而对于使用&lt;video标记的视频资源，则应将占位图像指给poster属性，除此之外，最好可以在&lt;img和&lt;video标签上添加表示宽width和高height的属性，如此便可确保不会在占位符转化为最终媒体资源时，发生元素渲染大小的改变。</p>
+<h3 id="三、内容加载失败"><a href="#三、内容加载失败" class="headerlink" title="三、内容加载失败"></a>三、内容加载失败</h3><p>​		在进行延迟加载过程中，可能会因为某种原因而造成媒体资源加载失败，进而导致错误的情况。比如用户访问某个网站后，保持浏览器该选项卡打开后长时间离开，等再返回继续浏览网页内容时，可能在此过程中网站已经进行了重新部署，原先访问的页面中包含的部分媒体资源由于哈希的版本控制发生更改，或者已被移除。那么用户滚动浏览页面，遇到延迟加载的媒体资源，可能就已经不可使用了。</p>
+<p>​	虽然类似情况发生的概率不高，但考虑网站对用户的可用性，开发者也应当考虑好后备方案，以防止类似延迟加载可能遇到的失败。例如，图像资源可以采取如下方案进行规避:</p>
+<pre><code class="js">const newImage = new Image();
+newImage.src = &quot;photo.jpg&quot;;
+//当发生故障时的处理措施
+newImage.onerror = (err) =&gt; &#123;
+&#125;;
+//图像加载后的回调
+newImage.onload = ()= &gt; &#123;
+&#125;;
+</code></pre>
+<p>​		当图片资源未能按预期成功加载时，所采取的具体处理措施应当依据应用场景而定。比如，当请求的媒体资源无法加载时，可将使用的图像占位符替换为按钮。让用户单击以尝试重新加载所需的媒体资源，或者在占位符区域显示错误的提示信息。总之，在发生任何资源加载故障时，给予用户必要的通知提示，总好过直接让用户无奈地面对故障。</p>
+<h3 id="四、图像解码延迟"><a href="#四、图像解码延迟" class="headerlink" title="四、图像解码延迟"></a>四、图像解码延迟</h3><p>​		在前面章节介绍JPEG图像的编解码时，我们知道渐进式的JPEG会先呈现出个低像素的图像版本，随后会慢慢呈现出原图的样貌。这是因为图像从被浏览器请求获取，再到最终完整呈现在屏幕上，需要经历一个解码的过程，图像的尺寸越大，所需要的解码时间就越长。如果在JavaScript 中请求加载较大的图像文件，并把它直接放入DOM结构中后，那么将有可能占用浏览器的主进程，进而导致解码期间用户界面出现短暂的无响应。</p>
+<p>​		为减少此类卡顿现象，可以采用decode方法进行异步图像解码后，再将其插入DOM结构中。但目前这种方式在跨浏览器场景下并不通用，同时也会复杂化原本对于媒体资源延迟加载的处理逻辑，所以在使用中应进行必要的可用性检查。下面是一个使用Image.decode()函数来实现异步解码的示例:</p>
+<pre><code class="js">&lt;button id=&quot;load-image&quot;&gt;加载图像&lt;/button&gt;
+&lt;div id=&quot;image-container&quot;&gt;&lt;/div&gt;
+//对应的JavaScript事件处理代码如下:
+document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; &#123;
+  const loadButton = document.getElementById(&quot;load-image&quot;);
+  const imageContainer = document.getElementById(&quot;image-container&quot;);
+  const newImage = new Image();
+  newImage.src = &quot;https://xx. cdn/very-big-photo.jpg&quot;;
+  loadButton.addEventListener(
+    &quot;click&quot;,
+    function () &#123;
+      if (&quot;decode&quot; in newImage) &#123;
+        //异步解码方式
+        newImage.decode().then(function () &#123;
+          imageContainer.appendChild(newImage);
+        &#125;);
+      &#125; else &#123;
+        //正常图像加载方式
+        imageContainer.appendChild(newImage);
+      &#125;
+    &#125;,
+    &#123;
+      once: true,
+    &#125;
+  );
+&#125;);
+</code></pre>
+<p>​		需要说明的是，如果网站所包含的大部分图像尺寸都很小，那么使用这种方式的帮助并不会很大，同时还会增加代码的复杂性。但可以肯定的是这么做会减少延迟加载大型图像文件所带来的卡顿。</p>
+<h3 id="五、JavaScript-是否可用"><a href="#五、JavaScript-是否可用" class="headerlink" title="五、JavaScript 是否可用"></a>五、JavaScript 是否可用</h3><p>​		在通常情况下，我们都会假定JavaScript始终可用，但在一些异常不可用的物可用的情况下，开发者应当做好适配，不能始终在延迟加载的图像位置上展示占位符。可以考虑使用&lt;noscript标记，在JavaScript不可用时提供图像的真实展示:</p>
+<pre><code class="html">&lt;!-使用延迟加载的图像文件标签--&gt;
+&lt; img class=&quot;lazy&quot; src=&quot;placeholder-image.jpg&quot; data-src=&quot;image-to-lazy-load.jpg&quot; alt=&quot;I&#39;m an image!&quot;&gt;
+&lt;!一当JavaScript不可用时，原生展示目标團像--&gt;
+&lt;noscript&gt;
+&lt; img src=&quot;image-to-lazy-load.jpg&quot; alt=&quot;I&#39;m an image!&quot;&gt;
+&lt;/noscript&gt;
+</code></pre>
+<p>如果上述代码同时存在，当JavaScript不可用时，页面中会同时展示图像占位符和&lt;noscript中包含的图像，为此我们可以给&lt;html标签添加一个 no-js类:</p>
+<pre><code class="html">&lt;html class=&quot;no-js&quot;&gt;
+</code></pre>
+<p>在由&lt;link标签请求CSS文件之前，在&lt;head标签结构中放置一段内联脚本， 当JavaScript可用时，用于移除no-js类:</p>
+<pre><code class="js">&lt;script&gt;
+  document. documentElement.classList. remove (&quot;no-js&quot;);
+&lt;/script&gt;
+</code></pre>
+<p>以及添加必要的CSS样式，使得在JavaScript不可用时屏蔽包含 .lazy类元素的显示:</p>
+<pre><code class="css">.no-js .1azy &#123;
+display: none;
+&#125;
+</code></pre>
+<p>​		当然这样并不会阻止占位符图像的加载，只是让占位符图像在JavaScript不可用时不可见，但其体验效果会比让用户只看到占位符图像和没有意义的图像内容要好许多。</p>
+]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>加载优化（加载注意事项）</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+        <tag>加载注意事项</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>加载优化（视频加载）</title>
     <url>/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="视频加载"><a href="#视频加载" class="headerlink" title="视频加载"></a>视频加载</h2><blockquote>
@@ -5667,20 +5877,6 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
       </tags>
   </entry>
   <entry>
-    <title>微信公众测试号浪漫早安</title>
-    <url>/2022/10/10/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E6%B5%8B%E8%AF%95%E5%8F%B7%E6%B5%AA%E6%BC%AB%E6%97%A9%E5%AE%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="微信公众测试号浪漫早安（公众号）"><a href="#微信公众测试号浪漫早安（公众号）" class="headerlink" title="微信公众测试号浪漫早安（公众号）"></a>微信公众测试号浪漫早安（公众号）</h2><p>去公众号查看吧，嘿嘿<br>浪漫与你同在<br>勇敢的少年</p>
-<p><a href="https://mp.weixin.qq.com/s?__biz=Mzg4OTg0NDY0Ng==&amp;mid=2247483683&amp;idx=1&amp;sn=06dc7ea6b771925d6fe70d67b21d67a9&amp;chksm=cfe4e7eaf8936efcb39dfdfce911f6b530a665040a98c4c740bc0099f70caa1c25a549fe0678#rd">https://mp.weixin.qq.com/s?__biz=Mzg4OTg0NDY0Ng==&amp;mid=2247483683&amp;idx=1&amp;sn=06dc7ea6b771925d6fe70d67b21d67a9&amp;chksm=cfe4e7eaf8936efcb39dfdfce911f6b530a665040a98c4c740bc0099f70caa1c25a549fe0678#rd</a></p>
-]]></content>
-      <categories>
-        <category>趣味技术</category>
-        <category>浪漫早安</category>
-      </categories>
-      <tags>
-        <tag>demo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>宝塔Linux部署</title>
     <url>/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="宝塔Linux部署"><a href="#宝塔Linux部署" class="headerlink" title="宝塔Linux部署"></a>宝塔Linux部署</h1><h3 id="一、购买云服务器"><a href="#一、购买云服务器" class="headerlink" title="一、购买云服务器"></a>一、购买云服务器</h3><p>[阿里云官网]: 	“<a href="https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955">https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955</a> “</p>
@@ -5730,6 +5926,20 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
       </categories>
       <tags>
         <tag>CD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微信公众测试号浪漫早安</title>
+    <url>/2022/10/10/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E6%B5%8B%E8%AF%95%E5%8F%B7%E6%B5%AA%E6%BC%AB%E6%97%A9%E5%AE%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="微信公众测试号浪漫早安（公众号）"><a href="#微信公众测试号浪漫早安（公众号）" class="headerlink" title="微信公众测试号浪漫早安（公众号）"></a>微信公众测试号浪漫早安（公众号）</h2><p>去公众号查看吧，嘿嘿<br>浪漫与你同在<br>勇敢的少年</p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=Mzg4OTg0NDY0Ng==&amp;mid=2247483683&amp;idx=1&amp;sn=06dc7ea6b771925d6fe70d67b21d67a9&amp;chksm=cfe4e7eaf8936efcb39dfdfce911f6b530a665040a98c4c740bc0099f70caa1c25a549fe0678#rd">https://mp.weixin.qq.com/s?__biz=Mzg4OTg0NDY0Ng==&amp;mid=2247483683&amp;idx=1&amp;sn=06dc7ea6b771925d6fe70d67b21d67a9&amp;chksm=cfe4e7eaf8936efcb39dfdfce911f6b530a665040a98c4c740bc0099f70caa1c25a549fe0678#rd</a></p>
+]]></content>
+      <categories>
+        <category>趣味技术</category>
+        <category>浪漫早安</category>
+      </categories>
+      <tags>
+        <tag>demo</tag>
       </tags>
   </entry>
   <entry>
@@ -6406,121 +6616,6 @@ class ErrorBoundary extends React.Component &#123;
       </categories>
       <tags>
         <tag>浪漫代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>umi-4.0</title>
-    <url>/2023/01/02/umi-4-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="umi-4-0"><a href="#umi-4-0" class="headerlink" title="umi 4.0"></a>umi 4.0</h1><h2 id="Umi-4-有什么新功能？"><a href="#Umi-4-有什么新功能？" class="headerlink" title="Umi 4 有什么新功能？"></a>Umi 4 有什么新功能？</h2><p><img src="/2023/01/02/umi-4-0/image-20230102100825501.png"></p>
-<h2 id="多构建引擎"><a href="#多构建引擎" class="headerlink" title="多构建引擎"></a>多构建引擎</h2><p> Umi 4 同时支持 Vite 和 Webpack 两种构建方式，并尽量确保他们之间功能的一致性，让开发者可以通过一行配置进行切换。可能有些同学会喜欢 dev 用 vite，build 用 webpack 这样的组合。同时我们也在探索包括 ESMi 在内的其他构建方案的探索。</p>
-<pre><code class="javascript">export default &#123;
-  vite: &#123;&#125;
-&#125;
-</code></pre>
-<h2 id="默认快"><a href="#默认快" class="headerlink" title="默认快"></a>默认快</h2><p>默认快是多维度的，我们通过 MFSU V3 + Webpack 5 缓存解 Dev 时编译慢的问题；内网还有通过 Webpack 5 物理缓存和 CD 平台结合解 Build 时编译慢的问题；有使用 esbuild 做 js 和 css 的压缩器、配置和 MOCK 文件的读取、jest 的 transformer，让除构建之外的其他环节也飞快；此外还有运行时速度也有考虑。</p>
-<h2 id="MFSU-V3"><a href="#MFSU-V3" class="headerlink" title="MFSU V3"></a>MFSU V3</h2><p>Umi 3 的 MFSU 大家可能多少有接触过，虽然有用，但 DX 不够好。用的时候会遇到一些坑，以至于很多同学都掌握了一项特殊技能，遇到问题时 rm -rf src&#x2F;.umi。大家可能会遇到 monorepo 不支持、热更新导致 Tab 卡死、请求多导致页面打开慢、一些语法不支持的问题。以上问题在 MFSU V3 中全解！基于此，我们非常有信心地在 Umi 4 中默认开启 MFSU 功能。当然，如果你不喜欢，会保留手动配置 mfsu: false 关闭的口子。同时，MFSU V3 还可脱离 Umi 独立使用。</p>
-<p><img src="/2023/01/02/umi-4-0/42ccadf17ce44ef48af14f70a9071303.png"></p>
-<h2 id="Umi-Max"><a href="#Umi-Max" class="headerlink" title="Umi Max"></a>Umi Max</h2><p>这是内部 Bigfish 框架的对外版本，解我们自己的问题，同时也给社区另一个集中化框架的选择，定位是中后台框架，包含了中后台相关的大量最佳实践的插件。如果有定制需求，大家可以参考他来实现内网框架的定制，比如快手团队就有基于 Umi 4 的框架定制，还有 Alita 也是基于 Umi 定制的面向移动端的框架。</p>
-<pre><code class="ini">$ npm i @umijs/max -D
-</code></pre>
-<h2 id="React-Router-6"><a href="#React-Router-6" class="headerlink" title="React Router 6"></a>React Router 6</h2><p>我们升级了路由方案到 React Router 6，喜忧参半。好消息是，React Router 6 是 Remix 的基础库，面向框架层做了很多优化，路由实现层更优雅，Umi 得以删除大量路由渲染的代码；坏消息是，带来不少 Break Change，比如之前父路由渲染子路由用 children，得换成 。</p>
-<pre><code class="javascript">- &#123; props.children &#125;
-+ &lt;Outlet /&gt;
-</code></pre>
-<h2 id="支持-Vue"><a href="#支持-Vue" class="headerlink" title="支持 Vue"></a>支持 Vue</h2><p>Umi 4 中提供了 Vue 支持，记得我在 Umi 2 时画过一张架构图，其中就有 Vue 的一环，Umi 3 时也有过尝试，但那会 Vue 3 还不太成熟，接入时遇到不少坑，这个坑今天总算是补上了。此功能由社区同学操刀，只需装载一个 preset 即可切换到 Vue。</p>
-<pre><code class="javascript">export default &#123;
-  presets: [&#39;@umijs/preset-vue&#39;],
-&#125;;
-</code></pre>
-<h2 id="默认最快的-CSR-请求"><a href="#默认最快的-CSR-请求" class="headerlink" title="默认最快的 CSR 请求"></a>默认最快的 CSR 请求</h2><p>项目构建快解的是 DX 问题，但同时也应该关注 UX。Client Loader 的目的是让应用加载默认快，避免 React 项目经典的 Render-Then-Fetch 的加载瀑布流问题。效果见下图，示例项目的从 9s 降到 6s，这 6s 还是之前截的图，上了 Preload 功能之后其实已更快。</p>
-<pre><code class="javascript">export default function() &#123;
-  // 使用请求数据
-  useClientLoaderData()
-&#125;
-// 声明请求
-export function clientLoader() &#123;&#125;
-</code></pre>
-<p><img src="/2023/01/02/umi-4-0/96cb23f5545845f6bcd7430b9ddd35a7.png"></p>
-<h2 id="白盒文档的-Lint。"><a href="#白盒文档的-Lint。" class="headerlink" title="白盒文档的 Lint。"></a>白盒文档的 Lint。</h2><p> Umi 4 里内置了我们精挑细选的 lint 规则，只有质量类不开可能会导致项目问题的规则，不包含风格类的规则，不包含 TypeScript 中 type-aware 类的规则，这类规则需要跑整个项目，会导致性能问题；同时，我们通过 @rushstack&#x2F;eslint-pach 的方式锁定了 config 里找 plugin 的规则，确保规则是长期稳定的。</p>
-<h2 id="SSR。"><a href="#SSR。" class="headerlink" title="SSR。"></a>SSR。</h2><p> Umi 4 重写了 SSR 功能，目前此功能还在 beta 阶段，请勿将其用于生产环境。Umi 4 的 SSR 有以下特点，1）server 代码的构建基于 esbuild，所以极快，2）请求的处理类似 next.js 的 getServerSideProps 和 remix 的 loader，只在服务端跑，3）基于 react 18 的 suspense 和 renderToPipeableStream。实现原因，部署层目前仅实现了 vercel 的 adapter。这里有个简单的 Todos 示例：<a href="https://link.juejin.cn/?target=https://test-vercel-chencheng.vercel.app/">test-vercel-chencheng.vercel.app&#x2F;</a></p>
-<pre><code class="javascript">export default &#123;
-  ssr: &#123; platform: &#39;vercel&#39; &#125;
-&#125;
-</code></pre>
-<h2 id="API-路由"><a href="#API-路由" class="headerlink" title="API 路由"></a>API 路由</h2><p>Umi 4 约定 src&#x2F;api 目录下存放的 Serverless Function 格式的文件即为 API 路由。这部分路由会打包成不同平台支持的 Serverless Function 产物。场景比如带 token 的 API 调用、动态数据源、基于 Notion API 的 Blog、Hackernews Clone 等等。基于此，Umi 能做的事的边界就大了很多。不再只是写写中后台，实现静态页面。</p>
-<pre><code class="javascript">export default &#123;
-  apiRoute: &#123;&#125;,
-&#125;
-</code></pre>
-<h2 id="微生成器"><a href="#微生成器" class="headerlink" title="微生成器"></a>微生成器</h2><p>此概念来自 Modern.js。Modern.js 引入很多新概念，其中「微生成器」还是非常贴切的。他包含两个功能，1）小型脚手架，2）功能的开启与关闭。Umi 3 虽然也有 generate 命令，但只包含功能 1。Umi 4 拓展了下 generate（alias 为 g）命令。除了支持更多类型的小型脚手架生成，还支持功能的开启与关闭，以及比如 Monorepo、react 和 antd 版本等的功能切换。</p>
-<pre><code class="ini">$ npx umi g
-? Pick generator type › - Use arrow-keys. Return to submit.
-❯   创建页面 -- Create a umi page by page name
-    创建组件 -- .
-    创建 mock 代码 -- .
-    创建 model 代码 -- .
-    启用 Prettier -- Setup Prettier Configurations
-    启用 Jest -- Setup Jest Configuration
-    启用 E2E 测试 -- .
-    启用 Tailwind CSS -- Setup Tailwind CSS configuration
-    启用 SSR -- .
-    启用 Low Import 研发模式 -- .
-    启用权限方案 -- .
-    启用 Monaco 编辑器 -- .
-    关闭 Dva 数据流 -- Configuration, Dependencies, and Model Files for Dva
-    关闭 MFSU -- .
-    切换为 Monorepo 项目 -- .
-    切换 React 为 18 -- .
-    切换 Antd 为 5 -- .
-</code></pre>
-<p>除此之外，我们还有非常多小而美的 DX 改进。</p>
-<h2 id="自动-https"><a href="#自动-https" class="headerlink" title="自动 https"></a>自动 https</h2><p> Umi 4 的 https dev server 的实现基于 mkcert，启动过程中会基于 hosts 自动生成对应的 key 和 cert。开发者除了安装前置的 mkcert，其他无需关心。</p>
-<p><img src="/2023/01/02/umi-4-0/1dd8df4ee5a346818acba7bd6a0f3a47.png"></p>
-<h2 id="浏览器里的构建进度条。"><a href="#浏览器里的构建进度条。" class="headerlink" title="浏览器里的构建进度条。"></a>浏览器里的构建进度条。</h2><p>如果首次构建没有完成就在浏览器里打开，你会看到一个构建进度条，支持 webpack 多实例，支持 MFSU，完成初始构建后会自动跳转到项目页。</p>
-<p><img src="/2023/01/02/umi-4-0/ae6c76af39ae4dcbad21e186de7e1d29.png"></p>
-<h2 id="Terminal-中的日志"><a href="#Terminal-中的日志" class="headerlink" title="Terminal 中的日志"></a>Terminal 中的日志</h2><p>有些开发者会更希望在命令行里看到项目里通过 console 输出的日志，比如我。因为命令行日志不会随着刷新而失效，大家可能都经历过一些一闪而过的页面，想截屏都难；同时命令行日志还可以做物理存储，导出后可以方便他人排查。此功能复刻自 <a href="https://link.juejin.cn/?target=https://github.com/patak-dev/vite-plugin-terminal%E3%80%82">github.com&#x2F;patak-dev&#x2F;v…</a></p>
-<pre><code class="ini">import &#123; terminal &#125; from &#39;umi&#39;;
-terminal.log(`Some info from the app`);
-</code></pre>
-<p>然后就可以在命令行中看到日志，</p>
-<p><img src="/2023/01/02/umi-4-0/53371b8fabe340eaabc9b00abecd7623.png"></p>
-<h2 id="umi-js-产物调试"><a href="#umi-js-产物调试" class="headerlink" title="umi.js 产物调试"></a>umi.js 产物调试</h2><p>不知大家是否会有这样的需求，开发项目时发现一些比较复杂的问题时，需要调整构建产物的代码。而 Umi 基于 webpack-dev-server，在 dev 阶段所有文件都存于内存中，没有物理文件的形式，并不方便直接修改后验证效果。如果大家用 Umi 4，可以把 umi.js 等产物文件保存到项目根目录，然后可以直接修改即生效。</p>
-<p><img src="/2023/01/02/umi-4-0/e11af2c3f8cb4e5c84b697000c41e7c5.png"></p>
-<h2 id="项目级插件：plugin-ts"><a href="#项目级插件：plugin-ts" class="headerlink" title="项目级插件：plugin.ts"></a>项目级插件：plugin.ts</h2><p> 为进一步降低项目中使用插件的门槛，Umi 4 中约定项目根目录下的 plugin.ts 为插件，开发者可在此直接调用插件 API，无需注册，支持 TypeScript。有了这个文件，我们可以在项目级做很多事。比如，</p>
-<pre><code class="javascript">import &#123; IApi &#125; from &#39;umi&#39;;
-export default (api: IApi) =&gt; &#123;
-  // 比如修改 HTML
-  api.modifyHTML($ =&gt; &#123;
-    return $;
-  &#125;);
-  // 比如在入口的 umi.ts 中添加代码
-  api.addEntryCodeAhead(() =&gt; [`console.log(&#39;entry code ahead&#39;)`]);
-  api.addEntryCode(() =&gt; [`console.log(&#39;entry code&#39;)`]);
-  // 比如在构建完成时做额外的事
-  api.onBuildComplete((opts) =&gt; &#123;&#125;);
-  // 比如在启动阶段做额外的事
-  api.onStart((opts) =&gt; &#123;&#125;);
-  // 比如校验每个 JavaScript/TypeScript 代码
-  api.onCheckCode((args) =&gt; &#123;&#125;);
-  // 比如动态修改路由
-  api.modifyRoutes((routes) =&gt; &#123;&#125;);
-&#125;
-</code></pre>
-<h2 id="deadCode-检测"><a href="#deadCode-检测" class="headerlink" title="deadCode 检测"></a>deadCode 检测</h2><p> 项目中通常会有未使用的文件或导出，Umi 4 中通过配置 deadCode: {} 即可在 build 阶段做检测。如有发现，会有类似信息抛出。</p>
-<pre><code class="javascript">Warning: There are 3 unused files:
- 1. /mock/a.ts
- 2. /mock/b.ts
- 3. /pages/index.module.less
- Please be careful if you want to remove them (¬º-°)¬.
-</code></pre>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[umi仓库]: 	“<a href="https://github.com/umijs/umi">https://github.com/umijs/umi</a> “</p>
-]]></content>
-      <categories>
-        <category>umi.js</category>
-        <category>umi-4.0</category>
-      </categories>
-      <tags>
-        <tag>umi</tag>
       </tags>
   </entry>
   <entry>

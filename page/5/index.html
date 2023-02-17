@@ -177,6 +177,141 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-Dokcer部署Drone2"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/"
+    >Dokcer部署Drone2</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/" class="article-date">
+  <time datetime="2022-11-14T03:43:51.000Z" itemprop="datePublished">2022-11-14</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CI-CD/">CI/CD</a> / <a class="article-category-link" href="/categories/CI-CD/Dokcer%E9%83%A8%E7%BD%B2Drone2/">Dokcer部署Drone2</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="Dokcer部署Drone2"><a href="#Dokcer部署Drone2" class="headerlink" title="Dokcer部署Drone2"></a>Dokcer部署Drone2</h1><p>这一篇延续上一篇的问题，这一篇解决仓库初始化失败（500）的问题</p>
+<h3 id="一、问题原因"><a href="#一、问题原因" class="headerlink" title="一、问题原因"></a>一、问题原因</h3><p>问题在于 drone 创建 webhooks 时失败，Github 不允许创建本地 localhost 类型的 webhooks，因为这样执行时是在本地，没办法定位到具体的用户主机。可以使用 <a href="https://link.juejin.cn/?target=https://ngrok.com">ngrok</a> 这样的工具把本地服务绑定到公网。</p>
+<h3 id="二、解决问题"><a href="#二、解决问题" class="headerlink" title="二、解决问题"></a>二、解决问题</h3><h4 id="1-安装ngrok"><a href="#1-安装ngrok" class="headerlink" title="1.安装ngrok"></a>1.安装ngrok</h4><p>安装ngrok的时候，mac用户默认下载的位置和终端的位置不一样，所以我们统一安装到 &#x2F;usr&#x2F;local&#x2F;bin 目录</p>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114110814408.png"></p>
+<p>具体步骤是：</p>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114111042057.png" alt="步骤一：解压缩文件后复制ngrok"></p>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114111257463.png" alt="步骤二：前往文件夹"></p>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114111332755.png"></p>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114111355186.png" alt="步骤三：复制ngrok，双击执行"></p>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114111451022.png" alt="进程完成"></p>
+<h4 id="2-连接服务"><a href="#2-连接服务" class="headerlink" title="2.连接服务"></a>2.连接服务</h4><p>执行ngrok的密钥，连接服务</p>
+<pre><code class="ini">ngrok config add-authtoken 2HW491ApRpQILMM3kwW_4T7x8zVrAXpqUEjdSGU4y
+</code></pre>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114111554074.png"></p>
+<p>当出现下面的情况，就说明安装成功了，就可以使用命令了</p>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114111712382.png"></p>
+<p>如果提示没有验证邮箱，就先去验证邮箱，要不然服务会中断</p>
+<h4 id="3-开启服务端口"><a href="#3-开启服务端口" class="headerlink" title="3.开启服务端口"></a>3.开启服务端口</h4><pre><code class="ini">ngrok http 80
+</code></pre>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114111950182.png"></p>
+<h4 id="4-修改Drone配置（github）"><a href="#4-修改Drone配置（github）" class="headerlink" title="4.修改Drone配置（github）"></a>4.修改Drone配置（github）</h4><pre><code class="ini">#Homepage URL
+https://8313-183-202-88-243.ap.ngrok.io
+</code></pre>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114112053258.png"></p>
+<p>5.修改docker-compose.yml 和 .env 文件</p>
+<pre><code class="ini">vim docker-compose.yml  //配置文件
+vim .env
+</code></pre>
+<pre><code class="javascript">//docker-compose.yml
+version: &#39;3.7&#39;
+
+services:
+
+  drone-server:
+    image: drone/drone:2.3.1
+    ports:
+      - 80:80
+    volumes:
+      - drone-data:/data:rw
+      - ./ssl:/etc/certs
+    restart: always
+    environment:
+      - DRONE_SERVER_HOST=$&#123;DRONE_SERVER_HOST:-https://drone.yeasy.com&#125;
+      - DRONE_SERVER_PROTO=$&#123;DRONE_SERVER_PROTO:-https&#125;
+      - DRONE_RPC_SECRET=$&#123;DRONE_RPC_SECRET:-secret&#125;
+      - DRONE_GITHUB_SERVER=https://github.com
+      - DRONE_GITHUB_CLIENT_ID=$&#123;DRONE_GITHUB_CLIENT_ID&#125;
+      - DRONE_GITHUB_CLIENT_SECRET=$&#123;DRONE_GITHUB_CLIENT_SECRET&#125;
+
+  drone-runner:
+    image: drone/drone-runner-docker:1
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    environment:
+      - DRONE_RPC_PROTO=http
+      - DRONE_RPC_HOST=drone-server
+      - DRONE_RPC_SECRET=$&#123;DRONE_RPC_SECRET:-secret&#125;
+      - DRONE_RUNNER_NAME=$&#123;HOSTNAME:-demo&#125;
+      - DRONE_RUNNER_CAPACITY=2
+    dns: 114.114.114.114
+
+volumes:
+  drone-data:
+</code></pre>
+<pre><code class="ini">//.env
+# 必填 服务器地址，例如 drone.domain.com
+DRONE_SERVER_HOST=8313-183-202-88-243.ap.ngrok.io
+DRONE_SERVER_PROTO=https
+DRONE_RPC_SECRET=24c08d3d73e59c5d9dd5e26e3256c1f9
+HOSTNAME=demo
+# 必填 在 GitHub 应用页面查看
+DRONE_GITHUB_CLIENT_ID=
+# 必填 在 GitHub 应用页面查看
+DRONE_GITHUB_CLIENT_SECRET=
+</code></pre>
+<h4 id="5-重启Drone"><a href="#5-重启Drone" class="headerlink" title="5.重启Drone"></a>5.重启Drone</h4><pre><code class="ini">docker-compose up -d
+</code></pre>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114112748311.png"></p>
+<p>这样我们就解决了500的问题，github上的Webhooks就启动了</p>
+<p><img src="/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/image-20221114113100300.png"></p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CI/" rel="tag">CI</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-Docker部署Drone"
   class="article article-type-post"
   itemscope
@@ -2444,355 +2579,6 @@ module.exports = &#123;
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-从0到1搭建自己的脚手架vue3"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/"
-    >从0到1搭建自己的脚手架vue3</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/" class="article-date">
-  <time datetime="2022-11-07T08:16:04.000Z" itemprop="datePublished">2022-11-07</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/">从0到1搭建自己的脚手架vue3</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="搭建vue项目脚手架"><a href="#搭建vue项目脚手架" class="headerlink" title="搭建vue项目脚手架"></a>搭建vue项目脚手架</h1><h3 id="1-所以的网站都需要一个页面，所以创建第一个-html文件（index-html）"><a href="#1-所以的网站都需要一个页面，所以创建第一个-html文件（index-html）" class="headerlink" title="1.所以的网站都需要一个页面，所以创建第一个.html文件（index.html）"></a>1.所以的网站都需要一个页面，所以创建第一个.html文件（index.html）</h3><pre><code class="html">&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
-    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-    &lt;title&gt;vue-cli-start&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
-   &lt;!-- 引入打包后的js文件 --&gt;
-    &lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt; 
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<h3 id="2-创建src和dist文件夹"><a href="#2-创建src和dist文件夹" class="headerlink" title="2.创建src和dist文件夹"></a>2.创建src和dist文件夹</h3><p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107081630590.png"></p>
-<p>因为index.html需要引入打包后的bundle.js文件，所以将index.js放到了dist目录下</p>
-<h3 id="3-创建入口文件main-js"><a href="#3-创建入口文件main-js" class="headerlink" title="3.创建入口文件main.js"></a>3.创建入口文件main.js</h3><p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107082550022.png"></p>
-<p>我们需要引入vue实例，但是现在我们没有vue包，所以要先下载vue</p>
-<p>我们也可以一次性下载vue所需要的依赖</p>
-<pre><code class="ini">npm i vue element-ui axios
-</code></pre>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107083055837.png"></p>
-<h3 id="4-安装开发依赖"><a href="#4-安装开发依赖" class="headerlink" title="4.安装开发依赖"></a>4.安装开发依赖</h3><pre><code class="ini">npm i -D webpack webpack-cli vue-loader vue-template-compiler sass sass-loader css-loader style-loader babel-loader @babel/core @babel/preset-env
-</code></pre>
-<p>如果项目文件没有package.json,那么</p>
-<pre><code class="ini">npm init -y
-</code></pre>
-<h3 id="5-创建webpack-config-js并配置-根目录下和package-json同一目录创建"><a href="#5-创建webpack-config-js并配置-根目录下和package-json同一目录创建" class="headerlink" title="5.创建webpack.config.js并配置(根目录下和package.json同一目录创建)"></a>5.创建webpack.config.js并配置(根目录下和package.json同一目录创建)</h3><pre><code class="javascript">//webpack.config.js基本配置模板
-module.exports = &#123;
-    //入口，表示从那个文件开始解析
-    entry:&#39;&#39;,
-    //出口，表示输出文件位置和信息
-    output:&#123;
-        path:&#39;&#39;,
-        filename:&#39;&#39;
-    &#125;,
-    //模块，定义匹配规则和转换loader
-    module:&#123;
-        rules:[
-            &#123;test:/\.vue$/,use:&#39;vue-loader&#39;&#125;,
-            &#123;&#125;
-        ]
-    &#125;,
-    //插件,给予webpack更丰富的功能
-    plugins:[
-        //实例化
-        new PluginA()
-    ]
-
-&#125;
-</code></pre>
-<p>基本配置完成的webpack.config.js</p>
-<pre><code class="javascript">const path = require(&#39;path&#39;)
-const &#123;VueLoaderPlugin&#125; = require(&#39;vue-loader&#39;)
-module.exports = &#123;
-    entry:&#39;./src/main.js&#39;,
-    output:&#123;
-        path:path.resolve(__dirname,&#39;dist&#39;),
-        filename:&#39;bundle.js&#39;
-    &#125;,
-    module:&#123;
-        rules:[
-            &#123;test:/\.vue$/,use:&#39;vue-loader&#39;&#125;,
-            &#123;test:/\.s[ca]ss$/,use:[&#39;style-loader&#39;,&#39;css-loader&#39;,&#39;sass-loader&#39;]&#125;,
-            &#123;
-                test:/\.m?js$/,
-                use:&#123;
-                    loader:&#39;babel-loader&#39;,
-                    options:&#123;
-                        presets:[&#39;@babel/preset-env&#39;],
-                    &#125;
-                &#125;
-            &#125;,
-            //老语法
-            // &#123;test:/\.(png|jpe?g|svg|gif|webp)$/,use:&#123;loader:&#39;file-loader&#39;,options:&#123;esModule:&#39;false&#39;&#125;&#125;&#125;
-            &#123;test:/\.(png|jpe?g|svg|gif|webp)$/,type:&#39;asset/resource&#39;&#125;,
-        ]
-    &#125;,
-    plugins:[
-        new VueLoaderPlugin()
-    ]
-&#125;
-</code></pre>
-<h3 id="6-编辑书写main-js文件和App-vue"><a href="#6-编辑书写main-js文件和App-vue" class="headerlink" title="6.编辑书写main.js文件和App.vue"></a>6.编辑书写main.js文件和App.vue</h3><pre><code class="javascript">//main.js
-import &#123; createApp &#125; from &#39;vue&#39;
-import App from &#39;./App.vue&#39;
-createApp(App).mount(&#39;#app&#39;)
-</code></pre>
-<pre><code class="vue">//App.vue
-&lt;template&gt;
-    &lt;div&gt;
-        艺术码畜博客‘https://mengfeng.github.io/’
-    &lt;/div&gt;
-&lt;/template&gt;
-&lt;script&gt;
-export default &#123;&#125;
-&lt;/script&gt;
-&lt;style lang=&quot;scss&quot; scoped&gt;
-&lt;/style&gt;
-</code></pre>
-<h3 id="7-那么我们现在应该可以运行所配置的代码了"><a href="#7-那么我们现在应该可以运行所配置的代码了" class="headerlink" title="7.那么我们现在应该可以运行所配置的代码了"></a>7.那么我们现在应该可以运行所配置的代码了</h3><p>现在出现一个问题，直接执行webpack命令会找不到webpack命令，虽然我们下载了webpack-cli，但是只是存在于.&#x2F;node_modules&#x2F;.bin里面</p>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107100606449.png"></p>
-<p>那我们执行.&#x2F;node_modules&#x2F;.bin&#x2F;webpack也是可以打包的，但是我们每次执行这么长的命令不是很方便，所以通过配置package.json文件来简化命令</p>
-<pre><code class="json">&#123;
-  &quot;name&quot;: &quot;vue-cli-start&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;&quot;,
-  &quot;main&quot;: &quot;index.js&quot;,
-  &quot;scripts&quot;:&#123;
-    //--mode=development为开发环境，速度较快，上线可以配置为生产环境，会压缩，优化代码
-    //--watch为监听代码变化，只要代码变化，会重新编译
-    //build是生产环境的打包
-    &quot;serve&quot;:&quot;webpack --mode=development --watch&quot;,
-    &quot;build&quot;:&quot;webpack --mode=production&quot;
-  &#125;,
- &quot;dependencies&quot;: &#123;
-    &quot;axios&quot;: &quot;^1.1.3&quot;,
-    &quot;element-ui&quot;: &quot;^2.15.10&quot;,
-    &quot;vue&quot;: &quot;^3.2.41&quot;
-  &#125;,
-  &quot;devDependencies&quot;: &#123;
-    &quot;@babel/core&quot;: &quot;^7.20.2&quot;,
-    &quot;@babel/preset-env&quot;: &quot;^7.20.2&quot;,
-    &quot;babel-loader&quot;: &quot;^9.1.0&quot;,
-    &quot;css-loader&quot;: &quot;^6.7.1&quot;,
-    &quot;sass&quot;: &quot;^1.56.0&quot;,
-    &quot;sass-loader&quot;: &quot;^13.1.0&quot;,
-    &quot;style-loader&quot;: &quot;^3.3.1&quot;,
-    &quot;vue-loader&quot;: &quot;^17.0.1&quot;,
-    &quot;vue-template-compiler&quot;: &quot;^2.7.13&quot;,
-    &quot;webpack&quot;: &quot;^5.74.0&quot;,
-    &quot;webpack-cli&quot;: &quot;^4.10.0&quot;
-  &#125;,
-  &quot;keywords&quot;: [],
-  &quot;author&quot;: &quot;&quot;,
-  &quot;license&quot;: &quot;ISC&quot;
-&#125;
-</code></pre>
-<p>当我们执行npm run serve</p>
-<pre><code class="ini">npm run serve
-</code></pre>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107110605226.png"></p>
-<p>表示我们编译成功了，我们现在可以试着运行一下index.html</p>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107110725484.png"></p>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107110748068.png"></p>
-<p>恭喜，目前为止已经没有什么问题了！！！基础的vue脚手架就完成了（目前只是一个页面）</p>
-<h3 id="8-我们需要多个页面的时候，就需要其他依赖了"><a href="#8-我们需要多个页面的时候，就需要其他依赖了" class="headerlink" title="8.我们需要多个页面的时候，就需要其他依赖了"></a>8.我们需要多个页面的时候，就需要其他依赖了</h3><p>根据下面的配置来修改自己的代码，可能下面的代码于上面的不同，但效果是一样的</p>
-<pre><code class="ini">npm i vue-router
-</code></pre>
-<h3 id="9-创建route文件夹和pages文件夹"><a href="#9-创建route文件夹和pages文件夹" class="headerlink" title="9.创建route文件夹和pages文件夹"></a>9.创建route文件夹和pages文件夹</h3><p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107143307837.png"></p>
-<h3 id="10-编辑App-vue和route下的index-js文件"><a href="#10-编辑App-vue和route下的index-js文件" class="headerlink" title="10.编辑App.vue和route下的index.js文件"></a>10.编辑App.vue和route下的index.js文件</h3><pre><code class="vue">//App.vue
-&lt;template&gt;
-    &lt;div id=&quot;nav&quot;&gt;
-        &lt;router-link to=&quot;/&quot;&gt; home &lt;/router-link&gt; |
-        &lt;router-link to=&quot;/food&quot;&gt; food &lt;/router-link&gt; |
-        &lt;router-link to=&quot;/banner&quot;&gt; banner &lt;/router-link&gt;
-    &lt;/div&gt;
-    &lt;router-view /&gt;
-&lt;/template&gt;
-</code></pre>
-<p>这里我们使用的是history，也可以用hash</p>
-<pre><code class="javascript">//route/index.js
-import &#123; createRouter, createWebHashHistory &#125; from &quot;vue-router&quot;
-//注册
-import home from &#39;../pages/Home.vue&#39;
-import food from &#39;../pages/Food.vue&#39;
-import banner from &#39;../pages/Banner.vue&#39;
-
-const routes = [
-  &#123; path: &quot;/&quot;, redirect: &quot;/home&quot; &#125;,
-  &#123;
-    path: &quot;/home&quot;,
-    name: &quot;home&quot;,
-    component: home
-  &#125;,
-  &#123;
-    path: &quot;/food&quot;,
-    name: &quot;food&quot;,
-    component: food
-  &#125;,
-  &#123;
-    path: &quot;/banner&quot;,
-    name: &quot;banner&quot;,
-    component: banner
-  &#125;
-]
-//导出
-const router = createRouter(&#123;
-    history: createWebHashHistory(),
-    routes: routes
-  &#125;)
-
-  export default router;
-</code></pre>
-<h3 id="11-需要在main-js里面去注册"><a href="#11-需要在main-js里面去注册" class="headerlink" title="11.需要在main.js里面去注册"></a>11.需要在main.js里面去注册</h3><pre><code class="javascript">import &#123; createApp &#125; from &#39;vue&#39;
-import App from &#39;./App.vue&#39;
-import router from &#39;./route&#39;
-
-const app = createApp(App)
-app.use(router)
-app.mount(&#39;#app&#39;)
-</code></pre>
-<h3 id="12-这个时候再去跑我们的代码就可以了"><a href="#12-这个时候再去跑我们的代码就可以了" class="headerlink" title="12.这个时候再去跑我们的代码就可以了"></a>12.这个时候再去跑我们的代码就可以了</h3><pre><code class="ini">npm run serve
-</code></pre>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107143925345.png"></p>
-<h3 id="13-页面之间的route跳转"><a href="#13-页面之间的route跳转" class="headerlink" title="13.页面之间的route跳转"></a>13.页面之间的route跳转</h3><pre><code class="vue">//Food.vue
-&lt;template&gt;
-    &lt;p&gt;food&lt;/p&gt;
-    &lt;button @click=&quot;toHome&quot;&gt;toHome&lt;/button&gt;
-     &lt;!-- router-link组件跳转 --&gt;
-    &lt;router-link to=&quot;/home&quot;&gt;toHome&lt;/router-link&gt;
-  &lt;/template&gt;
-  &lt;script&gt;
-  import &#123; useRouter &#125; from &#39;vue-router&#39;
-  export default &#123;
-    setup () &#123;
-      //编程式跳转
-      const router = useRouter()
-      const toHome = (() =&gt; &#123;
-        router.push(&#123;
-          name: &#39;home&#39;
-        &#125;)
-      &#125;)
-      return &#123;
-        toHome
-      &#125;
-    &#125;,
-  &#125;
-  &lt;/script&gt;
-</code></pre>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107145442966.png"></p>
-<p>当我们点击toHome按钮就可以跳转到home页了,两种方式都可以跳转</p>
-<h3 id="14-配置ESLint和Prettier"><a href="#14-配置ESLint和Prettier" class="headerlink" title="14.配置ESLint和Prettier"></a>14.配置ESLint和Prettier</h3><p>安装ESLint</p>
-<pre><code class="ini">//本地安装
-npm install eslint --save-dev
-//全局安装
-npm install -g eslint
-</code></pre>
-<p>运行eslint –init，选择工程使用了vue，自动生成.eslintrc.js文件</p>
-<pre><code class="ini">eslint --init
-</code></pre>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107151858584.png"></p>
-<p>我们按照需求去选择就可以了</p>
-<p>安装prettier</p>
-<pre><code class="ini">//本地
-npm i -D --save-exact prettier
-//全局
-npm i --global prettier
-</code></pre>
-<p>安装eslint-config-prettier插件（禁用 eslint 风格校验)</p>
-<pre><code class="ini">npm i -D eslint-config-prettier
-</code></pre>
-<p>安装eslint-plugin-prettier插件（使eslint采用prettier的风格校验）</p>
-<pre><code class="ini">npm i -D eslint-plugin-prettier
-</code></pre>
-<p>配置eslintrc.js文件</p>
-<pre><code class="javascript">module.exports = &#123;
-    &quot;env&quot;: &#123;
-        &quot;browser&quot;: true,
-        &quot;es2021&quot;: true,
-        &quot;node&quot;:true,
-    &#125;,
-    &quot;extends&quot;: [
-        &quot;eslint:recommended&quot;,
-        &quot;plugin:vue/vue3-essential&quot;
-    ],
-    &quot;overrides&quot;: [
-    ],
-    &quot;parserOptions&quot;: &#123;
-        &quot;ecmaVersion&quot;: &quot;latest&quot;
-    &#125;,
-    &quot;plugins&quot;: [
-        &quot;vue&quot;
-    ],
-    &quot;rules&quot;: &#123;
-      &#39;no-console&#39;: process.env.NODE_ENV === &#39;production&#39; ? &#39;warn&#39; : &#39;off&#39;,
-      &#39;no-debugger&#39;: process.env.NODE_ENV === &#39;production&#39; ? &#39;warn&#39; : &#39;off&#39;,
-       //在rules中添加自定义规则
-       //关闭组件命名规则
-       &quot;vue/multi-word-component-names&quot;:&quot;off&quot;,
-    &#125;
-&#125;
-</code></pre>
-<p>在根目录下创建.prettierrc 或 prettier.config.js文件</p>
-<pre><code class="javascript">module.exports = &#123;
-    endOfLine: &#39;auto&#39;, // 不检测检测文件每行结束的格式
-    semi: true, // 使用分号, 默认true
-    singleQuote: true // 使用单引号, 默认false(在jsx中配置无效, 默认都是双引号)
-  &#125;
-</code></pre>
-<p>安装vscode插件：Prettier ESLint</p>
-<p><img src="/2022/11/07/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6vue3/image-20221107154026317.png"></p>
-<p>该插件会根据工程根目录下的eslintrc.js和prettier.config.js文件格式化代码。可以进一步设置为vscode默认formater和自动格式化。</p>
-<p>Prettier配置常用的参数可以根据团队需求制定</p>
-<h3 id="链接："><a href="#链接：" class="headerlink" title="链接："></a>链接：</h3><p>[ESLint中文文档]: 	“<a target="_blank" rel="noopener" href="https://eslint.bootcss.com/">https://eslint.bootcss.com</a> “<br>[Prettier中文网]: 	“<a target="_blank" rel="noopener" href="https://www.prettier.cn/">https://www.prettier.cn</a> “</p>
-<h3 id="源码仓库地址："><a href="#源码仓库地址：" class="headerlink" title="源码仓库地址："></a>源码仓库地址：</h3><p><a target="_blank" rel="noopener" href="https://github.com/mengfeng/vue-cli-start">https://github.com/mengfeng/vue-cli-start</a></p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/" rel="tag">工程技术</a></li></ul>
 
     </footer>
   </div>

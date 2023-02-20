@@ -177,6 +177,98 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-宝塔Linux部署"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/"
+    >宝塔Linux部署</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/" class="article-date">
+  <time datetime="2022-11-15T05:29:18.000Z" itemprop="datePublished">2022-11-15</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CI-CD/">CI/CD</a> / <a class="article-category-link" href="/categories/CI-CD/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/">宝塔Linux部署</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="宝塔Linux部署"><a href="#宝塔Linux部署" class="headerlink" title="宝塔Linux部署"></a>宝塔Linux部署</h1><h3 id="一、购买云服务器"><a href="#一、购买云服务器" class="headerlink" title="一、购买云服务器"></a>一、购买云服务器</h3><p>[阿里云官网]: 	“<a target="_blank" rel="noopener" href="https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955">https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955</a> “</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100233843.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100305806.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100353042.png"></p>
+<p>当我购买了云服务器，那我们就可以登陆我们的服务器去下载mac的宝塔面板（通过外网地址访问浏览器）</p>
+<h3 id="二、登陆云服务器"><a href="#二、登陆云服务器" class="headerlink" title="二、登陆云服务器"></a>二、登陆云服务器</h3><p>初始化（重置）实例密码</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101533088.png"></p>
+<p>输入Password密码和实例密码</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100757824.png"></p>
+<h3 id="三、安装宝塔"><a href="#三、安装宝塔" class="headerlink" title="三、安装宝塔"></a>三、安装宝塔</h3><p>然后可以看到已经进了服务器，那么我们就可以开始安装了</p>
+<pre><code class="php">yum install -y wget &amp;&amp; wget -O install.sh http://download.bt.cn/install/install_6.0.sh &amp;&amp; sh install.sh fa1f2600
+</code></pre>
+<p>稍等片刻后，输入“y”继续</p>
+<p>下载成功之后，就会出现账户和密码和访问地址</p>
+<p>我们通过外网面板地址访问</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101323474.png"></p>
+<p>如果现在无法访问的话，就去阿里云服务器实例安全组添加提示端口</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101750883.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101826756.png"></p>
+<p>现在应该可以访问了，如果还不行就添加8888端口</p>
+<h3 id="四、配置宝塔"><a href="#四、配置宝塔" class="headerlink" title="四、配置宝塔"></a>四、配置宝塔</h3><p>当我们访问成功，根据提示安装宝塔面板所需要的创建就可以了</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102042938.png"></p>
+<p>如果我们下载插件时间过长，重启宝塔面板</p>
+<h3 id="五、创建站点"><a href="#五、创建站点" class="headerlink" title="五、创建站点"></a>五、创建站点</h3><p>我们来创建我们第一个站点</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102605290.png"></p>
+<p>提交的时候我们可能遇见下面的提示，配置错误</p>
+<pre><code class="ini">nginx: [emerg] open() &quot;/www/server/nginx/conf/enable-php.conf&quot; failed (2: No such file or directory) in /www/server/nginx/conf/nginx.conf:79 nginx: configuration file /www/server/nginx/conf/nginx.conf test failed
+</code></pre>
+<p>有一个最简单的方案就是，替换nginx 的版本，换一个更低一点的版本</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102833852.png"></p>
+<p>重启宝塔面板就可以了</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102931757.png"></p>
+<h3 id="六、上传站点部署文件"><a href="#六、上传站点部署文件" class="headerlink" title="六、上传站点部署文件"></a>六、上传站点部署文件</h3><p>选择要上传文件的站点</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103700868.png"></p>
+<p>选择要上传的文件，可以拖拽</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103850298.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115104445278.png"></p>
+<p>那么我们现在访问网站就可以了</p>
+<p>如果还是访问不到的话（阿里云购买的域名），建议先进行备案，然后再部署网站</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115132138765.png"></p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CD/" rel="tag">CD</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-Dokcer部署Drone2"
   class="article article-type-post"
   itemscope
@@ -1845,740 +1937,6 @@ npm home jquery  # 会打开默认浏览器跳转到github中jquery的主页
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/npm/" rel="tag">npm</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-从0到1搭建自己的脚手架react"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/"
-    >从0到1搭建自己的脚手架react</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/" class="article-date">
-  <time datetime="2022-11-08T09:16:45.000Z" itemprop="datePublished">2022-11-08</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/">从0到1搭建自己的脚手架react</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="从0到1搭建自己的脚手架react"><a href="#从0到1搭建自己的脚手架react" class="headerlink" title="从0到1搭建自己的脚手架react"></a>从0到1搭建自己的脚手架react</h1><h3 id="1-初始化项目"><a href="#1-初始化项目" class="headerlink" title="1.初始化项目"></a>1.初始化项目</h3><pre><code class="ini">npm init -y
-</code></pre>
-<p>执行初始化命令之后，会出现package.json文件</p>
-<h3 id="2-建立项目目录（基础项目目录）"><a href="#2-建立项目目录（基础项目目录）" class="headerlink" title="2.建立项目目录（基础项目目录）"></a>2.建立项目目录（基础项目目录）</h3><p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108085707668.png"></p>
-<h3 id="3-下载依赖"><a href="#3-下载依赖" class="headerlink" title="3.下载依赖"></a>3.下载依赖</h3><p>react</p>
-<pre><code class="ini">npm i react react-dom 
-</code></pre>
-<p>下载babel。babel是javascript编辑器，作用如下：</p>
-<ol>
-<li>负责把ES6、ES7等高版本js编译成低版本js，供浏览器运行。</li>
-<li>负责把react语法（jsx）编译成js。</li>
-</ol>
-<pre><code class="ini"> npm i @babel/core @babel/cli @babel/preset-env @babel/preset-react --save-dev
-</code></pre>
-<p>集成webpack。webpack是一个现代JavaScript应用程序的静态模块打包器，现代前端应用很多都是用webpack打包。webpack-dev-server用来搭建一个本地服务，可以热加载前端项目</p>
-<pre><code class="ini">npm i webpack webpack-dev-server webpack-cli --save-dev
-</code></pre>
-<p>webpack集成babel还需要babel-loader，加载html文件还需要插件html-webpack-plugin：</p>
-<pre><code class="ini">npm i babel-loader html-webpack-plugin --save-dev
-</code></pre>
-<h3 id="4-编辑index-html、App-js、index-js"><a href="#4-编辑index-html、App-js、index-js" class="headerlink" title="4.编辑index.html、App.js、index.js"></a>4.编辑index.html、App.js、index.js</h3><pre><code class="html">//index.html
-&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
-    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-    &lt;title&gt;Document&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;div id=&quot;root&quot;&gt;root&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<pre><code class="javascript">//App.js
-import React from &quot;react&quot;;
-class App extends React.PureComponent&#123;
-    render()&#123;
-        return (
-            &lt;div&gt;
-                App
-            &lt;/div&gt;
-          );
-    &#125;
-&#125;
-
-export default App
-</code></pre>
-<pre><code class="javascript">//index.js
-import React from &#39;react&#39;;
-import &#123; createRoot &#125; from &#39;react-dom/client&#39;;
-import App from &#39;./App&#39;;
-
-const root = createRoot(document.getElementById(&#39;root&#39;))
-root.render(&lt;App /&gt;)
-</code></pre>
-<h3 id="5-在根目录下添加-babelrc文件、webpack-config-js文件"><a href="#5-在根目录下添加-babelrc文件、webpack-config-js文件" class="headerlink" title="5.在根目录下添加.babelrc文件、webpack.config.js文件"></a>5.在根目录下添加.babelrc文件、webpack.config.js文件</h3><p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108093539451.png"></p>
-<h3 id="6-配置-babelrc、webpack-config-js"><a href="#6-配置-babelrc、webpack-config-js" class="headerlink" title="6.配置.babelrc、webpack.config.js"></a>6.配置.babelrc、webpack.config.js</h3><pre><code class="javascript">//.babelrc
-&#123;
-    &quot;presets&quot;: [&quot;@babel/preset-env&quot;,&quot;@babel/preset-react&quot;]
-&#125;
-</code></pre>
-<pre><code class="javascript">//webpack.config.js
-const path = require(&#39;path&#39;);
-const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
-
-module.exports = &#123;
-    //webpack入口文件，webpack从这里开始构建依赖图
-    entry:&#123;
-        main:&#39;./src/index.js&#39;
-    &#125;,
-    //输出文件 ./dist/bundle.js
-    output:&#123;
-        path: path.resolve(__dirname,&#39;dist&#39;),
-        filename:&#39;bundle.js&#39;
-    &#125;,
-    //webpack只能处理js和json文件，加载别的文件需要loader
-    module:&#123;
-        rules:[
-            &#123;
-                test:/.m?js/,
-                use:&#39;babel-loader&#39;,
-                exclude:/node_modules/
-            &#125;
-        ]
-    &#125;,
-    //webpack加载html文件需要html-webpack-plugin插件处理。
-    //启动webpack-dev-server的时候，会把打包好的js文件，css文件，html文件放在内存里
-    plugins:[
-        new HtmlWebpackPlugin(&#123;
-            template:&#39;./public/index.html&#39;
-        &#125;)
-    ],
-    mode:&#39;development&#39;
-
-&#125;
-</code></pre>
-<h3 id="7-当我们配置好上面的项目了，现在我们就可以运行了"><a href="#7-当我们配置好上面的项目了，现在我们就可以运行了" class="headerlink" title="7.当我们配置好上面的项目了，现在我们就可以运行了"></a>7.当我们配置好上面的项目了，现在我们就可以运行了</h3><p>现在我们还得配置一个小细节package,json</p>
-<pre><code class="javascript">&#123;
-  &quot;name&quot;: &quot;react-app-start&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;&quot;,
-  &quot;main&quot;: &quot;index.js&quot;,
-  &quot;scripts&quot;: &#123;
-    //--mode=development为开发环境，速度较快，上线可以配置为生产环境，会压缩，优化代码
-    //--watch为监听代码变化，只要代码变化，会重新编译
-    //build是生产环境的打包
-    &quot;serve&quot;: &quot;webpack --mode=development --watch&quot;,
-    &quot;build&quot;: &quot;webpack --mode=production&quot;
-  &#125;,
-  &quot;keywords&quot;: [],
-  &quot;author&quot;: &quot;&quot;,
-  &quot;license&quot;: &quot;ISC&quot;,
-  &quot;dependencies&quot;: &#123;
-    &quot;react&quot;: &quot;^18.2.0&quot;,
-    &quot;react-dom&quot;: &quot;^18.2.0&quot;,
-    &quot;webpack&quot;: &quot;^5.74.0&quot;
-  &#125;,
-  &quot;devDependencies&quot;: &#123;
-    &quot;@babel/cli&quot;: &quot;^7.19.3&quot;,
-    &quot;@babel/core&quot;: &quot;^7.20.2&quot;,
-    &quot;@babel/preset-env&quot;: &quot;^7.20.2&quot;,
-    &quot;@babel/preset-react&quot;: &quot;^7.18.6&quot;,
-    &quot;babel-loader&quot;: &quot;^9.1.0&quot;,
-    &quot;html-webpack-plugin&quot;: &quot;^5.5.0&quot;,
-    &quot;webpack-cli&quot;: &quot;^4.10.0&quot;
-  &#125;
-&#125;
-</code></pre>
-<p>这时候就可以执行命令了</p>
-<pre><code class="ini">npm run serve
-</code></pre>
-<p>打包执行命令</p>
-<pre><code class="ini">npm run build
-</code></pre>
-<h3 id="8-如果没有报错的话，你就会看见下面的页面"><a href="#8-如果没有报错的话，你就会看见下面的页面" class="headerlink" title="8.如果没有报错的话，你就会看见下面的页面"></a>8.如果没有报错的话，你就会看见下面的页面</h3><p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108100300240.png"></p>
-<h3 id="9-至此webpack简易版配置已经完成。接下来配置热加载功能，下载webpack-dev-server："><a href="#9-至此webpack简易版配置已经完成。接下来配置热加载功能，下载webpack-dev-server：" class="headerlink" title="9.至此webpack简易版配置已经完成。接下来配置热加载功能，下载webpack-dev-server："></a>9.至此webpack简易版配置已经完成。接下来配置热加载功能，下载webpack-dev-server：</h3><pre><code class="ini">npm i webpack-dev-server --save-dev
-</code></pre>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108100733217.png"></p>
-<p>执行命令：</p>
-<pre><code class="ini">npm run start
-</code></pre>
-<p>项目在3000端口启动，启动后会自动打开浏览器窗口。热加载配置完成，文件修改保存后浏览器直接展示出来。</p>
-<p>到此react项目简化版搭建完成。后续继续集成其他工具库即可。</p>
-<h3 id="10-react使用ts"><a href="#10-react使用ts" class="headerlink" title="10.react使用ts"></a>10.react使用ts</h3><p>ts对比js最大的特点就是多了类型检查。推荐前端语言使用ts。接下来介绍在webpack中配置ts。</p>
-<p>安装typescript、ts-loader。typescript是ts编辑器，把ts代码编译成js，ts-loader是让webpack识别.ts&#x2F;.tsx文件，调用编译器编译，</p>
-<pre><code class="ini">npm i typescript ts-loader --save-dev
-</code></pre>
-<p>添加ts配置文件,在根目录下添加tsconfig.json：</p>
-<pre><code class="ini">//tsconfig.json
-&#123;
-    &quot;compilerOptions&quot;: &#123;
-        &quot;target&quot;: &quot;es5&quot;,
-        &quot;lib&quot;:[&quot;es6&quot;,&quot;dom&quot;],
-        &quot;module&quot;: &quot;esnext&quot;,
-        &quot;moduleResolution&quot;: &quot;node&quot;,
-        &quot;jsx&quot;:&quot;react&quot;,
-        &quot;sourceMap&quot;: true,
-        &quot;strict&quot;: true,
-        &quot;importHelpers&quot;: true,
-        &quot;skipLibCheck&quot;: true,
-        &quot;allowJs&quot;: true,
-        &quot;allowSyntheticDefaultImports&quot;: true
-    &#125;
-&#125;
-</code></pre>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108101701100.png"></p>
-<p>修改webpack配置</p>
-<pre><code class="javascript">const path = require(&#39;path&#39;);
-const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
-
-module.exports = &#123;
-    //webpack入口文件，webpack从这里开始构建依赖图
-    entry:&#123;
-        main:&#39;./src/index.tsx&#39;
-    &#125;,
-    //输出文件 ./dist/bundle.js
-    output:&#123;
-        path: path.resolve(__dirname,&#39;dist&#39;),
-        filename:&#39;bundle.js&#39;
-    &#125;,
-    //webpack只能处理js和json文件，加载别的文件需要loader
-    module:&#123;
-        rules:[
-            &#123;
-                test:/.m?js|tsx$/,
-                use:&#39;ts-loader&#39;,
-                exclude:/node_modules/
-            &#125;
-        ]
-    &#125;,
-    //增加扩展选项，让webpack可以识别.ts/tsx文件
-    resolve:&#123;
-        extensions:[&#39;.ts&#39;,&#39;.tsx&#39;,&#39;.js&#39;]
-    &#125;,
-    plugins:[
-        new HtmlWebpackPlugin(&#123;
-            template:&#39;./public/index.html&#39;
-        &#125;)
-    ],
-    mode:&#39;development&#39;
-
-&#125;
-</code></pre>
-<p>目前可能会报错</p>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108110219148.png"></p>
-<p>根据提示，我们缺一些依赖</p>
-<pre><code class="ini">npm i --save-dev @types/react
-npm i --save-dev @types/react-dom
-</code></pre>
-<p>这个时候我们还会遇到一个问题</p>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108111925911.png"></p>
-<p>那么这个问题的原因是缺null类型检测</p>
-<p>其他人回答说应该添加null检查，但Typescript也有一个非null断言，当您通过添加！运算符添加到语句末尾：</p>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108112118833.png"></p>
-<p>这个时候我们react使用ts的问题就解决了</p>
-<p>启动项目，运行成功，ts集成成功了</p>
-<h3 id="11-react集成路由"><a href="#11-react集成路由" class="headerlink" title="11.react集成路由"></a>11.react集成路由</h3><p>安装路由库</p>
-<pre><code class="ini">npm install react-router-dom@6
-</code></pre>
-<p>创建项目目录</p>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108143446498.png"></p>
-<p>编辑About.tsx、Home.tsx、index.tsx、App.tsx</p>
-<pre><code class="tsx">//About.tsx
-import React from &quot;react&quot;;
-import &#123; Link &#125; from &quot;react-router-dom&quot;;
-
-class About extends React.PureComponent&#123;
-    render()&#123;
-        return (
-            &lt;div&gt;
-                this is about&lt;br/&gt;
-                &lt;Link to=&#123;&#39;/home&#39;&#125;&gt;to home&lt;/Link&gt;
-            &lt;/div&gt;
-        )
-    &#125;
-&#125;
-
-export default About;
-</code></pre>
-<pre><code class="tsx">//Home.tsx
-import React from &quot;react&quot;;
-import &#123; Link &#125; from &quot;react-router-dom&quot;;
-
-class Home extends React.PureComponent&#123;
-    render()&#123;
-        return (
-            &lt;div&gt;
-                this is home&lt;br/&gt;
-                &lt;Link to=&#123;&#39;/about&#39;&#125;&gt;to about&lt;/Link&gt;
-            &lt;/div&gt;
-        )
-    &#125;
-&#125;
-
-export default Home;
-</code></pre>
-<pre><code class="tsx">//App.tsx
-import React from &quot;react&quot;;
-import &#123; Routes,Route &#125; from &quot;react-router-dom&quot;;
-import About from &quot;./compents/About&quot;;
-import Home from &quot;./compents/Home&quot;;
-
-class App extends React.PureComponent&#123;
-    render()&#123;
-        return (
-            &lt;div&gt;
-                &lt;Routes&gt;
-                    &lt;Route path=&quot;/&quot; element=&#123;&lt;Home /&gt;&#125;&gt;&lt;/Route&gt;
-                    &lt;Route path=&quot;/home&quot; element=&#123;&lt;Home /&gt;&#125;&gt;&lt;/Route&gt;
-                    &lt;Route path=&quot;/about&quot; element=&#123;&lt;About /&gt;&#125;&gt;&lt;/Route&gt;
-                &lt;/Routes&gt;
-            &lt;/div&gt;
-          );
-    &#125;
-&#125;
-
-export default App
-</code></pre>
-<pre><code class="tsx">//index.tsx
-import React from &#39;react&#39;;
-import &#123; createRoot &#125; from &#39;react-dom/client&#39;;
-import App from &#39;./App&#39;;
-import &#123; BrowserRouter &#125; from &#39;react-router-dom&#39;;
-
-const root = createRoot(document.getElementById(&#39;root&#39;)!)
-root.render(
-    &lt;BrowserRouter&gt;
-        &lt;App /&gt;
-    &lt;/BrowserRouter&gt;
-)
-</code></pre>
-<p>react路由搭建成功</p>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108143901241.png"></p>
-<h3 id="12-react使用redux"><a href="#12-react使用redux" class="headerlink" title="12.react使用redux"></a>12.react使用redux</h3><p>对于大型项目来说，数据管理工具也是必不可少的。我们简单介绍redux、react-redux的使用。这里使用的是@reduxjs&#x2F;toolkit库，相比redux库使用方法有很大区别，想用redux库的请自行查看redux文档。</p>
-<p>下载依赖</p>
-<pre><code class="ini">npm i @reduxjs/toolkit react-redux
-</code></pre>
-<p>创建项目目录</p>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108151822086.png"></p>
-<p>编辑store.ts、countSlice.ts、counter.tsx、index.tsx、App.tsx</p>
-<pre><code class="tsx">//store.ts
-import &#123; configureStore &#125; from &quot;@reduxjs/toolkit&quot;;
-import counterReducer from &#39;./countSlice&#39;;
-
-export default configureStore(&#123;
-    reducer:&#123;
-        counter:counterReducer
-    &#125;
-&#125;)
-</code></pre>
-<pre><code class="tsx">//countSlice.ts
-import &#123; createSlice &#125; from &quot;@reduxjs/toolkit&quot;;
-
-export const counterSlice = createSlice(&#123;
-    name:&#39;counter&#39;,
-    initialState:&#123;
-        value:0
-    &#125;,
-    reducers:&#123;
-        increment:(state) =&gt; &#123;
-            state.value += 1
-        &#125;,
-        decrement:(state) =&gt;&#123;
-            state.value -= 1
-        &#125;,
-        incrementByAmount:(state,action) =&gt; &#123;
-            state.value += action.payload
-        &#125;
-    &#125;
-&#125;)
-
-export const &#123; increment,decrement,incrementByAmount &#125; = counterSlice.actions
-export default counterSlice.reducer
-</code></pre>
-<pre><code class="tsx">//index.tsx
-import React from &#39;react&#39;;
-import &#123; createRoot &#125; from &#39;react-dom/client&#39;;
-import App from &#39;./App&#39;;
-import &#123; BrowserRouter &#125; from &#39;react-router-dom&#39;;
-import store  from &#39;./store/store&#39;;
-import &#123; Provider &#125; from &#39;react-redux&#39;;
-
-const root = createRoot(document.getElementById(&#39;root&#39;)!)
-root.render(
-    &lt;BrowserRouter&gt;
-    &lt;Provider store=&#123;store&#125;&gt;
-        &lt;App /&gt;
-    &lt;/Provider&gt;  
-    &lt;/BrowserRouter&gt;
-)
-</code></pre>
-<pre><code class="tsx">//counter.tsx
-import React from &quot;react&quot;;
-import &#123; useSelector,useDispatch &#125; from &quot;react-redux&quot;;
-import &#123; decrement,increment &#125; from &quot;../store/countSlice&quot;;
-
-function Counter()&#123;
-    const count = useSelector((state:any) =&gt; state.counter.value)
-    const dispatch = useDispatch()
-    
-    return (
-        &lt;div&gt;
-            &lt;div&gt;
-                &lt;button 
-                aria-label=&quot;Increment value&quot;
-                onClick=&#123;() =&gt; dispatch(increment())&#125;
-                &gt;
-                    increment
-                &lt;/button&gt;
-                &lt;span&gt;&#123;count&#125;&lt;/span&gt;
-                &lt;button
-                aria-label=&quot;Decrement value&quot;
-                onClick=&#123;() =&gt; dispatch(decrement())&#125;
-                &gt;
-                    Decrement
-                &lt;/button&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    )
-&#125;
-
-export default Counter;
-</code></pre>
-<pre><code class="tsx">//App.tsx
-import React from &quot;react&quot;;
-import &#123; Routes,Route &#125; from &quot;react-router-dom&quot;;
-import About from &quot;./compents/About&quot;;
-import Home from &quot;./compents/Home&quot;;
-import Counter from &quot;./compents/Counter&quot;;
-
-class App extends React.PureComponent&#123;
-    render()&#123;
-        return (
-            &lt;div&gt;
-                &lt;Routes&gt;
-                    &lt;Route path=&quot;/&quot; element=&#123;&lt;Home /&gt;&#125;&gt;&lt;/Route&gt;
-                    &lt;Route path=&quot;/home&quot; element=&#123;&lt;Home /&gt;&#125;&gt;&lt;/Route&gt;
-                    &lt;Route path=&quot;/about&quot; element=&#123;&lt;About /&gt;&#125;&gt;&lt;/Route&gt;
-                    &lt;Route path=&quot;/counter&quot; element=&#123;&lt;Counter /&gt;&#125;&gt;&lt;/Route&gt;
-                &lt;/Routes&gt;
-            &lt;/div&gt;
-          );
-    &#125;
-&#125;
-
-export default App
-</code></pre>
-<p>当我执行命令进入counter组件点击功能按钮就发现redux使用成功了</p>
-<pre><code class="ini">npm run start
-</code></pre>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108152335825.png"></p>
-<h3 id="13-集成UI库"><a href="#13-集成UI库" class="headerlink" title="13.集成UI库"></a>13.集成UI库</h3><p>这里使用的是antd第三方库</p>
-<p>安装ui库</p>
-<pre><code class="ini">npm i antd
-</code></pre>
-<p>使用antd还需要引用其样式文件，因此还需要下载css-loader、style-loader。</p>
-<pre><code class="ini">npm i style-loader css-loader -D
-</code></pre>
-<p>修改webpack配置</p>
-<pre><code class="javascript">const path = require(&#39;path&#39;);
-const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
-
-module.exports = &#123;
-    //webpack入口文件，webpack从这里开始构建依赖图
-    entry:&#123;
-        main:&#39;./src/index.tsx&#39;
-    &#125;,
-    //输出文件 ./dist/bundle.js
-    output:&#123;
-        path: path.resolve(__dirname,&#39;dist&#39;),
-        filename:&#39;bundle.js&#39;
-    &#125;,
-    //webpack只能处理js和json文件，加载别的文件需要loader
-    module:&#123;
-        rules:[
-            &#123;
-                test:/.j|tsx$/,
-                use:&#39;ts-loader&#39;,
-                exclude:/node_modules/
-            &#125;,
-            &#123;
-                test:/.css$/,
-                use:[&#39;style-loader&#39;,&#39;css-loader&#39;]
-            &#125;
-        ]
-    &#125;,
-    //增加扩展选项，让webpack可以识别.ts/tsx文件
-    resolve:&#123;
-        extensions:[&#39;.ts&#39;,&#39;.tsx&#39;,&#39;.js&#39;]
-    &#125;,
-    plugins:[
-        new HtmlWebpackPlugin(&#123;
-            template:&#39;./public/index.html&#39;
-        &#125;)
-    ],
-    mode:&#39;development&#39;
-&#125;
-</code></pre>
-<p>使用antd的话直接引入使用就可以了</p>
-<pre><code class="tsx">//Home.tsx
-import React from &quot;react&quot;;
-import &#123; Link &#125; from &quot;react-router-dom&quot;;
-import &#123; Button &#125; from &quot;antd&quot;;
-
-class Home extends React.PureComponent&#123;
-    render()&#123;
-        return (
-            &lt;div&gt;
-                this is home&lt;br/&gt;
-                &lt;Link to=&#123;&#39;/about&#39;&#125;&gt;
-                    &lt;Button type=&#123;&#39;primary&#39;&#125;&gt;to about&lt;/Button&gt;
-                &lt;/Link&gt;
-                &lt;Link to=&#123;&#39;/counter&#39;&#125;&gt;
-                    &lt;Button type=&#123;&#39;primary&#39;&#125;&gt;to counter&lt;/Button&gt; 
-                &lt;/Link&gt;
-            &lt;/div&gt;
-        )
-    &#125;
-&#125;
-
-export default Home;
-</code></pre>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221108153155300.png"></p>
-<h3 id="14-跨域问题"><a href="#14-跨域问题" class="headerlink" title="14.跨域问题"></a>14.跨域问题</h3><p>修改webpack.config.js使用proxy</p>
-<pre><code class="javascript">const path = require(&#39;path&#39;);
-const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);
-
-module.exports = &#123;
-    //webpack入口文件，webpack从这里开始构建依赖图
-    entry:&#123;
-        main:&#39;./src/index.tsx&#39;
-    &#125;,
-    //输出文件 ./dist/bundle.js
-    output:&#123;
-        path: path.resolve(__dirname,&#39;dist&#39;),
-        filename:&#39;bundle.js&#39;
-    &#125;,
-    //webpack只能处理js和json文件，加载别的文件需要loader
-    module:&#123;
-        rules:[
-            &#123;
-                test:/.j|tsx$/,
-                use:&#39;ts-loader&#39;,
-                exclude:/node_modules/
-            &#125;,
-            &#123;
-                test:/.css$/,
-                use:[&#39;style-loader&#39;,&#39;css-loader&#39;]
-            &#125;
-        ]
-    &#125;,
-    //增加扩展选项，让webpack可以识别.ts/tsx文件
-    resolve:&#123;
-        extensions:[&#39;.ts&#39;,&#39;.tsx&#39;,&#39;.js&#39;]
-    &#125;,
-    plugins:[
-        new HtmlWebpackPlugin(&#123;
-            template:&#39;./public/index.html&#39;
-        &#125;)
-    ],
-    mode:&#39;development&#39;,
-    devServer:&#123;
-        proxy:&#123;
-            &#39;/api&#39;:&#39;http://localhost:8080&#39;,
-        &#125;,
-        client:&#123;
-            progress:true
-        &#125;
-    &#125;
-
-&#125;
-</code></pre>
-<p>配置后，前端请求就会被代理到8080端口，解决跨域问题</p>
-<p>15.集成ESLint和prettier</p>
-<p>安装ESLint</p>
-<pre><code class="ini">//本地安装
-npm install eslint --save-dev
-//全局安装
-npm install -g eslint
-</code></pre>
-<p>运行eslint –init，选择工程使用了react，自动生成.eslintrc.js文件</p>
-<pre><code class="ini">eslint --init
-</code></pre>
-<p>安装prettier</p>
-<pre><code class="ini">//本地
-npm i -D --save-exact prettier
-//全局
-npm i --global prettier
-</code></pre>
-<p>安装eslint-config-prettier插件（禁用 eslint 风格校验)</p>
-<pre><code class="ini">npm i -D eslint-config-prettier
-</code></pre>
-<p>安装eslint-plugin-prettier插件（使eslint采用prettier的风格校验）</p>
-<pre><code class="ini">npm i -D eslint-plugin-prettier
-</code></pre>
-<p>配置eslintrc.js文件</p>
-<pre><code class="javascript">// eslint-disable-next-line no-undef
-module.exports = &#123;
-    &quot;env&quot;: &#123;
-        &quot;browser&quot;: true,
-        &quot;es2021&quot;: true,
-        &quot;jest&quot;:true
-    &#125;,
-    &quot;extends&quot;: [
-        &quot;eslint:recommended&quot;,
-        &quot;plugin:react/recommended&quot;,
-        &quot;plugin:@typescript-eslint/recommended&quot;
-    ],
-    &quot;overrides&quot;: [
-    ],
-    &quot;parser&quot;: &quot;@typescript-eslint/parser&quot;,
-    &quot;parserOptions&quot;: &#123;
-        &quot;ecmaVersion&quot;: &quot;latest&quot;
-    &#125;,
-    &quot;plugins&quot;: [
-        &quot;react&quot;,
-        &quot;@typescript-eslint&quot;
-    ],
-    &quot;rules&quot;: &#123;
-    &quot;no-cond-assign&quot;: 2,
-    &quot;no-console&quot;: [
-      &quot;error&quot;, &#123;
-        &quot;allow&quot;: [&quot;log&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;info&quot;]
-      &#125;
-    ],
-    // 禁止 function 定义中出现重名参数
-    &quot;no-dupe-args&quot;: 2,
-    // 禁止对象字面量中出现重复的 key
-    &quot;no-dupe-keys&quot;: 2,
-    // 禁止重复的 case 标签
-    &quot;no-duplicate-case&quot;: 2,
-    // 禁止对 catch 子句的参数重新赋值
-    &quot;no-ex-assign&quot;: 2,
-    // 禁止不必要的布尔转换
-    &quot;no-extra-boolean-cast&quot;: 2,
-    // 禁止不必要的括号 //(a * b) + c;//报错
-    &quot;no-extra-parens&quot;: 0,
-    // 禁止 catch 子句的参数与外层作用域中的变量同名
-    &quot;no-catch-shadow&quot;: 0,
-    // 不允许标签与变量同名
-    &quot;no-label-var&quot;: 2,
-    // 禁用特定的全局变量
-    &quot;no-restricted-globals&quot;: 2,
-    // 禁止覆盖受限制的标识符
-    &quot;no-shadow-restricted-names&quot;: 2,
-    // 禁止将变量初始化为 undefined
-    
-    // 强制使用一致的换行风格
-    &quot;linebreak-style&quot;: [2, &quot;unix&quot;],
-    //在JSX中强制布尔属性符号
-    &quot;react/jsx-boolean-value&quot;: 2,
-    //在JSX中验证右括号位置
-    // &quot;react/jsx-closing-bracket-location&quot;: 1,
-    //在JSX属性和表达式中加强或禁止大括号内的空格。
-    &quot;react/jsx-curly-spacing&quot;: [2, &#123;
-      &quot;when&quot;: &quot;never&quot;,
-      &quot;children&quot;: true
-    &#125;],
-    //在数组或迭代器中验证JSX具有key属性
-    &quot;react/jsx-key&quot;: 2,
-    // 限制JSX中单行上的props的最大数量
-    &quot;react/jsx-max-props-per-line&quot;: [1, &#123;
-      &quot;maximum&quot;: 5
-    &#125;],
-    //防止在JSX中重复的props
-    &quot;react/jsx-no-duplicate-props&quot;: 2,
-    //  //防止使用未包装的JSX字符串
-    // &quot;react/jsx-no-literals&quot;: 0,
-    //在JSX中禁止未声明的变量
-    &quot;react/jsx-no-undef&quot;: 2,
-    //为用户定义的JSX组件强制使用PascalCase
-    &quot;react/jsx-pascal-case&quot;: 0,
-    //防止反应被错误地标记为未使用
-    &quot;react/jsx-uses-react&quot;: 2,
-    //防止在JSX中使用的变量被错误地标记为未使用
-    &quot;react/jsx-uses-vars&quot;: 2,
-    //防止在componentDidMount中使用setState
-    &quot;react/no-did-mount-set-state&quot;: 2,
-    //防止在componentDidUpdate中使用setState
-    &quot;react/no-did-update-set-state&quot;: 2,
-    //防止使用未知的DOM属性
-    &quot;react/no-unknown-property&quot;: 2,
-    //为React组件强制执行ES5或ES6类
-    &quot;react/prefer-es6-class&quot;: 2,
-    //防止在React组件定义中丢失props验证
-    // &quot;react/prop-types&quot;: 1,
-    //使用JSX时防止丢失React
-    &quot;react/react-in-jsx-scope&quot;: 2,
-    //防止没有children的组件的额外结束标签
-    &quot;react/self-closing-comp&quot;: 0,
-    //禁止不必要的bool转换
-    // &quot;no-extra-boolean-cast&quot;: 0,
-    //防止在数组中遍历中使用数组key做索引
-    // &quot;react/no-array-index-key&quot;: 0,
-    //不使用弃用的方法
-    &quot;react/no-deprecated&quot;: 2,
-    //在JSX属性中强制或禁止等号周围的空格
-    &quot;react/jsx-equals-spacing&quot;: 2,
-    &quot;react/jsx-filename-extension&quot;: [2, &#123;
-      &quot;extensions&quot;: [&quot;.js&quot;, &quot;.jsx&quot;]
-    &#125;],
-    // 禁止未使用的变量
-    &quot;no-unused-vars&quot;: 0,
-    &#125;
-&#125;
-</code></pre>
-<p>当我们代码被eslint检测到不符合规则的代码就会提示，根据eslint指示修改就可以</p>
-<p>在根目录下创建.prettierrc 或 prettier.config.js文件</p>
-<pre><code class="javascript">module.exports = &#123;
-    endOfLine: &#39;auto&#39;, // 不检测检测文件每行结束的格式
-    semi: true, // 使用分号, 默认true
-    singleQuote: true // 使用单引号, 默认false(在jsx中配置无效, 默认都是双引号)
- &#125;
-</code></pre>
-<p>安装vscode插件：Prettier ESLint</p>
-<p><img src="/2022/11/08/%E4%BB%8E0%E5%88%B01%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%89%8B%E6%9E%B6react/image-20221107154026317.png"></p>
-<p>该插件会根据工程根目录下的eslintrc.js和prettier.config.js文件格式化代码。可以进一步设置为vscode默认formater和自动格式化。</p>
-<p>Prettier配置常用的参数可以根据团队需求制定</p>
-<p>该文章只是配置简单的react脚手架，核心流程和方法是如此，其他具体需求可以根据团队客制化定制</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[antd官网]: 	“<a target="_blank" rel="noopener" href="https://ant.design/docs/react/introduce-cn">https://ant.design/docs/react/introduce-cn</a> “<br>[ESLint中文文档]: 	“<a target="_blank" rel="noopener" href="https://eslint.bootcss.com/">https://eslint.bootcss.com</a> “<br>[Prettier中文网]: 	“<a target="_blank" rel="noopener" href="https://www.prettier.cn/">https://www.prettier.cn</a> “</p>
-<h3 id="源码仓库地址："><a href="#源码仓库地址：" class="headerlink" title="源码仓库地址："></a>源码仓库地址：</h3><p><a target="_blank" rel="noopener" href="https://github.com/mengfeng/react-app-start.git">https://github.com/mengfeng/react-app-start.git</a></p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
 
     </footer>
   </div>

@@ -177,6 +177,105 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-加载优化（资源优先级）"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/"
+    >加载优化（资源优先级）</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/" class="article-date">
+  <time datetime="2023-02-20T03:54:50.000Z" itemprop="datePublished">2023-02-20</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/">加载优化（资源优先级）</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="资源优先级"><a href="#资源优先级" class="headerlink" title="资源优先级"></a>资源优先级</h2><blockquote>
+<p>浏览器向网络请求到的所有数据，并非每个字节都具有相同的优先级或重要性。所以浏览器通常都会采取启发式算法，对所要加载的内容先进行推测，将相对重要的信息优先呈现给用户，比如浏览器一般会先加载 CSS文件，然后再去加载JavaScript脚本和图像文件。</p>
+<p>但即便如此，也无法保证启发式算法在任何情况下都是准确有效的，可能会因为获取的信息不完备，而做出错误的判断。本节就来探讨如何影响浏览器对资源加载的优先级。</p>
+</blockquote>
+<h3 id="一、优先级"><a href="#一、优先级" class="headerlink" title="一、优先级"></a>一、优先级</h3><p>​		浏览器基于自身的启发式算法，会对资源的重要性进行判断来划分优先级，通常从低到高分为: Lowest、 Low、 High、Highest 等。</p>
+<p>​		比如，在&lt;head标签中，CSS文件通常具有最高的优先级Highest,其次是 script 标签所请求的脚本文件，但当&lt;script标签带有defer或async的异步属性时，其优元级又会降为Low.我们可以通过Chrome的开发者工具，在network页签下找到浏览器对资源进行的优先级划分，如图所示。</p>
+<p><img src="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/image-20230220113248217.png" alt="浏览器的资源优先级"></p>
+<p>​		我们可以通过该工具，去了解浏览器为不同资源分配的优先级情况，细微的差别都可能导致类似的资源具有不同的优先级，比如首屏渲染中图像的优先级会高于屏幕视窗外的图像的优先级。本书不会详细探讨Chrome 如何为当前资源分配优先级，如有兴趣可通过搜索“浏览器加载优先级”等关键字自行了解。对性能优化实战而言，会更加关注:当发现资源默认被分配的优先级个不是我们想要的情况时，该如何更改优先级。</p>
+<p>​		接下来介绍三种不同的解决方案:首先是前面章节提到过的预加载，当资源对用户来说至关重要却又被分配了过低的优先级时，就可以尝试让其进行预加载或预连接;如果仅需要浏览器处理完一些任务后， 再去提取某些资源，可尝试使用预提取。</p>
+<h3 id="二、预加载"><a href="#二、预加载" class="headerlink" title="二、预加载"></a>二、预加载</h3><p>使用<link rel="preload">标签告诉浏览器当前所指定的资源，应该拥有更高的优先级，例如:</p>
+<pre><code class="html">&lt;link rel=&quot;preload&quot; as=&quot;script&quot; href=&quot; important.js&quot;&gt;
+&lt;link rel=&quot;preload&quot; as=&quot;style&quot; href=&quot;critical.css&quot;&gt;
+</code></pre>
+<p>​		这里通过as属性告知浏览器所要加载的资源类型，该属性值所指定的资源类型应当与要加载的资源相匹配，否则浏览器是不会预加载该资源的。在这里需要注意的是，<link rel="preload">会强制浏览器进行预加载，它与其他对资源的提示不同，浏览器对此是必须执行而非可选的。因此，在使用时应尽量仔细测试，以确保使用该指令时不会提取不需要的内容或重复提取内容。</p>
+<p>​		如果预加载指定的资源在3s内未被当前页面使用，则浏览器会在开发者工具的控制台中进行警告提示，该警告务必要处理。</p>
+<p>​		接下来看两个使用实例，字体的使用和关键路径渲染。通常字体文件都位于页面加载的若干CSS文件的末尾，但考虑为了减少用户等待文本内容的加载时间，以及避免系统字体与偏好字体发生冲突，就必须提前获取字体。因此我们可以使用<link rel="preload">来让浏览器立即获取所需的字体文件:</p>
+<pre><code class="html">&lt;link rel=&quot;preload&quot; as=&quot;font&quot; crossorigin=&quot;crossorigin&quot; type=&quot;font/woff2&quot; href=&quot;myfont.woff2&quot;&gt;
+</code></pre>
+<p>这里的crossorigin属性非常重要，如果缺失该属性，浏览器将不会对指定的字体进行预加载。</p>
+<p>​		在前面讲页面渲染生命周期时，提到过关键渲染路径，其中涉及首次渲染之前必须加载的资源(比如Css和JavaScript等)，这些资源对首屏页面渲染来说是非常重要的。以前通常建议的做法是把这些资源内联到HTML中，但对服务器端渲染或对页面而言，这样做很容易导致带宽浪费，而且若代码更改使内联页面无效，无疑会增加版本控制的难度。</p>
+<p>​		所以使用<link rel="preload">对单个文件进行预加载，除了能很快地请求资源，还能尽量利用缓存。其唯一的缺点是可能会在浏览器和服务器之间发生额外的往返请求，因为浏览器需要加载解析HTML后，才会知道后续的资源请求情况。其解决方式可以利用HTTP 2的推送，即在发送HTML的相同连接请求上附加一些资源请求， 如此便可取消浏览器解析HTML到开始下载资源之间的间歇时间。但对于HTTP2推送的使用需要谨慎，因为控制了带宽使用量，留给浏览器自我决策的空间便会很小，可能不会检索已经缓存了的资源文件。关于HTTP2的更多内容，将会在浏览器缓存详细展开介绍。</p>
+<h3 id="三、预连接"><a href="#三、预连接" class="headerlink" title="三、预连接"></a>三、预连接</h3><p>​		通常在速度较慢的网络环境中建立连接会非常耗时，如果建立安全连接将更加耗时。其原因是整个过程会涉及DNS查询、重定向和与目标服务器之间建立连接的多次握手，所以若能提前完成上述这些功能，则会给用户带来更加流畅的浏览体验，同时由于建立连接的大部分时间消耗是等待而非数据交换，这样也能有效地优化带宽的使用情况。解决方案就是所谓的预连接:</p>
+<pre><code class="html">&lt;link rel=&quot;preconnect&quot; href=&quot;https://example. com&quot;&gt;
+</code></pre>
+<p>​		通过<link rel="preconnect">标签指令，告知浏览器当前页面将与站点建立连接，希望尽快启动该过程。虽然这么做的成本较低，但会消耗宝贵的CPU时间，特别是在建立HTTPS安全连接时。如果建立好连接后的10s内，未能及时使用连接，那么浏览器关闭该连接后，之前为建立连接所消耗的资源就相当于完全被浪费掉了。</p>
+<p>​		另外，还有一种与预连接相关的类型<link rel="dns-prefetch">,也就是常说的DNS预解析，它仅用来处理DNS查询，但由于其受到浏览器的广泛支持，且缩短了DNS的查询时间的效果显著，所以使用场景十分普遍。</p>
+<h3 id="四、预提取"><a href="#四、预提取" class="headerlink" title="四、预提取"></a>四、预提取</h3><p>​		前面介绍的预加载和预连接，都是试图使所需的关键资源或关键操作更快地获取或发生，这里介绍的预提取，则是利用机会让某些非关键操作能够更早发生。</p>
+<p>​		这个过程的实现方式是根据用户已发生的行为来判断其接下来的预期行为，告知浏览器稍后可能需要的某些资源。也就是在当前页面加载完成后，且在带宽可用的情况下，这些资源将以Lowest的优先级进行提起。</p>
+<p>​		显而易见，预提取最适合的场景是为用户下一步可能进行的操作做好必要的准备，如在电商平台的搜索框中查询某商品，可预提取查询结果列表中的首个商品详情页:或者使用搜索查询时，预提取查询结果的分页内容的下一页:</p>
+<pre><code class="html">&lt;1ink rel=&quot;prefetch&quot; href=&quot;page-2.html&quot;&gt;
+</code></pre>
+<p>​		需要注意的是，预提取不能递归使用，比如在搜索查询的首页page-1.html时，可以预提取当前页面的下一页page-2.html的HTML内容，但对其中所包含的任何额外资源不会提前下载，除非有额外明确指定的预提取。</p>
+<p>另外，预提取不会降低现有资源的优先级，比如在如下HTML中:</p>
+<pre><code class="html">&lt;html&gt;
+&lt;head&gt;
+&lt;link rel=&quot;prefetch&quot;href=&quot;style.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot;href=&quot;style.css&quot;&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+Hello World!
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>​		可能你会觉得对style.css 的预提取声明，会降低接下来<link rel="stylesheet" href="style.css">的优先级，但其真实的情况是，该文件会被提取两次，第二次可能会使用缓存，如图所示。</p>
+<p><img src="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/image-20230220115326792.png"></p>
+<p>​		显然两次提取对用户体验来说非常糟糕，因为这样不但需要等待阻塞渲染的CSS,而且如果第二次提取没有命中缓存，必然会产生带宽的浪费，所以在使用时应充分考虑。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7/" rel="tag">资源优先级</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-加载优化（加载注意事项）"
   class="article article-type-post"
   itemscope
@@ -3636,233 +3735,6 @@ export default (api: IApi) =&gt; &#123;
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/leancloud/" rel="tag">leancloud</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-Vue-eventBus"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/23/Vue-eventBus/"
-    >Vue-eventBus</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/23/Vue-eventBus/" class="article-date">
-  <time datetime="2022-12-23T01:13:58.000Z" itemprop="datePublished">2022-12-23</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/uniapp/">uniapp</a> / <a class="article-category-link" href="/categories/uniapp/Vue-eventBus/">Vue-eventBus</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Vue-eventBus"><a href="#Vue-eventBus" class="headerlink" title="Vue-eventBus"></a>Vue-eventBus</h1><p>父子组件通信与兄弟组件通信</p>
-<p>vue组件非常常见的有父子组件通信，兄弟组件通信。</p>
-<pre><code>父子组件通信：方法有很多，比如：父组件通过 props 向下传数据给子组件，子组件通过 $emit 告诉父组件。
-兄弟组件通信：如果两个页面没有任何引入和被引入关系，需要额外的组件来通信，如：事件总线、Vuex。
-</code></pre>
-<h3 id="一、事件总线是什么"><a href="#一、事件总线是什么" class="headerlink" title="一、事件总线是什么"></a>一、事件总线是什么</h3><p>EventBus 又称为事件总线。在Vue中可以使用 EventBus 来作为沟通桥梁的概念，就像是所有组件共用相同的事件中心，可以向该中心注册发送事件或接收事件，所以组件都可以上下平行地通知其他组件。</p>
-<pre><code>EventBus若使用不慎，就会造成难以维护的“灾难”，因此才需要更完善的Vuex作为状态管理中心，将通知的概念上升到共享状态层次。 
-</code></pre>
-<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>解决了多层组件之间繁琐的事件传播。<br>使用原理十分简单，代码量少</p>
-<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>大家都知道vue是单页应用，如果你在某一个页面刷新了之后，与之相关的EventBus会被移除，这样就导致业务走不下去。<br>如果业务有反复操作的页面，EventBus在监听的时候就会触发很多次，也是一个非常大的隐患。这时候我们就需要好好处理EventBus在项目中的关系。通常在vue页面销毁时，同时移除EventBus事件监听。</p>
-<p>由于是都使用一个Vue实例，所以容易出现重复触发的情景：两个页面都定义了同一个事件名，并且没有用$off销毁（常出现在路由切换时）。</p>
-<h3 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h3><h4 id="1-创建事件"><a href="#1-创建事件" class="headerlink" title="1.创建事件"></a>1.创建事件</h4><p>首先需要创建事件总线并将其导出，以便其它模块可以使用或者监听它。</p>
-<p>方法1、非全局事件组件</p>
-<p> 新建EventBus.js</p>
-<pre><code class="javascript">import Vue from &#39;vue&#39;
-export const EventBus = new Vue()
-</code></pre>
-<p>法2、全局事件组件</p>
-<p>在项目中的 main.js 初始化 EventBus。在main.js添加如下一行：</p>
-<pre><code class="javascript">Vue.prototype.$EventBus = new Vue()
-</code></pre>
-<p>示例：</p>
-<pre><code class="vue">import Vue from &#39;vue&#39;
-import App from &#39;./App&#39;
-import router from &#39;./router&#39;
-
-Vue.config.productionTip = false
-
-Vue.prototype.$EventBus = new Vue();
-
-/* eslint-disable no-new */
-new Vue(&#123;
-  el: &#39;#app&#39;,
-  router,
-  components: &#123; App &#125;,
-  template: &#39;&lt;App/&gt;&#39;
-&#125;)
-</code></pre>
-<p>组件发送事件：this.$EventBus.$emit(…)</p>
-<p>组件接收事件：this.$EventBus.$on(…)</p>
-<p>移除事件</p>
-<p>一般在销毁组件（也就是离开组件）时移除事件。</p>
-<pre><code class="javascript">beforeDestroy()&#123;
-  EventBus.$off(&quot;eventName&quot;)
-&#125;
-</code></pre>
-<p>EventBus.$off()                           &#x2F;&#x2F;移除EventBus所有事件监听器</p>
-<p>EventBus.$off(‘eventName’)       &#x2F;&#x2F;移除’eventName’事件所有监听器</p>
-<p>EventBus.$off(‘eventName’, callback)    &#x2F;&#x2F;只移除这个回调的监听器。</p>
-<h4 id="2-事件运用"><a href="#2-事件运用" class="headerlink" title="2.事件运用"></a>2.事件运用</h4><p>本文父组件：CompA.vue，子组件1：ChildOne.vue，子组件2：ChildTwo.vue。子组件1发送事件给父组件和子组件2。</p>
-<pre><code class="javascript">router/index.js
-
-import Vue from &#39;vue&#39;
-import Router from &#39;vue-router&#39;
-import CompA from &quot;@/components/CompA&quot;;
-
-Vue.use(Router)
-
-export default new Router(&#123;
-  routes: [
-    &#123;
-      path: &#39;/compA&#39;,
-      name: &#39;compA&#39;,
-      component: CompA,
-    &#125;
-  ],
-&#125;)
-</code></pre>
-<p>1.创建EventBus</p>
-<p> 新建EventBus.js</p>
-<pre><code class="javascript">import Vue from &#39;vue&#39;
-export const EventBus = new Vue()
-</code></pre>
-<p>2.发送事件</p>
-<p> components&#x2F;ChildOne.vue</p>
-<pre><code class="javascript">&lt;template&gt;
-  &lt;div class=&quot;childOne&quot;&gt;
-    &lt;h1&gt;childOne&lt;/h1&gt;
-    &lt;button @click=&quot;sendEvent2CompA&quot;&gt;发送事件给父组件（CompA）&lt;/button&gt;
-    &lt;button @click=&quot;sendEvent2ChildTwo&quot;&gt;发送事件给兄弟组件（ChildTwo）&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-import &#123;EventBus&#125; from &quot;./EventBus&quot;
-
-export default &#123;
-  data() &#123;
-    return &#123;
-      count1: 0,
-      count2: 0,
-    &#125;
-  &#125;,
-  methods:&#123;
-    sendEvent2CompA() &#123;
-      this.count1++;
-      EventBus.$emit(&quot;compA&quot;, &quot;compA事件触发次数：&quot; + this.count1)
-    &#125;,
-    sendEvent2ChildTwo() &#123;
-      this.count2++;
-      EventBus.$emit(&quot;childTwo&quot;, &quot;childTwo事件触发次数：&quot; + this.count2)
-    &#125;
-  &#125;
-&#125;
-&lt;/script&gt;
-
-&lt;style scoped&gt;
-&lt;/style&gt;
-</code></pre>
-<p>3.接收事件</p>
-<p>父组件：components&#x2F;CompA.vue</p>
-<pre><code class="javascript">&lt;template&gt;
-  &lt;div class=&quot;compA&quot;&gt;
-    &lt;h1&gt;compA&lt;/h1&gt;
-    compA收到的事件内容：&#123;&#123;msg&#125;&#125;&lt;hr&gt;
-    &lt;child-one&gt;&lt;/child-one&gt;&lt;hr&gt;
-    &lt;child-two&gt;&lt;/child-two&gt;
-
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-import &#123;EventBus&#125; from &quot;./EventBus&quot;
-import ChildOne from &quot;@/components/ChildOne&quot;;
-import ChildTwo from &quot;@/components/ChildTwo&quot;;
-
-export default &#123;
-  components: &#123;ChildOne, ChildTwo&#125;,
-  data() &#123;
-    return &#123;
-      msg: &quot;&quot;,
-    &#125;
-  &#125;,
-  mounted() &#123;
-    EventBus.$on(&quot;compA&quot;, (payload1)=&gt; &#123;
-      this.msg = payload1;
-    &#125;)
-  &#125;
-&#125;
-&lt;/script&gt;
-
-&lt;style scoped&gt;
-
-&lt;/style&gt;
-</code></pre>
-<p>子组件2：components&#x2F;ChildTwo.vue</p>
-<pre><code class="javascript">&lt;template&gt;
-  &lt;div class=&quot;childTwo&quot;&gt;
-    &lt;h1&gt;childTwo&lt;/h1&gt;
-    childTwo收到的事件内容：&#123;&#123;msg&#125;&#125;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-import &#123;EventBus&#125; from &quot;./EventBus&quot;
-
-export default &#123;
-  data() &#123;
-    return &#123;
-      msg: &quot;&quot;,
-    &#125;
-  &#125;,
-  mounted() &#123;
-    EventBus.$on(&quot;childTwo&quot;, (payload1)=&gt; &#123;
-      this.msg = payload1;
-    &#125;)
-  &#125;
-&#125;
-&lt;/script&gt;
-
-&lt;style scoped&gt;
-
-&lt;/style&gt;
-</code></pre>
-<p>事物都有两面性，没有好坏之分，且全在于使用者，好钢用在刀刃上，不滥用即可。有其他更好的方式则优先使用。</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/eventBus/" rel="tag">eventBus</a></li></ul>
 
     </footer>
   </div>

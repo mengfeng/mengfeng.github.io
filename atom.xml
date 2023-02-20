@@ -6,7 +6,7 @@
   <link href="https://mengfeng.github.io/atom.xml" rel="self"/>
   
   <link href="https://mengfeng.github.io/"/>
-  <updated>2023-02-17T01:49:12.849Z</updated>
+  <updated>2023-02-20T03:56:45.239Z</updated>
   <id>https://mengfeng.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>加载优化（资源优先级）</title>
+    <link href="https://mengfeng.github.io/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/"/>
+    <id>https://mengfeng.github.io/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/</id>
+    <published>2023-02-20T03:54:50.000Z</published>
+    <updated>2023-02-20T03:56:45.239Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="前端性能优化" scheme="https://mengfeng.github.io/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
+    
+    <category term="加载优化（资源优先级）" scheme="https://mengfeng.github.io/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/"/>
+    
+    
+    <category term="性能优化" scheme="https://mengfeng.github.io/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
+    
+    <category term="资源优先级" scheme="https://mengfeng.github.io/tags/%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7/"/>
+    
+  </entry>
   
   <entry>
     <title>加载优化（加载注意事项）</title>
@@ -536,35 +565,6 @@
     <category term="c4d" scheme="https://mengfeng.github.io/tags/c4d/"/>
     
     <category term="oc" scheme="https://mengfeng.github.io/tags/oc/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>blender基本操作</title>
-    <link href="https://mengfeng.github.io/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
-    <id>https://mengfeng.github.io/2022/12/05/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</id>
-    <published>2022-12-05T08:36:06.000Z</published>
-    <updated>2022-12-05T08:37:37.674Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Web3D" scheme="https://mengfeng.github.io/categories/Web3D/"/>
-    
-    <category term="blender" scheme="https://mengfeng.github.io/categories/Web3D/blender/"/>
-    
-    <category term="blender基本操作" scheme="https://mengfeng.github.io/categories/Web3D/blender/blender%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
-    
-    
-    <category term="blender" scheme="https://mengfeng.github.io/tags/blender/"/>
     
   </entry>
   

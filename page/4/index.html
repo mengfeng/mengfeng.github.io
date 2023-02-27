@@ -177,6 +177,230 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-Electron-d-3-0"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/11/26/Electron-d-3-0/"
+    >Electron-d-3.0</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/26/Electron-d-3-0/" class="article-date">
+  <time datetime="2022-11-26T02:26:43.000Z" itemprop="datePublished">2022-11-26</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Electron/">Electron</a> / <a class="article-category-link" href="/categories/Electron/Electron-d-3-0/">Electron-d-3.0</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="Electron-d-3-0"><a href="#Electron-d-3-0" class="headerlink" title="Electron-d-3.0"></a>Electron-d-3.0</h1><h3 id="渲染进程"><a href="#渲染进程" class="headerlink" title="渲染进程"></a>渲染进程</h3><p>上一篇我们讲解了主进程的一些常用API，这一篇我们接着来讲解渲染进程的API</p>
+<h3 id="1-剪切板（clipboard）"><a href="#1-剪切板（clipboard）" class="headerlink" title="1.剪切板（clipboard）"></a>1.剪切板（clipboard）</h3><blockquote>
+<p>在系统剪贴板上执行复制和粘贴操作。</p>
+<p>主进程和渲染进程都可以用。</p>
+</blockquote>
+<p>（1）<code>clipboard.readText([type])</code></p>
+<ul>
+<li><code>type</code> string (optional) -可以是 <code>selection</code> 或 <code>clipboard</code>; 默认为 ‘clipboard’. <code>selection</code> 仅在 Linux 中可用。</li>
+</ul>
+<p>返回 <code>string</code> - 剪贴板中的内容为纯文本。</p>
+<pre><code class="javascript">const &#123; clipboard &#125; = require(&#39;electron&#39;)
+
+clipboard.writeText(&#39;hello i am a bit of text!&#39;)
+
+const text = clipboard.readText()
+console.log(text)
+// hello i am a bit of text!&#39;
+</code></pre>
+<p>（2）<code>clipboard.writeText(text[, type])</code></p>
+<ul>
+<li><code>text</code> string</li>
+<li><code>type</code> string (optional) -可以是 <code>selection</code> 或 <code>clipboard</code>; 默认为 ‘clipboard’. <code>selection</code> 仅在 Linux 中可用。</li>
+</ul>
+<p>将 <code>text</code> 作为纯文本写入剪贴板。</p>
+<pre><code class="javascript">const &#123; clipboard &#125; = require(&#39;electron&#39;)
+
+const text = &#39;hello i am a bit of text!&#39;
+clipboard.writeText(text)
+</code></pre>
+<p>我们剪切板的API就说这两个读与写。但是我在渲染进程里读不到clipboard。</p>
+<p>[clipboard文档]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/zh/docs/latest/api/clipboard">https://www.electronjs.org/zh/docs/latest/api/clipboard</a> “</p>
+<h3 id="2-contextBridge"><a href="#2-contextBridge" class="headerlink" title="2.contextBridge"></a>2.contextBridge</h3><p>在隔离的上下文中创建一个安全的、双向的、同步的桥梁。</p>
+<p>如下，是一个从隔离的预加载脚本将 API 暴露给渲染器的示例：（通过预加载脚本暴露API，渲染进程可以读取）</p>
+<pre><code class="javascript">// Preload (Isolated World)
+const &#123; contextBridge, ipcRenderer &#125; = require(&#39;electron&#39;)
+
+contextBridge.exposeInMainWorld(
+  &#39;electron&#39;,
+  &#123;
+    doThing: () =&gt; ipcRenderer.send(&#39;do-a-thing&#39;)
+  &#125;
+)
+</code></pre>
+<pre><code class="javascript">// Renderer (Main World)
+
+window.electron.doThing()
+</code></pre>
+<p>[contextBridge文档]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/zh/docs/latest/api/context-bridge">https://www.electronjs.org/zh/docs/latest/api/context-bridge</a> “</p>
+<h3 id="3-desktopCapturer"><a href="#3-desktopCapturer" class="headerlink" title="3.desktopCapturer"></a>3.desktopCapturer</h3><p>官方文档给的案例不是特别容易理解，代码有点长。</p>
+<blockquote>
+<p>虽然官方文档的主进程和渲染进程都有desktopCapturer，但是渲染进程是访问不到的</p>
+</blockquote>
+<p>我们举一个抓取页面内容的荔枝吧！</p>
+<p><img src="/2022/11/26/Electron-d-3-0/image-20221126093410069.png"></p>
+<pre><code class="javascript">//main.js+
+ ipcMain.handle(&#39;capture-event&#39;,async (event,args)=&gt;&#123;
+      return  desktopCapturer.getSources(&#123; types: [&#39;window&#39;, &#39;screen&#39;] &#125;).then( sources =&gt; &#123;
+        return sources
+      &#125;)
+ &#125;)
+//解释一下，desktopCapturer.getSources返回的是一个Promise的对象
+</code></pre>
+<pre><code class="javascript">//preload.js+
+
+  const capture = async ()=&gt;&#123;
+    let res = await ipcRenderer.invoke(&#39;capture-event&#39;)
+    console.log(res)
+  &#125;
+  
+  contextBridge.exposeInMainWorld(&#39;electronAPI&#39;, &#123;
+    capture
+&#125;)
+</code></pre>
+<pre><code class="javascript">//app.js+
+const btn = document.getElementById(&#39;btn&#39;)
+btn.addEventListener(&#39;click&#39;,()=&gt;&#123;
+    window.electronAPI.capture()
+&#125;)
+</code></pre>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP --&gt;
+    &lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#39;self&#39;; script-src &#39;self&#39;&quot;&gt;
+    &lt;title&gt;capture&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;button id=&quot;btn&quot;&gt;capture&lt;/button&gt;
+    &lt;script src=&#39;./renderer/app.js&#39;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>当我们点击页面上的按钮的时候，我们就会打印出窗口信息，由下图可以看出sources是一个数组</p>
+<p><img src="/2022/11/26/Electron-d-3-0/image-20221126093927866.png"></p>
+<p>我们现在就可以根据我们获取到的信息去干一些事情了。</p>
+<pre><code class="javascript">//preload.js+
+  const capture = async ()=&gt;&#123;
+    let sources = await ipcRenderer.invoke(&#39;capture-event&#39;)
+    for (const source of sources) &#123;
+      if (source.name === &#39;electron&#39;) &#123;
+        let str = source.thumbnail.crop(&#123;x:0,y:0,width:300,height:300&#125;)
+        let imgUrl = str.toDataURL()
+        return imgUrl //返回的是一个Promise
+      &#125;
+    &#125;
+  &#125;
+
+  contextBridge.exposeInMainWorld(&#39;electronAPI&#39;, &#123;
+    handleCounter: (callback) =&gt; ipcRenderer.on(&#39;update-counter&#39;, callback),
+    capture,
+&#125;)
+</code></pre>
+<pre><code class="javascript">//app.js+
+const btn = document.getElementById(&#39;btn&#39;)
+btn.addEventListener(&#39;click&#39;,async ()=&gt;&#123;
+   let imgUrl = await window.electronAPI.capture()
+   console.log(imgUrl)
+&#125;)
+</code></pre>
+<p><img src="/2022/11/26/Electron-d-3-0/image-20221126100006800.png"></p>
+<p>我们在渲染进程这就已经拿到了我们的数据</p>
+<p>接下来我们就将我们的数据填充到我们的页面之中</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP --&gt;
+    &lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#39;self&#39;; script-src &#39;self&#39;;img-src * data:&quot;&gt;
+    &lt;title&gt;Menu Counter&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- Current value: &lt;strong id=&quot;counter&quot;&gt;0&lt;/strong&gt; --&gt;
+    &lt;button id=&quot;btn&quot;&gt;capture&lt;/button&gt;
+    &lt;img src=&quot;&quot; alt=&quot;捕获数据&quot; id=&quot;img&quot;&gt;
+    &lt;script src=&#39;./renderer/app.js&#39;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<pre><code class="javascript">//app.js+
+const btn = document.getElementById(&#39;btn&#39;)
+
+btn.addEventListener(&#39;click&#39;,async ()=&gt;&#123;
+   let imgUrl = await window.electronAPI.capture()
+   document.getElementById(&#39;img&#39;).src = imgUrl
+&#125;)
+</code></pre>
+<p><img src="/2022/11/26/Electron-d-3-0/image-20221126101223120.png"></p>
+<p>恭喜你！！！成功了🥳🥳🥳</p>
+<p>[desktopCapturer文档]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/zh/docs/latest/api/desktop-capturer&quot;">https://www.electronjs.org/zh/docs/latest/api/desktop-capturer&quot;</a></p>
+<h3 id="4-nativeImage"><a href="#4-nativeImage" class="headerlink" title="4.nativeImage"></a>4.nativeImage</h3><blockquote>
+<p>使用 PNG 或 JPG 文件创建托盘、dock和应用程序图标。</p>
+<p>主进程和渲染进程都可以用。</p>
+</blockquote>
+<p>在 Electron 内, 那些需要图片的 API 可以传递两种参数, 一种是文件路径, 一种是 <code>NativeImage</code> 实例对象。 空的图片对象将被 <code>null</code> 参数替代</p>
+<p>例如, 创建托盘或设置窗口图标时, 你可以传递 <code>string</code> 格式的图片路径</p>
+<pre><code class="javascript">const &#123; BrowserWindow, Tray &#125; = require(&#39;electron&#39;)
+
+const appIcon = new Tray(&#39;/Users/somebody/images/icon.png&#39;)
+const win = new BrowserWindow(&#123; icon: &#39;/Users/somebody/images/window.png&#39; &#125;)
+console.log(appIcon, win)
+</code></pre>
+<p>或者从粘贴板读取图片，将返回 <code>NativeImage</code> 对象：</p>
+<pre><code class="javascript">const &#123; clipboard, Tray &#125; = require(&#39;electron&#39;)
+const image = clipboard.readImage()
+const appIcon = new Tray(image)
+console.log(appIcon)
+</code></pre>
+<p>我们文档里还有其他的一些关于NativeImage对象的属性和方法，我们就哪里需要哪里搬。</p>
+<p>[nativeImage文档]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/zh/docs/latest/api/native-image">https://www.electronjs.org/zh/docs/latest/api/native-image</a> “</p>
+<p>到目前为止，我们对于electron的学习先到这，如果我的这几篇文章都认认真真的看完了，那么我们也对electron有了进一步认识。</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官网]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/">https://www.electronjs.org/</a> “</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/electron/" rel="tag">electron</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-Electron-d-2-0"
   class="article article-type-post"
   itemscope
@@ -3260,113 +3484,13 @@ console.log(result)             //  faild    faild耗时短
 </article>
 
     
-    <article
-  id="post-Drone-UI挂起"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/"
-    >Drone-UI挂起</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/" class="article-date">
-  <time datetime="2022-11-16T03:02:29.000Z" itemprop="datePublished">2022-11-16</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/CI-CD/">CI/CD</a> / <a class="article-category-link" href="/categories/CI-CD/Drone-UI%E6%8C%82%E8%B5%B7/">Drone-UI挂起</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Drone-UI挂起"><a href="#Drone-UI挂起" class="headerlink" title="Drone-UI挂起"></a>Drone-UI挂起</h1><h3 id="一、问题描述"><a href="#一、问题描述" class="headerlink" title="一、问题描述"></a>一、问题描述</h3><p>当我们将.drone.yml配置文件放在项目根目录，执行</p>
-<pre><code class="ini">git init //初始化仓库
-git remote add origin 仓库地址 //链接远程仓库
-git add . 
-git commit -m &quot;xxxx&quot;
-git push 仓库地址 //推送远程仓库
-</code></pre>
-<p>当我们将.drone.yml推送到仓库的时候，那么webhooks就会被触发，我们在drone ci页面就可以看见构建流程</p>
-<p>但如果我们的.drone.yml配置失败，那么就会出现一直卡在pending上，或者构建失败</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221115090812831.png"></p>
-<h3 id="二、修改配置文件"><a href="#二、修改配置文件" class="headerlink" title="二、修改配置文件"></a>二、修改配置文件</h3><p>1、.dron.yml文件配置和执行程序对应</p>
-<p>如果没有对应配置，那么就会pending</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105118132.png"></p>
-<p>举个荔枝：</p>
-<pre><code class="ini">#.dron.yml
-kind: pipeline
-type: docker
-name: deployment
-
-platform:
-  os: linux
-  arch: arm64
-
-steps:
-  - name: deployment
-    image: node
-    commands:
-      - pwd
-      - ls
-      - node app.js
-
-branches: main
-</code></pre>
-<pre><code class="javascript">//app.js
-let res = function()&#123;
-    console.log(&quot;hello word&quot;)
-&#125;
-res()
-</code></pre>
-<h3 id="三、推送到远程仓库"><a href="#三、推送到远程仓库" class="headerlink" title="三、推送到远程仓库"></a>三、推送到远程仓库</h3><pre><code class="ini">git add . 
-git commit -m &quot;xxxx&quot;
-git push 仓库地址 //推送远程仓库
-</code></pre>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105715577.png"></p>
-<h3 id="四、查看构建结果"><a href="#四、查看构建结果" class="headerlink" title="四、查看构建结果"></a>四、查看构建结果</h3><p>构建成功</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105812556.png"></p>
-<p>我们CI持续集成构建就成功了，我们可以去继续丰富我们配置文件，直到达到我们想要的结果</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Drone入门]: 	“<a target="_blank" rel="noopener" href="https://0-8-0.docs.drone.io/zh/getting-started/">https://0-8-0.docs.drone.io/zh/getting-started/</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CI/" rel="tag">CI</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
   </article>
   
 
   
   <nav class="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/3/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">下一页</a>
+    <a class="extend prev" rel="prev" href="/page/3/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/">下一页</a>
   </nav>
   
 </section>

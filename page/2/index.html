@@ -177,6 +177,116 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-Apifox和Leancloud"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/12/25/Apifox%E5%92%8CLeancloud/"
+    >Apifox和Leancloud</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/25/Apifox%E5%92%8CLeancloud/" class="article-date">
+  <time datetime="2022-12-25T02:17:56.000Z" itemprop="datePublished">2022-12-25</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/uniapp/">uniapp</a> / <a class="article-category-link" href="/categories/uniapp/Apifox%E5%92%8CLeancloud/">Apifox和Leancloud</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="Apifox和Leancloud"><a href="#Apifox和Leancloud" class="headerlink" title="Apifox和Leancloud"></a>Apifox和Leancloud</h1><blockquote>
+<p>我们为什么选择Apifox和Leancloud的组合呢</p>
+<p>Apifox也是一款可以模拟接口的一款工具，当然也不只可以模拟接口</p>
+<p>Leancloud选择是当我们去开发一些小的应用的时候，我们降低开发成本的时候，我们就可以去选择Leancloud去当我们的平台进行数据存储，还是比较方便的。</p>
+</blockquote>
+<h3 id="一、Apifox下载"><a href="#一、Apifox下载" class="headerlink" title="一、Apifox下载"></a>一、Apifox下载</h3><p>访问<a target="_blank" rel="noopener" href="https://www.apifox.cn/">官网</a>进行下载</p>
+<p>有付费和免费的，根据需求下载</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225090853860.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225091357277.png"></p>
+<p>我们可以去新建我们的项目和接口</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225092715766.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093542358.png"></p>
+<p>下面会讲如何设置和填写参数以便于和Leancloud去交互请求</p>
+<h3 id="二、Leancloud注册登陆"><a href="#二、Leancloud注册登陆" class="headerlink" title="二、Leancloud注册登陆"></a>二、Leancloud注册登陆</h3><p>我们访问<a target="_blank" rel="noopener" href="https://www.leancloud.cn/">官网</a>注册登陆</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093702335.png"></p>
+<p>然后来到我们的控制台创建我们的应用</p>
+<p>我们可以对我们每个应用分开管理</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093850074.png"></p>
+<p>我们每个应用都有自己的信息</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094016973.png"></p>
+<p>大家测试的时候可以使用自己的应用信息配置</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094046589.png"></p>
+<h3 id="三、配置Apifox"><a href="#三、配置Apifox" class="headerlink" title="三、配置Apifox"></a>三、配置Apifox</h3><blockquote>
+<p>当我们应用和Apifox环境准备完毕，那么我们就可以根据文档来配置了</p>
+</blockquote>
+<p>文档-&gt;REST API-&gt;数据存储</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094258347.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094449937.png"></p>
+<h4 id="1-新建接口"><a href="#1-新建接口" class="headerlink" title="1.新建接口"></a>1.新建接口</h4><p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094537626.png"></p>
+<p>在配置我们的接口的前提是要选好我们接口运行的环境</p>
+<p>让我们先配置一下环境</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094638510.png"></p>
+<p>我们可以将我们的服务改成我们Leancloud平台的开放服务地址（后续我们可以改成我们的域名）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094725724.png"></p>
+<p>根据文档来配置</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095251514.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095213854.png"></p>
+<p>Header-&gt;批量编辑-&gt;冒号模式（然后将负责的配置修改成下面这种格式就可以了）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095423023.png"></p>
+<p>下一步我们来携带参数body</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095604642.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095717122.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095746960.png"></p>
+<p>修改状态码并添加响应示例</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095819827.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095940926.png"></p>
+<p>保存运行</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100023787.png"></p>
+<p>出error了，修复它（给body添加示例值就可以了）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100109578.png"></p>
+<h4 id="2-发起请求"><a href="#2-发起请求" class="headerlink" title="2.发起请求"></a>2.发起请求</h4><p>我们发送（响应成功）</p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101014178.png"></p>
+<h3 id="四、Leancloud"><a href="#四、Leancloud" class="headerlink" title="四、Leancloud"></a>四、Leancloud</h3><p>当我们查看Leancloud应用的时候，发现我们多了一张表和数据，表示我们的请求已经成功</p>
+<blockquote>
+<p>我们还可以根据文档来修改，查找，删除我们的数据表，代码中的配置也是一样的，这样我们就可以利用LeanCloud来搭建我们一个小应用的数据表了。</p>
+</blockquote>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101228952.png"></p>
+<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101502303.png"></p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3> 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/leancloud/" rel="tag">leancloud</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-Vue-eventBus"
   class="article article-type-post"
   itemscope
@@ -2312,129 +2422,13 @@ sudo chmod -R go-w /opt/homebrew
 </article>
 
     
-    <article
-  id="post-c4d及其oc的安装和初始化设置"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/"
-    >c4d及其oc的安装和初始化设置</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/" class="article-date">
-  <time datetime="2022-12-06T08:06:49.000Z" itemprop="datePublished">2022-12-06</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/C4d/">C4d</a> / <a class="article-category-link" href="/categories/Web3D/C4d/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/">c4d及其oc的安装和初始化设置</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="C4d-amp-amp-OC"><a href="#C4d-amp-amp-OC" class="headerlink" title="C4d &amp;&amp; OC"></a>C4d &amp;&amp; OC</h1><p>我们这篇文章是基于Mac Book Pro M1 Max芯片条件下运行的</p>
-<p>（建议玩三维oc的同学还是再拥有一台windows比较好）</p>
-<blockquote>
-<p>今天我们来学习另一款三维软件C4d，我们上面的文章介绍了blender，也说了C4d和blender的区别。</p>
-<p>C4d触及到了版权问题和付费服务，但是还是有许多人热衷于C4d和我们大名鼎鼎的oc渲染器。</p>
-<p>blender（开源免费功能全）</p>
-<p>下面我们就来讲讲C4d和oc的安装初始化设置</p>
-</blockquote>
-<p>我们先来看一下oc渲染器输出的效果</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/WechatIMG113.jpeg"></p>
-<h3 id="一、软件的安装"><a href="#一、软件的安装" class="headerlink" title="一、软件的安装"></a>一、软件的安装</h3><blockquote>
-<p>C4D软件下载方式二选一<br>网页不限速下载地址01：<a target="_blank" rel="noopener" href="https://www.yuque.com/docs/share/42f77525-e323-4343-8b75-947b896f9b99#">https://www.yuque.com/docs/share/42f77525-e323-4343-8b75-947b896f9b99?#</a></p>
-<p>百度网盘下载地址02：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/14HfYqsok_VNNTpqgM2lisg">https://pan.baidu.com/s/14HfYqsok_VNNTpqgM2lisg</a><br>提取码：ocye</p>
-</blockquote>
-<p>不要下载到有中文目录的地方</p>
-<p>下载完成之后里面有安装的教学视频，我简单的表述一下</p>
-<p>1.点进链接，选择我们需要的版本下载即可</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206150700879.png"></p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206150832632.png"></p>
-<p>2.安装软件</p>
-<p>打开之后，双击安装Cinema 4D Installer即可（按照引导安装，安装完要打开一次）</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/wps1.jpg"></p>
-<p>按Quit即可</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/wps2.jpg"></p>
-<h3 id="二、软件的汉化"><a href="#二、软件的汉化" class="headerlink" title="二、软件的汉化"></a>二、软件的汉化</h3><p>将汉化补丁拖进C4的界面就可以了（记得拖动的时候需要按住shift）</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/wps3.jpg"></p>
-<p>如果需要更新软件</p>
-<p>将Chinese_26010_202204041.c4dupdate拖到界面更新即可</p>
-<p>点击进入软件</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206151636591.png"></p>
-<p>软件安装及其汉化完成</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206151746346.png"></p>
-<h3 id="三、oc渲染器的下载和安装"><a href="#三、oc渲染器的下载和安装" class="headerlink" title="三、oc渲染器的下载和安装"></a>三、oc渲染器的下载和安装</h3><p>进入这一步我们首先需要科学上网（你懂的）</p>
-<p>1.账户注册</p>
-<p>我们先要注册一个<a target="_blank" rel="noopener" href="https://home.otoy.com/render/octane-render/">oc官网</a>的账户</p>
-<p>这个我们根据提示填写信息和邮箱验证就可以了</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206152135014.png"></p>
-<p>2.下载oc（正版的哈，需要花钱的）</p>
-<p>我们点击Downloads，进入下载界面，我们可以根据我们所使用的软件和系统来选择下载我们的软件</p>
-<p>（目前好像M1可以试用一年）如果不行需要你登录，那你就交钱吧哈哈哈</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206152728362.png"></p>
-<p>下载之后解压文件</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206153213703.png"></p>
-<p>3.安装oc</p>
-<p>mac用户使用这个建议使用一个稳定的软件版本，要不然会经常崩溃</p>
-<p>这个oc是个插件，我们以后安装插件差不多都是这个流程</p>
-<p>找到我们的安装目录，如果里面没有plugins就新建一个</p>
-<p>将我们解压好的oc文件夹复制到我们的plugins里面</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206153420489.png"></p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206153443318.png"></p>
-<p>oc的文件夹里面有适配的c4d版本</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206153650012.png"></p>
-<p>重新打开我们的c4d软件，我们就可以看见oc了</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206153951543.png"></p>
-<h3 id="四、oc渲染器的订阅流程"><a href="#四、oc渲染器的订阅流程" class="headerlink" title="四、oc渲染器的订阅流程"></a>四、oc渲染器的订阅流程</h3><p>登陆进我们的官网，点击导航栏的shop，我们就看到了购买界面，有按年来算的，和按月来算，如果你是要长期使用oc</p>
-<p>那么年度订阅那肯定是便宜的（一个月现在涨价了，以前是150多，现在170多）可以使用支付宝支付</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206154143787.png"></p>
-<p>然后购买完成，我们返回我们的软件界面，登陆账号，就可以使用oc了</p>
-<p>有条件的再配个屏幕吧，这个太小了</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206155104428.png"></p>
-<h3 id="五、oc渲染器的初始化设置"><a href="#五、oc渲染器的初始化设置" class="headerlink" title="五、oc渲染器的初始化设置"></a>五、oc渲染器的初始化设置</h3><p>实时渲染的设置就这些，其他的可以看<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1944y1Q7zY/?spm_id_from=333.999.0.0&amp;vd_source=e6ad490de8a011714c955dbf8a265e32">这里</a></p>
-<p>目前新版的mac下的oc没有汉化补丁，所以看起来会不习惯一些</p>
-<p><img src="/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/image-20221206160326384.png"></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[新版oc设置]: 	“<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1944y1Q7zY/?spm_id_from=333.999.0.0&amp;vd_source=e6ad490de8a011714c955dbf8a265e32&quot;">https://www.bilibili.com/video/BV1944y1Q7zY/?spm_id_from=333.999.0.0&amp;vd_source=e6ad490de8a011714c955dbf8a265e32&quot;</a><br>[oc官网]: 	“<a target="_blank" rel="noopener" href="https://home.otoy.com/render/octane-render/&quot;">https://home.otoy.com/render/octane-render/&quot;</a></p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c4d/" rel="tag">c4d</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oc/" rel="tag">oc</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
   </article>
   
 
   
   <nav class="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">下一页</a>
+    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">下一页</a>
   </nav>
   
 </section>

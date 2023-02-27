@@ -177,6 +177,381 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-前端面试大全之vue权限控制"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2023/02/27/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E5%A4%A7%E5%85%A8%E4%B9%8Bvue%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/"
+    >前端面试大全之vue权限控制</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/02/27/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E5%A4%A7%E5%85%A8%E4%B9%8Bvue%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/" class="article-date">
+  <time datetime="2023-02-27T05:10:53.000Z" itemprop="datePublished">2023-02-27</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/">技术面试</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/vue%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/">vue权限控制</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="一、是什么"><a href="#一、是什么" class="headerlink" title="一、是什么"></a>一、是什么</h2><p>权限是对特定资源的访问许可，所谓权限控制，也就是确保用户只能访问到被分配的资源</p>
+<p>而前端权限归根结底是请求的发起权，请求的发起可能有下面两种形式触发</p>
+<ul>
+<li>页面加载触发</li>
+<li>页面上的按钮点击触发</li>
+</ul>
+<p>总的来说，所有的请求发起都触发自前端路由或视图</p>
+<p>所以我们可以从这两方面入手，对触发权限的源头进行控制，最终要实现的目标是：</p>
+<ul>
+<li>路由方面，用户登录后只能看到自己有权访问的导航菜单，也只能访问自己有权访问的路由地址，否则将跳转 <code>4xx</code> 提示页</li>
+<li>视图方面，用户只能看到自己有权浏览的内容和有权操作的控件</li>
+<li>最后再加上请求控制作为最后一道防线，路由可能配置失误，按钮可能忘了加权限，这种时候请求控制可以用来兜底，越权请求将在前端被拦截</li>
+</ul>
+<h2 id="二、如何做"><a href="#二、如何做" class="headerlink" title="二、如何做"></a>二、如何做</h2><p>前端权限控制可以分为四个方面：</p>
+<ul>
+<li>接口权限</li>
+<li>按钮权限</li>
+<li>菜单权限</li>
+<li>路由权限</li>
+</ul>
+<h3 id="接口权限"><a href="#接口权限" class="headerlink" title="接口权限"></a>接口权限</h3><p>接口权限目前一般采用<code>jwt</code>的形式来验证，没有通过的话一般返回<code>401</code>，跳转到登录页面重新进行登录</p>
+<p>登录完拿到<code>token</code>，将<code>token</code>存起来，通过<code>axios</code>请求拦截器进行拦截，每次请求的时候头部携带<code>token</code></p>
+<pre><code class="js">axios.interceptors.request.use(config =&gt; &#123;
+    config.headers[&#39;token&#39;] = cookie.get(&#39;token&#39;)
+    return config
+&#125;)
+axios.interceptors.response.use(res=&gt;&#123;&#125;,&#123;response&#125;=&gt;&#123;
+    if (response.data.code === 40099 || response.data.code === 40098) &#123; //token过期或者错误
+        router.push(&#39;/login&#39;)
+    &#125;
+&#125;)
+</code></pre>
+<h3 id="路由权限控制"><a href="#路由权限控制" class="headerlink" title="路由权限控制"></a>路由权限控制</h3><p><strong>方案一</strong></p>
+<p>初始化即挂载全部路由，并且在路由上标记相应的权限信息，每次路由跳转前做校验</p>
+<pre><code class="js">const routerMap = [
+  &#123;
+    path: &#39;/permission&#39;,
+    component: Layout,
+    redirect: &#39;/permission/index&#39;,
+    alwaysShow: true, //将始终显示根菜单
+    meta: &#123;
+      title: &#39;permission&#39;,
+      icon: &#39;lock&#39;,
+      roles: [&#39;admin&#39;, &#39;editor&#39;] // 你可以在根导航中设置角色
+    &#125;,
+    children: [&#123;
+      path: &#39;page&#39;,
+      component: () =&gt; import(&#39;@/views/permission/page&#39;),
+      name: &#39;pagePermission&#39;,
+      meta: &#123;
+        title: &#39;pagePermission&#39;,
+        roles: [&#39;admin&#39;] //或者你只能在子导航中设置角色
+      &#125;
+    &#125;, &#123;
+      path: &#39;directive&#39;,
+      component: () =&gt; import(&#39;@/views/permission/directive&#39;),
+      name: &#39;directivePermission&#39;,
+      meta: &#123;
+        title: &#39;directivePermission&#39;
+        // 如果不设置角色，则表示：此页不需要权限
+      &#125;
+    &#125;]
+  &#125;]
+</code></pre>
+<p>这种方式存在以下四种缺点：</p>
+<ul>
+<li>加载所有的路由，如果路由很多，而用户并不是所有的路由都有权限访问，对性能会有影响。</li>
+<li>全局路由守卫里，每次路由跳转都要做权限判断。</li>
+<li>菜单信息写死在前端，要改个显示文字或权限信息，需要重新编译</li>
+<li>菜单跟路由耦合在一起，定义路由的时候还有添加菜单显示标题，图标之类的信息，而且路由不一定作为菜单显示，还要多加字段进行标识</li>
+</ul>
+<p><strong>方案二</strong></p>
+<p>初始化的时候先挂载不需要权限控制的路由，比如登录页，404等错误页。如果用户通过URL进行强制访问，则会直接进入404，相当于从源头上做了控制</p>
+<p>登录后，获取用户的权限信息，然后筛选有权限访问的路由，在全局路由守卫里进行调用<code>addRoutes</code>添加路由</p>
+<pre><code class="js">import router from &#39;./router&#39;
+import store from &#39;./store&#39;
+import &#123; Message &#125; from &#39;element-ui&#39;
+import NProgress from &#39;nprogress&#39; // 进度条
+import &#39;nprogress/nprogress.css&#39;// 进度条样式
+import &#123; getToken &#125; from &#39;@/utils/auth&#39; // 从cookie获取令牌
+
+NProgress.configure(&#123; showSpinner: false &#125;)// NProgress配置
+
+// 许可判断功能
+function hasPermission(roles, permissionRoles) &#123;
+  if (roles.indexOf(&#39;admin&#39;) &gt;= 0) return true //直接传递管理员权限
+  if (!permissionRoles) return true
+  return roles.some(role =&gt; permissionRoles.indexOf(role) &gt;= 0)
+&#125;
+
+const whiteList = [&#39;/login&#39;, &#39;/authredirect&#39;]// 无重定向白名单
+
+router.beforeEach((to, from, next) =&gt; &#123;
+  NProgress.start() // 启动进度条
+  if (getToken()) &#123; // 确定是否有令牌
+    /* has token*/
+    if (to.path === &#39;/login&#39;) &#123;
+      next(&#123; path: &#39;/&#39; &#125;)
+      NProgress.done() // 如果当前页面是仪表板，则在每个钩子之后都不会触发，所以手动处理它
+    &#125; else &#123;
+      if (store.getters.roles.length === 0) &#123; // 判断当前用户是否已拉取完user_info信息
+        store.dispatch(&#39;GetUserInfo&#39;).then(res =&gt; &#123; // 拉取user_info
+          const roles = res.data.roles // 注意：角色必须是数组！ such as: [&#39;editor&#39;,&#39;develop&#39;]
+          store.dispatch(&#39;GenerateRoutes&#39;, &#123; roles &#125;).then(() =&gt; &#123; // 根据roles权限生成可访问的路由表
+            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+            next(&#123; ...to, replace: true &#125;) // hack方法 确保addRoutes已完成 ,将replace:true设置为true，这样导航将不会留下历史记录
+          &#125;)
+        &#125;).catch((err) =&gt; &#123;
+          store.dispatch(&#39;FedLogOut&#39;).then(() =&gt; &#123;
+            Message.error(err || &#39;Verification failed, please login again&#39;)
+            next(&#123; path: &#39;/&#39; &#125;)
+          &#125;)
+        &#125;)
+      &#125; else &#123;
+        // 没有动态改变权限的需求可直接next() 删除下方权限判断 
+        if (hasPermission(store.getters.roles, to.meta.roles)) &#123;
+          next()//
+        &#125; else &#123;
+          next(&#123; path: &#39;/401&#39;, replace: true, query: &#123; noGoBack: true &#125;&#125;)
+        &#125;
+        // 可删 
+      &#125;
+    &#125;
+  &#125; else &#123;
+    /* has no token*/
+    if (whiteList.indexOf(to.path) !== -1) &#123; // 在免登录白名单，直接进入
+      next()
+    &#125; else &#123;
+      next(&#39;/login&#39;) // 否则全部重定向到登录页
+      NProgress.done() // 如果当前页面为“登录”，则在每个钩子之后都不会触发，因此请手动处理
+    &#125;
+  &#125;
+&#125;)
+
+router.afterEach(() =&gt; &#123;
+  NProgress.done() // 完成进度条
+&#125;)
+</code></pre>
+<p>按需挂载，路由就需要知道用户的路由权限，也就是在用户登录进来的时候就要知道当前用户拥有哪些路由权限</p>
+<p>这种方式也存在了以下的缺点：</p>
+<ul>
+<li>全局路由守卫里，每次路由跳转都要做判断</li>
+<li>菜单信息写死在前端，要改个显示文字或权限信息，需要重新编译</li>
+<li>菜单跟路由耦合在一起，定义路由的时候还有添加菜单显示标题，图标之类的信息，而且路由不一定作为菜单显示，还要多加字段进行标识</li>
+</ul>
+<h3 id="菜单权限"><a href="#菜单权限" class="headerlink" title="菜单权限"></a>菜单权限</h3><p>菜单权限可以理解成将页面与理由进行解耦</p>
+<h4 id="方案一"><a href="#方案一" class="headerlink" title="方案一"></a>方案一</h4><p>菜单与路由分离，菜单由后端返回</p>
+<p>前端定义路由信息</p>
+<pre><code class="js">&#123;
+    name: &quot;login&quot;,
+    path: &quot;/login&quot;,
+    component: () =&gt; import(&quot;@/pages/Login.vue&quot;)
+&#125;
+</code></pre>
+<p><code>name</code>字段都不为空，需要根据此字段与后端返回菜单做关联，后端返回的菜单信息中必须要有<code>name</code>对应的字段，并且做唯一性校验</p>
+<p>全局路由守卫里做判断</p>
+<pre><code class="js">function hasPermission(router, accessMenu) &#123;
+  if (whiteList.indexOf(router.path) !== -1) &#123;
+    return true;
+  &#125;
+  let menu = Util.getMenuByName(router.name, accessMenu);
+  if (menu.name) &#123;
+    return true;
+  &#125;
+  return false;
+
+&#125;
+
+Router.beforeEach(async (to, from, next) =&gt; &#123;
+  if (getToken()) &#123;
+    let userInfo = store.state.user.userInfo;
+    if (!userInfo.name) &#123;
+      try &#123;
+        await store.dispatch(&quot;GetUserInfo&quot;)
+        await store.dispatch(&#39;updateAccessMenu&#39;)
+        if (to.path === &#39;/login&#39;) &#123;
+          next(&#123; name: &#39;home_index&#39; &#125;)
+        &#125; else &#123;
+          //Util.toDefaultPage([...routers], to.name, router, next);
+          next(&#123; ...to, replace: true &#125;)//菜单权限更新完成,重新进一次当前路由
+        &#125;
+      &#125;  
+      catch (e) &#123;
+        if (whiteList.indexOf(to.path) !== -1) &#123; // 在免登录白名单，直接进入
+          next()
+        &#125; else &#123;
+          next(&#39;/login&#39;)
+        &#125;
+      &#125;
+    &#125; else &#123;
+      if (to.path === &#39;/login&#39;) &#123;
+        next(&#123; name: &#39;home_index&#39; &#125;)
+      &#125; else &#123;
+        if (hasPermission(to, store.getters.accessMenu)) &#123;
+          Util.toDefaultPage(store.getters.accessMenu,to, routes, next);
+        &#125; else &#123;
+          next(&#123; path: &#39;/403&#39;,replace:true &#125;)
+        &#125;
+      &#125;
+    &#125;
+  &#125; else &#123;
+    if (whiteList.indexOf(to.path) !== -1) &#123; // 在免登录白名单，直接进入
+      next()
+    &#125; else &#123;
+      next(&#39;/login&#39;)
+    &#125;
+  &#125;
+  let menu = Util.getMenuByName(to.name, store.getters.accessMenu);
+  Util.title(menu.title);
+&#125;);
+
+Router.afterEach((to) =&gt; &#123;
+  window.scrollTo(0, 0);
+&#125;);
+</code></pre>
+<p>每次路由跳转的时候都要判断权限，这里的判断也很简单，因为菜单的<code>name</code>与路由的<code>name</code>是一一对应的，而后端返回的菜单就已经是经过权限过滤的</p>
+<p>如果根据路由<code>name</code>找不到对应的菜单，就表示用户有没权限访问</p>
+<p>如果路由很多，可以在应用初始化的时候，只挂载不需要权限控制的路由。取得后端返回的菜单后，根据菜单与路由的对应关系，筛选出可访问的路由，通过<code>addRoutes</code>动态挂载</p>
+<p>这种方式的缺点：</p>
+<ul>
+<li>菜单需要与路由做一一对应，前端添加了新功能，需要通过菜单管理功能添加新的菜单，如果菜单配置的不对会导致应用不能正常使用</li>
+<li>全局路由守卫里，每次路由跳转都要做判断</li>
+</ul>
+<h4 id="方案二"><a href="#方案二" class="headerlink" title="方案二"></a>方案二</h4><p>菜单和路由都由后端返回</p>
+<p>前端统一定义路由组件</p>
+<pre><code class="js">const Home = () =&gt; import(&quot;../pages/Home.vue&quot;);
+const UserInfo = () =&gt; import(&quot;../pages/UserInfo.vue&quot;);
+export default &#123;
+    home: Home,
+    userInfo: UserInfo
+&#125;;
+</code></pre>
+<p>后端路由组件返回以下格式</p>
+<pre><code class="js">[
+    &#123;
+        name: &quot;home&quot;,
+        path: &quot;/&quot;,
+        component: &quot;home&quot;
+    &#125;,
+    &#123;
+        name: &quot;home&quot;,
+        path: &quot;/userinfo&quot;,
+        component: &quot;userInfo&quot;
+    &#125;
+]
+</code></pre>
+<p>在将后端返回路由通过<code>addRoutes</code>动态挂载之间，需要将数据处理一下，将<code>component</code>字段换为真正的组件</p>
+<p>如果有嵌套路由，后端功能设计的时候，要注意添加相应的字段，前端拿到数据也要做相应的处理</p>
+<p>这种方法也会存在缺点：</p>
+<ul>
+<li>全局路由守卫里，每次路由跳转都要做判断</li>
+<li>前后端的配合要求更高</li>
+</ul>
+<h3 id="按钮权限"><a href="#按钮权限" class="headerlink" title="按钮权限"></a>按钮权限</h3><h4 id="方案一-1"><a href="#方案一-1" class="headerlink" title="方案一"></a>方案一</h4><p>按钮权限也可以用<code>v-if</code>判断</p>
+<p>但是如果页面过多，每个页面页面都要获取用户权限<code>role</code>和路由表里的<code>meta.btnPermissions</code>，然后再做判断</p>
+<p>这种方式就不展开举例了</p>
+<h4 id="方案二-1"><a href="#方案二-1" class="headerlink" title="方案二"></a>方案二</h4><p>通过自定义指令进行按钮权限的判断</p>
+<p>首先配置路由</p>
+<pre><code class="js">&#123;
+    path: &#39;/permission&#39;,
+    component: Layout,
+    name: &#39;权限测试&#39;,
+    meta: &#123;
+        btnPermissions: [&#39;admin&#39;, &#39;supper&#39;, &#39;normal&#39;]
+    &#125;,
+    //页面需要的权限
+    children: [&#123;
+        path: &#39;supper&#39;,
+        component: _import(&#39;system/supper&#39;),
+        name: &#39;权限测试页&#39;,
+        meta: &#123;
+            btnPermissions: [&#39;admin&#39;, &#39;supper&#39;]
+        &#125; //页面需要的权限
+    &#125;,
+    &#123;
+        path: &#39;normal&#39;,
+        component: _import(&#39;system/normal&#39;),
+        name: &#39;权限测试页&#39;,
+        meta: &#123;
+            btnPermissions: [&#39;admin&#39;]
+        &#125; //页面需要的权限
+    &#125;]
+&#125;
+</code></pre>
+<p>自定义权限鉴定指令</p>
+<pre><code class="js">import Vue from &#39;vue&#39;
+/**权限指令**/
+const has = Vue.directive(&#39;has&#39;, &#123;
+    bind: function (el, binding, vnode) &#123;
+        // 获取页面按钮权限
+        let btnPermissionsArr = [];
+        if(binding.value)&#123;
+            // 如果指令传值，获取指令参数，根据指令参数和当前登录人按钮权限做比较。
+            btnPermissionsArr = Array.of(binding.value);
+        &#125;else&#123;
+            // 否则获取路由中的参数，根据路由的btnPermissionsArr和当前登录人按钮权限做比较。
+            btnPermissionsArr = vnode.context.$route.meta.btnPermissions;
+        &#125;
+        if (!Vue.prototype.$_has(btnPermissionsArr)) &#123;
+            el.parentNode.removeChild(el);
+        &#125;
+    &#125;
+&#125;);
+// 权限检查方法
+Vue.prototype.$_has = function (value) &#123;
+    let isExist = false;
+    // 获取用户按钮权限
+    let btnPermissionsStr = sessionStorage.getItem(&quot;btnPermissions&quot;);
+    if (btnPermissionsStr == undefined || btnPermissionsStr == null) &#123;
+        return false;
+    &#125;
+    if (value.indexOf(btnPermissionsStr) &gt; -1) &#123;
+        isExist = true;
+    &#125;
+    return isExist;
+&#125;;
+export &#123;has&#125;
+</code></pre>
+<p>在使用的按钮中只需要引用<code>v-has</code>指令</p>
+<pre><code class="js">&lt;el-button @click=&#39;editClick&#39; type=&quot;primary&quot; v-has&gt;编辑&lt;/el-button&gt;
+</code></pre>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>关于权限如何选择哪种合适的方案，可以根据自己项目的方案项目，如考虑路由与菜单是否分离</p>
+<p>权限需要前后端结合，前端尽可能的去控制，更多的需要后台判断</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/" rel="tag">权限控制</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-加载优化（资源优先级）"
   class="article article-type-post"
   itemscope
@@ -3634,123 +4009,13 @@ export default (api: IApi) =&gt; &#123;
 </article>
 
     
-    <article
-  id="post-Apifox和Leancloud"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/25/Apifox%E5%92%8CLeancloud/"
-    >Apifox和Leancloud</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/25/Apifox%E5%92%8CLeancloud/" class="article-date">
-  <time datetime="2022-12-25T02:17:56.000Z" itemprop="datePublished">2022-12-25</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/uniapp/">uniapp</a> / <a class="article-category-link" href="/categories/uniapp/Apifox%E5%92%8CLeancloud/">Apifox和Leancloud</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Apifox和Leancloud"><a href="#Apifox和Leancloud" class="headerlink" title="Apifox和Leancloud"></a>Apifox和Leancloud</h1><blockquote>
-<p>我们为什么选择Apifox和Leancloud的组合呢</p>
-<p>Apifox也是一款可以模拟接口的一款工具，当然也不只可以模拟接口</p>
-<p>Leancloud选择是当我们去开发一些小的应用的时候，我们降低开发成本的时候，我们就可以去选择Leancloud去当我们的平台进行数据存储，还是比较方便的。</p>
-</blockquote>
-<h3 id="一、Apifox下载"><a href="#一、Apifox下载" class="headerlink" title="一、Apifox下载"></a>一、Apifox下载</h3><p>访问<a target="_blank" rel="noopener" href="https://www.apifox.cn/">官网</a>进行下载</p>
-<p>有付费和免费的，根据需求下载</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225090853860.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225091357277.png"></p>
-<p>我们可以去新建我们的项目和接口</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225092715766.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093542358.png"></p>
-<p>下面会讲如何设置和填写参数以便于和Leancloud去交互请求</p>
-<h3 id="二、Leancloud注册登陆"><a href="#二、Leancloud注册登陆" class="headerlink" title="二、Leancloud注册登陆"></a>二、Leancloud注册登陆</h3><p>我们访问<a target="_blank" rel="noopener" href="https://www.leancloud.cn/">官网</a>注册登陆</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093702335.png"></p>
-<p>然后来到我们的控制台创建我们的应用</p>
-<p>我们可以对我们每个应用分开管理</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225093850074.png"></p>
-<p>我们每个应用都有自己的信息</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094016973.png"></p>
-<p>大家测试的时候可以使用自己的应用信息配置</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094046589.png"></p>
-<h3 id="三、配置Apifox"><a href="#三、配置Apifox" class="headerlink" title="三、配置Apifox"></a>三、配置Apifox</h3><blockquote>
-<p>当我们应用和Apifox环境准备完毕，那么我们就可以根据文档来配置了</p>
-</blockquote>
-<p>文档-&gt;REST API-&gt;数据存储</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094258347.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094449937.png"></p>
-<h4 id="1-新建接口"><a href="#1-新建接口" class="headerlink" title="1.新建接口"></a>1.新建接口</h4><p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094537626.png"></p>
-<p>在配置我们的接口的前提是要选好我们接口运行的环境</p>
-<p>让我们先配置一下环境</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094638510.png"></p>
-<p>我们可以将我们的服务改成我们Leancloud平台的开放服务地址（后续我们可以改成我们的域名）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225094725724.png"></p>
-<p>根据文档来配置</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095251514.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095213854.png"></p>
-<p>Header-&gt;批量编辑-&gt;冒号模式（然后将负责的配置修改成下面这种格式就可以了）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095423023.png"></p>
-<p>下一步我们来携带参数body</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095604642.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095717122.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095746960.png"></p>
-<p>修改状态码并添加响应示例</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095819827.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225095940926.png"></p>
-<p>保存运行</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100023787.png"></p>
-<p>出error了，修复它（给body添加示例值就可以了）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225100109578.png"></p>
-<h4 id="2-发起请求"><a href="#2-发起请求" class="headerlink" title="2.发起请求"></a>2.发起请求</h4><p>我们发送（响应成功）</p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101014178.png"></p>
-<h3 id="四、Leancloud"><a href="#四、Leancloud" class="headerlink" title="四、Leancloud"></a>四、Leancloud</h3><p>当我们查看Leancloud应用的时候，发现我们多了一张表和数据，表示我们的请求已经成功</p>
-<blockquote>
-<p>我们还可以根据文档来修改，查找，删除我们的数据表，代码中的配置也是一样的，这样我们就可以利用LeanCloud来搭建我们一个小应用的数据表了。</p>
-</blockquote>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101228952.png"></p>
-<p><img src="/2022/12/25/Apifox%E5%92%8CLeancloud/image-20221225101502303.png"></p>
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3> 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/leancloud/" rel="tag">leancloud</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
   </article>
   
 
   
   <nav class="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
   </nav>
   
 </section>

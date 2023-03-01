@@ -167,6 +167,66 @@ DRONE_GITHUB_CLIENT_SECRET=
       </tags>
   </entry>
   <entry>
+    <title>Drone-UI挂起</title>
+    <url>/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Drone-UI挂起"><a href="#Drone-UI挂起" class="headerlink" title="Drone-UI挂起"></a>Drone-UI挂起</h1><h3 id="一、问题描述"><a href="#一、问题描述" class="headerlink" title="一、问题描述"></a>一、问题描述</h3><p>当我们将.drone.yml配置文件放在项目根目录，执行</p>
+<pre><code class="ini">git init //初始化仓库
+git remote add origin 仓库地址 //链接远程仓库
+git add . 
+git commit -m &quot;xxxx&quot;
+git push 仓库地址 //推送远程仓库
+</code></pre>
+<p>当我们将.drone.yml推送到仓库的时候，那么webhooks就会被触发，我们在drone ci页面就可以看见构建流程</p>
+<p>但如果我们的.drone.yml配置失败，那么就会出现一直卡在pending上，或者构建失败</p>
+<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221115090812831.png"></p>
+<h3 id="二、修改配置文件"><a href="#二、修改配置文件" class="headerlink" title="二、修改配置文件"></a>二、修改配置文件</h3><p>1、.dron.yml文件配置和执行程序对应</p>
+<p>如果没有对应配置，那么就会pending</p>
+<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105118132.png"></p>
+<p>举个荔枝：</p>
+<pre><code class="ini">#.dron.yml
+kind: pipeline
+type: docker
+name: deployment
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+  - name: deployment
+    image: node
+    commands:
+      - pwd
+      - ls
+      - node app.js
+
+branches: main
+</code></pre>
+<pre><code class="javascript">//app.js
+let res = function()&#123;
+    console.log(&quot;hello word&quot;)
+&#125;
+res()
+</code></pre>
+<h3 id="三、推送到远程仓库"><a href="#三、推送到远程仓库" class="headerlink" title="三、推送到远程仓库"></a>三、推送到远程仓库</h3><pre><code class="ini">git add . 
+git commit -m &quot;xxxx&quot;
+git push 仓库地址 //推送远程仓库
+</code></pre>
+<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105715577.png"></p>
+<h3 id="四、查看构建结果"><a href="#四、查看构建结果" class="headerlink" title="四、查看构建结果"></a>四、查看构建结果</h3><p>构建成功</p>
+<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105812556.png"></p>
+<p>我们CI持续集成构建就成功了，我们可以去继续丰富我们配置文件，直到达到我们想要的结果</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Drone入门]: 	“<a href="https://0-8-0.docs.drone.io/zh/getting-started/">https://0-8-0.docs.drone.io/zh/getting-started/</a> “</p>
+]]></content>
+      <categories>
+        <category>CI/CD</category>
+        <category>Drone-UI挂起</category>
+      </categories>
+      <tags>
+        <tag>CI</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Dokcer部署Drone2</title>
     <url>/2022/11/14/Dokcer%E9%83%A8%E7%BD%B2Drone2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Dokcer部署Drone2"><a href="#Dokcer部署Drone2" class="headerlink" title="Dokcer部署Drone2"></a>Dokcer部署Drone2</h1><p>这一篇延续上一篇的问题，这一篇解决仓库初始化失败（500）的问题</p>
@@ -256,66 +316,6 @@ DRONE_GITHUB_CLIENT_SECRET=
       <categories>
         <category>CI/CD</category>
         <category>Dokcer部署Drone2</category>
-      </categories>
-      <tags>
-        <tag>CI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Drone-UI挂起</title>
-    <url>/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Drone-UI挂起"><a href="#Drone-UI挂起" class="headerlink" title="Drone-UI挂起"></a>Drone-UI挂起</h1><h3 id="一、问题描述"><a href="#一、问题描述" class="headerlink" title="一、问题描述"></a>一、问题描述</h3><p>当我们将.drone.yml配置文件放在项目根目录，执行</p>
-<pre><code class="ini">git init //初始化仓库
-git remote add origin 仓库地址 //链接远程仓库
-git add . 
-git commit -m &quot;xxxx&quot;
-git push 仓库地址 //推送远程仓库
-</code></pre>
-<p>当我们将.drone.yml推送到仓库的时候，那么webhooks就会被触发，我们在drone ci页面就可以看见构建流程</p>
-<p>但如果我们的.drone.yml配置失败，那么就会出现一直卡在pending上，或者构建失败</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221115090812831.png"></p>
-<h3 id="二、修改配置文件"><a href="#二、修改配置文件" class="headerlink" title="二、修改配置文件"></a>二、修改配置文件</h3><p>1、.dron.yml文件配置和执行程序对应</p>
-<p>如果没有对应配置，那么就会pending</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105118132.png"></p>
-<p>举个荔枝：</p>
-<pre><code class="ini">#.dron.yml
-kind: pipeline
-type: docker
-name: deployment
-
-platform:
-  os: linux
-  arch: arm64
-
-steps:
-  - name: deployment
-    image: node
-    commands:
-      - pwd
-      - ls
-      - node app.js
-
-branches: main
-</code></pre>
-<pre><code class="javascript">//app.js
-let res = function()&#123;
-    console.log(&quot;hello word&quot;)
-&#125;
-res()
-</code></pre>
-<h3 id="三、推送到远程仓库"><a href="#三、推送到远程仓库" class="headerlink" title="三、推送到远程仓库"></a>三、推送到远程仓库</h3><pre><code class="ini">git add . 
-git commit -m &quot;xxxx&quot;
-git push 仓库地址 //推送远程仓库
-</code></pre>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105715577.png"></p>
-<h3 id="四、查看构建结果"><a href="#四、查看构建结果" class="headerlink" title="四、查看构建结果"></a>四、查看构建结果</h3><p>构建成功</p>
-<p><img src="/2022/11/16/Drone-UI%E6%8C%82%E8%B5%B7/image-20221116105812556.png"></p>
-<p>我们CI持续集成构建就成功了，我们可以去继续丰富我们配置文件，直到达到我们想要的结果</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Drone入门]: 	“<a href="https://0-8-0.docs.drone.io/zh/getting-started/">https://0-8-0.docs.drone.io/zh/getting-started/</a> “</p>
-]]></content>
-      <categories>
-        <category>CI/CD</category>
-        <category>Drone-UI挂起</category>
       </categories>
       <tags>
         <tag>CI</tag>
@@ -1940,6 +1940,34 @@ const sendData = () =&gt; &#123;
       </tags>
   </entry>
   <entry>
+    <title>chatGPT是什么</title>
+    <url>/2022/12/14/chatGPT%E6%98%AF%E4%BB%80%E4%B9%88/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="chatGPT是什么"><a href="#chatGPT是什么" class="headerlink" title="chatGPT是什么"></a>chatGPT是什么</h1><blockquote>
+<p>我们都知道目前火出圈的AI绘画和chatGPT</p>
+<p>那么它们是什么呢？</p>
+</blockquote>
+<h3 id="一、chatGPT是什么"><a href="#一、chatGPT是什么" class="headerlink" title="一、chatGPT是什么"></a>一、chatGPT是什么</h3><p><strong>ChatGPT</strong>是由<a href="https://zh.m.wikipedia.org/wiki/OpenAI">OpenAI</a>开发的一个<a href="https://zh.m.wikipedia.org/wiki/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">人工智能</a><a href="https://zh.m.wikipedia.org/wiki/%E8%81%8A%E5%A4%A9%E6%A9%9F%E5%99%A8%E4%BA%BA">聊天机器人</a>程序，于2022年11月推出。该程序使用基于<a href="https://zh.m.wikipedia.org/wiki/GPT-3">GPT-3.5</a>架构的<a href="https://zh.m.wikipedia.org/wiki/%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B">大型语言模型</a>并通过<a href="https://zh.m.wikipedia.org/wiki/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0">强化学习</a>进行训练。它以对话方式进行交互。在推广的期间中，所有人可以免费注册，并在登入后后免费使用 ChatGPT 实现与 AI 机器人对话</p>
+<p>有世界首富——电动汽车巨头特斯拉掌门人马斯克（ Elon Musk）入股的研发公司OpenAI表示，最新推出的聊天机器人ChatGPT在不到一周时间里就拥有百万用户。</p>
+<p>ChatGPT是OpenAI发布的聊天机器人模型，它的交互界面简洁，只有一个输入框，AI将根据输入内容进行回复，并允许在一个语境下持续聊天。</p>
+<p><img src="/2022/12/14/chatGPT%E6%98%AF%E4%BB%80%E4%B9%88/image-20221214085330016.png"></p>
+<h3 id="二、如何强大"><a href="#二、如何强大" class="headerlink" title="二、如何强大"></a>二、如何强大</h3><p>据浙商和国盛证券研报，ChatGPT相比以往的主要提升点在于记忆能力，ChatGPT可以储存对话信息，延续上下文，从而实现连续对话，这在对话场景中至关重要，极大地提升了对话交互模式下的用户体验。</p>
+<p>具体而言，此次新加入的训练方式被称为“从人类反馈中强化学习”（ReinforcementLearning from Human Feedback，RLHF）。这一训练方法增加了人类对模型输出结果的演示，并且对结果进行了排序。具体操作上，人工智能训练者扮演对话的双方，即用户和人工智能助手，提供对话样本。在人类扮演聊天机器人的时候，会让模型生成一些建议辅助训练师撰写回复，训练师会对回复选项打分排名，将更好的结果输回到模型中，通过以上奖励策略对模型进行微调并持续迭代。</p>
+<p><strong>此外，ChatGPT的背后离不开大模型、大数据、大算力。</strong></p>
+<p>ChatGPT成为AIGC里程碑的背后，是算力发展和数字时代形成的大数据所共同支持的大模型训练，才能实现目前的效果。由OpenAI研发的ChatGPT是微调后的GPT-3.5系列模型，有着多达1750亿个模型参数，并在今年年初训练完成。模型训练的背后离不开大数据的支持，OpenAI主要使用的公共爬虫数据集有着超过万亿单词的人类语言数据集。在算力方面，GPT-3.5在Azure AI超算基础设施（由V100GPU组成的高带宽集群）上进行训练，总算力消耗约3640PF-days（即每秒一千万亿次计算，运行3640个整日）。</p>
+<p><strong>AIGC里程碑级应用</strong></p>
+<p><a href="https://www.8btc.com/article/6787780">AIGC</a> 将是 Web3 时代的生产力工具。当我们迈入 Web3.0 时代，人工智能、关联数据和语义网络构建，形成人与网络的全新链接，内容消费需求飞速增长。UGC\PGC 这样的内容生成方式将难以匹配扩张的需求。AIGC 将是新的元宇宙内容生成解决方案。AIGC 的生成利用人工智能学习知识图谱、自动生成，在内容的创作为人类提供协助或是完全由 AI 产生内容。不仅能帮助提高内容生成的效率，还能提高内容的多样性。随着 NLP（Natural Language Processing，自然语言处理）技术和扩散模型（Diffusion Model）的发展，AI 不再仅作为内容创造的辅助工具，创造生成内容成为了可能。由此，将来文字生成、图片绘制、视频剪辑、游戏内容生成皆可由 AI 替代。</p>
+<p>国盛证券表示，AIGC不仅改变创作，还将改变获取信息的主要方式。而在此之上，ChatGPT所展示了作为生产力的存在，ChatGPT在寻找答案、解决问题的效率上已经部分的超越了如今的搜索引擎，ChatGPT或许在未来会改变我们获取信息、输出内容的方式，AIGC有望成为数字经济时代驱动需求爆发的杀手级应用。</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[维基百科]: 	“<a href="https://zh.m.wikipedia.org/zh-hans/ChatGPT">https://zh.m.wikipedia.org/zh-hans/ChatGPT</a> “</p>
+]]></content>
+      <categories>
+        <category>趣味技术</category>
+        <category>chatGPT是什么</category>
+      </categories>
+      <tags>
+        <tag>chatGPT</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>c4d及其oc的安装和初始化设置</title>
     <url>/2022/12/06/c4d%E5%8F%8A%E5%85%B6oc%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AE%BE%E7%BD%AE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="C4d-amp-amp-OC"><a href="#C4d-amp-amp-OC" class="headerlink" title="C4d &amp;&amp; OC"></a>C4d &amp;&amp; OC</h1><p>我们这篇文章是基于Mac Book Pro M1 Max芯片条件下运行的</p>
@@ -2018,34 +2046,6 @@ const sendData = () =&gt; &#123;
       </tags>
   </entry>
   <entry>
-    <title>chatGPT是什么</title>
-    <url>/2022/12/14/chatGPT%E6%98%AF%E4%BB%80%E4%B9%88/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="chatGPT是什么"><a href="#chatGPT是什么" class="headerlink" title="chatGPT是什么"></a>chatGPT是什么</h1><blockquote>
-<p>我们都知道目前火出圈的AI绘画和chatGPT</p>
-<p>那么它们是什么呢？</p>
-</blockquote>
-<h3 id="一、chatGPT是什么"><a href="#一、chatGPT是什么" class="headerlink" title="一、chatGPT是什么"></a>一、chatGPT是什么</h3><p><strong>ChatGPT</strong>是由<a href="https://zh.m.wikipedia.org/wiki/OpenAI">OpenAI</a>开发的一个<a href="https://zh.m.wikipedia.org/wiki/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD">人工智能</a><a href="https://zh.m.wikipedia.org/wiki/%E8%81%8A%E5%A4%A9%E6%A9%9F%E5%99%A8%E4%BA%BA">聊天机器人</a>程序，于2022年11月推出。该程序使用基于<a href="https://zh.m.wikipedia.org/wiki/GPT-3">GPT-3.5</a>架构的<a href="https://zh.m.wikipedia.org/wiki/%E8%AA%9E%E8%A8%80%E6%A8%A1%E5%9E%8B">大型语言模型</a>并通过<a href="https://zh.m.wikipedia.org/wiki/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0">强化学习</a>进行训练。它以对话方式进行交互。在推广的期间中，所有人可以免费注册，并在登入后后免费使用 ChatGPT 实现与 AI 机器人对话</p>
-<p>有世界首富——电动汽车巨头特斯拉掌门人马斯克（ Elon Musk）入股的研发公司OpenAI表示，最新推出的聊天机器人ChatGPT在不到一周时间里就拥有百万用户。</p>
-<p>ChatGPT是OpenAI发布的聊天机器人模型，它的交互界面简洁，只有一个输入框，AI将根据输入内容进行回复，并允许在一个语境下持续聊天。</p>
-<p><img src="/2022/12/14/chatGPT%E6%98%AF%E4%BB%80%E4%B9%88/image-20221214085330016.png"></p>
-<h3 id="二、如何强大"><a href="#二、如何强大" class="headerlink" title="二、如何强大"></a>二、如何强大</h3><p>据浙商和国盛证券研报，ChatGPT相比以往的主要提升点在于记忆能力，ChatGPT可以储存对话信息，延续上下文，从而实现连续对话，这在对话场景中至关重要，极大地提升了对话交互模式下的用户体验。</p>
-<p>具体而言，此次新加入的训练方式被称为“从人类反馈中强化学习”（ReinforcementLearning from Human Feedback，RLHF）。这一训练方法增加了人类对模型输出结果的演示，并且对结果进行了排序。具体操作上，人工智能训练者扮演对话的双方，即用户和人工智能助手，提供对话样本。在人类扮演聊天机器人的时候，会让模型生成一些建议辅助训练师撰写回复，训练师会对回复选项打分排名，将更好的结果输回到模型中，通过以上奖励策略对模型进行微调并持续迭代。</p>
-<p><strong>此外，ChatGPT的背后离不开大模型、大数据、大算力。</strong></p>
-<p>ChatGPT成为AIGC里程碑的背后，是算力发展和数字时代形成的大数据所共同支持的大模型训练，才能实现目前的效果。由OpenAI研发的ChatGPT是微调后的GPT-3.5系列模型，有着多达1750亿个模型参数，并在今年年初训练完成。模型训练的背后离不开大数据的支持，OpenAI主要使用的公共爬虫数据集有着超过万亿单词的人类语言数据集。在算力方面，GPT-3.5在Azure AI超算基础设施（由V100GPU组成的高带宽集群）上进行训练，总算力消耗约3640PF-days（即每秒一千万亿次计算，运行3640个整日）。</p>
-<p><strong>AIGC里程碑级应用</strong></p>
-<p><a href="https://www.8btc.com/article/6787780">AIGC</a> 将是 Web3 时代的生产力工具。当我们迈入 Web3.0 时代，人工智能、关联数据和语义网络构建，形成人与网络的全新链接，内容消费需求飞速增长。UGC\PGC 这样的内容生成方式将难以匹配扩张的需求。AIGC 将是新的元宇宙内容生成解决方案。AIGC 的生成利用人工智能学习知识图谱、自动生成，在内容的创作为人类提供协助或是完全由 AI 产生内容。不仅能帮助提高内容生成的效率，还能提高内容的多样性。随着 NLP（Natural Language Processing，自然语言处理）技术和扩散模型（Diffusion Model）的发展，AI 不再仅作为内容创造的辅助工具，创造生成内容成为了可能。由此，将来文字生成、图片绘制、视频剪辑、游戏内容生成皆可由 AI 替代。</p>
-<p>国盛证券表示，AIGC不仅改变创作，还将改变获取信息的主要方式。而在此之上，ChatGPT所展示了作为生产力的存在，ChatGPT在寻找答案、解决问题的效率上已经部分的超越了如今的搜索引擎，ChatGPT或许在未来会改变我们获取信息、输出内容的方式，AIGC有望成为数字经济时代驱动需求爆发的杀手级应用。</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[维基百科]: 	“<a href="https://zh.m.wikipedia.org/zh-hans/ChatGPT">https://zh.m.wikipedia.org/zh-hans/ChatGPT</a> “</p>
-]]></content>
-      <categories>
-        <category>趣味技术</category>
-        <category>chatGPT是什么</category>
-      </categories>
-      <tags>
-        <tag>chatGPT</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>chatGPT注册</title>
     <url>/2022/12/14/chatGPT%E6%B3%A8%E5%86%8C/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="chatGPT注册、登陆具体流程"><a href="#chatGPT注册、登陆具体流程" class="headerlink" title="chatGPT注册、登陆具体流程"></a>chatGPT注册、登陆具体流程</h1><blockquote>
@@ -2085,155 +2085,6 @@ const sendData = () =&gt; &#123;
       </categories>
       <tags>
         <tag>chatGPT</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>electron-vue3-vite</title>
-    <url>/2022/11/28/electron-vue3-vite/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron-Vue3-Vite"><a href="#Electron-Vue3-Vite" class="headerlink" title="Electron-Vue3-Vite"></a>Electron-Vue3-Vite</h1><blockquote>
-<p>今天这一篇文章算是electron的一个短暂的结尾，以后我们再更新electron 的知识。</p>
-<p>今天的内容是项目的vue3+electron项目搭建和打包部署</p>
-</blockquote>
-<h3 id="一、Electron-Vue3-Vite搭建"><a href="#一、Electron-Vue3-Vite搭建" class="headerlink" title="一、Electron-Vue3-Vite搭建"></a>一、Electron-Vue3-Vite搭建</h3><h4 id="1-创建模板"><a href="#1-创建模板" class="headerlink" title="1.创建模板"></a>1.创建模板</h4><blockquote>
-<p>！！！兼容性注意</p>
-<p>Vite 需要 Node.js版本 14.18+，16+。然而，有些模板需要依赖更高的 Node 版本才能正常运行，当你的包管理器发出警告时，请注意升级你的 Node 版本。</p>
-</blockquote>
-<pre><code class="ini">//使用npm
-npm create vite@latest
-//使用yarn
-yarn create vite
-//使用pnpm
-pnpm create vite
-</code></pre>
-<p>使用以下命令启动：</p>
-<pre><code class="ini">npm i //安装依赖
-npm run dev //启动项目
-</code></pre>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221127082439543.png"></p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221127082625854.png"></p>
-<h4 id="2-安装electron"><a href="#2-安装electron" class="headerlink" title="2.安装electron"></a>2.安装electron</h4><pre><code class="ini">npm i electron -D 
-</code></pre>
-<p>目前博主遇到了一个小问题，就是下载electron会一直卡住，这里使用如下方法就可以解决了。</p>
-<pre><code class="ini">npm install cnpm -g --registry=https://registry.npm.taobao.org //切换国内镜像源
-cnpm isntall electron --save-dev
-</code></pre>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128081646599.png"></p>
-<h4 id="3-创建入口文件"><a href="#3-创建入口文件" class="headerlink" title="3.创建入口文件"></a>3.创建入口文件</h4><p>根目录下创建</p>
-<p>Main.js入口文件</p>
-<pre><code class="javascript">//main.js
-const &#123; app,BrowserWindow &#125; = require(&#39;electron&#39;)
-const path = require(&#39;path&#39;)
-const WinState = require(&#39;electron-win-state&#39;).default //保存窗口状态的包（窗口可以保存缩放、位置状态）
-
-const createWindow = () =&gt; &#123;
-  const winState = new WinState(&#123; 
-    defaultWidth: 1000,
-    defaultHeight: 800,
-    // other winState options, see below
-  &#125;)
-    const win = new BrowserWindow(&#123;
-      ...winState.winOptions,
-      // width: 800,
-      // height: 600,
-      webPreferences: &#123;
-        preload: path.join(__dirname, &#39;preload.js&#39;)
-      &#125;
-    &#125;)
-    win.loadURL(&#39;http://127.0.0.1:5173/&#39;) //加载本地端口，部署的时候可以换成我们的域名
-    win.webContents.openDevTools() //打开控制台调试
-    winState.manage(win)
-  &#125;
-
-  app.whenReady().then(() =&gt; &#123;
-    createWindow()
-    app.on(&#39;activate&#39;, () =&gt; &#123;
-      if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    &#125;)
-  &#125;) 
-
-  app.on(&#39;window-all-closed&#39;, () =&gt; &#123;
-    if (process.platform !== &#39;darwin&#39;) app.quit()
-  &#125;)
-</code></pre>
-<p>Preload.js预加载文件</p>
-<pre><code class="javascript">//目前先不写内容，先搭个架子
-</code></pre>
-<p>配置package.json</p>
-<pre><code class="javascript">//package.json
-&#123;
-  &quot;name&quot;: &quot;vite-project&quot;,
-  &quot;private&quot;: true,
-  &quot;version&quot;: &quot;0.0.0&quot;,
-  &quot;main&quot;: &quot;main.js&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;dev&quot;: &quot;vite&quot;,
-    &quot;build&quot;: &quot;vite build&quot;,
-    &quot;preview&quot;: &quot;vite preview&quot;,
-    &quot;start&quot;: &quot;nodemon --exec electron . --watch ./ --ext .js,.html,.vue,.css&quot;,
-  &#125;,
-  &quot;dependencies&quot;: &#123;
-    &quot;electron-win-state&quot;: &quot;^1.1.22&quot;,
-    &quot;vue&quot;: &quot;^3.2.41&quot;
-  &#125;,
-  &quot;devDependencies&quot;: &#123;
-    &quot;@vitejs/plugin-vue&quot;: &quot;^3.2.0&quot;,
-    &quot;electron&quot;: &quot;^21.3.1&quot;,
-    &quot;electron-builder&quot;: &quot;^23.6.0&quot;,
-    &quot;nodemon&quot;: &quot;^2.0.20&quot;,
-    &quot;vite&quot;: &quot;^3.2.3&quot;
-  &#125;
-&#125;
-
-</code></pre>
-<h4 id="4-安装其他依赖"><a href="#4-安装其他依赖" class="headerlink" title="4.安装其他依赖"></a>4.安装其他依赖</h4><pre><code class="ini">cnpm install nodemon --save-dev //安装nodemon
-cnpm install electron-win-state --save-dev //安装electron-win-state
-</code></pre>
-<h4 id="5-运行项目"><a href="#5-运行项目" class="headerlink" title="5.运行项目"></a>5.运行项目</h4><pre><code class="ini">npm run dev //启动vue项目
-npm start //启动electron
-</code></pre>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128085457686.png"></p>
-<p>我们现在就可以去开发我们的项目了</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128085520887.png"></p>
-<h3 id="二、打包与部署"><a href="#二、打包与部署" class="headerlink" title="二、打包与部署"></a>二、打包与部署</h3><p>官网推荐我们的是<a href="https://www.electronjs.org/docs/latest/tutorial/forge-overview">Electron Forge</a>来分发我们的应用程序</p>
-<blockquote>
-<p>electron-forge 可以自动检测你的系统，然后打包成对应的可执行文件。<br>它可以实现 package 成最终可用的独立项目文件夹，<br>还可以 make 成能够安装的 zip 包</p>
-</blockquote>
-<p>目前这个方法有一些问题，我们先用另一种方法来进行打包<a href="https://www.electron.build/">electron-build</a></p>
-<p>根据文档我们也可以很快的掌握这种打包方式</p>
-<h4 id="1-安装依赖"><a href="#1-安装依赖" class="headerlink" title="1.安装依赖"></a>1.安装依赖</h4><pre><code class="ini">cnpm i electron-builder -D //安装依赖
-</code></pre>
-<p>配置一下package.json</p>
-<pre><code class="javascript">//package.json+
-&quot;scripts&quot;: &#123;
-  ...
-  &quot;app:dir&quot;: &quot;electron-builder --dir&quot;,
-  &quot;app:dist&quot;: &quot;electron-builder&quot;
-  ...
-&#125;
-</code></pre>
-<h4 id="2-打包"><a href="#2-打包" class="headerlink" title="2.打包"></a>2.打包</h4><pre><code class="ini">cnpm run app:dist  //执行打包
-</code></pre>
-<p>目前我遇到打包错误的问题</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115215328.png"></p>
-<p>如果我们遇到这种问题，我们切换一下npm镜像源就可以了；</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115258224.png"></p>
-<p>现在我们打包就成功了</p>
-<h4 id="3-运行安装包"><a href="#3-运行安装包" class="headerlink" title="3.运行安装包"></a>3.运行安装包</h4><p>找到我们项目目录下的dist文件的.dmg安装包（我的是mac）</p>
-<p>在运行之前，我们应该先将项目 运行 起来（因为我们是本地项目，等部署到服务器就不用了）</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115702655.png"></p>
-<p>点击执行安装包</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115730129.png"></p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115827756.png"></p>
-<p>到目前为止，我们的electron的搭建-&gt;开发-&gt;打包就一气呵成了，当然，开发项目中还有许多奇奇怪怪的问题和知识点，就靠各位聪明的脑瓜了。。</p>
-<p><img src="/2022/11/28/electron-vue3-vite/tl.webp"></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官网]: 	“<a href="https://www.electronjs.org/docs/latest/tutorial/forge-overview">https://www.electronjs.org/docs/latest/tutorial/forge-overview</a> “<br>[Vite.js官网]: 	“<a href="https://cn.vitejs.dev/">https://cn.vitejs.dev/</a> “<br>[electron-builder]: 	“<a href="https://github.com/electron-userland/electron-builder">https://github.com/electron-userland/electron-builder</a> “</p>
-]]></content>
-      <categories>
-        <category>Electron</category>
-        <category>electron-vue3-vite</category>
-      </categories>
-      <tags>
-        <tag>electron</tag>
       </tags>
   </entry>
   <entry>
@@ -2549,6 +2400,155 @@ Test.prototype.update = function(dt) &#123;
       </categories>
       <tags>
         <tag>playcanvas</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>electron-vue3-vite</title>
+    <url>/2022/11/28/electron-vue3-vite/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron-Vue3-Vite"><a href="#Electron-Vue3-Vite" class="headerlink" title="Electron-Vue3-Vite"></a>Electron-Vue3-Vite</h1><blockquote>
+<p>今天这一篇文章算是electron的一个短暂的结尾，以后我们再更新electron 的知识。</p>
+<p>今天的内容是项目的vue3+electron项目搭建和打包部署</p>
+</blockquote>
+<h3 id="一、Electron-Vue3-Vite搭建"><a href="#一、Electron-Vue3-Vite搭建" class="headerlink" title="一、Electron-Vue3-Vite搭建"></a>一、Electron-Vue3-Vite搭建</h3><h4 id="1-创建模板"><a href="#1-创建模板" class="headerlink" title="1.创建模板"></a>1.创建模板</h4><blockquote>
+<p>！！！兼容性注意</p>
+<p>Vite 需要 Node.js版本 14.18+，16+。然而，有些模板需要依赖更高的 Node 版本才能正常运行，当你的包管理器发出警告时，请注意升级你的 Node 版本。</p>
+</blockquote>
+<pre><code class="ini">//使用npm
+npm create vite@latest
+//使用yarn
+yarn create vite
+//使用pnpm
+pnpm create vite
+</code></pre>
+<p>使用以下命令启动：</p>
+<pre><code class="ini">npm i //安装依赖
+npm run dev //启动项目
+</code></pre>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221127082439543.png"></p>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221127082625854.png"></p>
+<h4 id="2-安装electron"><a href="#2-安装electron" class="headerlink" title="2.安装electron"></a>2.安装electron</h4><pre><code class="ini">npm i electron -D 
+</code></pre>
+<p>目前博主遇到了一个小问题，就是下载electron会一直卡住，这里使用如下方法就可以解决了。</p>
+<pre><code class="ini">npm install cnpm -g --registry=https://registry.npm.taobao.org //切换国内镜像源
+cnpm isntall electron --save-dev
+</code></pre>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221128081646599.png"></p>
+<h4 id="3-创建入口文件"><a href="#3-创建入口文件" class="headerlink" title="3.创建入口文件"></a>3.创建入口文件</h4><p>根目录下创建</p>
+<p>Main.js入口文件</p>
+<pre><code class="javascript">//main.js
+const &#123; app,BrowserWindow &#125; = require(&#39;electron&#39;)
+const path = require(&#39;path&#39;)
+const WinState = require(&#39;electron-win-state&#39;).default //保存窗口状态的包（窗口可以保存缩放、位置状态）
+
+const createWindow = () =&gt; &#123;
+  const winState = new WinState(&#123; 
+    defaultWidth: 1000,
+    defaultHeight: 800,
+    // other winState options, see below
+  &#125;)
+    const win = new BrowserWindow(&#123;
+      ...winState.winOptions,
+      // width: 800,
+      // height: 600,
+      webPreferences: &#123;
+        preload: path.join(__dirname, &#39;preload.js&#39;)
+      &#125;
+    &#125;)
+    win.loadURL(&#39;http://127.0.0.1:5173/&#39;) //加载本地端口，部署的时候可以换成我们的域名
+    win.webContents.openDevTools() //打开控制台调试
+    winState.manage(win)
+  &#125;
+
+  app.whenReady().then(() =&gt; &#123;
+    createWindow()
+    app.on(&#39;activate&#39;, () =&gt; &#123;
+      if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    &#125;)
+  &#125;) 
+
+  app.on(&#39;window-all-closed&#39;, () =&gt; &#123;
+    if (process.platform !== &#39;darwin&#39;) app.quit()
+  &#125;)
+</code></pre>
+<p>Preload.js预加载文件</p>
+<pre><code class="javascript">//目前先不写内容，先搭个架子
+</code></pre>
+<p>配置package.json</p>
+<pre><code class="javascript">//package.json
+&#123;
+  &quot;name&quot;: &quot;vite-project&quot;,
+  &quot;private&quot;: true,
+  &quot;version&quot;: &quot;0.0.0&quot;,
+  &quot;main&quot;: &quot;main.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;dev&quot;: &quot;vite&quot;,
+    &quot;build&quot;: &quot;vite build&quot;,
+    &quot;preview&quot;: &quot;vite preview&quot;,
+    &quot;start&quot;: &quot;nodemon --exec electron . --watch ./ --ext .js,.html,.vue,.css&quot;,
+  &#125;,
+  &quot;dependencies&quot;: &#123;
+    &quot;electron-win-state&quot;: &quot;^1.1.22&quot;,
+    &quot;vue&quot;: &quot;^3.2.41&quot;
+  &#125;,
+  &quot;devDependencies&quot;: &#123;
+    &quot;@vitejs/plugin-vue&quot;: &quot;^3.2.0&quot;,
+    &quot;electron&quot;: &quot;^21.3.1&quot;,
+    &quot;electron-builder&quot;: &quot;^23.6.0&quot;,
+    &quot;nodemon&quot;: &quot;^2.0.20&quot;,
+    &quot;vite&quot;: &quot;^3.2.3&quot;
+  &#125;
+&#125;
+
+</code></pre>
+<h4 id="4-安装其他依赖"><a href="#4-安装其他依赖" class="headerlink" title="4.安装其他依赖"></a>4.安装其他依赖</h4><pre><code class="ini">cnpm install nodemon --save-dev //安装nodemon
+cnpm install electron-win-state --save-dev //安装electron-win-state
+</code></pre>
+<h4 id="5-运行项目"><a href="#5-运行项目" class="headerlink" title="5.运行项目"></a>5.运行项目</h4><pre><code class="ini">npm run dev //启动vue项目
+npm start //启动electron
+</code></pre>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221128085457686.png"></p>
+<p>我们现在就可以去开发我们的项目了</p>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221128085520887.png"></p>
+<h3 id="二、打包与部署"><a href="#二、打包与部署" class="headerlink" title="二、打包与部署"></a>二、打包与部署</h3><p>官网推荐我们的是<a href="https://www.electronjs.org/docs/latest/tutorial/forge-overview">Electron Forge</a>来分发我们的应用程序</p>
+<blockquote>
+<p>electron-forge 可以自动检测你的系统，然后打包成对应的可执行文件。<br>它可以实现 package 成最终可用的独立项目文件夹，<br>还可以 make 成能够安装的 zip 包</p>
+</blockquote>
+<p>目前这个方法有一些问题，我们先用另一种方法来进行打包<a href="https://www.electron.build/">electron-build</a></p>
+<p>根据文档我们也可以很快的掌握这种打包方式</p>
+<h4 id="1-安装依赖"><a href="#1-安装依赖" class="headerlink" title="1.安装依赖"></a>1.安装依赖</h4><pre><code class="ini">cnpm i electron-builder -D //安装依赖
+</code></pre>
+<p>配置一下package.json</p>
+<pre><code class="javascript">//package.json+
+&quot;scripts&quot;: &#123;
+  ...
+  &quot;app:dir&quot;: &quot;electron-builder --dir&quot;,
+  &quot;app:dist&quot;: &quot;electron-builder&quot;
+  ...
+&#125;
+</code></pre>
+<h4 id="2-打包"><a href="#2-打包" class="headerlink" title="2.打包"></a>2.打包</h4><pre><code class="ini">cnpm run app:dist  //执行打包
+</code></pre>
+<p>目前我遇到打包错误的问题</p>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115215328.png"></p>
+<p>如果我们遇到这种问题，我们切换一下npm镜像源就可以了；</p>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115258224.png"></p>
+<p>现在我们打包就成功了</p>
+<h4 id="3-运行安装包"><a href="#3-运行安装包" class="headerlink" title="3.运行安装包"></a>3.运行安装包</h4><p>找到我们项目目录下的dist文件的.dmg安装包（我的是mac）</p>
+<p>在运行之前，我们应该先将项目 运行 起来（因为我们是本地项目，等部署到服务器就不用了）</p>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115702655.png"></p>
+<p>点击执行安装包</p>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115730129.png"></p>
+<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115827756.png"></p>
+<p>到目前为止，我们的electron的搭建-&gt;开发-&gt;打包就一气呵成了，当然，开发项目中还有许多奇奇怪怪的问题和知识点，就靠各位聪明的脑瓜了。。</p>
+<p><img src="/2022/11/28/electron-vue3-vite/tl.webp"></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官网]: 	“<a href="https://www.electronjs.org/docs/latest/tutorial/forge-overview">https://www.electronjs.org/docs/latest/tutorial/forge-overview</a> “<br>[Vite.js官网]: 	“<a href="https://cn.vitejs.dev/">https://cn.vitejs.dev/</a> “<br>[electron-builder]: 	“<a href="https://github.com/electron-userland/electron-builder">https://github.com/electron-userland/electron-builder</a> “</p>
+]]></content>
+      <categories>
+        <category>Electron</category>
+        <category>electron-vue3-vite</category>
+      </categories>
+      <tags>
+        <tag>electron</tag>
       </tags>
   </entry>
   <entry>
@@ -3797,6 +3797,107 @@ export default (api: IApi) =&gt; &#123;
       </tags>
   </entry>
   <entry>
+    <title>vite配置</title>
+    <url>/2022/11/22/vite%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="vite配置"><a href="#vite配置" class="headerlink" title="vite配置"></a>vite配置</h1><p>最直观的体验是“快速”、“清爽”，开发效率也得到明显提升（解决掉了webpack开发服务器存在的痛点）。</p>
+<p>初始化完成后，工程目录如下：</p>
+<p><img src="/2022/11/22/vite%E9%85%8D%E7%BD%AE/image-20221122094453903.png"></p>
+<p>VS Code插件：Vite</p>
+<p>配置详情：</p>
+<p>vite.config.ts</p>
+<pre><code class="javascript">import &#123; defineConfig, loadEnv &#125; from &#39;vite&#39;;
+import vue from &#39;@vitejs/plugin-vue&#39;;
+import vueJSX from &#39;@vitejs/plugin-vue-jsx&#39;;
+import Components from &#39;unplugin-vue-components/vite&#39;;
+import &#123; AntDesignVueResolver &#125; from &#39;unplugin-vue-components/resolvers&#39;;
+import &#123; resolve &#125; from &#39;path&#39;;
+import &#123; initDevProxy &#125; from &#39;./http-proxy&#39;;
+
+// https://vitejs.dev/config/
+export default defineConfig((&#123; mode &#125;) =&gt; &#123;
+  const env = loadEnv(mode, process.cwd(), &#39;&#39;);
+  return &#123;
+    // 自定义公共基础路径（取自 .env(.*) 文件）
+    base: env.VITE_BASE_PATH,
+    // 定义全局常量替换方式
+    define: &#123;
+      // 取消启用Vue.2x中选项式api（这部分不会被打包）
+      &#39;__VUE_OPTIONS_API__&#39;: false,
+    &#125;,
+    // 配置vite插件
+    plugins: [
+      vue(),
+      vueJSX(),
+      // 自动化的组件按需引入配置
+      Components(&#123;
+        extensions: [&#39;vue&#39;, &#39;tsx&#39;],
+        resolvers: [
+          AntDesignVueResolver(&#123; resolveIcons: true &#125;),
+        ],
+        include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/],
+      &#125;),
+    ],
+    // 配置解析项
+    resolve: &#123;
+      // 路径别名
+      alias: &#123;
+        &#39;@/&#39;: resolve(__dirname, &#39;src&#39;) + &#39;/&#39;,
+      &#125;,
+    &#125;,
+    // 样式处理配置项
+    css: &#123;
+      // CSS module
+      modules: &#123;
+        generateScopedName: `_[name]_[local]_[hash:base64:6]_`,
+      &#125;,
+      // 传递给特定css样式预处理器的配置
+      preprocessorOptions: &#123;
+        less: &#123;
+          javascriptEnabled: true,
+        &#125;,
+      &#125;,
+    &#125;,
+    // 配置开发服务器
+    server: &#123;
+      open: true,
+      proxy: initDevProxy(),
+    &#125;,
+    // 自定义打包项配置
+    build: &#123;
+      // 大文件告警阈值(kb)
+      chunkSizeWarningLimit: 400,
+    &#125;,
+  &#125;;
+&#125;);
+</code></pre>
+<p>http-proxy.ts</p>
+<pre><code class="javascript">import type &#123; ProxyOptions &#125; from &#39;vite&#39;;
+
+/**
+ * 初始化开发服务器代理
+ */
+export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt; &#123;
+  return &#123;
+    // 临时示例
+    &#39;/api&#39;: &#123;
+      target: &#39;&#39;,
+      changeOrigin: true,
+    &#125;,
+  &#125;;
+&#125;;
+</code></pre>
+<p>以上的配置是项目配置的一部分，其他所需要的配置按照自己的需要去官网查询就可以，官网基于没个配置都有详细讲解。</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Vite中文官网]: 	“<a href="https://cn.vitejs.dev/guide/">https://cn.vitejs.dev/guide/</a> “</p>
+]]></content>
+      <categories>
+        <category>工程技术</category>
+        <category>vite配置</category>
+      </categories>
+      <tags>
+        <tag>vite</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>webgl</title>
     <url>/2022/11/18/webgl/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="webgl"><a href="#webgl" class="headerlink" title="webgl"></a>webgl</h1><h2 id="第一章-webgl绘图流程"><a href="#第一章-webgl绘图流程" class="headerlink" title="第一章  webgl绘图流程"></a>第一章  webgl绘图流程</h2><hr>
@@ -4202,107 +4303,6 @@ gl.drawArrays(gl.TRIANGLES,0,3);
       </tags>
   </entry>
   <entry>
-    <title>vite配置</title>
-    <url>/2022/11/22/vite%E9%85%8D%E7%BD%AE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="vite配置"><a href="#vite配置" class="headerlink" title="vite配置"></a>vite配置</h1><p>最直观的体验是“快速”、“清爽”，开发效率也得到明显提升（解决掉了webpack开发服务器存在的痛点）。</p>
-<p>初始化完成后，工程目录如下：</p>
-<p><img src="/2022/11/22/vite%E9%85%8D%E7%BD%AE/image-20221122094453903.png"></p>
-<p>VS Code插件：Vite</p>
-<p>配置详情：</p>
-<p>vite.config.ts</p>
-<pre><code class="javascript">import &#123; defineConfig, loadEnv &#125; from &#39;vite&#39;;
-import vue from &#39;@vitejs/plugin-vue&#39;;
-import vueJSX from &#39;@vitejs/plugin-vue-jsx&#39;;
-import Components from &#39;unplugin-vue-components/vite&#39;;
-import &#123; AntDesignVueResolver &#125; from &#39;unplugin-vue-components/resolvers&#39;;
-import &#123; resolve &#125; from &#39;path&#39;;
-import &#123; initDevProxy &#125; from &#39;./http-proxy&#39;;
-
-// https://vitejs.dev/config/
-export default defineConfig((&#123; mode &#125;) =&gt; &#123;
-  const env = loadEnv(mode, process.cwd(), &#39;&#39;);
-  return &#123;
-    // 自定义公共基础路径（取自 .env(.*) 文件）
-    base: env.VITE_BASE_PATH,
-    // 定义全局常量替换方式
-    define: &#123;
-      // 取消启用Vue.2x中选项式api（这部分不会被打包）
-      &#39;__VUE_OPTIONS_API__&#39;: false,
-    &#125;,
-    // 配置vite插件
-    plugins: [
-      vue(),
-      vueJSX(),
-      // 自动化的组件按需引入配置
-      Components(&#123;
-        extensions: [&#39;vue&#39;, &#39;tsx&#39;],
-        resolvers: [
-          AntDesignVueResolver(&#123; resolveIcons: true &#125;),
-        ],
-        include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/],
-      &#125;),
-    ],
-    // 配置解析项
-    resolve: &#123;
-      // 路径别名
-      alias: &#123;
-        &#39;@/&#39;: resolve(__dirname, &#39;src&#39;) + &#39;/&#39;,
-      &#125;,
-    &#125;,
-    // 样式处理配置项
-    css: &#123;
-      // CSS module
-      modules: &#123;
-        generateScopedName: `_[name]_[local]_[hash:base64:6]_`,
-      &#125;,
-      // 传递给特定css样式预处理器的配置
-      preprocessorOptions: &#123;
-        less: &#123;
-          javascriptEnabled: true,
-        &#125;,
-      &#125;,
-    &#125;,
-    // 配置开发服务器
-    server: &#123;
-      open: true,
-      proxy: initDevProxy(),
-    &#125;,
-    // 自定义打包项配置
-    build: &#123;
-      // 大文件告警阈值(kb)
-      chunkSizeWarningLimit: 400,
-    &#125;,
-  &#125;;
-&#125;);
-</code></pre>
-<p>http-proxy.ts</p>
-<pre><code class="javascript">import type &#123; ProxyOptions &#125; from &#39;vite&#39;;
-
-/**
- * 初始化开发服务器代理
- */
-export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt; &#123;
-  return &#123;
-    // 临时示例
-    &#39;/api&#39;: &#123;
-      target: &#39;&#39;,
-      changeOrigin: true,
-    &#125;,
-  &#125;;
-&#125;;
-</code></pre>
-<p>以上的配置是项目配置的一部分，其他所需要的配置按照自己的需要去官网查询就可以，官网基于没个配置都有详细讲解。</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Vite中文官网]: 	“<a href="https://cn.vitejs.dev/guide/">https://cn.vitejs.dev/guide/</a> “</p>
-]]></content>
-      <categories>
-        <category>工程技术</category>
-        <category>vite配置</category>
-      </categories>
-      <tags>
-        <tag>vite</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>yarn命令详解</title>
     <url>/2022/11/09/yarn%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="yarn命令详解"><a href="#yarn命令详解" class="headerlink" title="yarn命令详解"></a>yarn命令详解</h1><h3 id="一、yarn安装初始化"><a href="#一、yarn安装初始化" class="headerlink" title="一、yarn安装初始化"></a>一、yarn安装初始化</h3><pre><code class="css">npm i yarn -g #yarn安装
@@ -4354,6 +4354,33 @@ sudo yarn cache clean # 清除缓存
       </categories>
       <tags>
         <tag>yarn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>什么是CI/CD</title>
+    <url>/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署"><a href="#CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署" class="headerlink" title="CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署"></a>CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署</h1><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>CI&#x2F;CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。CI&#x2F;CD 的核心概念是持续集成、持续交付和持续部署。作为一个面向开发和运营团队的解决方案，CI&#x2F;CD 主要针对在集成新代码时所引发的问题（亦称：”集成地狱”）。</p>
+<p>具体而言，CI&#x2F;CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为”CI&#x2F;CD 管道”，由开发和运维团队以敏捷方式协同支持。</p>
+<h3 id="CI-是什么？CI-和-CD-有什么区别？"><a href="#CI-是什么？CI-和-CD-有什么区别？" class="headerlink" title="CI 是什么？CI 和 CD 有什么区别？"></a>CI 是什么？CI 和 CD 有什么区别？</h3><p>缩略词 CI &#x2F; CD 具有几个不同的含义。CI&#x2F;CD 中的”CI”始终指持续集成，它属于开发人员的自动化流程。成功的 CI 意味着应用代码的新更改会定期构建、测试并合并到共享存储库中。该解决方案可以解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</p>
+<p>CI&#x2F;CD 中的”CD”指的是持续交付和&#x2F;或持续部署，这些相关概念有时会交叉使用。两者都事关管道后续阶段的自动化，但它们有时也会单独使用，用于说明自动化程度。</p>
+<p>持续<em>交付</em>通常是指开发人员对应用的更改会自动进行错误测试并上传到存储库（如 GitHub或容器注册表），然后由运维团队将其部署到实时生产环境中。这旨在解决开发和运维团队之间可见性及沟通较差的问题。因此，持续交付的目的就是确保尽可能减少部署新代码时所需的工作量。</p>
+<p>持续<em>部署</em>（另一种”CD”）指的是自动将开发人员的更改从存储库发布到生产环境，以供客户使用。它主要为了解决因手动流程降低应用交付速度，从而使运维团队超负荷的问题。持续部署以持续交付的优势为根基，实现了管道后续阶段的自动化。</p>
+<p><img src="/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/ci-cd-flow-desktop_edited_0.png" alt="CI/CD flow"></p>
+<p>CI&#x2F;CD 既可能仅指持续集成和持续交付构成的关联环节，也可以指持续集成、持续交付和持续部署这三项构成的关联环节。更为复杂的是，有时”持续交付”也包含了持续部署流程。</p>
+<p>归根结底，我们没必要纠结于这些语义，您只需记得 CI&#x2F;CD 其实就是一个流程（通常形象地表述为管道），用于实现应用开发中的高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于 CI&#x2F;CD 管道的自动化程度。许多企业最开始先添加 CI，然后逐步实现交付和部署的自动化（例如作为云原生应用的一部分）。</p>
+<h3 id="CI-持续集成（Continuous-Integration）"><a href="#CI-持续集成（Continuous-Integration）" class="headerlink" title="CI 持续集成（Continuous Integration）"></a>CI 持续集成（Continuous Integration）</h3><p>现代应用开发的目标是让多位开发人员同时处理同一应用的不同功能。但是，如果企业安排在一天内将所有分支源代码合并在一起（称为”合并日”），最终可能造成工作繁琐、耗时，而且需要手动完成。这是因为当一位独立工作的开发人员对应用进行更改时，有可能会与其他开发人员同时进行的更改发生冲突。如果每个开发人员都自定义自己的本地集成开发环境（IDE），而不是让团队就一个基于云的 IDE 达成一致，那么就会让问题更加雪上加霜。</p>
+<p>持续集成（CI）可以帮助开发人员更加频繁地（有时甚至每天）将代码更改合并到共享分支或”主干”中。一旦开发人员对应用所做的更改被合并，系统就会通过自动构建应用并运行不同级别的自动化测试（通常是单元测试和集成测试）来验证这些更改，确保这些更改没有对应用造成破坏。这意味着测试内容涵盖了从类和函数到构成整个应用的不同模块。如果自动化测试发现新代码和现有代码之间存在冲突，CI 可以更加轻松地快速修复这些错误。</p>
+<h3 id="CD-持续交付（Continuous-Delivery）"><a href="#CD-持续交付（Continuous-Delivery）" class="headerlink" title="CD 持续交付（Continuous Delivery）"></a>CD 持续交付（Continuous Delivery）</h3><p>完成 CI 中构建及单元测试和集成测试的自动化流程后，持续交付可自动将已验证的代码发布到存储库。为了实现高效的持续交付流程，务必要确保 CI 已内置于开发管道。持续交付的目标是拥有一个可随时部署到生产环境的代码库。</p>
+<p>在持续交付中，每个阶段（从代码更改的合并，到生产就绪型构建版本的交付）都涉及测试自动化和代码发布自动化。在流程结束时，运维团队可以快速、轻松地将应用部署到生产环境中。</p>
+<h3 id="CD-持续部署（Continuous-Deployment）"><a href="#CD-持续部署（Continuous-Deployment）" class="headerlink" title="CD 持续部署（Continuous Deployment）"></a>CD 持续部署（Continuous Deployment）</h3><p>对于一个成熟的 CI&#x2F;CD 管道来说，最后的阶段是持续部署。作为持续交付——自动将生产就绪型构建版本发布到代码存储库——的延伸，持续部署可以自动将应用发布到生产环境。由于在生产之前的管道阶段没有手动门控，因此持续部署在很大程度上都得依赖精心设计的测试自动化。</p>
+<p>实际上，持续部署意味着开发人员对应用的更改在编写后的几分钟内就能生效（假设它通过了自动化测试）。这更加便于持续接收和整合用户反馈。总而言之，所有这些 CI&#x2F;CD 的关联步骤都有助于降低应用的部署风险，因此更便于以小件的方式（而非一次性）发布对应用的更改。不过，由于还需要编写自动化测试以适应 CI&#x2F;CD 管道中的各种测试和发布阶段，因此前期投资还是会很大。</p>
+]]></content>
+      <categories>
+        <category>CI/CD</category>
+        <category>什么是CI/CD</category>
+      </categories>
+      <tags>
+        <tag>CI/CD</tag>
       </tags>
   </entry>
   <entry>
@@ -4439,33 +4466,6 @@ sudo yarn cache clean # 清除缓存
       </categories>
       <tags>
         <tag>性能优化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>什么是CI/CD</title>
-    <url>/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署"><a href="#CI-x2F-CD是什么？如何理解持续集成、持续交付和持续部署" class="headerlink" title="CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署"></a>CI&#x2F;CD是什么？如何理解持续集成、持续交付和持续部署</h1><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>CI&#x2F;CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。CI&#x2F;CD 的核心概念是持续集成、持续交付和持续部署。作为一个面向开发和运营团队的解决方案，CI&#x2F;CD 主要针对在集成新代码时所引发的问题（亦称：”集成地狱”）。</p>
-<p>具体而言，CI&#x2F;CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为”CI&#x2F;CD 管道”，由开发和运维团队以敏捷方式协同支持。</p>
-<h3 id="CI-是什么？CI-和-CD-有什么区别？"><a href="#CI-是什么？CI-和-CD-有什么区别？" class="headerlink" title="CI 是什么？CI 和 CD 有什么区别？"></a>CI 是什么？CI 和 CD 有什么区别？</h3><p>缩略词 CI &#x2F; CD 具有几个不同的含义。CI&#x2F;CD 中的”CI”始终指持续集成，它属于开发人员的自动化流程。成功的 CI 意味着应用代码的新更改会定期构建、测试并合并到共享存储库中。该解决方案可以解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</p>
-<p>CI&#x2F;CD 中的”CD”指的是持续交付和&#x2F;或持续部署，这些相关概念有时会交叉使用。两者都事关管道后续阶段的自动化，但它们有时也会单独使用，用于说明自动化程度。</p>
-<p>持续<em>交付</em>通常是指开发人员对应用的更改会自动进行错误测试并上传到存储库（如 GitHub或容器注册表），然后由运维团队将其部署到实时生产环境中。这旨在解决开发和运维团队之间可见性及沟通较差的问题。因此，持续交付的目的就是确保尽可能减少部署新代码时所需的工作量。</p>
-<p>持续<em>部署</em>（另一种”CD”）指的是自动将开发人员的更改从存储库发布到生产环境，以供客户使用。它主要为了解决因手动流程降低应用交付速度，从而使运维团队超负荷的问题。持续部署以持续交付的优势为根基，实现了管道后续阶段的自动化。</p>
-<p><img src="/2022/11/12/%E4%BB%80%E4%B9%88%E6%98%AFCI-CD/ci-cd-flow-desktop_edited_0.png" alt="CI/CD flow"></p>
-<p>CI&#x2F;CD 既可能仅指持续集成和持续交付构成的关联环节，也可以指持续集成、持续交付和持续部署这三项构成的关联环节。更为复杂的是，有时”持续交付”也包含了持续部署流程。</p>
-<p>归根结底，我们没必要纠结于这些语义，您只需记得 CI&#x2F;CD 其实就是一个流程（通常形象地表述为管道），用于实现应用开发中的高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于 CI&#x2F;CD 管道的自动化程度。许多企业最开始先添加 CI，然后逐步实现交付和部署的自动化（例如作为云原生应用的一部分）。</p>
-<h3 id="CI-持续集成（Continuous-Integration）"><a href="#CI-持续集成（Continuous-Integration）" class="headerlink" title="CI 持续集成（Continuous Integration）"></a>CI 持续集成（Continuous Integration）</h3><p>现代应用开发的目标是让多位开发人员同时处理同一应用的不同功能。但是，如果企业安排在一天内将所有分支源代码合并在一起（称为”合并日”），最终可能造成工作繁琐、耗时，而且需要手动完成。这是因为当一位独立工作的开发人员对应用进行更改时，有可能会与其他开发人员同时进行的更改发生冲突。如果每个开发人员都自定义自己的本地集成开发环境（IDE），而不是让团队就一个基于云的 IDE 达成一致，那么就会让问题更加雪上加霜。</p>
-<p>持续集成（CI）可以帮助开发人员更加频繁地（有时甚至每天）将代码更改合并到共享分支或”主干”中。一旦开发人员对应用所做的更改被合并，系统就会通过自动构建应用并运行不同级别的自动化测试（通常是单元测试和集成测试）来验证这些更改，确保这些更改没有对应用造成破坏。这意味着测试内容涵盖了从类和函数到构成整个应用的不同模块。如果自动化测试发现新代码和现有代码之间存在冲突，CI 可以更加轻松地快速修复这些错误。</p>
-<h3 id="CD-持续交付（Continuous-Delivery）"><a href="#CD-持续交付（Continuous-Delivery）" class="headerlink" title="CD 持续交付（Continuous Delivery）"></a>CD 持续交付（Continuous Delivery）</h3><p>完成 CI 中构建及单元测试和集成测试的自动化流程后，持续交付可自动将已验证的代码发布到存储库。为了实现高效的持续交付流程，务必要确保 CI 已内置于开发管道。持续交付的目标是拥有一个可随时部署到生产环境的代码库。</p>
-<p>在持续交付中，每个阶段（从代码更改的合并，到生产就绪型构建版本的交付）都涉及测试自动化和代码发布自动化。在流程结束时，运维团队可以快速、轻松地将应用部署到生产环境中。</p>
-<h3 id="CD-持续部署（Continuous-Deployment）"><a href="#CD-持续部署（Continuous-Deployment）" class="headerlink" title="CD 持续部署（Continuous Deployment）"></a>CD 持续部署（Continuous Deployment）</h3><p>对于一个成熟的 CI&#x2F;CD 管道来说，最后的阶段是持续部署。作为持续交付——自动将生产就绪型构建版本发布到代码存储库——的延伸，持续部署可以自动将应用发布到生产环境。由于在生产之前的管道阶段没有手动门控，因此持续部署在很大程度上都得依赖精心设计的测试自动化。</p>
-<p>实际上，持续部署意味着开发人员对应用的更改在编写后的几分钟内就能生效（假设它通过了自动化测试）。这更加便于持续接收和整合用户反馈。总而言之，所有这些 CI&#x2F;CD 的关联步骤都有助于降低应用的部署风险，因此更便于以小件的方式（而非一次性）发布对应用的更改。不过，由于还需要编写自动化测试以适应 CI&#x2F;CD 管道中的各种测试和发布阶段，因此前期投资还是会很大。</p>
-]]></content>
-      <categories>
-        <category>CI/CD</category>
-        <category>什么是CI/CD</category>
-      </categories>
-      <tags>
-        <tag>CI/CD</tag>
       </tags>
   </entry>
   <entry>
@@ -5740,80 +5740,6 @@ console.log(result)             //  faild    faild耗时短
       </tags>
   </entry>
   <entry>
-    <title>加载优化（视频加载）</title>
-    <url>/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="视频加载"><a href="#视频加载" class="headerlink" title="视频加载"></a>视频加载</h2><blockquote>
-<p>与延迟加载图像资源类似，通过视频标签引入的视频资源也可进行延迟加载，但通常都会根据需求场景进行具体的处理，下面就来探讨一 些关于 视频加载的优化内容。</p>
-</blockquote>
-<h3 id="一、不需要自动播放"><a href="#一、不需要自动播放" class="headerlink" title="一、不需要自动播放"></a>一、不需要自动播放</h3><p>​		由于Chrome等一些浏览器会对视频资源进行预加载，即在HTML完成加载和解析时触发DOMContentLoaded 事件开始请求视频资源，当请求完成后触发window. onload事件开始页面渲染，过程如图所示。</p>
-<p><img src="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230216103841965.png" alt="视频资源的加载"></p>
-<p>为了使页面更快地加载并渲染出来，可以阻止不需要自动播放的视频的预加载:其方法是通过视频标签的preload进行控制:</p>
-<pre><code class="html">&lt;video controls preload-&quot;none&quot; poster=&quot;default.1po9&quot;&gt;
-        &lt;source src=&quot;simply.webm&quot; type-&quot;video/webm&quot;&gt;
-        &lt;source src=&quot;simply.mp4&quot; tye-&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
-</code></pre>
-<p>标签的preload属性通常的默认值为auto，表示无论用户是否希望，所有视频文件都会被自动下载，这里将其设置为none，来阻止视频的自动加载。同时这里还通过poster属性为视频提供占位符图片，它的作用是当视频未加载出来时，不至于在页面中呈现一块让用户未知的空白。考虑类似边缘异常场最是必要的，因为浏览器对视烦的加载行为可能存在较大差别。</p>
-<ul>
-<li>Chrome之前的版本中，preload的默认值是auto,从64版本以后其默人值改为了metadata, 表示仅加载视频的元数据，Firefox、 IE11和Edge等浏览器的行为类似。</li>
-<li>Safari 11.0的Mac版会默认进行部分视频资源预加载，11.2的Mac版后仅可预加载元数据，但ios的Safari不会对视频预加载。</li>
-<li>若浏览器开启了流量节省模式后，preload 将默认设置为none.</li>
-</ul>
-<p>​		当浏览器支持preload的metadata属性值后，这将会是一种兼顾了 性能与体验后更优的方式，因为从体验上讲，对于不自动播放的视频场景，在单击播放之前，若能提前告知视频的播放时长、播放列表等元数据，便能带给用户更好的可控感，同时又不至于提前加载了过多资源而阻塞页面渲染。</p>
-<p>另外， 如果你的站点中包含了同一域名下的多个视频资源，那么推荐最好将preload属性设置为metadata,或者定义poster属性值时将preload设置为none,这样能很好地避免HTTP的最大连接数，因为通常HTTP 1.1协议规定同一城名下的最大连接数为6,如果同时有超过此数量的资源请求连接，那么多余的连接便会被挂起，这无疑也会对性能造成负面影响。</p>
-<h3 id="二、视频代替GIF动画"><a href="#二、视频代替GIF动画" class="headerlink" title="二、视频代替GIF动画"></a>二、视频代替GIF动画</h3><p>​		另一种视频的使用场最是在前面章节讲到的:应当尽量用视频代替尺寸过大的GIF动画，虽然GIF动画的应用历史和范围都很广泛，但其在输出文件大小、图像色彩质量等许多方面的表现均不如视频。GIF动画相对于视频具有三个附加的特性:没有音轨、连续循环播放、加载完自动播放，替换成视频后类似于:</p>
-<pre><code class="html">&lt;video autoplay muted loop playsinline&gt;
-        &lt;source src-&quot;video.webm&quot; type-&quot;video/webm&quot;&gt;
-        &lt;source srC-&quot;video .mp4&quot;type-&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
-</code></pre>
-<p>​		其中在视频标签中附加的属性含义分别为:autoplay自动播放、muted 静音播放及loop循环播放，而playsinline属性则是用于在ios中指定自动播放的。虽然有了GIF图像的替代方案，但并非所有浏览器都像Chrome一样， 能自动进行延迟加载。接下来就需要进行一些配置开发， 使该场最的视频也能延迟加载。首先修改HTML标签如下:</p>
-<pre><code class="html">&lt;video autoplay muted loop playsinline width=&quot;610&quot; height=&quot;254&quot; poster=&quot;video-poster.jpg&quot;&gt;
-        &lt;source data-src=&quot;video. webm&quot; type=&quot;video/webm&quot;&gt;
-        &lt;source data-src=&quot;video .mp4&quot; type=&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
-</code></pre>
-<p>​		这里进行了两处修改:首先是为视频标签添加了poster 属性，意为使用poster中指定的图片作为视频延迟加载出现前的占位;其次是使用了类似应对图像延迟加载的方式，将真实视频资源的URL放在data-src属性中，然后基于Intersection Observer用JavaScript实现对延迟加载的控制:</p>
-<pre><code class="js">Document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; &#123;
-  const lazyVideos = [].slice.call(document.querySelectorAll(&quot;video.lazy&quot;));
-  if (&quot;IntersectionObserver&quot; in window) &#123;
-    const lazyVideoObserver = new IntersectionObserver((entries, observer) =&gt; &#123;
-      entries.forEach((video) =&gt; &#123;
-        if (video.isIntersecting) &#123;
-          for (const source in video.target.children) &#123;
-            const videoSrc = video.target.children[source];
-            if (
-              typeof videoSrc.tagName === &quot;string&quot; &amp;&amp;
-              videoSrc.tagName === &quot;source&quot;
-            ) &#123;
-              videoSrc.src = videoSrc.dataset.src;
-            &#125;
-          &#125;
-          video.target.load();
-          video.target.classList.remove(&quot;lazy&quot;);
-          lazyVideoObserver.unobserve(video.target);
-        &#125;
-      &#125;);
-    &#125;);
-
-    lazyVideos.forEach((lazyVideo) =&gt; &#123;
-      lazyVideoObserver.observe(lazyVideo);
-    &#125;);
-  &#125;
-&#125;);
-</code></pre>
-<p>​		对视频标签的延迟加载有点类似<picture>,需要对所有<source> 子元素进行选代解析，将data-src上的属性值迁移到src属性上。不同的是，需要额外显示调用元素的load方法来触发加载，然后视频才会根据autoplay属性开始进行自动播放。如此便可使用低于GIF动画的流量消耗，进行资源的延迟加载。</p>
-]]></content>
-      <categories>
-        <category>前端性能优化</category>
-        <category>加载优化（视频加载）</category>
-      </categories>
-      <tags>
-        <tag>性能优化</tag>
-        <tag>视频加载</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>加载优化（加载注意事项）</title>
     <url>/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="加载注意事项"><a href="#加载注意事项" class="headerlink" title="加载注意事项"></a>加载注意事项</h2><blockquote>
@@ -5969,6 +5895,174 @@ Hello World!
       </tags>
   </entry>
   <entry>
+    <title>加载优化（视频加载）</title>
+    <url>/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="视频加载"><a href="#视频加载" class="headerlink" title="视频加载"></a>视频加载</h2><blockquote>
+<p>与延迟加载图像资源类似，通过视频标签引入的视频资源也可进行延迟加载，但通常都会根据需求场景进行具体的处理，下面就来探讨一 些关于 视频加载的优化内容。</p>
+</blockquote>
+<h3 id="一、不需要自动播放"><a href="#一、不需要自动播放" class="headerlink" title="一、不需要自动播放"></a>一、不需要自动播放</h3><p>​		由于Chrome等一些浏览器会对视频资源进行预加载，即在HTML完成加载和解析时触发DOMContentLoaded 事件开始请求视频资源，当请求完成后触发window. onload事件开始页面渲染，过程如图所示。</p>
+<p><img src="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230216103841965.png" alt="视频资源的加载"></p>
+<p>为了使页面更快地加载并渲染出来，可以阻止不需要自动播放的视频的预加载:其方法是通过视频标签的preload进行控制:</p>
+<pre><code class="html">&lt;video controls preload-&quot;none&quot; poster=&quot;default.1po9&quot;&gt;
+        &lt;source src=&quot;simply.webm&quot; type-&quot;video/webm&quot;&gt;
+        &lt;source src=&quot;simply.mp4&quot; tye-&quot;video/mp4&quot;&gt;
+&lt;/video&gt;
+</code></pre>
+<p>标签的preload属性通常的默认值为auto，表示无论用户是否希望，所有视频文件都会被自动下载，这里将其设置为none，来阻止视频的自动加载。同时这里还通过poster属性为视频提供占位符图片，它的作用是当视频未加载出来时，不至于在页面中呈现一块让用户未知的空白。考虑类似边缘异常场最是必要的，因为浏览器对视烦的加载行为可能存在较大差别。</p>
+<ul>
+<li>Chrome之前的版本中，preload的默认值是auto,从64版本以后其默人值改为了metadata, 表示仅加载视频的元数据，Firefox、 IE11和Edge等浏览器的行为类似。</li>
+<li>Safari 11.0的Mac版会默认进行部分视频资源预加载，11.2的Mac版后仅可预加载元数据，但ios的Safari不会对视频预加载。</li>
+<li>若浏览器开启了流量节省模式后，preload 将默认设置为none.</li>
+</ul>
+<p>​		当浏览器支持preload的metadata属性值后，这将会是一种兼顾了 性能与体验后更优的方式，因为从体验上讲，对于不自动播放的视频场景，在单击播放之前，若能提前告知视频的播放时长、播放列表等元数据，便能带给用户更好的可控感，同时又不至于提前加载了过多资源而阻塞页面渲染。</p>
+<p>另外， 如果你的站点中包含了同一域名下的多个视频资源，那么推荐最好将preload属性设置为metadata,或者定义poster属性值时将preload设置为none,这样能很好地避免HTTP的最大连接数，因为通常HTTP 1.1协议规定同一城名下的最大连接数为6,如果同时有超过此数量的资源请求连接，那么多余的连接便会被挂起，这无疑也会对性能造成负面影响。</p>
+<h3 id="二、视频代替GIF动画"><a href="#二、视频代替GIF动画" class="headerlink" title="二、视频代替GIF动画"></a>二、视频代替GIF动画</h3><p>​		另一种视频的使用场最是在前面章节讲到的:应当尽量用视频代替尺寸过大的GIF动画，虽然GIF动画的应用历史和范围都很广泛，但其在输出文件大小、图像色彩质量等许多方面的表现均不如视频。GIF动画相对于视频具有三个附加的特性:没有音轨、连续循环播放、加载完自动播放，替换成视频后类似于:</p>
+<pre><code class="html">&lt;video autoplay muted loop playsinline&gt;
+        &lt;source src-&quot;video.webm&quot; type-&quot;video/webm&quot;&gt;
+        &lt;source srC-&quot;video .mp4&quot;type-&quot;video/mp4&quot;&gt;
+&lt;/video&gt;
+</code></pre>
+<p>​		其中在视频标签中附加的属性含义分别为:autoplay自动播放、muted 静音播放及loop循环播放，而playsinline属性则是用于在ios中指定自动播放的。虽然有了GIF图像的替代方案，但并非所有浏览器都像Chrome一样， 能自动进行延迟加载。接下来就需要进行一些配置开发， 使该场最的视频也能延迟加载。首先修改HTML标签如下:</p>
+<pre><code class="html">&lt;video autoplay muted loop playsinline width=&quot;610&quot; height=&quot;254&quot; poster=&quot;video-poster.jpg&quot;&gt;
+        &lt;source data-src=&quot;video. webm&quot; type=&quot;video/webm&quot;&gt;
+        &lt;source data-src=&quot;video .mp4&quot; type=&quot;video/mp4&quot;&gt;
+&lt;/video&gt;
+</code></pre>
+<p>​		这里进行了两处修改:首先是为视频标签添加了poster 属性，意为使用poster中指定的图片作为视频延迟加载出现前的占位;其次是使用了类似应对图像延迟加载的方式，将真实视频资源的URL放在data-src属性中，然后基于Intersection Observer用JavaScript实现对延迟加载的控制:</p>
+<pre><code class="js">Document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; &#123;
+  const lazyVideos = [].slice.call(document.querySelectorAll(&quot;video.lazy&quot;));
+  if (&quot;IntersectionObserver&quot; in window) &#123;
+    const lazyVideoObserver = new IntersectionObserver((entries, observer) =&gt; &#123;
+      entries.forEach((video) =&gt; &#123;
+        if (video.isIntersecting) &#123;
+          for (const source in video.target.children) &#123;
+            const videoSrc = video.target.children[source];
+            if (
+              typeof videoSrc.tagName === &quot;string&quot; &amp;&amp;
+              videoSrc.tagName === &quot;source&quot;
+            ) &#123;
+              videoSrc.src = videoSrc.dataset.src;
+            &#125;
+          &#125;
+          video.target.load();
+          video.target.classList.remove(&quot;lazy&quot;);
+          lazyVideoObserver.unobserve(video.target);
+        &#125;
+      &#125;);
+    &#125;);
+
+    lazyVideos.forEach((lazyVideo) =&gt; &#123;
+      lazyVideoObserver.observe(lazyVideo);
+    &#125;);
+  &#125;
+&#125;);
+</code></pre>
+<p>​		对视频标签的延迟加载有点类似<picture>,需要对所有<source> 子元素进行选代解析，将data-src上的属性值迁移到src属性上。不同的是，需要额外显示调用元素的load方法来触发加载，然后视频才会根据autoplay属性开始进行自动播放。如此便可使用低于GIF动画的流量消耗，进行资源的延迟加载。</p>
+]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>加载优化（视频加载）</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+        <tag>视频加载</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何上传npm包</title>
+    <url>/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何上传自己的npm包"><a href="#如何上传自己的npm包" class="headerlink" title="如何上传自己的npm包"></a>如何上传自己的npm包</h1><h3 id="一、创建自己的npm账号"><a href="#一、创建自己的npm账号" class="headerlink" title="一、创建自己的npm账号"></a>一、创建自己的npm账号</h3><p>[npm官网]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
+<h3 id="二、创建npm包目录"><a href="#二、创建npm包目录" class="headerlink" title="二、创建npm包目录"></a>二、创建npm包目录</h3><pre><code class="ini">mkdir npm-me // 在终端输入以下命令，npm-me为包的目录，可以自己任意取名
+cd npm-me // 进入包目录
+</code></pre>
+<h3 id="三、-编写模块"><a href="#三、-编写模块" class="headerlink" title="三、 编写模块"></a>三、 编写模块</h3><p>在npm-me目录下创建 ifYes.js文件</p>
+<pre><code class="javascript">//ifYes.js
+exports.ifYes = function() &#123;
+    return &quot;If you&#39;re late, your wages will be docked&quot;
+&#125;
+</code></pre>
+<h3 id="四、-初始化包描述文件"><a href="#四、-初始化包描述文件" class="headerlink" title="四、 初始化包描述文件"></a>四、 初始化包描述文件</h3><pre><code class="ini">npm init //初始化会生成package.json文件
+</code></pre>
+<p>初始化的过程会出现一系列的问题，根据我们自己的情况去选择就可以，如果没有其他要求，回车就可哟</p>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110143318339.png"></p>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110143450471.png"></p>
+<h3 id="五、注册包仓库账号"><a href="#五、注册包仓库账号" class="headerlink" title="五、注册包仓库账号"></a>五、注册包仓库账号</h3><pre><code class="ini">npm adduser
+</code></pre>
+<p>当你没有创建npm账户或者输入错误的账户和密码，都会出现下面的error</p>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110143800873.png"></p>
+<p>这是处理正确的结果（确认的时候需要接收验证码：例30466554）</p>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110144117450.png"></p>
+<h3 id="六、上传包"><a href="#六、上传包" class="headerlink" title="六、上传包"></a>六、上传包</h3><pre><code class="ini">npm publish 包文件夹名字 //上传npm命令格式
+</code></pre>
+<p>1.为了不出现npm命名冲突，第一个方法是在npm官网查一下，如果重复就需要重新修改一下（现在我的npm包就冲突了）</p>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110144658634.png"></p>
+<p>2.当你上传npm包的时候可能才会发现npm命名冲突</p>
+<pre><code class="ini">npm publish . //上传npm包
+</code></pre>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110145002168.png"></p>
+<p>修改后上传</p>
+<pre><code class="javascript">//package.json
+&#123;
+  &quot;name&quot;: &quot;alan-npm-me&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;If you&#39;re late, your wages will be docked&quot;,
+  &quot;main&quot;: &quot;ifYes.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  &#125;,
+  &quot;keywords&quot;: [
+    &quot;ifYes&quot;
+  ],
+  &quot;author&quot;: &quot;alan_mf&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+&#125;
+</code></pre>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110145126857.png"></p>
+<p>上传成功啦啦啦</p>
+<p>npm账户上可以看到我们上传的包</p>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110151414170.png"></p>
+<h3 id="七、-更新npm包"><a href="#七、-更新npm包" class="headerlink" title="七、 更新npm包"></a>七、 更新npm包</h3><p>npm包修改后，手动把package.json里的version版本号修改了，或者使用以下命令自动更新版本号，再执行npm publish . 命令就可以了。</p>
+<ul>
+<li>升级补丁版本号(修改bug)：npm version patch</li>
+<li>升级小版本号(新增功能)：npm version minor</li>
+<li>升级大版本号(较大改版)：npm version major</li>
+</ul>
+<pre><code class="ini">npm version patch //补丁
+npm publish . //更新npm包
+</code></pre>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110151715232.png"></p>
+<p>更新成功版本1.0.1</p>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110151928908.png"></p>
+<h3 id="八、-对上传的npm进行测试"><a href="#八、-对上传的npm进行测试" class="headerlink" title="八、 对上传的npm进行测试"></a>八、 对上传的npm进行测试</h3><pre><code class="ini">mkdir npm-me-test //新建目录
+cd  npm-me-test //进入目录
+</code></pre>
+<p>下载我们上传的npm包</p>
+<pre><code class="ini">npm init -y //初始化生成package.json文件
+npm install alan-npm-me -D
+</code></pre>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110153117681.png"></p>
+<p>创建test.js文件并编写代码</p>
+<pre><code class="javascript">//test.js
+const demo = require(&#39;alan-npm-me&#39;);
+const res = demo.ifYes();
+console.log(res);
+</code></pre>
+<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110153427301.png"></p>
+<p>目前我们所开发的都是共享的npm包，具有一定的安全性风险，如果用于企业，就会具有一定的风险。企业的限制在于，一方面需要享受模块开发带来的低耦合和项目组织上的好处，另一方面却要考虑到模块保密性的问题。所以，通过NPM共享和发布存在潜在的风险。</p>
+<p>为了同时能够享受到NPM上众多的包，同时对自己的包进行保密和限制，现有的解决方案就是企业搭建自己的NPM仓库。局域NPM仓库的搭建方法与搭建镜像站的方式几乎一样，与镜像仓库不同的地方在于，企业局域NPM可以选择不同步官方源仓库中的包，即企业可混合使用官方仓库和局域仓库。</p>
+<p>对于企业内部而言，私有的可重用模块可以打包到局域NPM仓库中，这样可以保持更新的中心化，不至于让各个小项目各自维护相同功能的模块，杜绝通过复制粘贴实现代码共享的行为。</p>
+<p>链接：</p>
+<p>[npm官网]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
+]]></content>
+      <categories>
+        <category>npm&amp;yarn</category>
+        <category>上传自己的npm包</category>
+      </categories>
+      <tags>
+        <tag>npm</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何搭建一个自己的博客平台（github+hexo）</title>
     <url>/2022/08/27/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2%E5%B9%B3%E5%8F%B0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何搭建一个自己的博客平台（github-hexo）"><a href="#如何搭建一个自己的博客平台（github-hexo）" class="headerlink" title="如何搭建一个自己的博客平台（github+hexo）"></a>如何搭建一个自己的博客平台（github+hexo）</h1><h2 id="一、下载node-js"><a href="#一、下载node-js" class="headerlink" title="一、下载node.js"></a>一、下载node.js</h2><p>直接到<a href="https://nodejs.org/zh-cn/">node.js官网</a>下载就可以了</p>
@@ -6076,152 +6170,6 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
       </tags>
   </entry>
   <entry>
-    <title>如何上传npm包</title>
-    <url>/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何上传自己的npm包"><a href="#如何上传自己的npm包" class="headerlink" title="如何上传自己的npm包"></a>如何上传自己的npm包</h1><h3 id="一、创建自己的npm账号"><a href="#一、创建自己的npm账号" class="headerlink" title="一、创建自己的npm账号"></a>一、创建自己的npm账号</h3><p>[npm官网]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
-<h3 id="二、创建npm包目录"><a href="#二、创建npm包目录" class="headerlink" title="二、创建npm包目录"></a>二、创建npm包目录</h3><pre><code class="ini">mkdir npm-me // 在终端输入以下命令，npm-me为包的目录，可以自己任意取名
-cd npm-me // 进入包目录
-</code></pre>
-<h3 id="三、-编写模块"><a href="#三、-编写模块" class="headerlink" title="三、 编写模块"></a>三、 编写模块</h3><p>在npm-me目录下创建 ifYes.js文件</p>
-<pre><code class="javascript">//ifYes.js
-exports.ifYes = function() &#123;
-    return &quot;If you&#39;re late, your wages will be docked&quot;
-&#125;
-</code></pre>
-<h3 id="四、-初始化包描述文件"><a href="#四、-初始化包描述文件" class="headerlink" title="四、 初始化包描述文件"></a>四、 初始化包描述文件</h3><pre><code class="ini">npm init //初始化会生成package.json文件
-</code></pre>
-<p>初始化的过程会出现一系列的问题，根据我们自己的情况去选择就可以，如果没有其他要求，回车就可哟</p>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110143318339.png"></p>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110143450471.png"></p>
-<h3 id="五、注册包仓库账号"><a href="#五、注册包仓库账号" class="headerlink" title="五、注册包仓库账号"></a>五、注册包仓库账号</h3><pre><code class="ini">npm adduser
-</code></pre>
-<p>当你没有创建npm账户或者输入错误的账户和密码，都会出现下面的error</p>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110143800873.png"></p>
-<p>这是处理正确的结果（确认的时候需要接收验证码：例30466554）</p>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110144117450.png"></p>
-<h3 id="六、上传包"><a href="#六、上传包" class="headerlink" title="六、上传包"></a>六、上传包</h3><pre><code class="ini">npm publish 包文件夹名字 //上传npm命令格式
-</code></pre>
-<p>1.为了不出现npm命名冲突，第一个方法是在npm官网查一下，如果重复就需要重新修改一下（现在我的npm包就冲突了）</p>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110144658634.png"></p>
-<p>2.当你上传npm包的时候可能才会发现npm命名冲突</p>
-<pre><code class="ini">npm publish . //上传npm包
-</code></pre>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110145002168.png"></p>
-<p>修改后上传</p>
-<pre><code class="javascript">//package.json
-&#123;
-  &quot;name&quot;: &quot;alan-npm-me&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;If you&#39;re late, your wages will be docked&quot;,
-  &quot;main&quot;: &quot;ifYes.js&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
-  &#125;,
-  &quot;keywords&quot;: [
-    &quot;ifYes&quot;
-  ],
-  &quot;author&quot;: &quot;alan_mf&quot;,
-  &quot;license&quot;: &quot;ISC&quot;
-&#125;
-</code></pre>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110145126857.png"></p>
-<p>上传成功啦啦啦</p>
-<p>npm账户上可以看到我们上传的包</p>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110151414170.png"></p>
-<h3 id="七、-更新npm包"><a href="#七、-更新npm包" class="headerlink" title="七、 更新npm包"></a>七、 更新npm包</h3><p>npm包修改后，手动把package.json里的version版本号修改了，或者使用以下命令自动更新版本号，再执行npm publish . 命令就可以了。</p>
-<ul>
-<li>升级补丁版本号(修改bug)：npm version patch</li>
-<li>升级小版本号(新增功能)：npm version minor</li>
-<li>升级大版本号(较大改版)：npm version major</li>
-</ul>
-<pre><code class="ini">npm version patch //补丁
-npm publish . //更新npm包
-</code></pre>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110151715232.png"></p>
-<p>更新成功版本1.0.1</p>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110151928908.png"></p>
-<h3 id="八、-对上传的npm进行测试"><a href="#八、-对上传的npm进行测试" class="headerlink" title="八、 对上传的npm进行测试"></a>八、 对上传的npm进行测试</h3><pre><code class="ini">mkdir npm-me-test //新建目录
-cd  npm-me-test //进入目录
-</code></pre>
-<p>下载我们上传的npm包</p>
-<pre><code class="ini">npm init -y //初始化生成package.json文件
-npm install alan-npm-me -D
-</code></pre>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110153117681.png"></p>
-<p>创建test.js文件并编写代码</p>
-<pre><code class="javascript">//test.js
-const demo = require(&#39;alan-npm-me&#39;);
-const res = demo.ifYes();
-console.log(res);
-</code></pre>
-<p><img src="/2022/11/10/%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0npm%E5%8C%85/image-20221110153427301.png"></p>
-<p>目前我们所开发的都是共享的npm包，具有一定的安全性风险，如果用于企业，就会具有一定的风险。企业的限制在于，一方面需要享受模块开发带来的低耦合和项目组织上的好处，另一方面却要考虑到模块保密性的问题。所以，通过NPM共享和发布存在潜在的风险。</p>
-<p>为了同时能够享受到NPM上众多的包，同时对自己的包进行保密和限制，现有的解决方案就是企业搭建自己的NPM仓库。局域NPM仓库的搭建方法与搭建镜像站的方式几乎一样，与镜像仓库不同的地方在于，企业局域NPM可以选择不同步官方源仓库中的包，即企业可混合使用官方仓库和局域仓库。</p>
-<p>对于企业内部而言，私有的可重用模块可以打包到局域NPM仓库中，这样可以保持更新的中心化，不至于让各个小项目各自维护相同功能的模块，杜绝通过复制粘贴实现代码共享的行为。</p>
-<p>链接：</p>
-<p>[npm官网]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
-]]></content>
-      <categories>
-        <category>npm&amp;yarn</category>
-        <category>上传自己的npm包</category>
-      </categories>
-      <tags>
-        <tag>npm</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>宝塔Linux部署</title>
-    <url>/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="宝塔Linux部署"><a href="#宝塔Linux部署" class="headerlink" title="宝塔Linux部署"></a>宝塔Linux部署</h1><h3 id="一、购买云服务器"><a href="#一、购买云服务器" class="headerlink" title="一、购买云服务器"></a>一、购买云服务器</h3><p>[阿里云官网]: 	“<a href="https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955">https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955</a> “</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100233843.png"></p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100305806.png"></p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100353042.png"></p>
-<p>当我购买了云服务器，那我们就可以登陆我们的服务器去下载mac的宝塔面板（通过外网地址访问浏览器）</p>
-<h3 id="二、登陆云服务器"><a href="#二、登陆云服务器" class="headerlink" title="二、登陆云服务器"></a>二、登陆云服务器</h3><p>初始化（重置）实例密码</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101533088.png"></p>
-<p>输入Password密码和实例密码</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100757824.png"></p>
-<h3 id="三、安装宝塔"><a href="#三、安装宝塔" class="headerlink" title="三、安装宝塔"></a>三、安装宝塔</h3><p>然后可以看到已经进了服务器，那么我们就可以开始安装了</p>
-<pre><code class="php">yum install -y wget &amp;&amp; wget -O install.sh http://download.bt.cn/install/install_6.0.sh &amp;&amp; sh install.sh fa1f2600
-</code></pre>
-<p>稍等片刻后，输入“y”继续</p>
-<p>下载成功之后，就会出现账户和密码和访问地址</p>
-<p>我们通过外网面板地址访问</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101323474.png"></p>
-<p>如果现在无法访问的话，就去阿里云服务器实例安全组添加提示端口</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101750883.png"></p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101826756.png"></p>
-<p>现在应该可以访问了，如果还不行就添加8888端口</p>
-<h3 id="四、配置宝塔"><a href="#四、配置宝塔" class="headerlink" title="四、配置宝塔"></a>四、配置宝塔</h3><p>当我们访问成功，根据提示安装宝塔面板所需要的创建就可以了</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102042938.png"></p>
-<p>如果我们下载插件时间过长，重启宝塔面板</p>
-<h3 id="五、创建站点"><a href="#五、创建站点" class="headerlink" title="五、创建站点"></a>五、创建站点</h3><p>我们来创建我们第一个站点</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102605290.png"></p>
-<p>提交的时候我们可能遇见下面的提示，配置错误</p>
-<pre><code class="ini">nginx: [emerg] open() &quot;/www/server/nginx/conf/enable-php.conf&quot; failed (2: No such file or directory) in /www/server/nginx/conf/nginx.conf:79 nginx: configuration file /www/server/nginx/conf/nginx.conf test failed
-</code></pre>
-<p>有一个最简单的方案就是，替换nginx 的版本，换一个更低一点的版本</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102833852.png"></p>
-<p>重启宝塔面板就可以了</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102931757.png"></p>
-<h3 id="六、上传站点部署文件"><a href="#六、上传站点部署文件" class="headerlink" title="六、上传站点部署文件"></a>六、上传站点部署文件</h3><p>选择要上传文件的站点</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103700868.png"></p>
-<p>选择要上传的文件，可以拖拽</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103850298.png"></p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115104445278.png"></p>
-<p>那么我们现在访问网站就可以了</p>
-<p>如果还是访问不到的话（阿里云购买的域名），建议先进行备案，然后再部署网站</p>
-<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115132138765.png"></p>
-]]></content>
-      <categories>
-        <category>CI/CD</category>
-        <category>宝塔Linux部署</category>
-      </categories>
-      <tags>
-        <tag>CD</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何设计一个组件</title>
     <url>/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="如何设计一个组件"><a href="#如何设计一个组件" class="headerlink" title="如何设计一个组件"></a>如何设计一个组件</h1><blockquote>
@@ -6322,6 +6270,58 @@ console.log(res);
       </categories>
       <tags>
         <tag>组件设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>宝塔Linux部署</title>
+    <url>/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="宝塔Linux部署"><a href="#宝塔Linux部署" class="headerlink" title="宝塔Linux部署"></a>宝塔Linux部署</h1><h3 id="一、购买云服务器"><a href="#一、购买云服务器" class="headerlink" title="一、购买云服务器"></a>一、购买云服务器</h3><p>[阿里云官网]: 	“<a href="https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955">https://cn.aliyun.com/?from_alibabacloud=&amp;utm_content=se_1013083955</a> “</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100233843.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100305806.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100353042.png"></p>
+<p>当我购买了云服务器，那我们就可以登陆我们的服务器去下载mac的宝塔面板（通过外网地址访问浏览器）</p>
+<h3 id="二、登陆云服务器"><a href="#二、登陆云服务器" class="headerlink" title="二、登陆云服务器"></a>二、登陆云服务器</h3><p>初始化（重置）实例密码</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101533088.png"></p>
+<p>输入Password密码和实例密码</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115100757824.png"></p>
+<h3 id="三、安装宝塔"><a href="#三、安装宝塔" class="headerlink" title="三、安装宝塔"></a>三、安装宝塔</h3><p>然后可以看到已经进了服务器，那么我们就可以开始安装了</p>
+<pre><code class="php">yum install -y wget &amp;&amp; wget -O install.sh http://download.bt.cn/install/install_6.0.sh &amp;&amp; sh install.sh fa1f2600
+</code></pre>
+<p>稍等片刻后，输入“y”继续</p>
+<p>下载成功之后，就会出现账户和密码和访问地址</p>
+<p>我们通过外网面板地址访问</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101323474.png"></p>
+<p>如果现在无法访问的话，就去阿里云服务器实例安全组添加提示端口</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101750883.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115101826756.png"></p>
+<p>现在应该可以访问了，如果还不行就添加8888端口</p>
+<h3 id="四、配置宝塔"><a href="#四、配置宝塔" class="headerlink" title="四、配置宝塔"></a>四、配置宝塔</h3><p>当我们访问成功，根据提示安装宝塔面板所需要的创建就可以了</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102042938.png"></p>
+<p>如果我们下载插件时间过长，重启宝塔面板</p>
+<h3 id="五、创建站点"><a href="#五、创建站点" class="headerlink" title="五、创建站点"></a>五、创建站点</h3><p>我们来创建我们第一个站点</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102605290.png"></p>
+<p>提交的时候我们可能遇见下面的提示，配置错误</p>
+<pre><code class="ini">nginx: [emerg] open() &quot;/www/server/nginx/conf/enable-php.conf&quot; failed (2: No such file or directory) in /www/server/nginx/conf/nginx.conf:79 nginx: configuration file /www/server/nginx/conf/nginx.conf test failed
+</code></pre>
+<p>有一个最简单的方案就是，替换nginx 的版本，换一个更低一点的版本</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102833852.png"></p>
+<p>重启宝塔面板就可以了</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115102931757.png"></p>
+<h3 id="六、上传站点部署文件"><a href="#六、上传站点部署文件" class="headerlink" title="六、上传站点部署文件"></a>六、上传站点部署文件</h3><p>选择要上传文件的站点</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103700868.png"></p>
+<p>选择要上传的文件，可以拖拽</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115103850298.png"></p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115104445278.png"></p>
+<p>那么我们现在访问网站就可以了</p>
+<p>如果还是访问不到的话（阿里云购买的域名），建议先进行备案，然后再部署网站</p>
+<p><img src="/2022/11/15/%E5%AE%9D%E5%A1%94Linux%E9%83%A8%E7%BD%B2/image-20221115132138765.png"></p>
+]]></content>
+      <categories>
+        <category>CI/CD</category>
+        <category>宝塔Linux部署</category>
+      </categories>
+      <tags>
+        <tag>CD</tag>
       </tags>
   </entry>
   <entry>
@@ -6709,6 +6709,115 @@ class ErrorBoundary extends React.Component &#123;
       </tags>
   </entry>
   <entry>
+    <title>渲染优化（页面渲染性能）</title>
+    <url>/2023/03/01/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="页面渲染性能"><a href="#页面渲染性能" class="headerlink" title="页面渲染性能"></a>页面渲染性能</h1><blockquote>
+<p>​		如果把浏览器呈现页面的整个过程一分为二，前面所讨论的诸如图像资源优化、加载优化，以及构建中如何压缩资源大小等，都可视为浏览器为呈现页面请求所需资源的部分:本篇将主要关注浏览器获取到资源后，进行渲染部分的相关优化内容。在前面前端页面的生命周期中，介绍过关键渲染路径的概念，浏览器通过这个过程对HTML、CSS、JavaScript 等资源文件进行解析，然后组织渲染出最终的页面。本篇将以此为基础，对渲染过程进行更深入的讨论，不仅包括打开一个网站的首次渲染，还有用户与页面进行交互后导致页面更改的渲染，即所谓的重绘与重排。其中除了对渲染过程的充分介绍，更重要的是对提升渲染过程性能的优化手段的探讨。</p>
+<p>​		本节我们需要明白，页面渲染阶段对性能体验的影响与资源加载阶段同样重要，而对于涉及高交互频次的应用来说可能更加重要。为了方便后文对渲染优化进行深入分析，本节稍后会将整个渲染过程划分为五个串行阶段进行概述。其实优化渲染的实质，就是尽量压缩每个阶段的执行时间或跳过某些阶段的执行。</p>
+</blockquote>
+<h3 id="一、流畅的使用体验"><a href="#一、流畅的使用体验" class="headerlink" title="一、流畅的使用体验"></a>一、流畅的使用体验</h3><p>​		随着网站承载的业务种类越来越多，业务复杂性越来越高，用户的使用要求也跟着升高。不但网站页面要快速加载出来，而且运行过程也应更顺畅，在响应用户操作时也要更加及时，比如我们通常使用手机浏览网上商城时，指尖滑动屏幕与页面滚动应很流畅，拒绝卡顿。那么要达到怎样的性能指标，才能满足用户流畅的使用体验呢?</p>
+<p>​		目前大部分设备的屏幕分辨率都在60fps左右，也就是每秒屏幕会刷新60次，所以要满足用户的体验期望，就需要浏览器在渲染页面动画或响应用户操作时，每一帧的生成速率尽量接近屏幕的刷新率。若按照60fps来算，则留给每一帧画面的时间不到17ms再除去浏览器对资源的一些整理工作，帧画面的渲染应尽 量在10ms内完成，如果达不到要求而导致帧率下降，则屏幕上的内容会发生抖动或卡顿。</p>
+<h3 id="二、渲染过程"><a href="#二、渲染过程" class="headerlink" title="二、渲染过程"></a>二、渲染过程</h3><p>​		为了使每一帧页面渲染的开销都能在期望的时间范围内完成，就需要开发者了解谊染过程的每个阶段，以及各阶段中有哪些优化空间是我们力所能及的。经过分析根据开发者对优化渲染过程的控制力度，可以大体将其划分为五个部分: JavaScript 处里计算样式、页面布局、绘制与合成，下面先简要介绍各部分的功能与作用。</p>
+<ul>
+<li>JavaScript处理:	前端项目中经常会需要响应用户操作，通过JavaScript对数据集进行计算、操作DOM元素，并展示动画等视觉效果。当然对于动画的实现，除了JavaScript,也可以考虑使用如CSS Animations、Transitions 等技术。</li>
+<li>计算样式:    在解析CSS文件后，浏览器需要根据各种选择器去匹配所要应用CSS规则的元素节点，然后计算出每个元素的最终样式。</li>
+<li>页面布局:   指的是浏览器在计算完成样式后，会对每个元素尺寸大小和屏幕位置进行计算。由于每个元素都可能会受到其他元素的影响，并且位于DOM树形结构中的子节点元素，总会受到父级元素修改的影响，所以页面布局的计算会经常发生。</li>
+<li>绘制:   在页面布局确定后，接下来便可以绘制元素的可视内容，包括颜色、边框、阴影及文本和图像。</li>
+<li>合成:   通常由于页面中的不同部分可能被绘制在多个图层上，所以在绘制完成后需要将多个图层按照正确的顺序在屏幕上合成，以便最终正确地渲染出来，如图所示。</li>
+</ul>
+<p><img src="/2023/03/01/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%EF%BC%89/image-20230301101322559.png" alt="渲染过程"></p>
+<p>​		这个过程中的每一阶段都有可能产生卡顿，本章后续章节将会对各阶段所涉及的性能优化进行详细介绍。这里值得说明的是，并非对于每一帧画面都会经历这五个部分。比如仅修改与绘制相关的属性(文字颜色、背景图片或边缘阴影等)，而未对页面布局产生任何修改，那么在计算样式阶段完成后，便会跳过页面布局直接执行绘制。如果所更改的属性既不影响页面布局又不需要重新绘制，便可直接跳到合成阶段执行。具体修改哪些属性会触发页面布局、绘制或合成阶段的执行，这与浏览器的内核类型存在一定关系， 如表所示列出了一些常见属性分别在Blink.Gecko和Webkit等不同内核的浏览器上的表现。</p>
+<table>
+<thead>
+<tr>
+<th align="center">属性</th>
+<th align="center">Blink</th>
+<th align="center">Gecko</th>
+<th align="center">Webkit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">z-index</td>
+<td align="center">绘制&#x2F;合成</td>
+<td align="center">绘制&#x2F;合成</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+<tr>
+<td align="center">transform</td>
+<td align="center">合成</td>
+<td align="center">合成</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+<tr>
+<td align="center">opacity</td>
+<td align="center">绘制&#x2F;合成</td>
+<td align="center">合成</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+<tr>
+<td align="center">min-width</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+<td align="center">布局&#x2F;合成</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+<tr>
+<td align="center">color</td>
+<td align="center">布局&#x2F;绘制</td>
+<td align="center">布局&#x2F;绘制</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+<tr>
+<td align="center">background</td>
+<td align="center">布局&#x2F;绘制</td>
+<td align="center">布局&#x2F;绘制</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+<tr>
+<td align="center">border-radius</td>
+<td align="center">布局&#x2F;绘制</td>
+<td align="center">布局&#x2F;绘制</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+<tr>
+<td align="center">border-style</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+<tr>
+<td align="center">border-width</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+<td align="center">布局&#x2F;绘制&#x2F;合成</td>
+</tr>
+</tbody></table>
+<p>Google的Chrome实验室在网站上列出了更多有关CSS属性的详细表现，如有需要可自行去查看。</p>
+]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>渲染优化（页面渲染性能）</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+        <tag>渲染优化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>秋天的第一个烤红薯</title>
+    <url>/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="秋天的第一个烤红薯"><a href="#秋天的第一个烤红薯" class="headerlink" title="秋天的第一个烤红薯"></a>秋天的第一个烤红薯</h1><h2 id="美丽的不只是风景"><a href="#美丽的不只是风景" class="headerlink" title="美丽的不只是风景"></a>美丽的不只是风景</h2><p><img src="/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/IMG_20220923_174805.jpg"></p>
+]]></content>
+      <categories>
+        <category>旅行</category>
+        <category>秋天</category>
+      </categories>
+      <tags>
+        <tag>旅行</tag>
+        <tag>秋天</tag>
+        <tag>季节</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>表白爱心biu</title>
     <url>/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="爱心代码（canvas）"><a href="#爱心代码（canvas）" class="headerlink" title="爱心代码（canvas）"></a>爱心代码（canvas）</h1><p>每天浪漫一点点</p>
@@ -6997,21 +7106,6 @@ class ErrorBoundary extends React.Component &#123;
       </categories>
       <tags>
         <tag>浪漫代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>秋天的第一个烤红薯</title>
-    <url>/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="秋天的第一个烤红薯"><a href="#秋天的第一个烤红薯" class="headerlink" title="秋天的第一个烤红薯"></a>秋天的第一个烤红薯</h1><h2 id="美丽的不只是风景"><a href="#美丽的不只是风景" class="headerlink" title="美丽的不只是风景"></a>美丽的不只是风景</h2><p><img src="/2022/10/31/%E7%A7%8B%E5%A4%A9%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%83%A4%E7%BA%A2%E8%96%AF/IMG_20220923_174805.jpg"></p>
-]]></content>
-      <categories>
-        <category>旅行</category>
-        <category>秋天</category>
-      </categories>
-      <tags>
-        <tag>旅行</tag>
-        <tag>秋天</tag>
-        <tag>季节</tag>
       </tags>
   </entry>
   <entry>
@@ -9791,6 +9885,173 @@ module.exports = &#123;
       </tags>
   </entry>
   <entry>
+    <title>加载优化（图像延迟加载）</title>
+    <url>/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="图像延迟加载"><a href="#图像延迟加载" class="headerlink" title="图像延迟加载"></a>图像延迟加载</h1><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>​		相要得到更好的性能体验，只靠资源压缩与恰当的文件格式选型，是很难满足期望的。我们还需要针对资源加载过程进行优化，该环节所要做的内容可概括为分清资源加载的优先级顺序，仅加载当前所必需的资源，并利用系统空闲提前加载可能会用利的资源。这便是本章将要探讨的内容:资源的优先级、延迟加载和预加载。</p>
+<p>​		什么是图像的延迟加载，如何高效地实现延迟加载。随着近些年视频资源越来越多的使用，也会捎带介绍视频资源的延迟加载。然后谈谈浏览器对于资源优先级的划分和控制，既然可以通过将非关键资源延迟加载来提升性能，那么是否可以利用系统使用的空闲，预先去加载可能会使用到的资源。</p>
+<p>​		本节介绍什么是延迟加载，以及这种优化策略产生的逻辑和实现原理。笔者认为只有先理解了一种原理或方法的缘起流变，才能知道怎样的实现方式是更高效的、更贴近业务场景的。</p>
+<h3 id="一、什么是延迟加载"><a href="#一、什么是延迟加载" class="headerlink" title="一、什么是延迟加载"></a>一、什么是延迟加载</h3><p>​		首先来想象一个场景，当浏览一个内容丰富的网站时，比如电商的商品列表页、主流视频网站的节目列表等，由于屏幕尺寸的限制，每次只能查看到视窗中的那部分内容，而要浏览完页面所包含的全部信息，就需要滚动页面，让屏幕视窗依次展示出个页面的所有局部内容。</p>
+<p>​		显而易见，对于首屏之外的内容，特别是图片和视频，一方面 由于资源文件很大，若是全部加载完，既费时又费力，还容易阻塞渲染引起卡顿:另一方面，就算加载完成，用户也不一定会滚动屏幕浏览到全部页面内容，如果首屏内容没能吸引住用户，那么很可能整个页面就将遭到关闭。</p>
+<p>​		既然如此，本着节约不浪费的原则，在首次打开网站时，应尽量只加载首屏内容所包含的资源，而首屏之外涉及的图片或视频，可以等到用户滚动视窗浏览时再去加载。</p>
+<p>​		以上就是延迟加载优化策略的产生逻辑，通过延迟加载“非关键”的图片及视频资源，使得页面内容更快地呈现在用户面前。这里的“非关键”资源指的就是首屏之外的图片或视频资源，相较于文本、脚本等其他资源来说，图片的资源大小不容小觑。这个优化策略在业界已经被广泛使用，接下来笔者就以天猫购物网站的商品列表页为例，具体看看延迟加载是如何实现的，如图所示。</p>
+<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209161519677.png"></p>
+<p>​		图左侧是手机端常见的电商购物平台的商品列表页，右侧是其对应的DOM树结构。其中在区域上方，整齐如排比句般的<div>结构，所对应的正是列表页中一行行的商品项。以其中一件商品为例， 展开它的DOM树，直到找到展示该商品图片的<img>标签。为了方便说明，笔者将这个<img>标签的相关细节摘录如下:</p>
+<pre><code class="html">&lt;img class=&quot;boom-item-item&quot; autowebp=&quot;false&quot; autopixelratio=&quot;true&quot; forceupdate=&quot;true&quot; data-bindkey=&quot;pic&quot; data-itemid=&quot;700023719087&quot; data-size=&quot;348x348&quot; data-rewrite=&quot;&#123;size:&#39;348x348&#39;&#125;&quot; data-lazy-type=&quot;img&quot; data-lazy-id=&quot;lazyId-11&quot; data-lazy-manager-id=&quot;gLazyM-1&quot; data-in-view-range=&quot;1&quot; src=&quot;//gw.alicdn.com/bao/uploaded/i3/3058655500/O1CN01CyNBBW1qV3AjEusqC_!!0-item_pic.jpg_360x360q75.jpg_.webp&quot;&gt;
+</code></pre>
+<p>​		这里主要关注其中的src属性，src 属性代表了一个CDN上的图片资源。要知道当<img>标签的src属性被赋予了一一个URL后，它就会立刻向该URL发起资源请求。所以这个商品的<img>标签代表的就是一个商品图片的占位符。</p>
+<p>​		接下来我们找到一个位于屏幕视窗外，还未加载的商品图片和已加载的图片，相比较看看二者标签上的属性值有何不同。首先保持左侧页面显示窗口不发生滚动，在DevTools工具的Elements页签下，寻找还未呈现在左侧视窗中的商品项，容易找到它的DOM结构。</p>
+<p>​		首先，我们依然关注<img>标签的src属性，这里并不是图片资源的外链URL,取而代之的是一个在图像优化章节中介绍过的Base64图片，与外链URL不同的是，Base64图片已经包含了图片的完全编码，可以直接拿来渲染，而无须发起任何网络请求。</p>
+<p>​		这意味着该Base64图片仅仅是在真实图片显示出来前用以占位的，同时注意到所有未展示在页面视窗中的商品，其图片占位src属性值均使用了相同的Base64的值.当页面发生滚动时，之前未出现在视窗中的商品出现在视窗中后，其商品图片的真实URL会被替换到<img>标签的src属性上，进而发起资源请求。</p>
+<p>​		我们知道了什么是延迟加载。以及为什么要使用延迟加载，并通过观察一个商品列表页的案例，基本清楚了延迟加载的处理过程，接下来将通过三种方法来具体实现延迟加载。</p>
+<h3 id="二、实现图片的延迟加载：传统方式"><a href="#二、实现图片的延迟加载：传统方式" class="headerlink" title="二、实现图片的延迟加载：传统方式"></a>二、实现图片的延迟加载：传统方式</h3><p>​		就是事件监听的方式，通过监听scroll事件与resize 事件，并在事件的回调函费中去判断，需要进行延迟加载的图片是否进入视窗区域。</p>
+<p>​		首先根据前面的例子，定义出将要实现延迟加载的<img>标签结构:</p>
+<p>我们只需要关注三个属性。</p>
+<ul>
+<li>class 属性，稍后会在JavaScript中使用类选择器选取需要延迟加载处理的<img>标签。</li>
+<li>src属性，加载前的占位符图片，可用Base64图片或低分辨率的图片。</li>
+<li>data-src属性，通过该自定义属性保存图片真实的URL外链。</li>
+</ul>
+<p>假设以三张图片为例进行延迟加载的<img>标签列表如下:</p>
+<pre><code class="html">&lt;img class=&quot;lazy&quot; src-&quot;data: image/gif;base64, iVBORwOKGg.. .BJRUErkJgqs-.data-src=&quot;https://res.cloudinary.com/ .../tacos-2x.jpg&quot;width=&quot;385&quot; height=&quot;108&quot; alt=&quot;Some tacos. &quot;&gt;
+
+&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg. . . BJRU5ErkJggg==&quot; data-src=&quot;https:// res.cloudinary.com/d. . ./modem-2x . png&quot; width=&quot;320&quot; height=&quot;176&quot; alt=&quot;A 56k modem. &quot;&gt;
+
+&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg.. . BJRU5ErkJggg==&quot; data-src=&quot;https ://res. cloudinary. com/ ../st-paul-2x. jpg&quot; width=&quot;400&quot; height=&quot;267&quot; alt=&quot;A city skyline. &quot;&gt;
+</code></pre>
+<p>​		具体的JvsSerpr实现逻辑如下，在文档的DOMContentLoaded事件中，添加延迟加载处理逻辑，首先获取class属性名为lazy的所有<img>标签，将这些标签看存在一个名为lazylmages 的数组中，表示需要进行延迟加载但还未加载的图片集合。当一个图片被加载后，便将其从lazylmages数组中移除，直到lazyImages数组为空时，表示所有待延迟加载的图片均已经加载完成，此时便可将页面滚动事件移除。</p>
+<p>​		接下来的关键就是判断图片是否出现在视窗中，这里使用了getBoundingClientRect()函数获取元素的相对位置，如图所示。它会返回图片元素的宽width和高height,及其与视窗的相对位置:元素上边缘与屏幕视窗顶部之间的距离top,元素左边缘和屏幕视窗左侧之间的距离left,元素下边缘和屏幕视窗顶部之间的距离bottom 以及元素右边缘和屏幕视窗左侧之间的距离right, 其具体含义可参考示意图，window.innerHeight 表示整个视窗的高度。</p>
+<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209164625464.png" alt="getBoundingClientRect()函数获取元素的相对位置"></p>
+<p>​		对于只可上下滚动的页面，判断一个图片 元素是否出现在屏幕视窗中的方法其实显而易见，即当元素上边缘距屏幕视窗顶部的top 值小于整个视窗的高度window.innerHeight时，预加载的事件处理代码如下:</p>
+<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
+  //获取所有需要延迟加载的图片
+  let lazyImages = [].sllce.call(document.querySelectorAll(&quot;img.1azy&quot;));
+  //限制函数频繁被调用
+  let active = false;
+  const lazyLoad = function () &#123;
+    if (active === false) &#123;
+      active = true;
+      setTimeout(function () &#123;
+        lazyImages.forEach(function (lazyImage) &#123;
+          //判断图片是否出现在视窗中
+          if (
+            lazyImage.getBoundingClientRect().top &lt;= window.innerHeight &amp;&amp;
+            lazyImage.getBoundingClientRect().bottom &gt;= 0 &amp;&amp;
+            getComputedstyle(lazyImage).display !== &quot;none&quot;
+          ) &#123;
+            // 将真实的图片URL赋值给src属性，发起请求加载资源
+
+            lazyImage.src = lazyImage.dataset.src;
+
+            //图片加载完成后，取消监控以防止重复加载
+
+            lazyImage.classList.remove(&quot;1azy&quot;);
+
+            lazyImages = lazyImages.filter(function (image) &#123;
+              return image !== lazyImage;
+            &#125;);
+
+            //所有延迟加载图片加载完成后，移除事件触发处理函数
+
+            if (lazyImages.length === 0) &#123;
+              document.removeEventListener(&quot;scroll&quot;, lazyLoad);
+              window.removeEventListener(&quot;resize&quot;, lazyload);
+              window.removeEventListener(&quot;orientationchange&quot;, lazyLoad);
+            &#125;
+          &#125;
+        &#125;);
+
+        active = false;
+      &#125;, 200);
+    &#125;
+  &#125;;
+
+  document.addEventListener(&quot;scroll&quot;, lazyLoad);
+  window.addEventListener(&quot;resize&quot;, lazyLoad);
+  window.addEventListener(&quot;orientationchange&quot;, lazyLoad);
+&#125;);
+</code></pre>
+<p>​	由于无法控制用户随心所欲地滑动鼠标滚轮，从而造成scroll 事件被触发地过于频繁，导致过多的冗余计算影响性能。所以此处笔者将延迟加载的处理过程置于一个200ms的异步定时器中，并在每次处理完成后，通过修改标志位active 的方式来对方法的执行进行限流。</p>
+<p>​		即便如此也有潜在的性能问题，因为重复的setTimeout调用是浪费的，虽然进行了触发限制，但当文档滚动或窗口大小调整时，不论图片是否出现在视窗中，每200ms都会运行一次检查，并且跟踪尚未加载的图片数量，以及完全加载完后，取消绑定滚动事件的处理函数等操作都需要开发者来考虑。</p>
+<p>​		如此来看，虽然传统的延迟加载实现方式具有更好的浏览器兼容性，但也存在如上所述不可逾越的性能问题与编码的烦琐性，这便有了下面一种新的实现方式。</p>
+<h3 id="三、实现图片的延迟加载-Intersection-Observer方式"><a href="#三、实现图片的延迟加载-Intersection-Observer方式" class="headerlink" title="三、实现图片的延迟加载: Intersection Observer方式"></a>三、实现图片的延迟加载: Intersection Observer方式</h3><p>​		现代浏览器已大多支持了Intersection Observer API,可以通过它来检查目标元素的可见性，这种方式的性能和效率都比较好。</p>
+<p>​		关于Intersection Observer的概念和用法，可以参考阅读相关文档，这里用一句话简述:每当因页面滚动或窗口尺寸发生变化，使得目标元素(target) 与设备视窗或其他指定元素产生交集时，便会触发通过Intersection Observer API配置的回调函数，在该回调函数中进行延迟加载的逻辑处理，会比传统方式显得更加简洁而高效。</p>
+<p>​		以下便是Intersection Observer 方式的具体实现，此方式仅需创建一个新的Observer,并在类名为lazy的<img>标签进入视窗后触发回调。</p>
+<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
+  var lazyImages = [].slice.call(document.querySelectorAll(&quot;img.lazy&quot;));
+  //判断浏览器兼容性
+  if (
+    &quot;Intersectionobserver&quot; in window &amp;&amp;
+    &quot;IntersectionObserverEntry&quot; in window &amp;&amp;
+    &quot;intersectionRatio&quot; in window.Intersection0bserverEntry.prototype
+  ) &#123;
+    //新建Intersectionobserver对象，并在其回调函数中实现关键加载逻辑
+    let lazyImageObserver = new IntersectionObserver(function (
+      entries,observer
+    ) &#123;
+      entries.forEach(function (entry) &#123;
+        //判断图片是否出现在视窗中
+        if (entry.isIntersecting) &#123;
+          let lazyImage = entry.target;
+
+          lazyImage.src = lazyImage.dataset.src;
+          //图片加载完成后，取消监控防止重复加载
+          lazyImage.classList.remove(&quot;lazy&quot;);
+          lazyImageObserver.unobserve(lazyImage);
+        &#125;
+      &#125;);
+    &#125;);
+    lazyImages.forEach(function (lazyImage) &#123;
+      lazyImageObserver.observe(lazyImage);
+    &#125;);
+  &#125;
+&#125;);
+</code></pre>
+<p>​		这种方式判断元素是否出现在视窗中更为简单直观，应在实际开发中尽量使用，但其问题是并非所有浏览器都能兼容。具其体的浏览器兼容情况可在站点上进行查看，根据网站用户的硬件分布情况来权衡是否使用，以及使用后是否需要进行兼容处理。在将这种方式引入项目之前，应当确保已做到以下两点。</p>
+<p>（1）做好尽量完备浏览器兼容性检查，对于兼容Intersection Observer API的浏览器，采用这种方式进行处理，而对于不兼容的浏览器，则切换回传统的实现方式进行处理。</p>
+<p>（2）使用相应兼容的polyfill插件，在W3C官方Git账号下就有提供。除此之外，还有第三种通过Css属性的实现方案。</p>
+<h3 id="四、实现图片的延迟加载：CSS类名方式"><a href="#四、实现图片的延迟加载：CSS类名方式" class="headerlink" title="四、实现图片的延迟加载：CSS类名方式"></a>四、实现图片的延迟加载：CSS类名方式</h3><p>​		这种实现方式通过css的 backgound-image 属性来加载图片，与判断<img>标签src属性是否有要请求图片的URL不同，Css中图片加载的行为建立在浏览器对文档分析基础之上。</p>
+<p>​		具体来说，当DOM树、CSSOM树及渲染树生成后，浏览器会去检查CSS以何种方式应用于文档，再决定是否请求外部资源。如果浏览器确定涉及外部资源请求的CSS规则在当前文档中不存在时，便不会去请求该资源。图片列表如下所示:</p>
+<pre><code class="html">&lt;div class=&quot;wrapper&quot;&gt;
+&lt;div class=&quot;lazy-background one&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;lazy-background two&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;lazy-background three&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>​		具体的实现方式是通过javascript来判断元素是否出现在视窗中的，当在视窗中出现的时候，为其class属性添加visible类名，而在css文件中，为同一类名元素定义出带 .visible和不带.visible的两种包含 background-image规则。</p>
+<p>​		不带 .visible的图片规则中的background-image属性可以是低分辨辨率的图片或Base64图片，而带.visible的图片规则中的background-image属性为为希望展示的真实图片URL.</p>
+<p>​		具体JavaScript的实现过程如下所示，判断图片元素是否出现在视窗内的逻辑，与上面的Intersection Observer 方式相同。同样为了确保浏览器的兼容性，在实际应用中应确保提供回退方案或polyfill。</p>
+<h3 id="五、原生的延迟加载支持"><a href="#五、原生的延迟加载支持" class="headerlink" title="五、原生的延迟加载支持"></a>五、原生的延迟加载支持</h3><p>​		除了上述通过开发者手动实现延迟加载逻辑的方式，从Chrome 75版本开始，已经可以通过 img 和 ifram e标签的loading属性原生支持延迟加载了，loading 属性包含以下三种取值。</p>
+<ul>
+<li>lazy: 进行延迟加载。</li>
+<li>eager: 立即加载。</li>
+<li>auto:浏览器自行决定是否进行延迟加载。</li>
+</ul>
+<p>若不指定任何属性值，loading 默认取值auto。</p>
+<p>​		之前讲到延迟加载的独发触发机，都是当目标图像文件经页面滚动出现在屏幕视窗中时，能发对图像资源的请求。但从体验上考虑，这样处理并不完美，因为当图像标签出现在屏幕视窗中时，还只是占位符图像。</p>
+<p>​		如果网络存在延迟或图像资源过大，那么它的请求加载过程是可以被用户感知的。更好的做法是在图像即将滚动出现在屏幕视窗之前一段距离， 就开始请求加载图像或iframe中的内容，这样能很好地缩短用户的等待加载时长。</p>
+<p>​		兼容性处理:通过使用新技术优化了延迟加载的实现方式，同时也应当注意新技本在不同览器之间的兼容性，在使用前需要对浏览器特性进行检查，如下所示:</p>
+<pre><code class="js">&lt;script&gt;
+if (&#39;loading&#39; in HTMLImageElement . prototype)&#123;
+//浏览器支持loading=&quot;lazy&quot;的延迟加载方式
+&#125; else &#123;
+//获取其他JavaScript库来实现延迟加载
+&#125;
+&lt;/script&gt;
+</code></pre>
+<p>​	当判断浏览器支持通过属性loading&#x3D;”lazy”来进行延迟加载时，我们就在JavaScript处理程序中，将真实图像资源的URL赋值在其src属性上。而对于不支持该属性配置的延迟加载方式，就需要默认将真实图像资源的URL挂在data-src 属性上，仅当延迟加载的滚动事件触发时，才将data-src属性上的值换到src属性上。</p>
+<p>​		这也正是我们在传统方式中实现的加载策略，其原因是如果浏览器不支持<img>标签的loading属性，便会立刻发起对src 属性上URL资源的网络请求。当然我们也可以使用CSS类名的方式触发对资源的加载。</p>
+<p>&lt; img data-src&#x3D; “photo.jpg” loading&#x3D;”lazy” class&#x3D;”lazyload” alt&#x3D;”photo” &#x2F;&gt;不过对于这种方式，笔者建议等到loading属性在浏览器的稳定版本中被引入后，再在项目的生产环境中使用。</p>
+<h3 id="参考书籍：前端性能优化"><a href="#参考书籍：前端性能优化" class="headerlink" title="参考书籍：前端性能优化"></a>参考书籍：前端性能优化</h3>]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>加载优化（图像延迟加载)</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+        <tag>加载优化</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>前端页面的生命周期</title>
     <url>/2023/01/08/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="前端页面的生命周期"><a href="#前端页面的生命周期" class="headerlink" title="前端页面的生命周期"></a>前端页面的生命周期</h1><blockquote>
@@ -10024,173 +10285,6 @@ img&#123; float: right; &#125;
       </categories>
       <tags>
         <tag>性能优化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>加载优化（图像延迟加载）</title>
-    <url>/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="图像延迟加载"><a href="#图像延迟加载" class="headerlink" title="图像延迟加载"></a>图像延迟加载</h1><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>​		相要得到更好的性能体验，只靠资源压缩与恰当的文件格式选型，是很难满足期望的。我们还需要针对资源加载过程进行优化，该环节所要做的内容可概括为分清资源加载的优先级顺序，仅加载当前所必需的资源，并利用系统空闲提前加载可能会用利的资源。这便是本章将要探讨的内容:资源的优先级、延迟加载和预加载。</p>
-<p>​		什么是图像的延迟加载，如何高效地实现延迟加载。随着近些年视频资源越来越多的使用，也会捎带介绍视频资源的延迟加载。然后谈谈浏览器对于资源优先级的划分和控制，既然可以通过将非关键资源延迟加载来提升性能，那么是否可以利用系统使用的空闲，预先去加载可能会使用到的资源。</p>
-<p>​		本节介绍什么是延迟加载，以及这种优化策略产生的逻辑和实现原理。笔者认为只有先理解了一种原理或方法的缘起流变，才能知道怎样的实现方式是更高效的、更贴近业务场景的。</p>
-<h3 id="一、什么是延迟加载"><a href="#一、什么是延迟加载" class="headerlink" title="一、什么是延迟加载"></a>一、什么是延迟加载</h3><p>​		首先来想象一个场景，当浏览一个内容丰富的网站时，比如电商的商品列表页、主流视频网站的节目列表等，由于屏幕尺寸的限制，每次只能查看到视窗中的那部分内容，而要浏览完页面所包含的全部信息，就需要滚动页面，让屏幕视窗依次展示出个页面的所有局部内容。</p>
-<p>​		显而易见，对于首屏之外的内容，特别是图片和视频，一方面 由于资源文件很大，若是全部加载完，既费时又费力，还容易阻塞渲染引起卡顿:另一方面，就算加载完成，用户也不一定会滚动屏幕浏览到全部页面内容，如果首屏内容没能吸引住用户，那么很可能整个页面就将遭到关闭。</p>
-<p>​		既然如此，本着节约不浪费的原则，在首次打开网站时，应尽量只加载首屏内容所包含的资源，而首屏之外涉及的图片或视频，可以等到用户滚动视窗浏览时再去加载。</p>
-<p>​		以上就是延迟加载优化策略的产生逻辑，通过延迟加载“非关键”的图片及视频资源，使得页面内容更快地呈现在用户面前。这里的“非关键”资源指的就是首屏之外的图片或视频资源，相较于文本、脚本等其他资源来说，图片的资源大小不容小觑。这个优化策略在业界已经被广泛使用，接下来笔者就以天猫购物网站的商品列表页为例，具体看看延迟加载是如何实现的，如图所示。</p>
-<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209161519677.png"></p>
-<p>​		图左侧是手机端常见的电商购物平台的商品列表页，右侧是其对应的DOM树结构。其中在区域上方，整齐如排比句般的<div>结构，所对应的正是列表页中一行行的商品项。以其中一件商品为例， 展开它的DOM树，直到找到展示该商品图片的<img>标签。为了方便说明，笔者将这个<img>标签的相关细节摘录如下:</p>
-<pre><code class="html">&lt;img class=&quot;boom-item-item&quot; autowebp=&quot;false&quot; autopixelratio=&quot;true&quot; forceupdate=&quot;true&quot; data-bindkey=&quot;pic&quot; data-itemid=&quot;700023719087&quot; data-size=&quot;348x348&quot; data-rewrite=&quot;&#123;size:&#39;348x348&#39;&#125;&quot; data-lazy-type=&quot;img&quot; data-lazy-id=&quot;lazyId-11&quot; data-lazy-manager-id=&quot;gLazyM-1&quot; data-in-view-range=&quot;1&quot; src=&quot;//gw.alicdn.com/bao/uploaded/i3/3058655500/O1CN01CyNBBW1qV3AjEusqC_!!0-item_pic.jpg_360x360q75.jpg_.webp&quot;&gt;
-</code></pre>
-<p>​		这里主要关注其中的src属性，src 属性代表了一个CDN上的图片资源。要知道当<img>标签的src属性被赋予了一一个URL后，它就会立刻向该URL发起资源请求。所以这个商品的<img>标签代表的就是一个商品图片的占位符。</p>
-<p>​		接下来我们找到一个位于屏幕视窗外，还未加载的商品图片和已加载的图片，相比较看看二者标签上的属性值有何不同。首先保持左侧页面显示窗口不发生滚动，在DevTools工具的Elements页签下，寻找还未呈现在左侧视窗中的商品项，容易找到它的DOM结构。</p>
-<p>​		首先，我们依然关注<img>标签的src属性，这里并不是图片资源的外链URL,取而代之的是一个在图像优化章节中介绍过的Base64图片，与外链URL不同的是，Base64图片已经包含了图片的完全编码，可以直接拿来渲染，而无须发起任何网络请求。</p>
-<p>​		这意味着该Base64图片仅仅是在真实图片显示出来前用以占位的，同时注意到所有未展示在页面视窗中的商品，其图片占位src属性值均使用了相同的Base64的值.当页面发生滚动时，之前未出现在视窗中的商品出现在视窗中后，其商品图片的真实URL会被替换到<img>标签的src属性上，进而发起资源请求。</p>
-<p>​		我们知道了什么是延迟加载。以及为什么要使用延迟加载，并通过观察一个商品列表页的案例，基本清楚了延迟加载的处理过程，接下来将通过三种方法来具体实现延迟加载。</p>
-<h3 id="二、实现图片的延迟加载：传统方式"><a href="#二、实现图片的延迟加载：传统方式" class="headerlink" title="二、实现图片的延迟加载：传统方式"></a>二、实现图片的延迟加载：传统方式</h3><p>​		就是事件监听的方式，通过监听scroll事件与resize 事件，并在事件的回调函费中去判断，需要进行延迟加载的图片是否进入视窗区域。</p>
-<p>​		首先根据前面的例子，定义出将要实现延迟加载的<img>标签结构:</p>
-<p>我们只需要关注三个属性。</p>
-<ul>
-<li>class 属性，稍后会在JavaScript中使用类选择器选取需要延迟加载处理的<img>标签。</li>
-<li>src属性，加载前的占位符图片，可用Base64图片或低分辨率的图片。</li>
-<li>data-src属性，通过该自定义属性保存图片真实的URL外链。</li>
-</ul>
-<p>假设以三张图片为例进行延迟加载的<img>标签列表如下:</p>
-<pre><code class="html">&lt;img class=&quot;lazy&quot; src-&quot;data: image/gif;base64, iVBORwOKGg.. .BJRUErkJgqs-.data-src=&quot;https://res.cloudinary.com/ .../tacos-2x.jpg&quot;width=&quot;385&quot; height=&quot;108&quot; alt=&quot;Some tacos. &quot;&gt;
-
-&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg. . . BJRU5ErkJggg==&quot; data-src=&quot;https:// res.cloudinary.com/d. . ./modem-2x . png&quot; width=&quot;320&quot; height=&quot;176&quot; alt=&quot;A 56k modem. &quot;&gt;
-
-&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg.. . BJRU5ErkJggg==&quot; data-src=&quot;https ://res. cloudinary. com/ ../st-paul-2x. jpg&quot; width=&quot;400&quot; height=&quot;267&quot; alt=&quot;A city skyline. &quot;&gt;
-</code></pre>
-<p>​		具体的JvsSerpr实现逻辑如下，在文档的DOMContentLoaded事件中，添加延迟加载处理逻辑，首先获取class属性名为lazy的所有<img>标签，将这些标签看存在一个名为lazylmages 的数组中，表示需要进行延迟加载但还未加载的图片集合。当一个图片被加载后，便将其从lazylmages数组中移除，直到lazyImages数组为空时，表示所有待延迟加载的图片均已经加载完成，此时便可将页面滚动事件移除。</p>
-<p>​		接下来的关键就是判断图片是否出现在视窗中，这里使用了getBoundingClientRect()函数获取元素的相对位置，如图所示。它会返回图片元素的宽width和高height,及其与视窗的相对位置:元素上边缘与屏幕视窗顶部之间的距离top,元素左边缘和屏幕视窗左侧之间的距离left,元素下边缘和屏幕视窗顶部之间的距离bottom 以及元素右边缘和屏幕视窗左侧之间的距离right, 其具体含义可参考示意图，window.innerHeight 表示整个视窗的高度。</p>
-<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209164625464.png" alt="getBoundingClientRect()函数获取元素的相对位置"></p>
-<p>​		对于只可上下滚动的页面，判断一个图片 元素是否出现在屏幕视窗中的方法其实显而易见，即当元素上边缘距屏幕视窗顶部的top 值小于整个视窗的高度window.innerHeight时，预加载的事件处理代码如下:</p>
-<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
-  //获取所有需要延迟加载的图片
-  let lazyImages = [].sllce.call(document.querySelectorAll(&quot;img.1azy&quot;));
-  //限制函数频繁被调用
-  let active = false;
-  const lazyLoad = function () &#123;
-    if (active === false) &#123;
-      active = true;
-      setTimeout(function () &#123;
-        lazyImages.forEach(function (lazyImage) &#123;
-          //判断图片是否出现在视窗中
-          if (
-            lazyImage.getBoundingClientRect().top &lt;= window.innerHeight &amp;&amp;
-            lazyImage.getBoundingClientRect().bottom &gt;= 0 &amp;&amp;
-            getComputedstyle(lazyImage).display !== &quot;none&quot;
-          ) &#123;
-            // 将真实的图片URL赋值给src属性，发起请求加载资源
-
-            lazyImage.src = lazyImage.dataset.src;
-
-            //图片加载完成后，取消监控以防止重复加载
-
-            lazyImage.classList.remove(&quot;1azy&quot;);
-
-            lazyImages = lazyImages.filter(function (image) &#123;
-              return image !== lazyImage;
-            &#125;);
-
-            //所有延迟加载图片加载完成后，移除事件触发处理函数
-
-            if (lazyImages.length === 0) &#123;
-              document.removeEventListener(&quot;scroll&quot;, lazyLoad);
-              window.removeEventListener(&quot;resize&quot;, lazyload);
-              window.removeEventListener(&quot;orientationchange&quot;, lazyLoad);
-            &#125;
-          &#125;
-        &#125;);
-
-        active = false;
-      &#125;, 200);
-    &#125;
-  &#125;;
-
-  document.addEventListener(&quot;scroll&quot;, lazyLoad);
-  window.addEventListener(&quot;resize&quot;, lazyLoad);
-  window.addEventListener(&quot;orientationchange&quot;, lazyLoad);
-&#125;);
-</code></pre>
-<p>​	由于无法控制用户随心所欲地滑动鼠标滚轮，从而造成scroll 事件被触发地过于频繁，导致过多的冗余计算影响性能。所以此处笔者将延迟加载的处理过程置于一个200ms的异步定时器中，并在每次处理完成后，通过修改标志位active 的方式来对方法的执行进行限流。</p>
-<p>​		即便如此也有潜在的性能问题，因为重复的setTimeout调用是浪费的，虽然进行了触发限制，但当文档滚动或窗口大小调整时，不论图片是否出现在视窗中，每200ms都会运行一次检查，并且跟踪尚未加载的图片数量，以及完全加载完后，取消绑定滚动事件的处理函数等操作都需要开发者来考虑。</p>
-<p>​		如此来看，虽然传统的延迟加载实现方式具有更好的浏览器兼容性，但也存在如上所述不可逾越的性能问题与编码的烦琐性，这便有了下面一种新的实现方式。</p>
-<h3 id="三、实现图片的延迟加载-Intersection-Observer方式"><a href="#三、实现图片的延迟加载-Intersection-Observer方式" class="headerlink" title="三、实现图片的延迟加载: Intersection Observer方式"></a>三、实现图片的延迟加载: Intersection Observer方式</h3><p>​		现代浏览器已大多支持了Intersection Observer API,可以通过它来检查目标元素的可见性，这种方式的性能和效率都比较好。</p>
-<p>​		关于Intersection Observer的概念和用法，可以参考阅读相关文档，这里用一句话简述:每当因页面滚动或窗口尺寸发生变化，使得目标元素(target) 与设备视窗或其他指定元素产生交集时，便会触发通过Intersection Observer API配置的回调函数，在该回调函数中进行延迟加载的逻辑处理，会比传统方式显得更加简洁而高效。</p>
-<p>​		以下便是Intersection Observer 方式的具体实现，此方式仅需创建一个新的Observer,并在类名为lazy的<img>标签进入视窗后触发回调。</p>
-<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
-  var lazyImages = [].slice.call(document.querySelectorAll(&quot;img.lazy&quot;));
-  //判断浏览器兼容性
-  if (
-    &quot;Intersectionobserver&quot; in window &amp;&amp;
-    &quot;IntersectionObserverEntry&quot; in window &amp;&amp;
-    &quot;intersectionRatio&quot; in window.Intersection0bserverEntry.prototype
-  ) &#123;
-    //新建Intersectionobserver对象，并在其回调函数中实现关键加载逻辑
-    let lazyImageObserver = new IntersectionObserver(function (
-      entries,observer
-    ) &#123;
-      entries.forEach(function (entry) &#123;
-        //判断图片是否出现在视窗中
-        if (entry.isIntersecting) &#123;
-          let lazyImage = entry.target;
-
-          lazyImage.src = lazyImage.dataset.src;
-          //图片加载完成后，取消监控防止重复加载
-          lazyImage.classList.remove(&quot;lazy&quot;);
-          lazyImageObserver.unobserve(lazyImage);
-        &#125;
-      &#125;);
-    &#125;);
-    lazyImages.forEach(function (lazyImage) &#123;
-      lazyImageObserver.observe(lazyImage);
-    &#125;);
-  &#125;
-&#125;);
-</code></pre>
-<p>​		这种方式判断元素是否出现在视窗中更为简单直观，应在实际开发中尽量使用，但其问题是并非所有浏览器都能兼容。具其体的浏览器兼容情况可在站点上进行查看，根据网站用户的硬件分布情况来权衡是否使用，以及使用后是否需要进行兼容处理。在将这种方式引入项目之前，应当确保已做到以下两点。</p>
-<p>（1）做好尽量完备浏览器兼容性检查，对于兼容Intersection Observer API的浏览器，采用这种方式进行处理，而对于不兼容的浏览器，则切换回传统的实现方式进行处理。</p>
-<p>（2）使用相应兼容的polyfill插件，在W3C官方Git账号下就有提供。除此之外，还有第三种通过Css属性的实现方案。</p>
-<h3 id="四、实现图片的延迟加载：CSS类名方式"><a href="#四、实现图片的延迟加载：CSS类名方式" class="headerlink" title="四、实现图片的延迟加载：CSS类名方式"></a>四、实现图片的延迟加载：CSS类名方式</h3><p>​		这种实现方式通过css的 backgound-image 属性来加载图片，与判断<img>标签src属性是否有要请求图片的URL不同，Css中图片加载的行为建立在浏览器对文档分析基础之上。</p>
-<p>​		具体来说，当DOM树、CSSOM树及渲染树生成后，浏览器会去检查CSS以何种方式应用于文档，再决定是否请求外部资源。如果浏览器确定涉及外部资源请求的CSS规则在当前文档中不存在时，便不会去请求该资源。图片列表如下所示:</p>
-<pre><code class="html">&lt;div class=&quot;wrapper&quot;&gt;
-&lt;div class=&quot;lazy-background one&quot;&gt;&lt;/div&gt;
-&lt;div class=&quot;lazy-background two&quot;&gt;&lt;/div&gt;
-&lt;div class=&quot;lazy-background three&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;
-</code></pre>
-<p>​		具体的实现方式是通过javascript来判断元素是否出现在视窗中的，当在视窗中出现的时候，为其class属性添加visible类名，而在css文件中，为同一类名元素定义出带 .visible和不带.visible的两种包含 background-image规则。</p>
-<p>​		不带 .visible的图片规则中的background-image属性可以是低分辨辨率的图片或Base64图片，而带.visible的图片规则中的background-image属性为为希望展示的真实图片URL.</p>
-<p>​		具体JavaScript的实现过程如下所示，判断图片元素是否出现在视窗内的逻辑，与上面的Intersection Observer 方式相同。同样为了确保浏览器的兼容性，在实际应用中应确保提供回退方案或polyfill。</p>
-<h3 id="五、原生的延迟加载支持"><a href="#五、原生的延迟加载支持" class="headerlink" title="五、原生的延迟加载支持"></a>五、原生的延迟加载支持</h3><p>​		除了上述通过开发者手动实现延迟加载逻辑的方式，从Chrome 75版本开始，已经可以通过 img 和 ifram e标签的loading属性原生支持延迟加载了，loading 属性包含以下三种取值。</p>
-<ul>
-<li>lazy: 进行延迟加载。</li>
-<li>eager: 立即加载。</li>
-<li>auto:浏览器自行决定是否进行延迟加载。</li>
-</ul>
-<p>若不指定任何属性值，loading 默认取值auto。</p>
-<p>​		之前讲到延迟加载的独发触发机，都是当目标图像文件经页面滚动出现在屏幕视窗中时，能发对图像资源的请求。但从体验上考虑，这样处理并不完美，因为当图像标签出现在屏幕视窗中时，还只是占位符图像。</p>
-<p>​		如果网络存在延迟或图像资源过大，那么它的请求加载过程是可以被用户感知的。更好的做法是在图像即将滚动出现在屏幕视窗之前一段距离， 就开始请求加载图像或iframe中的内容，这样能很好地缩短用户的等待加载时长。</p>
-<p>​		兼容性处理:通过使用新技术优化了延迟加载的实现方式，同时也应当注意新技本在不同览器之间的兼容性，在使用前需要对浏览器特性进行检查，如下所示:</p>
-<pre><code class="js">&lt;script&gt;
-if (&#39;loading&#39; in HTMLImageElement . prototype)&#123;
-//浏览器支持loading=&quot;lazy&quot;的延迟加载方式
-&#125; else &#123;
-//获取其他JavaScript库来实现延迟加载
-&#125;
-&lt;/script&gt;
-</code></pre>
-<p>​	当判断浏览器支持通过属性loading&#x3D;”lazy”来进行延迟加载时，我们就在JavaScript处理程序中，将真实图像资源的URL赋值在其src属性上。而对于不支持该属性配置的延迟加载方式，就需要默认将真实图像资源的URL挂在data-src 属性上，仅当延迟加载的滚动事件触发时，才将data-src属性上的值换到src属性上。</p>
-<p>​		这也正是我们在传统方式中实现的加载策略，其原因是如果浏览器不支持<img>标签的loading属性，便会立刻发起对src 属性上URL资源的网络请求。当然我们也可以使用CSS类名的方式触发对资源的加载。</p>
-<p>&lt; img data-src&#x3D; “photo.jpg” loading&#x3D;”lazy” class&#x3D;”lazyload” alt&#x3D;”photo” &#x2F;&gt;不过对于这种方式，笔者建议等到loading属性在浏览器的稳定版本中被引入后，再在项目的生产环境中使用。</p>
-<h3 id="参考书籍：前端性能优化"><a href="#参考书籍：前端性能优化" class="headerlink" title="参考书籍：前端性能优化"></a>参考书籍：前端性能优化</h3>]]></content>
-      <categories>
-        <category>前端性能优化</category>
-        <category>加载优化（图像延迟加载)</category>
-      </categories>
-      <tags>
-        <tag>性能优化</tag>
-        <tag>加载优化</tag>
       </tags>
   </entry>
   <entry>

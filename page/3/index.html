@@ -177,6 +177,149 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-如何设计一个组件"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/"
+    >如何设计一个组件</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/" class="article-date">
+  <time datetime="2022-12-09T02:06:22.000Z" itemprop="datePublished">2022-12-09</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/">如何设计一个组件</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="如何设计一个组件"><a href="#如何设计一个组件" class="headerlink" title="如何设计一个组件"></a>如何设计一个组件</h1><blockquote>
+<p>在开发过程中，我们经常会遇到现有组件库无法满足需求，需要自己设计和实现组件的情况。那么，如何才能设计一个既满足产品需求，又易于开发人员使用的组件呢？本文就以一个级联组件的设计为例，探讨一下如何设计一个优质组件。</p>
+</blockquote>
+<h2 id="组件设计"><a href="#组件设计" class="headerlink" title="组件设计"></a>组件设计</h2><h3 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h3><p>开发这个组件的原因是来自工作中遇到的一个需求。</p>
+<p>产品提出的业务需求是实现一个地区的级联选择，并且应设计师要求，不能使用 Ant Design 的Cascader 级联选择，因此需要自己实现一个级联选择。</p>
+<p>通常需要从 4 个角度对需求进行分析：</p>
+<ol>
+<li>业务需求角度</li>
+<li>UI 设计角度</li>
+<li>开发人员角度</li>
+<li>与其他组件配合角度</li>
+</ol>
+<h4 id="业务需求角度"><a href="#业务需求角度" class="headerlink" title="业务需求角度"></a>业务需求角度</h4><p>在拿到一个需求之后，我们不应当直接考虑如何实现，而要先思考一下，这个需求是不是真正的需求。或者说，这个需求背后，是否还有更加基础和核心的需求。</p>
+<p>现在，我们拿到了一个<strong>地区级联选择</strong>的需求，那么我们应该<strong>仅仅实现</strong>地区级联选择吗？我认为不是的，今天我们拿到的是地区选择的需求，明天就可能变成职业选择。</p>
+<p>因此，我们实际需要实现的，应该是一个支持<strong>N 级</strong>的级联选择框。</p>
+<h4 id="UI-设计角度"><a href="#UI-设计角度" class="headerlink" title="UI 设计角度"></a>UI 设计角度</h4><p>既然已经确定了要实现 N 级级联选择框，就需要考虑其在各个屏幕尺寸的兼容情况，于是我在组件中引入了 Grid 栅格 。并默认设置了 3 级级联的样式，同时为使用者提供了相应的配置选项，如下：</p>
+<pre><code class="yaml">&lt;Cascade
+  rowProps=&#123;&#123;
+    gutter: 10,
+  &#125;&#125;
+  colProps=&#123;&#123;
+    xs: 24,
+    sm: 24,
+    md: 8,
+    lg: 8,
+    xl: 8,
+  &#125;&#125;
+/&gt;
+</code></pre>
+<h4 id="开发人员角度"><a href="#开发人员角度" class="headerlink" title="开发人员角度"></a>开发人员角度</h4><p>我们开发的组件，不止会被我们的团队成员使用，甚至会开源给其他开发者使用。那么，提供给开发者更好的体验就尤为重要。</p>
+<p>为了节省开发人员的学习成本，我们可以按照以下思路考虑：</p>
+<ol>
+<li>在满足基本需求的前提下，提供尽量少的 API。</li>
+<li>为 API 选项提供尽量少的配置项。</li>
+<li>为代码，特别是 API 提供尽量好的文档或注释。</li>
+</ol>
+<p>定义的 <code>Cascade</code> 组件 <code>Props</code> 示例如下：</p>
+<pre><code class="less">interface Props&lt;T&gt; &#123;
+  cascadeKeys?: CascadeKeys; // 自定义 dataSource 中 value label children 的字段
+  value?: T[]; // 指定当前选中的条目
+  onChange?: (value: T[], level: number) =&gt; void; // 选中选项时，调用此函数
+  rowProps?: RowProps; // 行排列方式，可参考https://ant.design/components/grid-cn/
+  colProps?: ColProps; // 列排列方式
+  loading?: boolean[]; // 选择框loading装填
+  dataSource?: T[] | CascadeData&lt;T&gt; | T[][]; // 可选项数据源
+&#125;
+</code></pre>
+<p>可以看到， <code>Props</code> 中只有 <code>dataSource</code> 是必须的。也就是说，如果你对配置项并不了解，组件也只需要最简单的配置，就可以正常工作了，例如：</p>
+<pre><code class="ini">&lt;Cascade
+  dataSource=&#123;pcaCascadeData&#125;
+/&gt;
+</code></pre>
+<ol>
+<li><p>在使用 TypeScript 时，还需要特别考虑类型匹配的问题。例如可以在使用组件时，传入一个类型，并且在 <code>onChange</code> 事件中如果使用了其他类型， TypeScript 检查就会提示错误，如下面例子中的 <code>PCAItem</code> 。</p>
+<pre><code class="ini">&lt;Cascade&lt;PCAItem&gt;
+  dataSource=&#123;pcaCascadeData&#125;
+  cascadeKeys=&#123;pcaCascadeKeys&#125;
+  onChange=&#123;async (value: PCAItem[], level: number) =&gt; &#123;
+    setPCAData(value);
+    setPCAIndex(level);
+  &#125;&#125;
+/&gt;
+</code></pre>
+</li>
+<li><p>对于级联组件，我们还需要考虑 dataSource 的数据来源可能有两种。</p>
+<ul>
+<li>组件初始化时，就传入了所有的级联数据，例如 省&#x2F;地&#x2F;县&#x2F;乡层级数据 。对应 Demo 中的“同步级联数据”，以及 <code>Props</code> 中 <code>dataSource</code> 类型定义的 <code>CascadeData&lt;T&gt; | T[][]</code> 。<ul>
+<li>在某些场景下，虽然没有级联选择框存在，但也需要处理树形数据，包括数据的查询和校验等功能，因此将该方法封装到 <code>CascadeData</code> 类中。</li>
+<li>考虑到树的数据量可能非常庞大，如果在每次选择时都在树中搜索效率较低。因此设计成在组件创建时，直接遍历树中的所有节点，然后将每个层级所有节点的数据都存储在相应的 <code>Map</code> 中，之后就能很方便地查询数据。</li>
+<li>虽然在组件初始化时遍历所有节点比较耗时，但考虑到用户从进入页面到操作组件有一定时间差，因此我认为这个问题可以忽略。</li>
+<li>基于以上考虑，你在 <code>Props</code> 中 <code>dataSource</code> 类型中看到的 <code>CascadeData&lt;T&gt;</code> ，就表示直接传入了一个 <code>new CascadeData(treeData)</code> 。而<code>T[][]</code>就表示直接传入树形数据，由组件内部进行 <code>new CascadeData(treeData) </code> 。</li>
+</ul>
+</li>
+<li>组件初始化时，只传入了第一级的选项，之后每级的选项通过前一级所选择的参数，从服务端获取。对应 Demo 中的“异步级联数据”，对应 <code>dataSource</code> 类型中的 <code>T[]</code> 。<ul>
+<li>组件初始化时，只传入第一级的数据，其他级别传入空数组，如：<code>[[&#123;&quot;code&quot;:110000,&quot;name&quot;:&quot;北京市&quot;&#125;],[],[]]</code>，组件会渲染出 3 层级联选项。</li>
+<li>当进行选择时，需要使用者通过 <code>onChange</code> 事件自行更新下一级的数据。也就是说，组件完全放弃了对数据的控制。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="与其他组件配合角度"><a href="#与其他组件配合角度" class="headerlink" title="与其他组件配合角度"></a>与其他组件配合角度</h4><p>由于该组件需要与 Ant Design 其他组件配合使用，如前面讨论过的 UI 部分，该组件就结合了 Grid 栅格 组件。既保证了该组件在各屏幕宽度下正常显示，又保证了与其他组件的显示一致。</p>
+<p>除此之外，还需要考虑与 Form 表单 组件的配合，特别是兼容表单校验功能。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文通过一个级联组件的设计案例，探讨了如何从四个角度分析，进而设计一个优秀的组件。这 4 个角度分别是：</p>
+<ol>
+<li>业务需求角度</li>
+<li>UI 设计角度</li>
+<li>开发人员角度</li>
+<li>与其他组件配合角度</li>
+</ol>
+<p>我认为很多时候组件的设计并没有最优解，总是需要根据需求在各种方案中取舍。但只要按照本文提到的 4 个角度进行分析，就能设计出优秀的组件。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%84%E4%BB%B6%E8%AE%BE%E8%AE%A1/" rel="tag">组件设计</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-react-native环境搭建"
   class="article article-type-post"
   itemscope
@@ -2023,195 +2166,6 @@ scene.add( cube );
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/threejs/" rel="tag">threejs</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-electron-vue3-vite"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/28/electron-vue3-vite/"
-    >electron-vue3-vite</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/28/electron-vue3-vite/" class="article-date">
-  <time datetime="2022-11-28T04:04:11.000Z" itemprop="datePublished">2022-11-28</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Electron/">Electron</a> / <a class="article-category-link" href="/categories/Electron/electron-vue3-vite/">electron-vue3-vite</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Electron-Vue3-Vite"><a href="#Electron-Vue3-Vite" class="headerlink" title="Electron-Vue3-Vite"></a>Electron-Vue3-Vite</h1><blockquote>
-<p>今天这一篇文章算是electron的一个短暂的结尾，以后我们再更新electron 的知识。</p>
-<p>今天的内容是项目的vue3+electron项目搭建和打包部署</p>
-</blockquote>
-<h3 id="一、Electron-Vue3-Vite搭建"><a href="#一、Electron-Vue3-Vite搭建" class="headerlink" title="一、Electron-Vue3-Vite搭建"></a>一、Electron-Vue3-Vite搭建</h3><h4 id="1-创建模板"><a href="#1-创建模板" class="headerlink" title="1.创建模板"></a>1.创建模板</h4><blockquote>
-<p>！！！兼容性注意</p>
-<p>Vite 需要 Node.js版本 14.18+，16+。然而，有些模板需要依赖更高的 Node 版本才能正常运行，当你的包管理器发出警告时，请注意升级你的 Node 版本。</p>
-</blockquote>
-<pre><code class="ini">//使用npm
-npm create vite@latest
-//使用yarn
-yarn create vite
-//使用pnpm
-pnpm create vite
-</code></pre>
-<p>使用以下命令启动：</p>
-<pre><code class="ini">npm i //安装依赖
-npm run dev //启动项目
-</code></pre>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221127082439543.png"></p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221127082625854.png"></p>
-<h4 id="2-安装electron"><a href="#2-安装electron" class="headerlink" title="2.安装electron"></a>2.安装electron</h4><pre><code class="ini">npm i electron -D 
-</code></pre>
-<p>目前博主遇到了一个小问题，就是下载electron会一直卡住，这里使用如下方法就可以解决了。</p>
-<pre><code class="ini">npm install cnpm -g --registry=https://registry.npm.taobao.org //切换国内镜像源
-cnpm isntall electron --save-dev
-</code></pre>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128081646599.png"></p>
-<h4 id="3-创建入口文件"><a href="#3-创建入口文件" class="headerlink" title="3.创建入口文件"></a>3.创建入口文件</h4><p>根目录下创建</p>
-<p>Main.js入口文件</p>
-<pre><code class="javascript">//main.js
-const &#123; app,BrowserWindow &#125; = require(&#39;electron&#39;)
-const path = require(&#39;path&#39;)
-const WinState = require(&#39;electron-win-state&#39;).default //保存窗口状态的包（窗口可以保存缩放、位置状态）
-
-const createWindow = () =&gt; &#123;
-  const winState = new WinState(&#123; 
-    defaultWidth: 1000,
-    defaultHeight: 800,
-    // other winState options, see below
-  &#125;)
-    const win = new BrowserWindow(&#123;
-      ...winState.winOptions,
-      // width: 800,
-      // height: 600,
-      webPreferences: &#123;
-        preload: path.join(__dirname, &#39;preload.js&#39;)
-      &#125;
-    &#125;)
-    win.loadURL(&#39;http://127.0.0.1:5173/&#39;) //加载本地端口，部署的时候可以换成我们的域名
-    win.webContents.openDevTools() //打开控制台调试
-    winState.manage(win)
-  &#125;
-
-  app.whenReady().then(() =&gt; &#123;
-    createWindow()
-    app.on(&#39;activate&#39;, () =&gt; &#123;
-      if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    &#125;)
-  &#125;) 
-
-  app.on(&#39;window-all-closed&#39;, () =&gt; &#123;
-    if (process.platform !== &#39;darwin&#39;) app.quit()
-  &#125;)
-</code></pre>
-<p>Preload.js预加载文件</p>
-<pre><code class="javascript">//目前先不写内容，先搭个架子
-</code></pre>
-<p>配置package.json</p>
-<pre><code class="javascript">//package.json
-&#123;
-  &quot;name&quot;: &quot;vite-project&quot;,
-  &quot;private&quot;: true,
-  &quot;version&quot;: &quot;0.0.0&quot;,
-  &quot;main&quot;: &quot;main.js&quot;,
-  &quot;scripts&quot;: &#123;
-    &quot;dev&quot;: &quot;vite&quot;,
-    &quot;build&quot;: &quot;vite build&quot;,
-    &quot;preview&quot;: &quot;vite preview&quot;,
-    &quot;start&quot;: &quot;nodemon --exec electron . --watch ./ --ext .js,.html,.vue,.css&quot;,
-  &#125;,
-  &quot;dependencies&quot;: &#123;
-    &quot;electron-win-state&quot;: &quot;^1.1.22&quot;,
-    &quot;vue&quot;: &quot;^3.2.41&quot;
-  &#125;,
-  &quot;devDependencies&quot;: &#123;
-    &quot;@vitejs/plugin-vue&quot;: &quot;^3.2.0&quot;,
-    &quot;electron&quot;: &quot;^21.3.1&quot;,
-    &quot;electron-builder&quot;: &quot;^23.6.0&quot;,
-    &quot;nodemon&quot;: &quot;^2.0.20&quot;,
-    &quot;vite&quot;: &quot;^3.2.3&quot;
-  &#125;
-&#125;
-
-</code></pre>
-<h4 id="4-安装其他依赖"><a href="#4-安装其他依赖" class="headerlink" title="4.安装其他依赖"></a>4.安装其他依赖</h4><pre><code class="ini">cnpm install nodemon --save-dev //安装nodemon
-cnpm install electron-win-state --save-dev //安装electron-win-state
-</code></pre>
-<h4 id="5-运行项目"><a href="#5-运行项目" class="headerlink" title="5.运行项目"></a>5.运行项目</h4><pre><code class="ini">npm run dev //启动vue项目
-npm start //启动electron
-</code></pre>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128085457686.png"></p>
-<p>我们现在就可以去开发我们的项目了</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128085520887.png"></p>
-<h3 id="二、打包与部署"><a href="#二、打包与部署" class="headerlink" title="二、打包与部署"></a>二、打包与部署</h3><p>官网推荐我们的是<a target="_blank" rel="noopener" href="https://www.electronjs.org/docs/latest/tutorial/forge-overview">Electron Forge</a>来分发我们的应用程序</p>
-<blockquote>
-<p>electron-forge 可以自动检测你的系统，然后打包成对应的可执行文件。<br>它可以实现 package 成最终可用的独立项目文件夹，<br>还可以 make 成能够安装的 zip 包</p>
-</blockquote>
-<p>目前这个方法有一些问题，我们先用另一种方法来进行打包<a target="_blank" rel="noopener" href="https://www.electron.build/">electron-build</a></p>
-<p>根据文档我们也可以很快的掌握这种打包方式</p>
-<h4 id="1-安装依赖"><a href="#1-安装依赖" class="headerlink" title="1.安装依赖"></a>1.安装依赖</h4><pre><code class="ini">cnpm i electron-builder -D //安装依赖
-</code></pre>
-<p>配置一下package.json</p>
-<pre><code class="javascript">//package.json+
-&quot;scripts&quot;: &#123;
-  ...
-  &quot;app:dir&quot;: &quot;electron-builder --dir&quot;,
-  &quot;app:dist&quot;: &quot;electron-builder&quot;
-  ...
-&#125;
-</code></pre>
-<h4 id="2-打包"><a href="#2-打包" class="headerlink" title="2.打包"></a>2.打包</h4><pre><code class="ini">cnpm run app:dist  //执行打包
-</code></pre>
-<p>目前我遇到打包错误的问题</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115215328.png"></p>
-<p>如果我们遇到这种问题，我们切换一下npm镜像源就可以了；</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115258224.png"></p>
-<p>现在我们打包就成功了</p>
-<h4 id="3-运行安装包"><a href="#3-运行安装包" class="headerlink" title="3.运行安装包"></a>3.运行安装包</h4><p>找到我们项目目录下的dist文件的.dmg安装包（我的是mac）</p>
-<p>在运行之前，我们应该先将项目 运行 起来（因为我们是本地项目，等部署到服务器就不用了）</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115702655.png"></p>
-<p>点击执行安装包</p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115730129.png"></p>
-<p><img src="/2022/11/28/electron-vue3-vite/image-20221128115827756.png"></p>
-<p>到目前为止，我们的electron的搭建-&gt;开发-&gt;打包就一气呵成了，当然，开发项目中还有许多奇奇怪怪的问题和知识点，就靠各位聪明的脑瓜了。。</p>
-<p><img src="/2022/11/28/electron-vue3-vite/tl.webp"></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官网]: 	“<a target="_blank" rel="noopener" href="https://www.electronjs.org/docs/latest/tutorial/forge-overview">https://www.electronjs.org/docs/latest/tutorial/forge-overview</a> “<br>[Vite.js官网]: 	“<a target="_blank" rel="noopener" href="https://cn.vitejs.dev/">https://cn.vitejs.dev/</a> “<br>[electron-builder]: 	“<a target="_blank" rel="noopener" href="https://github.com/electron-userland/electron-builder">https://github.com/electron-userland/electron-builder</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/electron/" rel="tag">electron</a></li></ul>
 
     </footer>
   </div>

@@ -177,6 +177,1875 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-面试手撕代码合集"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2023/01/05/%E9%9D%A2%E8%AF%95%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E5%90%88%E9%9B%86/"
+    >面试手撕代码合集</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/01/05/%E9%9D%A2%E8%AF%95%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E5%90%88%E9%9B%86/" class="article-date">
+  <time datetime="2023-01-05T02:10:45.000Z" itemprop="datePublished">2023-01-05</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/">技术面试</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95/%E9%9D%A2%E8%AF%95%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81%E5%90%88%E9%9B%86/">面试手撕代码合集</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="面试手撕代码合集"><a href="#面试手撕代码合集" class="headerlink" title="面试手撕代码合集"></a>面试手撕代码合集</h1><h2 id="1-柯里化函数"><a href="#1-柯里化函数" class="headerlink" title="1.柯里化函数"></a>1.柯里化函数</h2><pre><code class="javascript">function add() &#123;
+    const _args = [...arguments];
+    function fn() &#123;
+      _args.push(...arguments);
+      return fn; //一直重复收集参数
+    &#125;
+    fn.toString = function() &#123;
+      return _args.reduce((sum, cur) =&gt; sum + cur);
+    &#125;
+    return fn;
+  &#125;
+console.log(add(1)(2)(3)(4).toString()) //10
+console.log(add(1,2)(1, 2, 3)(2).toString()) //11
+</code></pre>
+<h2 id="2-千位符转换"><a href="#2-千位符转换" class="headerlink" title="2.千位符转换"></a>2.千位符转换</h2><pre><code class="javascript">// 将金额类型转为数字类型
+function toNum(str) &#123;
+    return str.replace(/\,|\￥/g, &quot;&quot;);
+&#125;
+
+// 保留两位小数（四舍五入）
+function toPrice(num) &#123;
+    num = parseFloat(toNum(num)).toFixed(2).toString().split(&quot;.&quot;);
+    num[0] = num[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+    return &quot;￥&quot; + num.join(&quot;.&quot;);
+&#125;
+
+// 保留两位小数（不四舍五入）
+function toPrice1(num) &#123;
+    num = parseFloat(toNum(num).replace(/(\.\d&#123;2&#125;)\d+$/,&quot;$1&quot;)).toFixed(2).toString().split(&quot;.&quot;);
+    num[0] = num[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+    return &quot;￥&quot; + num.join(&quot;.&quot;);;
+&#125;
+
+// 不处理小数部分
+function toPrice2(num) &#123;
+    var source = toNum(num).split(&quot;.&quot;);
+    source[0] = source[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+    return &quot;￥&quot; + source.join(&quot;.&quot;)
+&#125;
+
+console.log(toPrice(&#39;12312.236&#39;)) //￥12,312.24
+console.log(toPrice1(&#39;12312.234&#39;)) //￥12,312.23
+console.log(toPrice2(&#39;1232342312.234&#39;)) //￥1,232,342,312.234
+</code></pre>
+<h2 id="3-用setTimeout实现setInterval-计数器"><a href="#3-用setTimeout实现setInterval-计数器" class="headerlink" title="3.用setTimeout实现setInterval(计数器)"></a>3.用setTimeout实现setInterval(计数器)</h2><pre><code class="javascript">var i = 10;
+let fn = () =&gt; &#123;
+    console.log(i--);
+&#125;
+function mySetInterval(fn, delay, times) &#123;
+    let timer = setTimeout(function a() &#123;
+        fn()
+        times--
+        timer = setTimeout(a, delay)
+        if (times &lt;= 0) &#123;
+            clearTimeout(timer)
+        &#125;
+    &#125;, delay)
+&#125;
+mySetInterval(fn, 1000, 10)
+</code></pre>
+<h2 id="4-数组扁平化"><a href="#4-数组扁平化" class="headerlink" title="4.数组扁平化"></a>4.数组扁平化</h2><pre><code class="javascript">//递归实现
+var arr = [1,2,[3,4,[5,6]]]
+function flatten(arr)&#123;
+    let result = []
+    arr.forEach(item =&gt; &#123;
+        if(Array.isArray(item))&#123;
+            result = result.concat(flatten(item))
+        &#125;else&#123;
+            result.push(item)
+        &#125;
+    &#125;);
+    return result
+&#125;
+console.log(flatten(arr)) //[ 1, 2, 3, 4, 5, 6 ]
+
+//利用reduce函数迭代
+var arr1 = [1,2,[3,4,[5,6]]]
+function flatten1(arr)&#123;
+    return arr.reduce((res,next) =&gt; &#123;
+        return res.concat(Array.isArray(next) ? flatten1(next) : next)
+    &#125;,[])
+&#125;
+console.log(flatten1(arr1)) //[ 1, 2, 3, 4, 5, 6 ]
+</code></pre>
+<h2 id="5-深拷贝"><a href="#5-深拷贝" class="headerlink" title="5.深拷贝"></a>5.深拷贝</h2><pre><code class="javascript">function deepClone(obj,hash = new WeakMap())&#123;
+    if(obj == null) return obj;
+    if(obj instanceof Date) return new Date(obj);
+    if(obj instanceof RegExp) return new RegExp(obj);
+    if(typeof obj !== &#39;object&#39;) return obj;
+    if(hash.get(obj)) return hash.get(obj);
+    let cloneObj = new obj.constructor;
+    hash.set(obj,cloneObj);
+    for(let key in obj)&#123;
+        if(obj.hasOwnProperty(key))&#123;
+            cloneObj[key] = deepClone(obj[key],hash);
+        &#125;
+    &#125;
+    return cloneObj;
+&#125;
+
+let obj = &#123;name:1,address:&#123;x:1000&#125;&#125;;
+let d = deepClone(obj);
+obj.address.x = 200;
+console.log(d); //&#123;name:1,address:&#123;x:1000&#125;&#125;
+</code></pre>
+<h2 id="6-Promise-all"><a href="#6-Promise-all" class="headerlink" title="6.Promise.all"></a>6.Promise.all</h2><pre><code class="javascript">Promise.prototype.all = function(promises)&#123;
+    let results = [];
+    let promiseCount = 0;
+    let promisesLength = promises.length;
+    return new Promise(function(resolve,reject)&#123;
+        for(let val of promises)&#123;
+            Promise.resolve(val).then(function(res)&#123;
+                promiseCount++;
+                //results.push(res)
+                results[i] = res;
+                //当所有函数都正确执行了，resolve输出所有返回结果
+                if(promiseCount === promisesLength)&#123;
+                    return resolve(results);
+                &#125;
+            &#125;,function(err)&#123;
+                return reject(err);
+            &#125;)
+        &#125;
+    &#125;)
+&#125;
+
+//测试
+let promise1 = new Promise(function(resolve) &#123;
+    resolve(1);
+  &#125;);
+  let promise2 = new Promise(function(resolve) &#123;
+    resolve(2);
+  &#125;);
+  let promise3 = new Promise(function(resolve) &#123;
+    resolve(3);
+  &#125;);
+  
+  let promiseAll = Promise.all([promise1, promise2, promise3]);
+  promiseAll.then(function(res) &#123;
+    console.log(res);
+  &#125;);//[1,2,3]
+</code></pre>
+<h2 id="7-Promise-race"><a href="#7-Promise-race" class="headerlink" title="7.Promise.race"></a>7.Promise.race</h2><pre><code class="javascript">Promise.race = function(promises)&#123;
+    //将可迭代对象转换为数组
+    promises = Array.from(promises);
+    return new Promise((resolve,reject)=&gt;&#123;
+        if(promises.length === 0)&#123;
+            //空的可迭代对象，用于pending状态
+        &#125;else&#123;
+            for(let i = 0;i &lt; promises.length;i++)&#123;
+                Promise.resolve(promises[i]).then((data)=&gt;&#123;
+                    resolve(data);
+                &#125;).catch((reason)=&gt;&#123;
+                    reject(reason)
+                &#125;)
+            &#125;
+        &#125;
+    &#125;)
+&#125;
+
+//测试
+let p1 = new Promise(function(resolve,reject)&#123;
+    setTimeout(function()&#123;
+     resolve(&#39;success&#39;)
+    &#125;,1000)
+&#125;)
+let p2 = new Promise(function(resolve,reject)&#123;
+    setTimeout(function()&#123;
+     resolve(&#39;faild&#39;)
+    &#125;,500)
+&#125;)
+
+Promise.race([p1,p2]).then(result=&gt;&#123;
+console.log(result)  //  faild    faild耗时短
+&#125;)
+</code></pre>
+<h2 id="8-instanceof"><a href="#8-instanceof" class="headerlink" title="8.instanceof"></a>8.instanceof</h2><pre><code class="javascript">function new_instance_of(leftValue,rightValue)&#123;
+    let rightProto = rightValue.prototype;//取右边表达式的 prototype 值
+    leftValue = leftValue.__proto__;//取左表达式的 __proto__ 值
+    while(true)&#123;
+        if(leftValue == null)&#123;
+            return false;
+        &#125;
+        if(leftValue === rightProto)&#123;
+            return true;
+        &#125;
+        leftValue = leftValue.__proto__;
+    &#125;
+&#125;
+function Foo()&#123;&#125;
+console.log(new_instance_of(Foo,Object))//true
+</code></pre>
+<h2 id="9-js继承"><a href="#9-js继承" class="headerlink" title="9.js继承"></a>9.js继承</h2><h3 id="1-原型链继承"><a href="#1-原型链继承" class="headerlink" title="1.原型链继承"></a>1.原型链继承</h3><pre><code class="javascript"> // 原型链继承
+  function Super()&#123;
+    this.color=[&#39;red&#39;,&#39;yellow&#39;,&#39;black&#39;]
+  &#125;
+
+  function Sub()&#123;
+  &#125;
+  //继承了color属性 Sub.prototype.color=[&#39;red&#39;,&#39;yellow&#39;,&#39;black&#39;]
+  Sub.prototype=new Super()
+
+  //创建实例 instance1.__proto__.color
+  const instance1=new Sub()
+  const instance2=new Sub()
+  console.log(instance1.__proto__.color===instance2.__proto__.color) //true
+</code></pre>
+<h3 id="2-构造函数继承"><a href="#2-构造函数继承" class="headerlink" title="2.构造函数继承"></a>2.构造函数继承</h3><pre><code class="javascript">function Super(name,age)&#123;
+    this.name = name;
+    this.age = age;
+    this.color = [&#39;red&#39;,&#39;yellow&#39;,&#39;blue&#39;];
+    this.sayHi = function()&#123;
+        console.log(&#39;hi&#39;)
+    &#125;
+    console.log(this)
+&#125;
+function Sub()&#123;
+    //改变this指向
+    Super.apply(this,arguments)
+    this.height = 180;
+&#125;
+
+var instance1 = new Sub(&#39;mengfeng&#39;,25);
+var instance2 = new Sub(&#39;mengfeng123&#39;,24);
+instance1.sayHi();//hi
+</code></pre>
+<h3 id="3-实例继承"><a href="#3-实例继承" class="headerlink" title="3.实例继承"></a>3.实例继承</h3><pre><code class="javascript">new
+</code></pre>
+<h3 id="4-拷贝继承"><a href="#4-拷贝继承" class="headerlink" title="4.拷贝继承"></a>4.拷贝继承</h3><pre><code class="javascript">//深拷贝
+</code></pre>
+<h3 id="5-组合继承"><a href="#5-组合继承" class="headerlink" title="5.组合继承"></a>5.组合继承</h3><pre><code class="javascript">function Super(name,age)&#123;
+    this.name = name;
+    this.age = age;
+    this.color = [&#39;red&#39;,&#39;yellow&#39;,&#39;blue&#39;]
+&#125;
+
+Super.prototype.sayHi = function()&#123;
+    console.log(&#39;hi&#39;)
+&#125;
+
+function Sub(name,age,height)&#123;
+    Super.apply(this,arguments)
+    this.height = height;
+&#125;
+
+Sub.prototype = new Super(&#39;w&#39;,22);
+Sub.prototype.constructor = Sub;
+console.log(Sub.prototype)
+Sub.prototype.sayHello = function()&#123;
+    console.log(&#39;hello&#39;)
+&#125;
+
+var instance1 = new Sub(&#39;mengfeng&#39;,23,180);
+var instance2 = new Sub(&#39;mengfeng123&#39;,24,181);
+console.log(instance1)
+</code></pre>
+<h3 id="6-寄生组合继承"><a href="#6-寄生组合继承" class="headerlink" title="6.寄生组合继承"></a>6.寄生组合继承</h3><pre><code class="javascript">function inheritPrototype(Sub,Super)&#123;
+    var subPrototype=Object.create(Super.prototype)
+    subPrototype.constructor=Sub
+    Sub.prototype=subPrototype
+    
+  &#125;
+  function Super(name)&#123;
+    this.name=name
+  &#125;
+  Super.prototype.sayHi=function()&#123;
+    console.log(this.name)//ccdida
+  &#125;
+  function Sub(name)&#123;
+    Super.call(this,name)
+  &#125;
+  inheritPrototype(Sub,Super)
+
+  Sub.prototype.sayHello=function()&#123;
+    console.log(&#39;sayHello&#39;)
+  &#125;
+
+  var instance1=new Sub(&#39;ccdida&#39;)
+  console.log(instance1.__proto__)
+  console.log(instance1.__proto__.__proto__)
+</code></pre>
+<h2 id="10-对象扁平化"><a href="#10-对象扁平化" class="headerlink" title="10.对象扁平化"></a>10.对象扁平化</h2><pre><code class="javascript">//对象扁平化
+function flat(obj, key = &quot;&quot;, res = &#123;&#125;, isArray = false) &#123; 
+    for (let [k, v] of Object.entries(obj)) &#123; 
+      if (Array.isArray(v)) &#123; 
+        let tmp = isArray ? key + &quot;[&quot; + k + &quot;]&quot; : key + k 
+        flat(v, tmp, res, true) 
+      &#125; else if (typeof v === &quot;object&quot;) &#123; 
+        let tmp = isArray ? key + &quot;[&quot; + k + &quot;].&quot; : key + k + &quot;.&quot; 
+        flat(v, tmp, res) 
+      &#125; else &#123; 
+        let tmp = isArray ? key + &quot;[&quot; + k + &quot;]&quot; : key + k 
+        res[tmp] = v 
+      &#125; 
+    &#125; 
+    return res 
+  &#125;
+  
+  var entryObj = &#123;
+    a: &#123;
+        b: &#123;
+            c: &#123;
+                dd: &#39;abcdd&#39;
+            &#125;
+        &#125;,
+        d: &#123;
+            xx: &#39;adxx&#39;
+        &#125;,
+        e: &#39;ae&#39;
+    &#125;
+&#125;
+
+console.log(flat(entryObj))
+</code></pre>
+<h2 id="11-发布订阅"><a href="#11-发布订阅" class="headerlink" title="11.发布订阅"></a>11.发布订阅</h2><pre><code class="javascript">class EventEmitter&#123;
+    constructor()&#123;
+        this._events = &#123;&#125;;
+    &#125;
+
+    on(eventName, callback)&#123;
+        if(this._events[eventName])&#123;
+            if(this.eventName !== &quot;newListener&quot;)&#123;
+                this.emit(&quot;newListener&quot;, eventName)
+            &#125;
+        &#125;
+        const callbacks = this._events[eventName] || [];
+        callbacks.push(callback);
+        this._events[eventName] = callbacks
+    &#125;
+
+    emit(eventName, ...args)&#123;
+        const callbacks = this._events[eventName] || [];
+        callbacks.forEach(cb =&gt; cb(...args))
+    &#125;
+
+    once(eventName, callback)&#123;
+        const one = (...args)=&gt;&#123;
+            callback(...args)
+            this.off(eventName, one)
+        &#125;
+        one.initialCallback = callback;
+        this.on(eventName, one)
+    &#125;
+
+     off(eventName, callback)&#123;
+        const callbacks = this._events[eventName] || []
+        const newCallbacks = callbacks.filter(fn =&gt; fn != callback &amp;&amp; fn.initialCallback != callback /* 用于once的取消订阅 */)
+        this._events[eventName] = newCallbacks;
+    &#125;
+&#125;
+
+
+
+const events = new EventEmitter()
+
+events.on(&quot;newListener&quot;, function(eventName)&#123;
+    console.log(`eventName`, eventName)
+&#125;)
+
+events.on(&quot;hello&quot;, function()&#123;
+    console.log(&quot;hello&quot;);
+&#125;)
+
+let cb = function()&#123;
+    console.log(&#39;cb&#39;);
+&#125;
+events.on(&quot;hello&quot;, cb)
+
+events.off(&quot;hello&quot;, cb)
+
+function once()&#123;
+    console.log(&quot;once&quot;);
+&#125;
+events.once(&quot;hello&quot;, once)
+
+events.off(&quot;hello&quot;, once)
+events.emit(&quot;hello&quot;)
+events.emit(&quot;hello&quot;)
+</code></pre>
+<h2 id="12-反柯里化函数"><a href="#12-反柯里化函数" class="headerlink" title="12.反柯里化函数"></a>12.反柯里化函数</h2><pre><code class="javascript">Function.prototype.uncurrying = function() &#123;
+    var self = this;   //self为Array.prototype.push
+    return function() &#123;
+        //obj = &#123;0:1, length: 1&#125;, arguments = [2, callee: ƒ, Symbol(Symbol.iterator): ƒ]
+        var obj = Array.prototype.shift.call(arguments); 
+        
+        //Array.ptototype.push(obj, 2)
+        return self.apply(obj, arguments);
+    &#125;
+&#125;
+var testObj = &#123;
+    length: 1,
+    0: 1
+&#125;
+var push = Array.prototype.push.uncurrying();
+push(testObj, 2);
+console.log(testObj);   //&#123;0: 1, 1: 2, length: 2&#125;
+</code></pre>
+<h2 id="13-防抖"><a href="#13-防抖" class="headerlink" title="13.防抖"></a>13.防抖</h2><pre><code class="javascript">//scroll方法中的do somthing至少间隔500毫秒执行一次
+window.addEventListener(&#39;scroll&#39;,function()&#123;
+    var timer;//使用闭包，缓存变量
+    return function()&#123;
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(function()&#123;
+    console.log(&#39;do somthing&#39;)
+&#125;,500)
+&#125;
+&#125;());//此处()作用 - 立即调用return后面函数，形成闭包
+</code></pre>
+<h2 id="14-监测数组变化"><a href="#14-监测数组变化" class="headerlink" title="14.监测数组变化"></a>14.监测数组变化</h2><pre><code class="javascript">// 获取Array的原型，并创建一个新的对象指向这个原型
+const arrayMethods = Object.create(Array.prototype)
+// 创建一个新的原型，这就是改造之后的数组原型
+const ArrayProto = []
+// 重新构建Array原型里面的虽有方法
+Object.getOwnPropertyNames(Array.prototype).forEach(method =&gt; &#123;
+    if(typeof arrayMethods[method] === &quot;function&quot;)&#123;
+        ArrayProto[method] = function()&#123;
+            console.log(&quot;我已经监听到数组触发了&quot;+method+&quot;事件&quot;)
+            return arrayMethods[method].apply(this, arguments)
+        &#125;
+    &#125;else&#123;
+        ArrayProto[method] = arrayMethods[method]
+    &#125;
+&#125;)
+
+
+let list = [1, 2, 3]
+// 将数组的原型链指向新构造的原型
+list.__proto__ = ArrayProto
+// 执行push事件
+list.push(2)
+// 输出：
+我已经监听到数组触发了push事件 // 这个说明监听成功了
+</code></pre>
+<h2 id="15-节流"><a href="#15-节流" class="headerlink" title="15.节流"></a>15.节流</h2><pre><code class="javascript">//scroll方法中当间隔时间大于2s，do somthing执行一次
+window.addEventListener(&#39;scroll&#39;,function()&#123;
+    var timer ;//使用闭包，缓存变量
+    var startTime = new Date();
+    return function()&#123;
+    var curTime = new Date();
+    if(curTime - startTime &gt;= 2000)&#123;
+    timer = setTimeout(function()&#123;
+    console.log(&#39;do somthing&#39;)
+    &#125;,500);
+    startTime = curTime;
+    &#125;
+      &#125; &#125;());//此处()作用 - 立即调用return后面函数，形成闭包
+</code></pre>
+<h2 id="16-拦截全局Promise-reject"><a href="#16-拦截全局Promise-reject" class="headerlink" title="16.拦截全局Promise-reject"></a>16.拦截全局Promise-reject</h2><pre><code class="javascript">// 使用Try catch 只能拦截try语句块里面的
+try &#123;
+    new Promise((resolve, reject) =&gt; &#123;
+      reject(&quot;WTF 123&quot;);
+    &#125;);
+  &#125; catch (e) &#123;
+    console.log(&quot;e&quot;, e);
+    throw e;
+  &#125;
+  
+  // 使用 unhandledrejection 来拦截全局错误  （这个是对的）
+  window.addEventListener(&quot;unhandledrejection&quot;, (event) =&gt; &#123;
+    event &amp;&amp; event.preventDefault();
+    console.log(&quot;event&quot;, event);
+  &#125;);
+</code></pre>
+<h2 id="17-千位符"><a href="#17-千位符" class="headerlink" title="17.千位符"></a>17.千位符</h2><pre><code class="javascript">// 将金额类型转为数字类型
+function toNum(str) &#123;
+    return str.replace(/\,|\￥/g, &quot;&quot;);
+&#125;
+
+// 保留两位小数（四舍五入）
+function toPrice(num) &#123;
+    num = parseFloat(toNum(num)).toFixed(2).toString().split(&quot;.&quot;);
+    num[0] = num[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+    return &quot;￥&quot; + num.join(&quot;.&quot;);
+&#125;
+
+// 保留两位小数（不四舍五入）
+function toPrice1(num) &#123;
+    num = parseFloat(toNum(num).replace(/(\.\d&#123;2&#125;)\d+$/,&quot;$1&quot;)).toFixed(2).toString().split(&quot;.&quot;);
+    num[0] = num[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+    return &quot;￥&quot; + num.join(&quot;.&quot;);;
+&#125;
+
+// 不处理小数部分
+function toPrice2(num) &#123;
+    var source = toNum(num).split(&quot;.&quot;);
+    source[0] = source[0].replace(new RegExp(&#39;(\\d)(?=(\\d&#123;3&#125;)+$)&#39;,&#39;ig&#39;),&quot;$1,&quot;);
+    return &quot;￥&quot; + source.join(&quot;.&quot;)
+&#125;
+
+console.log(toPrice(&#39;12312.236&#39;)) //￥12,312.24
+console.log(toPrice1(&#39;12312.234&#39;)) //￥12,312.23
+console.log(toPrice2(&#39;1232342312.234&#39;)) //￥1,232,342,312.234
+</code></pre>
+<h2 id="18-浅拷贝"><a href="#18-浅拷贝" class="headerlink" title="18.浅拷贝"></a>18.浅拷贝</h2><pre><code class="javascript">let Sclone =(obj)=&gt;&#123;        
+    // 方法一        
+    // let obj1 = &#123;&#125;        
+    // obj1 = Object.assign(&#123;&#125;,obj)        
+    // 方法二 
+    let obj1 =&#123;...obj&#125;       
+    return obj1    
+&#125;
+</code></pre>
+<h2 id="19-数组去重"><a href="#19-数组去重" class="headerlink" title="19.数组去重"></a>19.数组去重</h2><pre><code class="javascript">let arr =  [1,2,2,4,null,null,&#39;3&#39;,&#39;abc&#39;,3,5,4,1,2,2,4,null,null,&#39;3&#39;,&#39;abc&#39;,3,5,4] 
+
+//利用key的唯一
+let obj = &#123;&#125;;
+for (let i = 0; i &lt; arr.length; i++) &#123;
+  let item = arr[i]
+  if (obj[item] !== undefined) &#123;
+    arr.splice(i, 1);
+    i--; // 解决删除元素后，数组塌陷问题
+    continue;
+  &#125;
+  obj[item] = item
+&#125;
+
+console.log(arr)
+// arr: [1, 2, 4, null, &quot;3&quot;, &quot;abc&quot;, 3, 5]
+
+
+// 交换元素位置从而替换调 splice方法
+let obj1 = &#123;&#125;;
+for (let i = 0; i &lt; arr.length; i++) &#123;
+  let item = arr[i]
+  if (obj1[item] !== undefined) &#123;
+    arr[i] = arr[arr.length-1]
+    arr.length--;
+    i--; 
+    continue;
+  &#125;
+  obj1[item] = item
+&#125;
+// arr: [1, 2, 4, null, &quot;3&quot;, &quot;abc&quot;, 3, 5]
+
+
+// Array.filter + Array.indexO
+let newArr = arr.filter((item, index) =&gt; arr.indexOf(item) === index);  
+// [1, 2, 4, null, &quot;3&quot;, &quot;abc&quot;, 3, 5
+
+
+// Array.filter + Object.hasOwnProperty
+let obj2 = &#123;&#125;
+arr.filter(item =&gt; obj2.hasOwnProperty(typeof item + item) ? false : (obj2[typeof item + item] = true))
+
+
+// Array.reduce + Array.includes
+let newArr1 = arr.reduce((accu, cur) =&gt; &#123;
+    return accu.includes(cur) ? accu : accu.concat(cur);  // 1. 拼接方法
+    // return accu.includes(cur) ? accu : [...accu, cur]; // 2. 扩展运算
+&#125;, [])
+
+
+// Array.indexOf
+let newArr2 = []
+for (var i = 0; i &lt; arr.length; i++) &#123;
+    if (newArr2.indexOf(arr[i]) === -1) newArr2.push(arr[i])  
+&#125;
+//等同于 forEach 写法
+arr.forEach( item =&gt; newArr2.indexOf(item) === -1 ? newArr2.push(item) : &#39;&#39;)
+
+//Array.includes
+let newArr3 = []
+for (var i = 0; i &lt; arr.length; i++) &#123;
+    if (!newArr3.includes(arr[i]))  newArr3.push(arr[i])
+&#125;
+//等同于 forEach 写法
+arr.forEach( item =&gt; !newArr3.includes(item) ? newArr3.push(item) : &#39;&#39;)
+
+
+// new Set + 扩展运算符 || Array.from
+let newArr5 = [...new Set(arr)];      // [1, 2, 4, null, &quot;3&quot;, &quot;abc&quot;, 3, 5]
+let newArr4 = Array.from(new Set(arr));      // [1, 2, 4, null, &quot;3&quot;, &quot;abc&quot;, 3, 5]
+let newStr = [...new Set(&#39;ababbc&#39;)].join(&#39;&#39;)  //  &#39;abc&#39;
+
+
+// new Map
+let map = new Map();
+let newStr6 = [];
+
+for (let i = 0; i &lt; arr.length; i++) &#123;
+    if (!map.has(arr[i])) &#123;
+        map.set(arr[i], true);
+        newStr6.push(arr[i]);
+    &#125;
+&#125;
+console.log(newArr6)  // [1, 2, 4, null, &quot;3&quot;, &quot;abc&quot;, 3, 5]
+</code></pre>
+<h2 id="20-数组转为tree"><a href="#20-数组转为tree" class="headerlink" title="20.数组转为tree"></a>20.数组转为tree</h2><pre><code class="javascript">let arr= [
+    &#123; id: 1, name: &#39;部门A&#39;, parentId: 0 &#125;,
+    &#123; id: 3, name: &#39;部门C&#39;, parentId: 1 &#125;,
+    &#123; id: 4, name: &#39;部门D&#39;, parentId: 1 &#125;,
+    &#123; id: 5, name: &#39;部门E&#39;, parentId: 2 &#125;,
+    &#123; id: 6, name: &#39;部门F&#39;, parentId: 3 &#125;,
+    &#123; id: 7, name: &#39;部门G&#39;, parentId: 2 &#125;,
+    &#123; id: 8, name: &#39;部门H&#39;, parentId: 4 &#125;,
+    &#123; id: 18, name: &#39;部门K&#39;, parentId: 4 &#125;,
+    &#123; id: 22, name: &#39;部门zz&#39;, parentId: 21 &#125;
+]
+
+
+function arrToTree(arr) &#123;
+  arr=JSON.parse(JSON.stringify(arr))
+  const newArr = []
+  // 1. 构建一个字典：能够快速根据id找到对象。
+  const map = &#123;&#125;
+  arr.forEach(item =&gt; &#123;
+    // 为了计算方便，统一添加children
+    item.children = []
+    // 构建一个字典
+    map[item.id] = item
+  &#125;)
+ 
+  // 2. 对于arr中的每一项
+  arr.forEach(item =&gt; &#123;
+    const parent = map[item.parentId]
+    if (parent) &#123;
+      //    如果它有父级，把当前对象添加父级元素的children中
+      parent.children.push(item)
+    &#125; else &#123;
+      //    如果它没有父级（pid:&#39;&#39;）,直接添加到newArr
+      newArr.push(item)
+    &#125;
+  &#125;)
+  return newArr
+&#125;
+
+console.log(arrToTree(arr))
+</code></pre>
+<h2 id="21-ajax"><a href="#21-ajax" class="headerlink" title="21.ajax"></a>21.ajax</h2><pre><code class="javascript">function ajax(option) &#123;//type,url,obj,timeout,success,error将所有参数换成一个对象&#123;&#125;
+    //  0.将对象转换成字符串
+    var str = objToString(option.data);
+    //  1.创建一个异步对象xmlhttp；
+    var xmlhttp, timer;
+    if (window.XMLHttpRequest) &#123;
+        xmlhttp = new XMLHttpRequest();
+    &#125; else &#123;// code for IE6, IE5 
+        xmlhttp = new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);
+    &#125;
+    //  2.设置请求方式和请求地址； 
+    // 判断请求的类型是POST还是GET
+    if (option.type.toLowerCase() === &#39;get&#39;) &#123;
+        xmlhttp.open(option.type, option.url + &quot;?t=&quot; + str, true);
+        //  3.发送请求；
+        xmlhttp.send();
+    &#125; else &#123;
+        xmlhttp.open(option.type, option.url, true);
+        // 注意：在post请求中，必须在open和send之间添加HTTP请求头：setRequestHeader(header,value);
+        xmlhttp.setRequestHeader(&quot;Content-type&quot;, &quot;application/x-www-form-urlencoded&quot;);
+        //  3.发送请求；
+        xmlhttp.send(str);
+    &#125;
+    //  4.监听状态的变化；
+    xmlhttp.onreadystatechange = function () &#123;
+        clearInterval(timer);
+        if (xmlhttp.readyState === 4) &#123;
+            if (xmlhttp.status &gt;= 200 &amp;&amp; xmlhttp.status &lt; 300 || xmlhttp.status == 304) &#123;
+                //  5.处理返回的结果；
+                option.success(xmlhttp);//成功后回调；
+            &#125; else &#123;
+                option.error(xmlhttp);//失败后回调；
+            &#125;
+        &#125;
+    &#125;
+    //处理obj 
+    function objToString(data) &#123;
+        data.t = new Date().getTime();
+        var res = [];
+        for (var key in data) &#123;
+            //需要将key和value转成非中文的形式，因为url不能有中文。使用encodeURIComponent();
+            res.push(encodeURIComponent(key) + &quot; = &quot; + encodeURIComponent(data[key]));
+        &#125;
+        return res.join(&quot;&amp;&quot;);
+    &#125;
+    //判断外界是否传入了超时时间
+    if (option.timeout) &#123;
+        timer = setInterval(function () &#123;
+            xmlhttp.abort();//中断请求
+            clearInterval(timer);
+        &#125;, timeout);
+    &#125;
+&#125;
+</code></pre>
+<h2 id="22-apply"><a href="#22-apply" class="headerlink" title="22.apply"></a>22.apply</h2><pre><code class="javascript">Function.prototype.apply2 = function(obj,arr)&#123;
+    obj = obj?Object(obj):window;
+    let _fn = &quot;fn&quot;,result;
+    while (obj.hasOwnProperty(_fn)) &#123;
+      _fn = &quot;fn&quot; + Math.random(); // 循环判断并重新赋值
+    &#125;
+    obj[_fn] = this;
+    if(arr)&#123;
+      result = obj[_fn](...arr);
+    &#125;else&#123;
+      result = obj[_fn]();
+    &#125;
+    delete obj[_fn];
+    return result;
+  &#125;
+</code></pre>
+<h2 id="23-async和await"><a href="#23-async和await" class="headerlink" title="23.async和await"></a>23.async和await</h2><pre><code class="javascript">function asyncToGen(genFunction) &#123;
+    return function (...args) &#123;
+      const gen = genFunction.apply(this, args);
+      return new Promise((resolve, reject) =&gt; &#123;
+        function step(key, arg) &#123;
+          let genResult;
+          try &#123;
+            genResult = gen[key](arg);
+          &#125; catch (err) &#123;
+            return reject(err);
+          &#125;
+          const &#123; value, done &#125; = genResult;
+          if (done) &#123;
+            return resolve(value);
+          &#125;
+          return Promise.resolve(value).then(
+            (val) =&gt; &#123;
+              step(&#39;next&#39;, val);
+            &#125;,
+            (err) =&gt; &#123;
+              step(&#39;throw&#39;, err);
+            &#125;,
+          );
+        &#125;
+        step(&#39;next&#39;);
+      &#125;);
+    &#125;;
+  &#125;
+  const getData = () =&gt; new Promise(resolve =&gt; setTimeout(() =&gt; resolve(&#39;data&#39;), 1000));
+  function* testG() &#123;
+    const data = yield getData();
+    console.log(&#39;data: &#39;, data);
+    const data2 = yield getData();
+    console.log(&#39;data2: &#39;, data2);
+    return &#39;success&#39;;
+  &#125;
+  
+  const gen = asyncToGen(testG);
+  gen().then(res =&gt; console.log(res));
+</code></pre>
+<h2 id="24-bind"><a href="#24-bind" class="headerlink" title="24.bind"></a>24.bind</h2><pre><code class="javascript">Function.prototype.bind2 = function (obj) &#123;
+    obj = obj ? Object(obj) : window
+    let myArguments = arguments
+    let self = this
+    if (arguments.length &gt; 1) &#123;
+      return function () &#123;
+        self.apply(obj, [...[...myArguments].slice(1), ...arguments])
+      &#125;
+    &#125;
+    return function () &#123;
+      self.apply(obj, [...arguments])
+    &#125;
+  &#125;
+</code></pre>
+<h2 id="25-call"><a href="#25-call" class="headerlink" title="25.call"></a>25.call</h2><pre><code class="javascript">Function.prototype.call2 = function(obj)&#123;
+    obj = obj?Object(obj):window;
+    let _fn = &quot;fn&quot;,result;
+    while (obj.hasOwnProperty(_fn)) &#123;
+      _fn = &quot;fn&quot; + Math.random(); // 循环判断并重新赋值
+    &#125;
+    obj[_fn] = this;
+    if(arguments.length&gt;1)&#123;
+      result = obj[_fn](...([...arguments].slice(1)));
+    &#125;else&#123;
+      result = obj[_fn]();
+    &#125;
+    delete obj[_fn];
+    return result;
+  &#125;
+</code></pre>
+<h2 id="26-filter"><a href="#26-filter" class="headerlink" title="26.filter"></a>26.filter</h2><pre><code class="javascript">Array.prototype.myFilter = function(callback, thisArg) &#123;
+    // 确认调用者必须是个数组
+    if (Object.prototype.toString.call(this) !== &#39;[object Array]&#39;) &#123;
+      throw new TypeError(&#39;this must be a array&#39;);
+    &#125;
+    if (typeof callback !== &#39;function&#39;) &#123;
+      throw new TypeError(callback + &#39;is not a function&#39;);
+    &#125;
+    // 返回结果的数组
+    const res = [];
+    // 让O成为回调函数的对象传递（强制转换对象）
+    const O = Object(this);
+    console.log(O)
+    // &gt;&gt;&gt;0 保证len为number，且为正整数
+    // 无符号位移计算符
+    const len = O.length &gt;&gt;&gt; 0;
+    // 对整个数组进行遍历
+    for (let i = 0; i &lt; len; i++) &#123;
+        // 遍历回调函数调用传参
+        // call是传入（新this指向，参数）
+        // thisArg新设置的this，这里无设置就是undefined
+        // O[i] 是原数组的当前元素
+        // i是当前index
+        // O是原数组
+        if (callback.call(thisArg, O[i], i, O)) &#123;
+          res.push(O[i]);
+        &#125;
+    &#125;
+    // 返回结果
+    return res;
+  &#125;
+  console.log([30,20,16,10].myFilter((num) =&gt; &#123; return num &gt;= 12&#125;));
+</code></pre>
+<h2 id="27-forEach"><a href="#27-forEach" class="headerlink" title="27.forEach"></a>27.forEach</h2><pre><code class="javascript">Array.prototype.myForEach = function(callback, thisArg) &#123;
+    // 判断是否是数组调用，并且传入的是回调函数
+    if (this == null) &#123;
+      throw new TypeError(&#39;this is null or not defined&#39;);
+    &#125;
+    if (typeof callback !== &quot;function&quot;) &#123;
+      throw new TypeError(callback + &#39; is not a function&#39;);
+    &#125;
+    const O = Object(this);
+    const len = O.length &gt;&gt;&gt; 0;
+    let k = 0;
+   // 循环所有数据  
+   for(let i = 0; i &lt; len; i++) &#123;
+    callback.call(thisArg, O[k], k, O);
+   &#125;
+  &#125;
+</code></pre>
+<h2 id="28-instanceof"><a href="#28-instanceof" class="headerlink" title="28.instanceof"></a>28.instanceof</h2><pre><code class="javascript">function new_instance_of(leftValue,rightValue)&#123;
+    let rightProto = rightValue.prototype;//取右边表达式的 prototype 值
+    leftValue = leftValue.__proto__;//取左表达式的 __proto__ 值
+    while(true)&#123;
+        if(leftValue == null)&#123;
+            return false;
+        &#125;
+        if(leftValue === rightProto)&#123;
+            return true;
+        &#125;
+        leftValue = leftValue.__proto__;
+    &#125;
+&#125;
+function Foo()&#123;&#125;
+console.log(new_instance_of(Foo,Object))//true
+</code></pre>
+<h2 id="29-jsonp"><a href="#29-jsonp" class="headerlink" title="29.jsonp"></a>29.jsonp</h2><pre><code class="javascript">let jsonp=(url,data=&#123;&#125;,callback=&#39;callback&#39;)=&gt;&#123;
+    //准备好带有padding的请求url
+let dataStr=url.indexOf(&#39;?&#39;)=== -1?&#39;?&#39;:&#39;&amp;&#39;
+// console.log(dataStr);
+for(let key in data)&#123;
+    dataStr +=`$&#123;key&#125;=$&#123;data[key]&#125;&amp;`
+&#125;
+dataStr +=`callback=`+callback
+
+//构造 script
+let oScript=document.createElement(&#39;script&#39;)
+oScript.src=url+dataStr
+//appendChild () 方法可向节点的子节点列表的末尾添加新的子节点
+document.body.appendChild(oScript)
+
+// window[callback]=(data)=&gt;&#123;
+//     console.log(data);
+// &#125;
+return new Promise((resolve,reject)=&gt;&#123;
+    window[callback]=(data)=&gt;&#123;
+        try&#123;
+            resolve(data)
+        &#125;catch(e)&#123;
+            reject(e)
+        &#125;finally&#123;
+            oScript.parentNode.removeChild(oScript)// 注意这句代码，OScript移除,细节
+        &#125;
+    &#125;
+&#125;)
+&#125;
+
+jsonp(&#39;https://photo.sina.cn/aj/index?a=1&#39;,&#123;
+    page:1,
+    cate:&#39;recommend&#39;
+&#125;).then(response=&gt;&#123;
+    console.log(response,&#39;-------then&#39;);
+&#125;) 
+</code></pre>
+<h2 id="30-map"><a href="#30-map" class="headerlink" title="30.map"></a>30.map</h2><pre><code class="javascript">Array.prototype.myMap = function(callback, thisArg) &#123;
+    if (this == undefined) &#123;
+      throw new TypeError(&#39;this is null or not defined&#39;);
+    &#125;
+    if (typeof callback !== &#39;function&#39;) &#123;
+      throw new TypeError(callback + &#39; is not a function&#39;);
+    &#125;
+    const res = [];
+    const O = Object(this);
+    const len = O.length &gt;&gt;&gt; 0;
+    for (let i = 0; i &lt; len; i++) &#123;
+       // 调用回调函数并传入新数组
+       res[i] = callback.call(thisArg, O[i], i, O);
+    &#125;
+    return res;
+  &#125;
+</code></pre>
+<h2 id="31-new"><a href="#31-new" class="headerlink" title="31.new"></a>31.new</h2><pre><code class="javascript">/**
+ * new 使用Js原生实现
+ */
+function Parent(name, age) &#123;
+    this.name = name;
+    this.age = age;
+    this.sayName = function () &#123;
+        console.log(this.name);
+    &#125;
+&#125;
+const _new = function (Parent, ...rest) &#123;
+    //1.以构造器Parent的prototype为原型创建新对象
+    const child = Object.create(Parent.prototype);
+    //2. 将this和调用参数传给构造器执行
+    const result = Parent.apply(child, rest);
+    return typeof result === &#39;object&#39; ? result : child;
+&#125;
+const p1 = _new(Parent,&#39;www&#39;,&#39;23&#39;);
+console.log(p1);
+p1.sayName(); 
+</code></pre>
+<h2 id="32-object-create"><a href="#32-object-create" class="headerlink" title="32.object-create"></a>32.object-create</h2><pre><code class="javascript">Object.myCreate = function (proto, propertyObject = undefined) &#123;
+    if (propertyObject === null) &#123;
+      // 这里没有判断propertyObject是否是原始包装对象
+      throw &#39;TypeError&#39;
+    &#125; else &#123;
+      function Fn () &#123;&#125;
+      Fn.prototype = proto
+      const obj = new Fn()
+      if (propertyObject !== undefined) &#123;
+        Object.defineProperties(obj, propertyObject)
+      &#125;
+      if (proto === null) &#123;
+        // 创建一个没有原型对象的对象，Object.create(null)
+        obj.__proto__ = null
+      &#125;
+      return obj
+    &#125;
+  &#125;
+  
+  // 示例
+  // 第二个参数为null时，抛出TypeError
+  // const throwErr = Object.myCreate(&#123;a: &#39;aa&#39;&#125;, null)  // Uncaught TypeError
+  // 构建一个以
+  const obj1 = Object.myCreate(&#123;a: &#39;aa&#39;&#125;)
+  console.log(obj1)  // &#123;&#125;, obj1的构造函数的原型对象是&#123;a: &#39;aa&#39;&#125;
+  const obj2 = Object.myCreate(&#123;a: &#39;aa&#39;&#125;, &#123;
+    b: &#123;
+      value: &#39;bb&#39;,
+      enumerable: true
+    &#125;
+  &#125;)
+  console.log(obj2)  // &#123;b: &#39;bb&#39;&#125;, obj2的构造函数的原型对象是&#123;a: &#39;aa&#39;&#125;
+</code></pre>
+<h2 id="33-object-is"><a href="#33-object-is" class="headerlink" title="33.object-is"></a>33.object-is</h2><pre><code class="javascript">Object.is = function(x, y) &#123;
+    if (x === y) &#123;
+        // 当前情况下，只有一种情况是特殊的，即 +0 -0
+        // 如果 x !== 0，则返回true
+        // 如果 x === 0，则需要判断+0和-0，则可以直接使用 1/+0 === Infinity 和 1/-0 === -Infinity来进行判断
+        return x !== 0 || 1 / x === 1 / y;
+    &#125;
+    
+    // x !== y 的情况下，只需要判断是否为NaN，如果x!==x，则说明x是NaN，同理y也一样
+    // x和y同时为NaN时，返回true
+    return x !== x &amp;&amp; y !== y;
+&#125;
+</code></pre>
+<h2 id="34-promise-all"><a href="#34-promise-all" class="headerlink" title="34.promise.all"></a>34.promise.all</h2><pre><code class="javascript">Promise.prototype.all = function(promises)&#123;
+    let results = [];
+    let promiseCount = 0;
+    let promisesLength = promises.length;
+    return new Promise(function(resolve,reject)&#123;
+        for(let val of promises)&#123;
+            Promise.resolve(val).then(function(res)&#123;
+                promiseCount++;
+                results[i] = res;
+                if(promiseCount === promisesLength)&#123;
+                    return resolve(results);
+                &#125;
+            &#125;,function(err)&#123;
+                return reject(err);
+            &#125;)
+        &#125;
+    &#125;)
+&#125;
+
+let promise1 = new Promise(function(resolve) &#123;
+    resolve(1);
+  &#125;);
+  let promise2 = new Promise(function(resolve) &#123;
+    resolve(2);
+  &#125;);
+  let promise3 = new Promise(function(resolve) &#123;
+    resolve(3);
+  &#125;);
+  
+  let promiseAll = Promise.all([promise1, promise2, promise3]);
+  promiseAll.then(function(res) &#123;
+    console.log(res);
+  &#125;);
+</code></pre>
+<h2 id="35-promise"><a href="#35-promise" class="headerlink" title="35.promise"></a>35.promise</h2><pre><code class="javascript">const PENDING = &#39;PENDING&#39;;
+const FULFILLED = &#39;FULFILLED&#39;;
+const REJECTED = &#39;REJECTED&#39;;
+
+const resolvePromise = (promise2, x, resolve, reject) =&gt; &#123;
+  // 自己等待自己完成是错误的实现，用一个类型错误，结束掉 promise  Promise/A+ 2.3.1
+  if (promise2 === x) &#123; 
+    return reject(new TypeError(&#39;Chaining cycle detected for promise #&lt;Promise&gt;&#39;))
+  &#125;
+  // Promise/A+ 2.3.3.3.3 只能调用一次
+  let called;
+  // 后续的条件要严格判断 保证代码能和别的库一起使用
+  if ((typeof x === &#39;object&#39; &amp;&amp; x != null) || typeof x === &#39;function&#39;) &#123; 
+    try &#123;
+      // 为了判断 resolve 过的就不用再 reject 了（比如 reject 和 resolve 同时调用的时候）  Promise/A+ 2.3.3.1
+      let then = x.then;
+      if (typeof then === &#39;function&#39;) &#123; 
+        // 不要写成 x.then，直接 then.call 就可以了 因为 x.then 会再次取值，Object.defineProperty  Promise/A+ 2.3.3.3
+        then.call(x, y =&gt; &#123; // 根据 promise 的状态决定是成功还是失败
+          if (called) return;
+          called = true;
+          // 递归解析的过程（因为可能 promise 中还有 promise） Promise/A+ 2.3.3.3.1
+          resolvePromise(promise2, y, resolve, reject); 
+        &#125;, r =&gt; &#123;
+          // 只要失败就失败 Promise/A+ 2.3.3.3.2
+          if (called) return;
+          called = true;
+          reject(r);
+        &#125;);
+      &#125; else &#123;
+        // 如果 x.then 是个普通值就直接返回 resolve 作为结果  Promise/A+ 2.3.3.4
+        resolve(x);
+      &#125;
+    &#125; catch (e) &#123;
+      // Promise/A+ 2.3.3.2
+      if (called) return;
+      called = true;
+      reject(e)
+    &#125;
+  &#125; else &#123;
+    // 如果 x 是个普通值就直接返回 resolve 作为结果  Promise/A+ 2.3.4  
+    resolve(x)
+  &#125;
+&#125;
+
+class Promise &#123;
+  constructor(executor) &#123;
+    this.status = PENDING;
+    this.value = undefined;
+    this.reason = undefined;
+    this.onResolvedCallbacks = [];
+    this.onRejectedCallbacks= [];
+
+    let resolve = (value) =&gt; &#123;
+      if(this.status ===  PENDING) &#123;
+        this.status = FULFILLED;
+        this.value = value;
+        this.onResolvedCallbacks.forEach(fn=&gt;fn());
+      &#125;
+    &#125; 
+
+    let reject = (reason) =&gt; &#123;
+      if(this.status ===  PENDING) &#123;
+        this.status = REJECTED;
+        this.reason = reason;
+        this.onRejectedCallbacks.forEach(fn=&gt;fn());
+      &#125;
+    &#125;
+
+    try &#123;
+      executor(resolve,reject)
+    &#125; catch (error) &#123;
+      reject(error)
+    &#125;
+  &#125;
+
+  then(onFulfilled, onRejected) &#123;
+    //解决 onFufilled，onRejected 没有传值的问题
+    //Promise/A+ 2.2.1 / Promise/A+ 2.2.5 / Promise/A+ 2.2.7.3 / Promise/A+ 2.2.7.4
+    onFulfilled = typeof onFulfilled === &#39;function&#39; ? onFulfilled : v =&gt; v;
+    //因为错误的值要让后面访问到，所以这里也要跑出个错误，不然会在之后 then 的 resolve 中捕获
+    onRejected = typeof onRejected === &#39;function&#39; ? onRejected : err =&gt; &#123; throw err &#125;;
+    // 每次调用 then 都返回一个新的 promise  Promise/A+ 2.2.7
+    let promise2 = new Promise((resolve, reject) =&gt; &#123;
+      if (this.status === FULFILLED) &#123;
+        //Promise/A+ 2.2.2
+        //Promise/A+ 2.2.4 --- setTimeout
+        setTimeout(() =&gt; &#123;
+          try &#123;
+            //Promise/A+ 2.2.7.1
+            let x = onFulfilled(this.value);
+            // x可能是一个proimise
+            resolvePromise(promise2, x, resolve, reject);
+          &#125; catch (e) &#123;
+            //Promise/A+ 2.2.7.2
+            reject(e)
+          &#125;
+        &#125;, 0);
+      &#125;
+
+      if (this.status === REJECTED) &#123;
+        //Promise/A+ 2.2.3
+        setTimeout(() =&gt; &#123;
+          try &#123;
+            let x = onRejected(this.reason);
+            resolvePromise(promise2, x, resolve, reject);
+          &#125; catch (e) &#123;
+            reject(e)
+          &#125;
+        &#125;, 0);
+      &#125;
+
+      if (this.status === PENDING) &#123;
+        this.onResolvedCallbacks.push(() =&gt; &#123;
+          setTimeout(() =&gt; &#123;
+            try &#123;
+              let x = onFulfilled(this.value);
+              resolvePromise(promise2, x, resolve, reject);
+            &#125; catch (e) &#123;
+              reject(e)
+            &#125;
+          &#125;, 0);
+        &#125;);
+
+        this.onRejectedCallbacks.push(()=&gt; &#123;
+          setTimeout(() =&gt; &#123;
+            try &#123;
+              let x = onRejected(this.reason);
+              resolvePromise(promise2, x, resolve, reject)
+            &#125; catch (e) &#123;
+              reject(e)
+            &#125;
+          &#125;, 0);
+        &#125;);
+      &#125;
+    &#125;);
+  
+    return promise2;
+  &#125;
+&#125;
+</code></pre>
+<h2 id="36-promise-race"><a href="#36-promise-race" class="headerlink" title="36.promise.race"></a>36.promise.race</h2><pre><code class="javascript">Promise.race = function(promises)&#123;
+    //将可迭代对象转换为数组
+    promises = Array.from(promises);
+    return new Promise((resolve,reject)=&gt;&#123;
+        if(promises.length === 0)&#123;
+            //空的可迭代对象，用于pending状态
+        &#125;else&#123;
+            for(let i = 0;i &lt; promises.length;i++)&#123;
+                Promise.resolve(promises[i]).then((data)=&gt;&#123;
+                    resolve(data);
+                &#125;).catch((reason)=&gt;&#123;
+                    reject(reason)
+                &#125;)
+            &#125;
+        &#125;
+    &#125;)
+&#125;
+
+let p1 = new Promise(function(resolve,reject)&#123;
+    setTimeout(function()&#123;
+     resolve(&#39;success&#39;)
+    &#125;,1000)
+&#125;)
+
+let p2 = new Promise(function(resolve,reject)&#123;
+    setTimeout(function()&#123;
+     resolve(&#39;faild&#39;)
+    &#125;,500)
+&#125;)
+
+Promise.race([p1,p2]).then(result=&gt;&#123;
+console.log(result)             //  faild    faild耗时短
+&#125;)
+</code></pre>
+<h2 id="37-reduce"><a href="#37-reduce" class="headerlink" title="37.reduce"></a>37.reduce</h2><pre><code class="javascript">Array.prototype.myReduce = function(callback, initialValue) &#123;
+    // 判断调用的是否是数组，以及传入的callback是否是函数
+    if (this == undefined) &#123;
+      throw new TypeError(&#39;this is null or not defined&#39;);
+    &#125;
+    if (typeof callback !== &#39;function&#39;) &#123;
+      throw new TypeError(callbackfn + &#39; is not a function&#39;);
+    &#125;
+    // 空数组也是不允许的
+    if (this.length == 0) &#123;
+     throw new TypeError(&#39;Reduce of empty array with no initial value&#39;);
+    &#125;
+    // 让O成为回调函数的对象传递（强制转换对象）
+    const O = Object(this);
+    // &gt;&gt;&gt;0 保证len为number，且为正整数
+    const len = this.length &gt;&gt;&gt; 0;
+    // 保存初始值，初始值不传的时候为undefined
+    let accumulator = initialValue;
+    // 标志位
+    let k = 0;
+    // 如果第二个参数为undefined的情况，则数组的第一个有效值作为累加器的初始值
+    if (accumulator === undefined) &#123;
+      // 这里是k++，就是赋值完成之后k再加1
+      accumulator = O[k++];
+    &#125;
+    // 此时如果有初始值，k是0，如果无初始值k是1
+    for(k;k&lt;len;k++) &#123;
+     accumulator = callback.call(this, accumulator, O[k], k, O);
+    &#125;
+    return accumulator;
+  &#125;
+  console.log([2,4,6].myReduce((t,n)=&gt;&#123;return t+n&#125;));
+  console.log([2,4,6].myReduce((t,n)=&gt;&#123;return t+n&#125;,10));
+</code></pre>
+<h2 id="38-sleep"><a href="#38-sleep" class="headerlink" title="38.sleep"></a>38.sleep</h2><pre><code class="javascript">//Promise
+const sleep = time =&gt; &#123;
+    return new Promise(resolve =&gt; setTimeout(resolve,time))
+  &#125;
+  sleep(1000).then(()=&gt;&#123;
+    console.log(1)
+  &#125;)
+  
+  //Generator
+  function* sleepGenerator(time) &#123;
+    yield new Promise(function(resolve,reject)&#123;
+      setTimeout(resolve,time);
+    &#125;)
+  &#125;
+  sleepGenerator(1000).next().value.then(()=&gt;&#123;console.log(1)&#125;)
+  
+  //async
+  function sleep(time) &#123;
+    return new Promise(resolve =&gt; setTimeout(resolve,time))
+  &#125;
+  async function output() &#123;
+    let out = await sleep(1000);
+    console.log(1);
+    return out;
+  &#125;
+  output();
+  
+  //ES5
+  function sleep(callback,time) &#123;
+    if(typeof callback === &#39;function&#39;)
+      setTimeout(callback,time)
+  &#125;
+  
+  function output()&#123;
+    console.log(1);
+  &#125;
+  sleep(output,1000);
+</code></pre>
+<h2 id="39-vue-Reactive"><a href="#39-vue-Reactive" class="headerlink" title="39.vue-Reactive"></a>39.vue-Reactive</h2><pre><code class="javascript">const targetMap = new WeakMap();
+let activeEffect = null; // 引入 activeEffect 变量
+
+const effect = eff =&gt; &#123;
+    activeEffect = eff; // 1. 将副作用赋值给 activeEffect
+  activeEffect();     // 2. 执行 activeEffect
+  activeEffect = null;// 3. 重置 activeEffect
+&#125;
+
+const track = (target, key) =&gt; &#123;
+    if (activeEffect) &#123;  // 1. 判断当前是否有 activeEffect
+        let depsMap = targetMap.get(target);
+        if (!depsMap) &#123;
+            targetMap.set(target, (depsMap = new Map()));
+        &#125;
+        let dep = depsMap.get(key);
+        if (!dep) &#123;
+            depsMap.set(key, (dep = new Set()));
+        &#125;
+        dep.add(activeEffect);  // 2. 添加 activeEffect 依赖
+    &#125;
+&#125;
+
+const trigger = (target, key) =&gt; &#123;
+    const depsMap = targetMap.get(target);
+    if (!depsMap) return;
+    let dep = depsMap.get(key);
+    if (dep) &#123;
+        dep.forEach(effect =&gt; effect());
+    &#125;
+&#125;;
+
+const reactive = (target) =&gt; &#123;
+    const handler = &#123;
+        get(target, key, receiver) &#123;
+            const result = Reflect.get(target, key, receiver);
+            track(target, key);
+            return result;
+        &#125;,
+        set(target, key, value, receiver) &#123;
+            const oldValue = target[key];
+            const result = Reflect.set(target, key, value, receiver);
+            if (oldValue != result) &#123;
+                trigger(target, key);
+            &#125;
+            return result;
+        &#125;
+    &#125;
+
+    return new Proxy(target, handler);
+&#125;
+
+let product = reactive(&#123; price: 10, quantity: 2 &#125;);
+let total = 0, salePrice = 0;
+// 修改 effect 使用方式，将副作用作为参数传给 effect 方法
+effect(() =&gt; &#123;
+    total = product.price * product.quantity
+&#125;);
+effect(() =&gt; &#123;
+    salePrice = product.price * 0.9
+&#125;);
+console.log(total, salePrice);  // 20 9
+product.quantity = 5;
+console.log(total, salePrice);  // 50 9
+product.price = 20;
+console.log(total, salePrice);  // 100 18
+</code></pre>
+<h2 id="40-算法笔试"><a href="#40-算法笔试" class="headerlink" title="40.算法笔试"></a>40.算法笔试</h2><h3 id="1-插入排序"><a href="#1-插入排序" class="headerlink" title="1.插入排序"></a>1.插入排序</h3><pre><code class="javascript">function insertionSort(arr) &#123;
+    var len = arr.length;
+    var preIndex, current;
+    for (var i = 1; i &lt; len; i++) &#123;
+        preIndex = i - 1;
+        current = arr[i];
+        while(preIndex &gt;= 0 &amp;&amp; arr[preIndex] &gt; current) &#123;
+            arr[preIndex+1] = arr[preIndex];
+            preIndex--;
+        &#125;
+        arr[preIndex+1] = current;
+    &#125;
+    return arr;
+&#125;
+const arr1 = [2,6,8,2,3,5,0,1,6,8]
+let res = insertionSort(arr1)
+console.log(arr1)//[ 0, 1, 2, 2, 3, 5, 6, 6, 8, 8]
+</code></pre>
+<h3 id="2-堆排序"><a href="#2-堆排序" class="headerlink" title="2.堆排序"></a>2.堆排序</h3><pre><code class="javascript">var len;    // 因为声明的多个函数都需要数据长度，所以把len设置成为全局变量
+
+function buildMaxHeap(arr) &#123;   // 建立大顶堆
+    len = arr.length;
+    for (var i = Math.floor(len/2); i &gt;= 0; i--) &#123;
+        heapify(arr, i);
+    &#125;
+&#125;
+
+function heapify(arr, i) &#123;     // 堆调整
+    var left = 2 * i + 1,
+        right = 2 * i + 2,
+        largest = i;
+
+    if (left &lt; len &amp;&amp; arr[left] &gt; arr[largest]) &#123;
+        largest = left;
+    &#125;
+
+    if (right &lt; len &amp;&amp; arr[right] &gt; arr[largest]) &#123;
+        largest = right;
+    &#125;
+
+    if (largest != i) &#123;
+        swap(arr, i, largest);
+        heapify(arr, largest);
+    &#125;
+&#125;
+
+function swap(arr, i, j) &#123;
+    var temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+&#125;
+
+function heapSort(arr) &#123;
+    buildMaxHeap(arr);
+
+    for (var i = arr.length-1; i &gt; 0; i--) &#123;
+        swap(arr, 0, i);
+        len--;
+        heapify(arr, 0);
+    &#125;
+    return arr;
+&#125;
+
+const arr1 = [12,4,6,9,11,0,4,3,7,9]
+let res = heapSort(arr1)
+console.log(res)//[0, 3, 4,  4,  6, 7, 9, 9, 11, 12]
+</code></pre>
+<h3 id="3-斐波那契数列"><a href="#3-斐波那契数列" class="headerlink" title="3.斐波那契数列"></a>3.斐波那契数列</h3><pre><code class="javascript">//方法一：使用递归
+function fibonacci(n) &#123;
+    if (n == 1 || n == 2) &#123;
+        return 1
+    &#125;;
+    return fibonacci(n - 2) + fibonacci(n - 1);
+&#125;
+console.log(fibonacci(3))//2
+
+//方法二：改进递归-把前两位数字做成参数避免重复计算
+function fibonacci(n) &#123;
+    function fib(n, v1, v2) &#123;
+        if (n == 1)
+            return v1;
+        if (n == 2)
+            return v2;
+        else
+            return fib(n - 1, v2, v1 + v2)
+    &#125;
+    return fib(n, 1, 1)
+&#125;
+fibonacci(30)
+
+//方法三：改进递归-利用闭包特性把运算结果存储在数组里，避免重复计算
+var fibonacci = function () &#123;
+    let memo = [0, 1];
+    let fib = function (n) &#123;
+        if (memo[n] == undefined) &#123;
+            memo[n] = fib(n - 2) + fib(n - 1)
+        &#125;
+        return memo[n]
+    &#125;
+    return fib;
+&#125;()
+fibonacci(30)
+
+
+//方法四：改进递归-摘出存储计算结果的功能函数
+var memoizer = function (func) &#123;
+    let memo = [];
+    return function (n) &#123;
+        if (memo[n] == undefined) &#123;
+            memo[n] = func(n)
+        &#125;
+        return memo[n]
+    &#125;
+&#125;;
+var fibonacci=memoizer(function(n)&#123;
+    if (n == 1 || n == 2) &#123;
+        return 1
+    &#125;;
+    return fibonacci(n - 2) + fibonacci(n - 1);
+&#125;)
+fibonacci(30)
+
+
+//方法五：普通for循环
+function fibonacci(n) &#123;
+    var n1 = 1, n2 = 1, sum;
+    for (let i = 2; i &lt; n; i++) &#123;
+        sum = n1 + n2
+        n1 = n2
+        n2 = sum
+    &#125;
+    return sum
+&#125;
+fibonacci(30)
+
+//方法六：for循环+解构赋值
+var fibonacci = function (n) &#123;
+    let n1 = 1; n2 = 1;
+    for (let i = 2; i &lt; n; i++) &#123;
+        [n1, n2] = [n2, n1 + n2]
+    &#125;
+    return n2
+&#125;
+fibonacci(30)
+</code></pre>
+<h3 id="4-归并排序"><a href="#4-归并排序" class="headerlink" title="4.归并排序"></a>4.归并排序</h3><pre><code class="javascript">function mergeSort(arr) &#123;  // 采用自上而下的递归方法
+    var len = arr.length;
+    if(len &lt; 2) &#123;
+        return arr;
+    &#125;
+    var middle = Math.floor(len / 2),
+        left = arr.slice(0, middle),
+        right = arr.slice(middle);
+    return merge(mergeSort(left), mergeSort(right));
+&#125;
+
+function merge(left, right)
+&#123;
+    var result = [];
+
+    while (left.length &amp;&amp; right.length) &#123;
+        if (left[0] &lt;= right[0]) &#123;
+            result.push(left.shift());
+        &#125; else &#123;
+            result.push(right.shift());
+        &#125;
+    &#125;
+
+    while (left.length)
+        result.push(left.shift());
+
+    while (right.length)
+        result.push(right.shift());
+
+    return result;
+&#125;
+
+
+const arr1 = [1,4,6,1,0,3,4,2,7,3,1]
+let res = mergeSort(arr1)
+console.log(res)//[0, 1, 1, 1, 2,3, 3, 4, 4, 6,7]
+</code></pre>
+<h3 id="5-汉诺塔问题"><a href="#5-汉诺塔问题" class="headerlink" title="5.汉诺塔问题"></a>5.汉诺塔问题</h3><pre><code class="javascript">/** 
+ * @param &#123;圆盘数：number&#125; plates 
+ * @param &#123;起始柱子 a：string&#125; source 
+ * @param &#123;辅助柱子 b：string&#125; helper 
+ * @param &#123;目标柱子 c：string&#125; dest 
+ * @param &#123;移动步骤集：Array，数组的长度就是移动的次数&#125; moves 
+ */
+function hanoi(plates, source, helper, dest, moves = []) &#123;
+    if (plates &lt;= 0) &#123;
+        return moves;
+    &#125;
+    if (plates === 1) &#123;
+        moves.push([source, dest]);
+    &#125; else &#123;
+        hanoi(plates - 1, source, dest, helper, moves);
+        moves.push([source, dest]);
+        hanoi(plates - 1, helper, source, dest, moves);
+    &#125;
+    return moves;
+&#125;
+
+// test
+console.log(hanoi(4, &#39;source&#39;, &#39;helper&#39;, &#39;dest&#39;)); // 输出结果如下图展示
+</code></pre>
+<h3 id="6-合并两个有序数组"><a href="#6-合并两个有序数组" class="headerlink" title="6.合并两个有序数组"></a>6.合并两个有序数组</h3><pre><code class="javascript">var merge = function (nums1, m, nums2, n) &#123;
+    var p = m + n - 1;//0
+    var p1 = m - 1;//-1
+    var p2 = n - 1;//0
+      // 理论上来说，nums2应该全部填充进去，所以这里以p2作为条件
+    while (p2 &gt;= 0) &#123;
+        // nums1里面全是0的情况，比如[0], 0, [1], 1
+        if (p1 &lt; 0) &#123;
+            // 直接用nums2去填补nums1就好了
+            nums1[p--] = nums2[p2--]
+        // 只有nums2比nums1大才用nus2填补
+        &#125; else if (nums2[p2] &gt; nums1[p1]) &#123;
+            nums1[p] = nums2[p2];
+            p--;
+            p2--;
+        // 反之用nums1填补
+        &#125; else &#123;
+            nums1[p] = nums1[p1];
+            p--;
+            p1--;
+        &#125;
+    &#125;;
+    return nums1;
+&#125;;
+
+let nums1 = [1,2,3,0,0,0], m = 3,nums2 = [2,5,6],n = 3
+console.log(merge(nums1, m, nums2, n))//[ 1, 2, 2, 3, 5, 6 ]
+</code></pre>
+<h3 id="7-快速排序"><a href="#7-快速排序" class="headerlink" title="7.快速排序"></a>7.快速排序</h3><pre><code class="javascript">function quickSort(arr, left, right) &#123;
+    var len = arr.length,
+        partitionIndex,
+        left = typeof left != &#39;number&#39; ? 0 : left,
+        right = typeof right != &#39;number&#39; ? len - 1 : right;
+
+    if (left &lt; right) &#123;
+        partitionIndex = partition(arr, left, right);
+        quickSort(arr, left, partitionIndex-1);
+        quickSort(arr, partitionIndex+1, right);
+    &#125;
+    return arr;
+&#125;
+
+function partition(arr, left ,right) &#123;     // 分区操作
+    var pivot = left,                      // 设定基准值（pivot）
+        index = pivot + 1;
+    for (var i = index; i &lt;= right; i++) &#123;
+        if (arr[i] &lt; arr[pivot]) &#123;
+            swap(arr, i, index);
+            index++;
+        &#125;        
+    &#125;
+    swap(arr, pivot, index - 1);
+    return index-1;
+&#125;
+
+function swap(arr, i, j) &#123;
+    var temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+&#125;
+function partition2(arr, low, high) &#123;
+  let pivot = arr[low];
+  while (low &lt; high) &#123;
+    while (low &lt; high &amp;&amp; arr[high] &gt; pivot) &#123;
+      --high;
+    &#125;
+    arr[low] = arr[high];
+    while (low &lt; high &amp;&amp; arr[low] &lt;= pivot) &#123;
+      ++low;
+    &#125;
+    arr[high] = arr[low];
+  &#125;
+  arr[low] = pivot;
+  return low;
+&#125;
+
+function quickSort2(arr, low, high) &#123;
+  if (low &lt; high) &#123;
+    let pivot = partition2(arr, low, high);
+    quickSort2(arr, low, pivot - 1);
+    quickSort2(arr, pivot + 1, high);
+  &#125;
+  return arr;
+&#125;
+
+const arr1 = [1,4,6,1,0,3,4,2,7,3,1]
+let res = quickSort(arr1,0,11)
+console.log(res)//[ 0, 1, 1, 1, 2, 3, 3, 4, 4, 6,7]
+</code></pre>
+<h3 id="8-两数之和"><a href="#8-两数之和" class="headerlink" title="8.两数之和"></a>8.两数之和</h3><pre><code class="javascript">/**
+ * @param &#123;number[]&#125; nums
+ * @param &#123;number&#125; target
+ * @return &#123;number[]&#125;
+ */
+const twoSum = (nums, target) =&gt; &#123;
+    const prevNums = &#123;&#125;;                    // 存储出现过的数字，和对应的索引               
+  
+    for (let i = 0; i &lt; nums.length; i++) &#123;       // 遍历元素   
+      const curNum = nums[i];                     // 当前元素   
+      const targetNum = target - curNum;          // 满足要求的目标元素   
+      const targetNumIndex = prevNums[targetNum]; // 在prevNums中获取目标元素的索引
+      if (targetNumIndex !== undefined) &#123;         // 如果存在，直接返回 [目标元素的索引,当前索引]
+        return [targetNumIndex, i];
+      &#125; else &#123;                                    // 如果不存在，说明之前没出现过目标元素
+        prevNums[curNum] = i;                     // 存入当前的元素和对应的索引
+      &#125;
+    &#125;
+  &#125;
+
+  let nums = [2,7,11,15], target = 17
+  console.log(twoSum(nums,target))//[ 0, 3 ]
+</code></pre>
+<h3 id="9-冒泡排序"><a href="#9-冒泡排序" class="headerlink" title="9.冒泡排序"></a>9.冒泡排序</h3><pre><code class="javascript"> //双向冒泡排序
+ function bubbleSort_twoway(arr) &#123;
+    var len = arr.length;    //依次将最大的数放置到数组末尾，将第二大的数放到倒数第二位...
+    var flag = false;
+    for(var i = 0; i &lt; len/2; i++) &#123;
+        flag = false;
+        for(var j = i; j &lt; len - 1 - i; j++) &#123;   //从前往后,比较相邻两个数,把大的放在后边.之前已放置成功的可以不再参与比较
+            if(arr[j] &gt; arr[j + 1]) &#123;
+                var middle = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = middle;
+                flag =true;
+            &#125;
+        &#125;
+        if(!flag)&#123;
+            break;
+        &#125;
+
+        for(var j = len - 1 - i; j &gt; i; j--)&#123;
+            if(arr[j] &lt; arr[j - 1]) &#123;
+                var middle = arr[j];
+                arr[j] = arr[j-1];
+                arr[j-1] = middle;
+                flag = true;
+            &#125;
+        &#125;
+        if(!flag)&#123;
+            break;
+        &#125;
+    &#125;
+    return arr;
+&#125;
+
+var defaultArr = [3, 5, 32, 15, 7, 26, 10, 55, 45, 12, 28, 88, 18];
+var resultArr = bubbleSort_twoway(defaultArr);
+console.table(resultArr);
+</code></pre>
+<h3 id="10-爬台阶"><a href="#10-爬台阶" class="headerlink" title="10.爬台阶"></a>10.爬台阶</h3><pre><code class="javascript">/**
+ * @param &#123;number&#125; n
+ * @return &#123;number&#125;
+ */
+var climbStairs = function(n) &#123;
+    const sqrt_5 = Math.sqrt(5);
+    const fib_n = Math.pow((1 + sqrt_5) / 2, n + 1) - Math.pow((1 - sqrt_5) / 2,n + 1);
+    return Math.round(fib_n / sqrt_5);
+&#125;;
+
+
+/**
+ * @param &#123;number&#125; n
+ * @return &#123;number&#125;
+ */
+var climbStairs = function(n) &#123;
+    const dp = [];
+    dp[0] = 1;
+    dp[1] = 1;
+    for(let i = 2; i &lt;= n; i++) &#123;
+        dp[i] = dp[i - 1] + dp[i - 2];
+    &#125;
+    return dp[n];
+&#125;;
+</code></pre>
+<h3 id="11-数组交集"><a href="#11-数组交集" class="headerlink" title="11.数组交集"></a>11.数组交集</h3><pre><code class="javascript">//数组功能扩展
+//数组迭代函数
+Array.prototype.each = function(fn)&#123;
+    fn = fn || Function.K;
+    var a = [];
+    var args = Array.prototype.slice.call(arguments, 1);
+    for(var i = 0; i &lt; this.length; i++)&#123;
+    var res = fn.apply(this,[this[i],i].concat(args));
+    if(res != null) a.push(res);
+    &#125;
+    return a;
+   &#125;;
+   //数组是否包含指定元素
+   Array.prototype.contains = function(suArr)&#123;
+    for(var i = 0; i &lt; this.length; i ++)&#123;
+    if(this[i] == suArr)&#123;
+    return true;
+    &#125;
+    &#125;
+    return false;
+   &#125;
+   //不重复元素构成的数组
+   Array.prototype.uniquelize = function()&#123;
+    var ra = new Array();
+    for(var i = 0; i &lt; this.length; i ++)&#123;
+    if(!ra.contains(this[i]))&#123;
+    ra.push(this[i]);
+    &#125;
+    &#125;
+    return ra;
+   &#125;;
+   //两个数组的交集
+   Array.intersect = function(a, b)&#123;
+    return a.uniquelize().each(function(o)&#123;return b.contains(o) ? o : null&#125;);
+   &#125;;
+   //两个数组的差集
+   Array.minus = function(a, b)&#123;
+    return a.uniquelize().each(function(o)&#123;return b.contains(o) ? null : o&#125;);
+   &#125;;
+   //两个数组的补集
+   Array.complement = function(a, b)&#123;
+    return Array.minus(Array.union(a, b),Array.intersect(a, b));
+   &#125;;
+   //两个数组并集
+   Array.union = function(a, b)&#123;
+    return a.concat(b).uniquelize();
+   &#125;;
+
+
+var a = [1,2,3,4,5]
+var b = [2,4,6,8,10]
+console.log(&quot;数组a：&quot;, a);
+console.log(&quot;数组b：&quot;, b);
+var sa = new Set(a);
+var sb = new Set(b);
+// 交集
+let intersect = a.filter(x =&gt; sb.has(x));
+// 差集
+let minus = a.filter(x =&gt; !sb.has(x));
+// 补集
+let complement = [...a.filter(x =&gt; !sb.has(x)), ...b.filter(x =&gt; !sa.has(x))];
+// 并集
+let unionSet = Array.from(new Set([...a, ...b]));
+console.log(&quot;a与b的交集：&quot;, intersect);
+console.log(&quot;a与b的差集：&quot;, minus);
+console.log(&quot;a与b的补集：&quot;, complement);
+console.log(&quot;a与b的并集：&quot;, unionSet);
+</code></pre>
+<h3 id="12-希尔排序"><a href="#12-希尔排序" class="headerlink" title="12.希尔排序"></a>12.希尔排序</h3><pre><code class="javascript">function shellSort(arr) &#123;
+    var len = arr.length,
+        temp,
+        gap = 1;
+    while(gap &lt; len/3) &#123;          //动态定义间隔序列
+        gap =gap*3+1;
+    &#125;
+    for (gap; gap &gt; 0; gap = Math.floor(gap/3)) &#123;
+        for (var i = gap; i &lt; len; i++) &#123;
+            temp = arr[i];
+            for (var j = i-gap; j &gt;= 0 &amp;&amp; arr[j] &gt; temp; j-=gap) &#123;
+                arr[j+gap] = arr[j];
+            &#125;
+            arr[j+gap] = temp;
+        &#125;
+    &#125;
+    return arr;
+&#125;
+
+var defaultArr = [3, 5, 32, 15, 7, 26, 10, 55, 45, 12, 28, 88, 18];
+var resultArr = shellSort(defaultArr);
+console.table(resultArr);
+</code></pre>
+<h3 id="13-旋转数组"><a href="#13-旋转数组" class="headerlink" title="13.旋转数组"></a>13.旋转数组</h3><pre><code class="javascript">/**
+输入: nums = [1,2,3,4,5,6,7], k = 3
+输出: [5,6,7,1,2,3,4]
+解释:
+向右旋转 1 步: [7,1,2,3,4,5,6]
+向右旋转 2 步: [6,7,1,2,3,4,5]
+向右旋转 3 步: [5,6,7,1,2,3,4]
+ */
+
+let reverse = function(nums, start, end)&#123;
+    while(start &lt; end)&#123;
+        [nums[start++], nums[end--]] = [nums[end], nums[start]];
+    &#125;
+&#125;
+let rotate = function(nums, k) &#123;
+    k %= nums.length;
+    reverse(nums, 0, nums.length - 1);
+    reverse(nums, 0, k - 1);
+    reverse(nums, k, nums.length - 1);
+    return nums;
+&#125;;
+</code></pre>
+<h3 id="14-选择排序"><a href="#14-选择排序" class="headerlink" title="14.选择排序"></a>14.选择排序</h3><pre><code class="javascript">function selectionSort(arr) &#123;
+    var len = arr.length;
+    var minIndex, temp;
+    for (var i = 0; i &lt; len - 1; i++) &#123;
+        minIndex = i;
+        for (var j = i + 1; j &lt; len; j++) &#123;
+            if (arr[j] &lt; arr[minIndex]) &#123;     // 寻找最小的数
+                minIndex = j;                 // 将最小数的索引保存
+            &#125;
+        &#125;
+        temp = arr[i];
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
+    &#125;
+    return arr;
+&#125;
+var defaultArr = [3, 5, 32, 15, 7, 26, 10, 55, 45, 12, 28, 88, 18];
+var resultArr = selectionSort(defaultArr);
+console.table(resultArr);
+</code></pre>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AC%94%E8%AF%95/" rel="tag">笔试</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-umi-4-0"
   class="article article-type-post"
   itemscope
@@ -2317,149 +4186,6 @@ body &#123;
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%93%8D%E5%BA%94%E5%BC%8F/" rel="tag">响应式</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-如何设计一个组件"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/"
-    >如何设计一个组件</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/09/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/" class="article-date">
-  <time datetime="2022-12-09T02:06:22.000Z" itemprop="datePublished">2022-12-09</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6/">如何设计一个组件</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="如何设计一个组件"><a href="#如何设计一个组件" class="headerlink" title="如何设计一个组件"></a>如何设计一个组件</h1><blockquote>
-<p>在开发过程中，我们经常会遇到现有组件库无法满足需求，需要自己设计和实现组件的情况。那么，如何才能设计一个既满足产品需求，又易于开发人员使用的组件呢？本文就以一个级联组件的设计为例，探讨一下如何设计一个优质组件。</p>
-</blockquote>
-<h2 id="组件设计"><a href="#组件设计" class="headerlink" title="组件设计"></a>组件设计</h2><h3 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h3><p>开发这个组件的原因是来自工作中遇到的一个需求。</p>
-<p>产品提出的业务需求是实现一个地区的级联选择，并且应设计师要求，不能使用 Ant Design 的Cascader 级联选择，因此需要自己实现一个级联选择。</p>
-<p>通常需要从 4 个角度对需求进行分析：</p>
-<ol>
-<li>业务需求角度</li>
-<li>UI 设计角度</li>
-<li>开发人员角度</li>
-<li>与其他组件配合角度</li>
-</ol>
-<h4 id="业务需求角度"><a href="#业务需求角度" class="headerlink" title="业务需求角度"></a>业务需求角度</h4><p>在拿到一个需求之后，我们不应当直接考虑如何实现，而要先思考一下，这个需求是不是真正的需求。或者说，这个需求背后，是否还有更加基础和核心的需求。</p>
-<p>现在，我们拿到了一个<strong>地区级联选择</strong>的需求，那么我们应该<strong>仅仅实现</strong>地区级联选择吗？我认为不是的，今天我们拿到的是地区选择的需求，明天就可能变成职业选择。</p>
-<p>因此，我们实际需要实现的，应该是一个支持<strong>N 级</strong>的级联选择框。</p>
-<h4 id="UI-设计角度"><a href="#UI-设计角度" class="headerlink" title="UI 设计角度"></a>UI 设计角度</h4><p>既然已经确定了要实现 N 级级联选择框，就需要考虑其在各个屏幕尺寸的兼容情况，于是我在组件中引入了 Grid 栅格 。并默认设置了 3 级级联的样式，同时为使用者提供了相应的配置选项，如下：</p>
-<pre><code class="yaml">&lt;Cascade
-  rowProps=&#123;&#123;
-    gutter: 10,
-  &#125;&#125;
-  colProps=&#123;&#123;
-    xs: 24,
-    sm: 24,
-    md: 8,
-    lg: 8,
-    xl: 8,
-  &#125;&#125;
-/&gt;
-</code></pre>
-<h4 id="开发人员角度"><a href="#开发人员角度" class="headerlink" title="开发人员角度"></a>开发人员角度</h4><p>我们开发的组件，不止会被我们的团队成员使用，甚至会开源给其他开发者使用。那么，提供给开发者更好的体验就尤为重要。</p>
-<p>为了节省开发人员的学习成本，我们可以按照以下思路考虑：</p>
-<ol>
-<li>在满足基本需求的前提下，提供尽量少的 API。</li>
-<li>为 API 选项提供尽量少的配置项。</li>
-<li>为代码，特别是 API 提供尽量好的文档或注释。</li>
-</ol>
-<p>定义的 <code>Cascade</code> 组件 <code>Props</code> 示例如下：</p>
-<pre><code class="less">interface Props&lt;T&gt; &#123;
-  cascadeKeys?: CascadeKeys; // 自定义 dataSource 中 value label children 的字段
-  value?: T[]; // 指定当前选中的条目
-  onChange?: (value: T[], level: number) =&gt; void; // 选中选项时，调用此函数
-  rowProps?: RowProps; // 行排列方式，可参考https://ant.design/components/grid-cn/
-  colProps?: ColProps; // 列排列方式
-  loading?: boolean[]; // 选择框loading装填
-  dataSource?: T[] | CascadeData&lt;T&gt; | T[][]; // 可选项数据源
-&#125;
-</code></pre>
-<p>可以看到， <code>Props</code> 中只有 <code>dataSource</code> 是必须的。也就是说，如果你对配置项并不了解，组件也只需要最简单的配置，就可以正常工作了，例如：</p>
-<pre><code class="ini">&lt;Cascade
-  dataSource=&#123;pcaCascadeData&#125;
-/&gt;
-</code></pre>
-<ol>
-<li><p>在使用 TypeScript 时，还需要特别考虑类型匹配的问题。例如可以在使用组件时，传入一个类型，并且在 <code>onChange</code> 事件中如果使用了其他类型， TypeScript 检查就会提示错误，如下面例子中的 <code>PCAItem</code> 。</p>
-<pre><code class="ini">&lt;Cascade&lt;PCAItem&gt;
-  dataSource=&#123;pcaCascadeData&#125;
-  cascadeKeys=&#123;pcaCascadeKeys&#125;
-  onChange=&#123;async (value: PCAItem[], level: number) =&gt; &#123;
-    setPCAData(value);
-    setPCAIndex(level);
-  &#125;&#125;
-/&gt;
-</code></pre>
-</li>
-<li><p>对于级联组件，我们还需要考虑 dataSource 的数据来源可能有两种。</p>
-<ul>
-<li>组件初始化时，就传入了所有的级联数据，例如 省&#x2F;地&#x2F;县&#x2F;乡层级数据 。对应 Demo 中的“同步级联数据”，以及 <code>Props</code> 中 <code>dataSource</code> 类型定义的 <code>CascadeData&lt;T&gt; | T[][]</code> 。<ul>
-<li>在某些场景下，虽然没有级联选择框存在，但也需要处理树形数据，包括数据的查询和校验等功能，因此将该方法封装到 <code>CascadeData</code> 类中。</li>
-<li>考虑到树的数据量可能非常庞大，如果在每次选择时都在树中搜索效率较低。因此设计成在组件创建时，直接遍历树中的所有节点，然后将每个层级所有节点的数据都存储在相应的 <code>Map</code> 中，之后就能很方便地查询数据。</li>
-<li>虽然在组件初始化时遍历所有节点比较耗时，但考虑到用户从进入页面到操作组件有一定时间差，因此我认为这个问题可以忽略。</li>
-<li>基于以上考虑，你在 <code>Props</code> 中 <code>dataSource</code> 类型中看到的 <code>CascadeData&lt;T&gt;</code> ，就表示直接传入了一个 <code>new CascadeData(treeData)</code> 。而<code>T[][]</code>就表示直接传入树形数据，由组件内部进行 <code>new CascadeData(treeData) </code> 。</li>
-</ul>
-</li>
-<li>组件初始化时，只传入了第一级的选项，之后每级的选项通过前一级所选择的参数，从服务端获取。对应 Demo 中的“异步级联数据”，对应 <code>dataSource</code> 类型中的 <code>T[]</code> 。<ul>
-<li>组件初始化时，只传入第一级的数据，其他级别传入空数组，如：<code>[[&#123;&quot;code&quot;:110000,&quot;name&quot;:&quot;北京市&quot;&#125;],[],[]]</code>，组件会渲染出 3 层级联选项。</li>
-<li>当进行选择时，需要使用者通过 <code>onChange</code> 事件自行更新下一级的数据。也就是说，组件完全放弃了对数据的控制。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<h4 id="与其他组件配合角度"><a href="#与其他组件配合角度" class="headerlink" title="与其他组件配合角度"></a>与其他组件配合角度</h4><p>由于该组件需要与 Ant Design 其他组件配合使用，如前面讨论过的 UI 部分，该组件就结合了 Grid 栅格 组件。既保证了该组件在各屏幕宽度下正常显示，又保证了与其他组件的显示一致。</p>
-<p>除此之外，还需要考虑与 Form 表单 组件的配合，特别是兼容表单校验功能。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文通过一个级联组件的设计案例，探讨了如何从四个角度分析，进而设计一个优秀的组件。这 4 个角度分别是：</p>
-<ol>
-<li>业务需求角度</li>
-<li>UI 设计角度</li>
-<li>开发人员角度</li>
-<li>与其他组件配合角度</li>
-</ol>
-<p>我认为很多时候组件的设计并没有最优解，总是需要根据需求在各种方案中取舍。但只要按照本文提到的 4 个角度进行分析，就能设计出优秀的组件。</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%84%E4%BB%B6%E8%AE%BE%E8%AE%A1/" rel="tag">组件设计</a></li></ul>
 
     </footer>
   </div>

@@ -177,6 +177,238 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-threejs-d-2-0"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/11/29/threejs-d-2-0/"
+    >threejs-d-2.0</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/29/threejs-d-2-0/" class="article-date">
+  <time datetime="2022-11-29T08:43:31.000Z" itemprop="datePublished">2022-11-29</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/Three-js/">Three.js</a> / <a class="article-category-link" href="/categories/Web3D/Three-js/threejs-d-2-0/">threejs-d-2.0</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="threejs-d-2-0"><a href="#threejs-d-2-0" class="headerlink" title="threejs-d-2.0"></a>threejs-d-2.0</h1><h3 id="一、创建第一个threejs应用"><a href="#一、创建第一个threejs应用" class="headerlink" title="一、创建第一个threejs应用"></a>一、创建第一个threejs应用</h3><p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+
+const scene = new THREE.Scene();//创建场景
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );//创建透视相机（相机中的一种）
+const renderer = new THREE.WebGLRenderer();//创建渲染器
+renderer.setSize( window.innerWidth, window.innerHeight );//将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小
+document.body.appendChild( renderer.domElement );//将renderer（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中
+
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );//创建几何体
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );//创建基础网格材质
+const cube = new THREE.Mesh( geometry, material );//使用构造器
+scene.add( cube );//将几何体添加到场景
+camera.position.z = 5;//调整相机位置（默认0，0，0）
+
+//几何体循环旋转动画
+function animate() &#123;
+    requestAnimationFrame( animate );
+  //旋转坐标变换
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+  //重新渲染几何体
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<h4 id="1-创建场景、相机、渲染器"><a href="#1-创建场景、相机、渲染器" class="headerlink" title="1.创建场景、相机、渲染器"></a>1.创建场景、相机、渲染器</h4><blockquote>
+<p>如果我们有玩过三维软件的同学应该不会陌生这几个概念</p>
+<p>我们下面以三维软件C4D来简单认识一下吧</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129085326176.png"></p>
+<p>我们花一点点时间来解释一下这里发生了什么。我们现在建立了场景、相机和渲染器。</p>
+<pre><code class="javascript">const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>three.js里有几种不同的相机，在这里，我们使用的是<strong>PerspectiveCamera</strong>（透视摄像机）。</p>
+<p>第一个参数是<strong>视野角度（FOV）</strong>。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的单位是角度(与弧度区分开)。</p>
+<p>第二个参数是<strong>长宽比（aspect ratio）</strong>。 也就是你用一个物体的宽除以它的高的值。比如说，当你在一个宽屏电视上播放老电影时，可以看到图像仿佛是被压扁的。</p>
+<p>接下来的两个参数是<strong>近截面</strong>（near）和<strong>远截面</strong>（far）。 当物体某些部分比摄像机的<strong>远截面</strong>远或者比<strong>近截面</strong>近的时候，该这些部分将不会被渲染到场景中。或许现在你不用担心这个值的影响，但未来为了获得更好的渲染性能，你将可以在你的应用程序里去设置它。</p>
+<p>接下来是渲染器。这里是施展魔法的地方。除了我们在这里用到的WebGLRenderer渲染器之外，Three.js同时提供了其他几种渲染器，当用户所使用的浏览器过于老旧，或者由于其他原因不支持WebGL时，可以使用这几种渲染器进行降级。</p>
+<p>除了创建一个渲染器的实例之外，我们还需要在我们的应用程序里设置一个渲染器的尺寸。比如说，我们可以使用所需要的渲染区域的宽高，来让渲染器渲染出的场景填充满我们的应用程序。因此，我们可以将渲染器宽高设置为浏览器窗口宽高。对于性能比较敏感的应用程序来说，你可以使用<strong>setSize</strong>传入一个较小的值，例如<strong>window.innerWidth&#x2F;2</strong>和<strong>window.innerHeight&#x2F;2</strong>，这将使得应用程序在渲染时，以一半的长宽尺寸渲染场景。</p>
+<p>如果你希望保持你的应用程序的尺寸，但是以较低的分辨率来渲染，你可以在调用<strong>setSize</strong>时，将<strong>updateStyle</strong>（第三个参数）设为false。例如，假设你的<canvas> 标签现在已经具有了100%的宽和高，调用**setSize(window.innerWidth&#x2F;2, window.innerHeight&#x2F;2, false)**将使得你的应用程序以一半的分辨率来进行渲染。</p>
+<pre><code class="javascript">document.body.appendChild( renderer.domElement );
+</code></pre>
+<p>最后一步很重要，我们将<strong>renderer</strong>（渲染器）的dom元素（renderer.domElement）添加到我们的HTML文档中。这就是渲染器用来显示场景给我们看的<canvas>元素。</p>
+<h4 id="2-创建几何体、材质"><a href="#2-创建几何体、材质" class="headerlink" title="2.创建几何体、材质"></a>2.创建几何体、材质</h4><blockquote>
+<p>对于材质这块，就是给一个没有任何属性的物体添加属性，玻璃、金属、玉、有颜色的立方体。</p>
+</blockquote>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129090339038.png"></p>
+<p>要创建一个立方体，我们需要一个<strong>BoxGeometry</strong>（立方体）对象. 这个对象包含了一个立方体中所有的顶点（<strong>vertices</strong>）和面（<strong>faces</strong>）。未来我们将在这方面进行更多的探索。</p>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+camera.position.z = 5;
+</code></pre>
+<p>接下来，对于这个立方体，我们需要给它一个材质，来让它有颜色。Three.js自带了几种材质，在这里我们使用的是<strong>MeshBasicMaterial</strong>。所有的材质都存有应用于他们的属性的对象。在这里为了简单起见，我们只设置一个color属性，值为<strong>0x00ff00</strong>，也就是绿色。这里所做的事情，和在CSS或者Photoshop中使用十六进制(<strong>hex colors</strong>)颜色格式来设置颜色的方式一致。</p>
+<p>第三步，我们需要一个<strong>Mesh</strong>（网格）。 网格包含一个几何体以及作用在此几何体上的材质，我们可以直接将网格对象放入到我们的场景中，并让它在场景中自由移动。</p>
+<p>默认情况下，当我们调用**scene.add()<strong>的时候，物体将会被添加到</strong>(0,0,0)**坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。</p>
+<h4 id="3-创建渲染"><a href="#3-创建渲染" class="headerlink" title="3.创建渲染"></a>3.创建渲染</h4><blockquote>
+<p>这个就比较好理解了，添加x，y，z方向的位置变化</p>
+</blockquote>
+<p>现在，如果将之前写好的代码复制到HTML文件中，你不会在页面中看到任何东西。这是因为我们还没有对它进行真正的渲染。为此，我们需要使用一个被叫做“<strong>渲染循环</strong>”（render loop）或者“<strong>动画循环</strong>”（animate loop）的东西。</p>
+<pre><code class="javascript">function animate() &#123; 
+requestAnimationFrame( animate ); 
+renderer.render( scene, camera ); 
+&#125; 
+animate();
+</code></pre>
+<p>在这里我们创建了一个使渲染器能够在每次屏幕刷新时对场景进行绘制的循环（在大多数屏幕上，刷新率一般是60次&#x2F;秒）。如果你是一个浏览器游戏开发的新手，你或许会说<em>“为什么我们不直接用setInterval来实现刷新的功能呢？”</em>当然啦，我们的确可以用setInterval，但是，<strong>requestAnimationFrame</strong>有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。</p>
+<p>在开始之前，如果你已经将上面的代码写入到了你所创建的文件中，你可以看到一个绿色的方块。让我们来做一些更加有趣的事 —— 让它旋转起来。</p>
+<p>将下列代码添加到animate()函数中<strong>renderer.render</strong>调用的上方：</p>
+<pre><code class="javascript">cube.rotation.x += 0.01; 
+cube.rotation.y += 0.01;
+</code></pre>
+<p>这段代码每帧都会执行（正常情况下是60次&#x2F;秒），这就让立方体有了一个看起来很不错的旋转动画。基本上来说，当应用程序运行时，如果你想要移动或者改变任何场景中的东西，都必须要经过这个动画循环。当然，你可以在这个动画循环里调用别的函数，这样你就不会写出有上百行代码的<strong>animate</strong>函数。</p>
+<h4 id="效果演示："><a href="#效果演示：" class="headerlink" title="效果演示："></a>效果演示：</h4><p><img src="/2022/11/29/threejs-d-2-0/image-20221129090831716.png"></p>
+<h3 id="二、控制器（轨道控制器）"><a href="#二、控制器（轨道控制器）" class="headerlink" title="二、控制器（轨道控制器）"></a>二、控制器（轨道控制器）</h3><blockquote>
+<p>控制器有许多，我们这先说这一种</p>
+<p>轨道控制器是以物体为中心，对物体做环绕运动</p>
+</blockquote>
+<p>代码汇总：</p>
+<pre><code class="javascript">//main.js
+import * as THREE from &#39;three&#39;
+import &#123; OrbitControls &#125; from &#39;three/examples/jsm/controls/OrbitControls&#39; //导入轨道控制器
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+const controls = new OrbitControls( camera,renderer.domElement  );
+camera.position.set(0,20,100);
+controls.update();//更新控制器。必须在摄像机的变换发生任何手动改变后调用
+function animate() &#123;
+    requestAnimationFrame( animate );
+    controls.update();//循环更新轨道控制器
+    renderer.render( scene, camera );
+&#125;
+animate();
+</code></pre>
+<p>OrbitControls( object : Camera, domElement : HTMLDOMElement )</p>
+<p>object: （必须）将要被控制的相机。该相机不允许是其他任何对象的子级，除非该对象是场景自身。</p>
+<p>domElement: 用于事件监听的HTML元素。</p>
+<p>那我们现在就可以移动我们的相机来观察我们的物体了。</p>
+<h3 id="三、添加辅助器"><a href="#三、添加辅助器" class="headerlink" title="三、添加辅助器"></a>三、添加辅助器</h3><blockquote>
+<p>这个来自与我们help里面的东西，文档里查就可以了</p>
+<p>添加辅助器的用处是为了更好的去开发</p>
+</blockquote>
+<h4 id="1-坐标辅助器"><a href="#1-坐标辅助器" class="headerlink" title="1.坐标辅助器"></a>1.坐标辅助器</h4><blockquote>
+<p>用于简单模拟3个坐标轴的对象.<br>红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.</p>
+</blockquote>
+<pre><code class="javascript">const axesHelper = new THREE.AxesHelper( 5 );//轴的线段长度. 默认为 1.
+scene.add( axesHelper );//添加到场景
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155031932.png"></p>
+<h4 id="2-相机辅助器"><a href="#2-相机辅助器" class="headerlink" title="2.相机辅助器"></a>2.相机辅助器</h4><blockquote>
+<p>用于模拟相机视锥体的辅助对象.<br>它使用 LineSegments 来模拟相机视锥体.</p>
+</blockquote>
+<pre><code class="javascript">const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const helper = new THREE.CameraHelper( camera );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129155852737.png"></p>
+<p>CameraHelper( camera : Camera )</p>
+<p>camera – 被模拟的相机.</p>
+<p>为指定相机创建一个新的相机辅助对象 CameraHelper .</p>
+<h4 id="3-平面辅助器"><a href="#3-平面辅助器" class="headerlink" title="3.平面辅助器"></a>3.平面辅助器</h4><blockquote>
+<p>用于模拟平面 Plane 的辅助对象.</p>
+</blockquote>
+<pre><code class="javascript">const plane = new THREE.Plane( new THREE.Vector3( 1, 1, 0.2 ), 3 );
+const helper = new THREE.PlaneHelper( plane, 100, 0xffff00 );
+scene.add( helper );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160213446.png"></p>
+<p>PlaneHelper( plane : Plane, size : Float, hex : Color )</p>
+<p>plane – 被模拟的平面.<br>size – (可选的) 辅助对象的单边长度. 默认为 1.<br>color – (可选的) 辅助对象的颜色. 默认为 0xffff00.</p>
+<p>创建一个线框辅助对象来表示指定平面.</p>
+<h4 id="终结："><a href="#终结：" class="headerlink" title="终结："></a>终结：</h4><p>其他的辅助器，我们就自己按照需求去加吧，这个就是做一个参照</p>
+<h3 id="四、物体的属性"><a href="#四、物体的属性" class="headerlink" title="四、物体的属性"></a>四、物体的属性</h3><blockquote>
+<p>物体的属性，那我们要看一下cube是什么了</p>
+<p>根据控制台打印，它是个Mesh类，下面有许多属性</p>
+</blockquote>
+<pre><code class="javascript">const geometry = new THREE.BoxGeometry( 5, 5, 5 );
+const material = new THREE.MeshBasicMaterial( &#123; color: 0x00ff00 &#125; );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129160944920.png"></p>
+<h4 id="1-物体的位移"><a href="#1-物体的位移" class="headerlink" title="1.物体的位移"></a>1.物体的位移</h4><blockquote>
+<p>控制物体的位置</p>
+</blockquote>
+<pre><code class="javascript">cube.position.set(10,0,0)//默认为x，y，z方向
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161420179.png"></p>
+<h4 id="2-物体的旋转"><a href="#2-物体的旋转" class="headerlink" title="2.物体的旋转"></a>2.物体的旋转</h4><blockquote>
+<p>控制问题的旋转角度</p>
+<p>这个不是单纯的三维向量了</p>
+<p>是一个Euler类</p>
+</blockquote>
+<pre><code class="javascript">cube.rotation.set(Math.PI/4,0,0,&#39;XYZ&#39;)//默认为‘xyz’
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129162730828.png"></p>
+<p>Euler( x : Float, y : Float, z : Float, order : String )</p>
+<p>x - (optional) 用弧度表示x轴旋转量。 默认值是 <strong>0</strong>。<br>y - (optional) 用弧度表示y轴旋转量。 默认值是 <strong>0</strong>。<br>z - (optional) 用弧度表示z轴旋转量。 默认值是 <strong>0</strong>。<br>order - (optional) 表示旋转顺序的字符串，默认为’XYZ’（必须是大写）。</p>
+<h4 id="3-物体的缩放"><a href="#3-物体的缩放" class="headerlink" title="3.物体的缩放"></a>3.物体的缩放</h4><blockquote>
+<p>控制物体缩放</p>
+</blockquote>
+<pre><code class="javascript">cube.scale.set(3,2,1)
+</code></pre>
+<p><img src="/2022/11/29/threejs-d-2-0/image-20221129161943968.png"></p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/threejs/" rel="tag">threejs</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-electron-vue3-vite"
   class="article article-type-post"
   itemscope
@@ -2729,282 +2961,6 @@ export default defineConfig(
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%84%E4%BB%B6%E5%BA%93/" rel="tag">组件库</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-Vue3-Ts-Vite-Pinia组合的高效开发套件"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/"
-    >Vue3+Ts+Vite+Pinia组合的高效开发套件</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/" class="article-date">
-  <time datetime="2022-11-19T07:34:30.000Z" itemprop="datePublished">2022-11-19</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/">Vue3+Ts+Vite+Pinia组合的高效开发套件</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Vue3-Ts-Vite-Pinia组合的高效开发套件"><a href="#Vue3-Ts-Vite-Pinia组合的高效开发套件" class="headerlink" title="Vue3+Ts+Vite+Pinia组合的高效开发套件"></a>Vue3+Ts+Vite+Pinia组合的高效开发套件</h1><p>2022年最受欢迎的组合</p>
-<h3 id="一、Vite和Webpack区别"><a href="#一、Vite和Webpack区别" class="headerlink" title="一、Vite和Webpack区别"></a>一、Vite和Webpack区别</h3><ul>
-<li>webpack是一个JavaScript应用程序的静态模块打包工具，它会对整个应用程序进行依赖关系图构建。</li>
-<li>vite是构建工具的高阶封装，使用简单，快（开发的时候感觉没有编译过程），便于扩展。而他集成的esbuild(Go 编写) 预构建依赖，比node快 10-100 倍。</li>
-</ul>
-<p>区别：</p>
-<h4 id="1-关注层级不同"><a href="#1-关注层级不同" class="headerlink" title="1.关注层级不同"></a>1.关注层级不同</h4><p>vite关注的层级更高：vite是 high level api，关注的是如何快速方便的搭建项目，相比webpack，减少了很多配置量。</p>
-<p>webpack关注的层级更低：webpack是low level api，因为webpack更关注的是各种功能的实现，重点放在构建上。</p>
-<h4 id="2-vite自己不包含编译能力。"><a href="#2-vite自己不包含编译能力。" class="headerlink" title="2.vite自己不包含编译能力。"></a>2.vite自己不包含编译能力。</h4><p>它本身并不参与编译，它的编译能力只是集成了rollup和ESbuild的功能.</p>
-<h4 id="3-启动项目vite更快，可以说是超级快。"><a href="#3-启动项目vite更快，可以说是超级快。" class="headerlink" title="3.启动项目vite更快，可以说是超级快。"></a>3.启动项目vite更快，可以说是超级快。</h4><p>对比webpack在dev-serve的时候，会提交所有编译的文件，而vite在dev-serve的时候利用了浏览器的native ES module功能，在浏览器请求对应的url时才提供文件，实现了根据路由的懒加载，所以启动的时候是超快的。</p>
-<h4 id="4-vite的热更新更快。"><a href="#4-vite的热更新更快。" class="headerlink" title="4.vite的热更新更快。"></a>4.vite的热更新更快。</h4><p>对比webpack的热更新，热更新时，把改动过模块的相关依赖模块全部编译一次。而vite热更新时，仅让浏览器重新请求改动过的模块。</p>
-<p>现在公司项目从webpack过渡到vite,还在不断摸索爬坑中，虽然目前vite的生态不如webpack丰富，且实用的开发者也不及webpack。<br>但是不可否认的是，相比于webpack, vite非常适合项目的开发，webpack适合工具的开发。</p>
-<ul>
-<li><p>vite为构建项目而生</p>
-</li>
-<li><p>webpack为构建工具而生</p>
-</li>
-</ul>
-<h3 id="二、Pinia和Vuex"><a href="#二、Pinia和Vuex" class="headerlink" title="二、Pinia和Vuex"></a>二、Pinia和Vuex</h3><p>Pinia是Vue生态里Vuex的代替者，一个全新Vue的状态管理库。在Vue3成为正式版以后，尤雨溪强势推荐的项目就是Pinia。</p>
-<p>Pinia 是 Vue.js 的轻量级状态管理库，它使用 Vue 3 中的新反应系统来构建一个直观且完全类型化的状态管理库。<br>Vuex也是为Vue框架建立的一个流行的状态管理库，它也是Vue核心团队推荐的状态管理库。 Vuex高度关注应用程序的可扩展性、开发人员的工效和信心。它基于与redux相同的流量架构。Pinia 完整的符合了当时 Vuex5 提案所提到的功能点。</p>
-<h4 id="Pinia-和-Vuex"><a href="#Pinia-和-Vuex" class="headerlink" title="Pinia 和 Vuex"></a>Pinia 和 Vuex</h4><p>Vuex： <code>State</code>、<code>Gettes</code>、<code>Mutations</code>(同步)、<code>Actions</code>(异步)</p>
-<p>Pinia： <code>State</code>、<code>Gettes</code>、<code>Actions</code>(同步异步都支持)</p>
-<h4 id="Pinia-核心特性"><a href="#Pinia-核心特性" class="headerlink" title="Pinia 核心特性"></a>Pinia 核心特性</h4><ul>
-<li><p>Pinia 没有 <code>Mutations</code></p>
-</li>
-<li><p><code>Actions</code> 支持同步和异步</p>
-</li>
-<li><p>没有模块的嵌套结构</p>
-</li>
-<li><ul>
-<li>Pinia 通过设计提供扁平结构，就是说每个 store 都是互相独立的，谁也不属于谁，也就是扁平化了，更好的代码分割且没有命名空间。当然你也可以通过在一个模块中导入另一个模块来隐式嵌套 store，甚至可以拥有 store 的循环依赖关系</li>
-</ul>
-</li>
-<li><p>更好的 <code>TypeScript</code> 支持 </p>
-</li>
-<li><ul>
-<li>不需要再创建自定义的复杂包装器来支持 TypeScript 所有内容都类型化，并且 API 的设计方式也尽可能的使用 TS 类型推断</li>
-</ul>
-</li>
-<li><p>不需要注入、导入函数、调用它们，享受自动补全，让我们开发更加方便</p>
-</li>
-<li><p>无需手动添加 store，它的模块默认情况下创建就自动注册的</p>
-</li>
-<li><p>Vue2 和 Vue3 都支持 </p>
-</li>
-<li><ul>
-<li>除了初始化安装和SSR配置之外，两者使用上的API都是相同的</li>
-</ul>
-</li>
-<li><p>支持 <code>Vue DevTools</code></p>
-</li>
-<li><ul>
-<li>跟踪 actions, mutations 的时间线</li>
-<li>在使用了模块的组件中就可以观察到模块本身</li>
-<li>支持 time-travel 更容易调试</li>
-<li>在 Vue2 中 Pinia 会使用 Vuex 的所有接口，所以它俩不能一起使用</li>
-<li>但是针对 Vue3 的调试工具支持还不够完美，比如还没有 time-travel 功能</li>
-</ul>
-</li>
-<li><p>模块热更新 </p>
-</li>
-<li><ul>
-<li>无需重新加载页面就可以修改模块</li>
-<li>热更新的时候会保持任何现有状态</li>
-</ul>
-</li>
-<li><p>支持使用插件扩展 Pinia 功能</p>
-</li>
-<li><p>支持服务端渲染</p>
-</li>
-</ul>
-<h3 id="三、Vite生成Vue3脚手架"><a href="#三、Vite生成Vue3脚手架" class="headerlink" title="三、Vite生成Vue3脚手架"></a>三、Vite生成Vue3脚手架</h3><pre><code class="ini">npm create vite@latest //构建vite+vue
-npm i //下载依赖
-npm run dev //启动项目
-</code></pre>
-<p><img src="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/image-20221119091852577.png"></p>
-<p><img src="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/image-20221119101610847.png"></p>
-<h3 id="四、集成pinia"><a href="#四、集成pinia" class="headerlink" title="四、集成pinia"></a>四、集成pinia</h3><pre><code class="ini">npm install pinia //安装pinia
-</code></pre>
-<p>pinia简单使用</p>
-<p><img src="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/image-20221119150910678.png"></p>
-<p>1.在main.ts中注册pinia</p>
-<pre><code class="tsx">//main.ts
-import &#123; createApp &#125; from &#39;vue&#39;
-import &#39;./style.css&#39;
-import App from &#39;./App.vue&#39;
-import &#123;createPinia&#125; from &#39;pinia&#39; 
-
-createApp(App).use(createPinia()).mount(&#39;#app&#39;)
-</code></pre>
-<p>2.创建src&#x2F;type&#x2F;user.d.ts</p>
-<pre><code class="tsx">// 用户的类型声明文件
-interface IUser &#123;
-    name: string;
-    age: number;
-&#125;  
-</code></pre>
-<p>3.创建src&#x2F;store&#x2F;user.ts</p>
-<pre><code class="tsx">//user.ts
-import &#123; defineStore &#125; from &quot;pinia&quot;;
- 
-export default defineStore(&quot;user&quot;, &#123;
-  state() &#123;
-    return &#123;
-      userList: [] as IUser[],
-    &#125;;
-  &#125;,
-  actions: &#123;
-    getList() &#123;
-      // 模拟从后端获取数据
-      let resList: IUser[] = [
-        &#123; name: &quot;孟峰&quot;, age: 24 &#125;,
-        &#123; name: &quot;孟一&quot;, age: 19 &#125;
-      ];
-      this.userList = resList;
-    &#125;,
-  &#125;,
-&#125;);
-</code></pre>
-<p>4.创建src&#x2F;store&#x2F;index.ts</p>
-<pre><code class="tsx">//index.ts
-import useUserStore from &quot;./user&quot;;
- 
-export default function useStore() &#123;
-  return &#123;
-    user: useUserStore(),
-  &#125;;
-&#125;
-</code></pre>
-<p>5.App.vue使用</p>
-<pre><code class="vue">&lt;script setup lang=&quot;ts&quot;&gt;
-// 从状态层导出指定模块
-import useStore from &quot;./store&quot;;
-const &#123; user &#125; = useStore();
-// 获取用户列表
-user.getList();
-&lt;/script&gt;
- 
-&lt;template&gt;
-  &lt;div&gt;
-    &lt;ul&gt;
-      &lt;li v-for=&quot;item in user.userList&quot;&gt;
-        姓名：&#123;&#123; item.name &#125;&#125; ---- 年龄：&#123;&#123; item.age &#125;&#125;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-</code></pre>
-<p><img src="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/image-20221119151532682.png"></p>
-<h3 id="五、集成pretter和eslint"><a href="#五、集成pretter和eslint" class="headerlink" title="五、集成pretter和eslint"></a>五、集成pretter和eslint</h3><pre><code class="ini">npm i prettier -D //安装prettier
-npm i eslint -D //安装eslint
-npx eslint --init //初始化eslint
-</code></pre>
-<p>根目录创建<code>.prettierrc.js</code>文件</p>
-<pre><code class="javascript">//.prettierrc.js
-module.exports = &#123;
-    printWidth: 140,// 超过最大值换行
-    tabWidth: 4, // tab键宽度，默认为4
-    useTabs: true,// 使用tab（制表符）缩进而非空格
-    singleQuote: true,// 用单引号代替双引号
-    semi: true,// 行末是否加分号
-    trailingComma: &#39;none&#39;,// 最后一个对象元素加逗号
-    bracketSpacing: true,// 对象，数组加空格
-    jsxBracketSameLine: true, // jsx &gt; 是否另起一行
-  
-  &#125;;
-</code></pre>
-<pre><code class="js">//.eslintrc.cjs
-module.exports = &#123;
-  root: true,
-  env: &#123;
-    browser: true,
-    node: true,
-    es6: true,
-    commonjs: true,
-    amd: true
-  &#125;,
-  // ts eslint 配置
-  parserOptions: &#123;
-    parser:&#39;@typescript-eslint/parser&#39;,
-  &#125;,
-  plugins: [&#39;@typescript-eslint&#39;],
-  extends: [&#39;plugin:vue/vue3-recommended&#39;,&#39;plugin:prettier/recommended&#39;,&#39;prettier/@typescript-eslint&#39;,&#39;plugin:@typescript-eslint/recommended&#39;],
-  // js eslint 配置
-  // parserOptions: &#123;
-  //   parser: &#39;babel-eslint&#39;,
-  //   sourceType: &#39;module&#39;
-  // &#125;,
-  // plugins: [&#39;html&#39;, &#39;vue&#39;],
-  // extends: [&#39;plugin:vue/recommended&#39;, &#39;eslint:recommended&#39;],
- 
-  rules: &#123;
-    &#39;max-len&#39;: &#39;off&#39;,
-     // 统一豁免规则，原因：直接修改可能对现有功能产生影响
-     &#39;eqeqeq&#39;: 1,
-    //  &#39;vue/no-v-html&#39;: 1,
-     // 其中代码本身有问题的规则错误有
-     &#39;no-undef&#39;: 0,
-     &#39;import/no-duplicates&#39;: 0,
- 
-     // 可能引起格式化问题但建议手动修改代码的有
-     &#39;no-plusplus&#39;: 0,
-     &#39;no-eval&#39;: 0,
-     &#39;no-prototype-builtins&#39;: 0,
-     &#39;no-multi-assign&#39;: 0,
-     &#39;no-unused-vars&#39;: 0,
-     &#39;no-useless-escape&#39;: 0,
-     &#39;camelcase&#39;: 0,
-     &#39;vue/no-unused-components&#39;: 0,
-     &#39;vue/return-in-computed-property&#39;: 0,
-     &#39;no-param-reassign&#39;: 0,
-     &#39;prefer-const&#39;: 0,
-     &#39;prefer-destructuring&#39;: 0,
-     &#39;no-underscore-dangle&#39;: 0,
-     &#39;no-restricted-syntax&#39;: 0,
-     &#39;no-nested-ternary&#39;: 0,
-     &#39;radix&#39;: 0,
-     &#39;vue/no-side-effects-in-computed-properties&#39;: 0,
-     &#39;vue/order-in-components&#39;: 0,
-     &#39;function-paren-newline&#39;: 0,
-  &#125;,
-&#125;;
-</code></pre>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[git仓库项目源码]: 	“<a target="_blank" rel="noopener" href="https://github.com/mengfeng/vite-vue3-pinia-ts">https://github.com/mengfeng/vite-vue3-pinia-ts</a> “<br>[Vite中文官网]: 		“<a target="_blank" rel="noopener" href="https://cn.vitejs.dev/">https://cn.vitejs.dev</a> “<br>[pinia中文官网]: 	“<a target="_blank" rel="noopener" href="https://pinia.web3doc.top/getting-started.html#%E5%AE%89%E8%A3%85">https://pinia.web3doc.top/getting-started.html#安装</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag">技术</a></li></ul>
 
     </footer>
   </div>

@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>前端性能优化 |  艺术码畜</title>
+      <title>渲染优化（计算样式优化） |  艺术码畜</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -83,301 +83,245 @@ var _hmt = _hmt || [];
       
     <main class="content on">
       <section class="outer">
-  
-  
-  <article class="articles">
+  <article
+  id="post-渲染优化（计算样式优化）"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
     
-    
-    <h1 class="page-type-title">前端性能优化</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2023" class="archive-year">2023</a>
-    </div>
-    <div class="archives">
-      
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/03/09/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/" class="archive-article-date">
-  <time datetime="2023-03-09T01:41:38.000Z" itemprop="datePublished">03/09</time>
-</a>
+    <header class="article-header">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/03/09/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/"
-    >渲染优化（计算样式优化）</a> 
-</h2>
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  渲染优化（计算样式优化）
+</h1>
  
 
-    </header>
-    
       
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/03/09/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-date">
+  <time datetime="2023-03-09T01:41:38.000Z" itemprop="datePublished">2023-03-09</time>
+</a> 
   <div class="article-category">
     <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/">渲染优化（计算样式优化）</a>
   </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">1.8k</span>
+        </span>
+    </span>
 
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/03/05/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/" class="archive-article-date">
-  <time datetime="2023-03-05T04:04:51.000Z" itemprop="datePublished">03/05</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/03/05/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/"
-    >渲染优化（JavaScript执行优化）</a> 
-</h2>
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">6 min</span>
+        </span>
+    </span>
+</div>
  
-
-    </header>
-    
+    </div>
       
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/">渲染优化（JavaScript执行优化）</a>
-  </div>
+    <div class="tocbot"></div>
 
-    
-    
-  </div>
-</article>
-      
+
+
+
   
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/03/01/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%EF%BC%89/" class="archive-article-date">
-  <time datetime="2023-03-01T02:31:12.000Z" itemprop="datePublished">03/01</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/03/01/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%EF%BC%89/"
-    >渲染优化（页面渲染性能）</a> 
-</h2>
+  <h1 id="计算样式优化"><a href="#计算样式优化" class="headerlink" title="计算样式优化"></a>计算样式优化</h1><blockquote>
+<p>在JavaScript处理过后，若发生了添加和删除元素，对样式属性和类进行了修改，就都会导致浏览器重新计算所涉及元素的样式，某些修改还可能会引起页面布局的更改和浏览器的重新绘制，本节就着眼于样式相关的优化点，来看看如何提升前端渲染性能。</p>
+</blockquote>
+<h3 id="一、减少要计算样式的元素数量"><a href="#一、减少要计算样式的元素数量" class="headerlink" title="一、减少要计算样式的元素数量"></a>一、减少要计算样式的元素数量</h3><p>​		首先我们需要知道与计算样式相关的一条重要机制: CSS 引擎在查找样式表时，对每条规则的匹配顺序是从右向左的，这与我们通常从左向右的书写习惯相反。举个例子，如下CSS规则:</p>
+<pre><code class="css">.product-list li &#123;&#125;
+</code></pre>
+<p>​		如果不知道样式规则查找顺序，则推测这个选择器规则应该不会太费力，首先类选择器product-list的数量有限应该很快就能查找到，然后缩小范围再查找其下的 li 标签就顺理成章。</p>
+<p>​		但CSS选择器的匹配规则实际上是从右向左的，这样再回看上面的规则匹配，其实开销相当高，因为CSS引擎需要首先遍历页面上的所有 li 标签元素，然后确认每个 li 标签有包含类名为product-list的父元素才是目标元素，所以为了提高页面的渲染性能，计算样式阶段应当尽量减少参与样式计算的元素数量，这里总结了如下几点实战建议:</p>
+<p>​		使用类选择器替代标签选择器，对于上面 li 标签的错误示范，如果想对类名为product-list下的 li 标签添加样式规则，可直接为相应的 li 标签定义名为product-list_li的类选择器规则，这样做的好处是在计算样式时，减少了从整个页面中查找标签元素的范围，毕竟在CSS选择器中，标签选择器的区分度是最低的。</p>
+<p>​		避免使用通配符做选择器，对于刚入门前端的小伙伴，通常在编写CsS样式之前都会有使用通配符去清楚默认样式的习惯，如下所示:</p>
+<pre><code class="css">* &#123;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+&#125;
+</code></pre>
+<p>​		这种操作在标签规模较小的demo项目中，几乎看不出有任何性能差异。但对实际的工程项目来说，使用通配符就意味着在计算样式时，浏览器需要去遍历页面中的每一个元素，这样的性能开销很大，应当避免使用。</p>
+<h3 id="二、降低选择器的复杂性"><a href="#二、降低选择器的复杂性" class="headerlink" title="二、降低选择器的复杂性"></a>二、降低选择器的复杂性</h3><p>​		随着项目不断迭代，复杂性会越来越高，或许刚开始仅有一个名为content的类选择元素，但慢慢地单个元素可能会并列出列表，列表又会包裹在某个容容元素下，甚至该列表中的部分元素的样式又写其他兄弟元素有所差异，这样原本的个类选择器就会被扩展成如下形式:</p>
+<pre><code class="css">.container:nth-child(-n+1) .content&#123;/*样式属性*/&#125;
+</code></pre>
+<p>​		浏览器在计算上述样式时，首先就需要查询有哪些应用了content 类的元素，并且其父元素怡好带有container类的倒数第n+1个元素，这个计算过程可能就会花费许多时间，如果仅对确定的元素使用单一的类名选择器，那么浏览器的计算开销就会大幅度降低。</p>
+<p>​		比如使用名为final-container-content 的类选择替代上述的复杂样式计算，直接漆加到目标元素上。而且复杂的匹配规则，可能也会存在考虑不周从而导致画蛇添足的情况，例如，通过id选择器已经可以唯一确定 目标元素了，就无须再附加其他多余的选择器:</p>
+<pre><code class="css">/*错误示范*/
+.content #my-content
+/*正确方式*/
+#my-content
+</code></pre>
+<p>​		由于id选择器本身就是唯一存在的， 定位到目标元素数后再去查找名为content的类选择器元素就多此一举。当然在实际项目中的情况会复杂得多，但若能做故到尽量降低选择器的复杂性，则类似的问题也会容易避免。</p>
+<h3 id="三、使用BEM规范"><a href="#三、使用BEM规范" class="headerlink" title="三、使用BEM规范"></a>三、使用BEM规范</h3><p>​		BEM是一种CSS的书写规范，它的名称是由三个单词的首字母组成的，分别是块(Block)、元素(Element)和修饰符(Modifier)。理论上它希望每行CSS代码只有一个选择器，这就是为了降低选择器的复杂性，对对选择器的命名要求通过以下三个符号的组合来实现。</p>
+<ul>
+<li>中画线( - ): 仅作为连字符使用，表示某个块或子元素的多个单词之间的连接行。</li>
+<li>单下画线( _ ):作为描述一个块或其子元素的种状态。</li>
+<li>双下画线( _ _ );作为连接块与块的子元素。</li>
+</ul>
+<p>接下来首先给出一个基于BEM的选择器命名形式，然后再分别看块、元素与修饰符的含义和使用示例:</p>
+<pre><code class="css">/* BEM命名示例*/
+type-block__element_modifier
+</code></pre>
+<h4 id="1-块"><a href="#1-块" class="headerlink" title="1.块"></a>1.块</h4><p>通常来说，凡是独立的页面元素，无论简单或是复杂都可以被视作一个块，在HTML文档中会用一个唯一的类名来表示这个块。具体的命名规则包括三个:只能使用类选择器，而不使用ID选择器;每个块应定义一个前缀用来表示命名空间;每条样式规则必须属于一个块。比如一个自定义列表就可视作为一个块， 其类名匹配规则可写为:</p>
+<pre><code class="css">.mylist&#123;&#125;
+</code></pre>
+<h4 id="2-元素"><a href="#2-元素" class="headerlink" title="2.元素"></a>2.元素</h4><p>元素即指块中的子元素，且子元素也被视作块的直接子元素，其类名需要使用块的名称作为前缀。以上面自定义列表中的子元素类名写法为例，与常规写法对比如下:</p>
+<pre><code class="css">//常规写法
+.mylist &#123;&#125;
+.mylist .item &#123;&#125;
+//BEM写法
+.mylist &#123;&#125;
+.mylist__item &#123;&#125;
+</code></pre>
+<h4 id="3-修饰符"><a href="#3-修饰符" class="headerlink" title="3.修饰符"></a>3.修饰符</h4><p>修饰符可以看作是块或元素的某个特定状态，以按钮为例，它可能包含大、中、小三种默认尺寸及自定义尺寸，对此可使用small、normal、 big 或size-N来修饰具体按钮的选择器类名，示例如下:</p>
+<pre><code class="css">//自定又列表下子元素大、中、小三种尺寸的类选择器
+.mylist__item_big &#123;&#125;
+.mylist__item_normal &#123;&#125;
+.mylist__item_small &#123;&#125;
+//带自定义尺寸修饰符的类选择器
+.mylist__item_size-10
+</code></pre>
+<p>​		BEM样式编码规范建议所有元素都被单一的类选择器修饰，从CSS代码结构角度来说这样不但更加清晰，而且由于样式查找得到了简化，谊染阶段的样式计算性能也会得到提升。</p>
  
-
-    </header>
-    
+      <!-- reward -->
       
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%EF%BC%89/">渲染优化（页面渲染性能）</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/" class="archive-article-date">
-  <time datetime="2023-02-20T03:54:50.000Z" itemprop="datePublished">02/20</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/"
-    >加载优化（资源优先级）</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/">加载优化（资源优先级）</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/" class="archive-article-date">
-  <time datetime="2023-02-17T01:45:34.000Z" itemprop="datePublished">02/17</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/"
-    >加载优化（加载注意事项）</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/">加载优化（加载注意事项）</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/" class="archive-article-date">
-  <time datetime="2023-02-16T03:09:10.000Z" itemprop="datePublished">02/16</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/"
-    >加载优化（视频加载）</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/">加载优化（视频加载）</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/" class="archive-article-date">
-  <time datetime="2023-02-09T09:50:24.000Z" itemprop="datePublished">02/09</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/"
-    >加载优化（图像延迟加载）</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD/">加载优化（图像延迟加载)</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/" class="archive-article-date">
-  <time datetime="2023-01-09T03:23:30.000Z" itemprop="datePublished">01/09</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/01/09/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/"
-    >图像优化</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%9B%BE%E5%83%8F%E4%BC%98%E5%8C%96/">图像优化</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/01/08/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="archive-article-date">
-  <time datetime="2023-01-08T03:05:24.000Z" itemprop="datePublished">01/08</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/01/08/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"
-    >前端页面的生命周期</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">前端页面的生命周期</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="archive-article-date">
-  <time datetime="2023-01-06T03:46:03.000Z" itemprop="datePublished">01/06</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/01/06/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"
-    >什么是性能优化</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E4%BB%80%E4%B9%88%E6%98%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">什么是性能优化</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
       
     </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/03/09/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96/" rel="tag">渲染优化</a></li></ul>
+
+    </footer>
   </div>
-  
-  
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2023/03/05/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">渲染优化（JavaScript执行优化）</div>
+      </a>
+    
+  </nav>
 
   
+   
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css">
+
+
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+
+
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '6887374e7666a97fd4dc',
+    clientSecret: '09a8e143dd4a3f5d11311e1435842321e063157d',
+    repo: 'mengfeng.github.io',
+    owner: 'mengfeng',
+    admin: ['mengfeng'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+     
+</article>
+
 </section>
       <footer class="footer">
   <div class="outer">
@@ -530,6 +474,22 @@ var _hmt = _hmt || [];
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
 
 <script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
 <link

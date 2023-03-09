@@ -177,6 +177,282 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-Vue3-Ts-Vite-Pinia组合的高效开发套件"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/"
+    >Vue3+Ts+Vite+Pinia组合的高效开发套件</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/" class="article-date">
+  <time datetime="2022-11-19T07:34:30.000Z" itemprop="datePublished">2022-11-19</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/">工程技术</a> / <a class="article-category-link" href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/">Vue3+Ts+Vite+Pinia组合的高效开发套件</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="Vue3-Ts-Vite-Pinia组合的高效开发套件"><a href="#Vue3-Ts-Vite-Pinia组合的高效开发套件" class="headerlink" title="Vue3+Ts+Vite+Pinia组合的高效开发套件"></a>Vue3+Ts+Vite+Pinia组合的高效开发套件</h1><p>2022年最受欢迎的组合</p>
+<h3 id="一、Vite和Webpack区别"><a href="#一、Vite和Webpack区别" class="headerlink" title="一、Vite和Webpack区别"></a>一、Vite和Webpack区别</h3><ul>
+<li>webpack是一个JavaScript应用程序的静态模块打包工具，它会对整个应用程序进行依赖关系图构建。</li>
+<li>vite是构建工具的高阶封装，使用简单，快（开发的时候感觉没有编译过程），便于扩展。而他集成的esbuild(Go 编写) 预构建依赖，比node快 10-100 倍。</li>
+</ul>
+<p>区别：</p>
+<h4 id="1-关注层级不同"><a href="#1-关注层级不同" class="headerlink" title="1.关注层级不同"></a>1.关注层级不同</h4><p>vite关注的层级更高：vite是 high level api，关注的是如何快速方便的搭建项目，相比webpack，减少了很多配置量。</p>
+<p>webpack关注的层级更低：webpack是low level api，因为webpack更关注的是各种功能的实现，重点放在构建上。</p>
+<h4 id="2-vite自己不包含编译能力。"><a href="#2-vite自己不包含编译能力。" class="headerlink" title="2.vite自己不包含编译能力。"></a>2.vite自己不包含编译能力。</h4><p>它本身并不参与编译，它的编译能力只是集成了rollup和ESbuild的功能.</p>
+<h4 id="3-启动项目vite更快，可以说是超级快。"><a href="#3-启动项目vite更快，可以说是超级快。" class="headerlink" title="3.启动项目vite更快，可以说是超级快。"></a>3.启动项目vite更快，可以说是超级快。</h4><p>对比webpack在dev-serve的时候，会提交所有编译的文件，而vite在dev-serve的时候利用了浏览器的native ES module功能，在浏览器请求对应的url时才提供文件，实现了根据路由的懒加载，所以启动的时候是超快的。</p>
+<h4 id="4-vite的热更新更快。"><a href="#4-vite的热更新更快。" class="headerlink" title="4.vite的热更新更快。"></a>4.vite的热更新更快。</h4><p>对比webpack的热更新，热更新时，把改动过模块的相关依赖模块全部编译一次。而vite热更新时，仅让浏览器重新请求改动过的模块。</p>
+<p>现在公司项目从webpack过渡到vite,还在不断摸索爬坑中，虽然目前vite的生态不如webpack丰富，且实用的开发者也不及webpack。<br>但是不可否认的是，相比于webpack, vite非常适合项目的开发，webpack适合工具的开发。</p>
+<ul>
+<li><p>vite为构建项目而生</p>
+</li>
+<li><p>webpack为构建工具而生</p>
+</li>
+</ul>
+<h3 id="二、Pinia和Vuex"><a href="#二、Pinia和Vuex" class="headerlink" title="二、Pinia和Vuex"></a>二、Pinia和Vuex</h3><p>Pinia是Vue生态里Vuex的代替者，一个全新Vue的状态管理库。在Vue3成为正式版以后，尤雨溪强势推荐的项目就是Pinia。</p>
+<p>Pinia 是 Vue.js 的轻量级状态管理库，它使用 Vue 3 中的新反应系统来构建一个直观且完全类型化的状态管理库。<br>Vuex也是为Vue框架建立的一个流行的状态管理库，它也是Vue核心团队推荐的状态管理库。 Vuex高度关注应用程序的可扩展性、开发人员的工效和信心。它基于与redux相同的流量架构。Pinia 完整的符合了当时 Vuex5 提案所提到的功能点。</p>
+<h4 id="Pinia-和-Vuex"><a href="#Pinia-和-Vuex" class="headerlink" title="Pinia 和 Vuex"></a>Pinia 和 Vuex</h4><p>Vuex： <code>State</code>、<code>Gettes</code>、<code>Mutations</code>(同步)、<code>Actions</code>(异步)</p>
+<p>Pinia： <code>State</code>、<code>Gettes</code>、<code>Actions</code>(同步异步都支持)</p>
+<h4 id="Pinia-核心特性"><a href="#Pinia-核心特性" class="headerlink" title="Pinia 核心特性"></a>Pinia 核心特性</h4><ul>
+<li><p>Pinia 没有 <code>Mutations</code></p>
+</li>
+<li><p><code>Actions</code> 支持同步和异步</p>
+</li>
+<li><p>没有模块的嵌套结构</p>
+</li>
+<li><ul>
+<li>Pinia 通过设计提供扁平结构，就是说每个 store 都是互相独立的，谁也不属于谁，也就是扁平化了，更好的代码分割且没有命名空间。当然你也可以通过在一个模块中导入另一个模块来隐式嵌套 store，甚至可以拥有 store 的循环依赖关系</li>
+</ul>
+</li>
+<li><p>更好的 <code>TypeScript</code> 支持 </p>
+</li>
+<li><ul>
+<li>不需要再创建自定义的复杂包装器来支持 TypeScript 所有内容都类型化，并且 API 的设计方式也尽可能的使用 TS 类型推断</li>
+</ul>
+</li>
+<li><p>不需要注入、导入函数、调用它们，享受自动补全，让我们开发更加方便</p>
+</li>
+<li><p>无需手动添加 store，它的模块默认情况下创建就自动注册的</p>
+</li>
+<li><p>Vue2 和 Vue3 都支持 </p>
+</li>
+<li><ul>
+<li>除了初始化安装和SSR配置之外，两者使用上的API都是相同的</li>
+</ul>
+</li>
+<li><p>支持 <code>Vue DevTools</code></p>
+</li>
+<li><ul>
+<li>跟踪 actions, mutations 的时间线</li>
+<li>在使用了模块的组件中就可以观察到模块本身</li>
+<li>支持 time-travel 更容易调试</li>
+<li>在 Vue2 中 Pinia 会使用 Vuex 的所有接口，所以它俩不能一起使用</li>
+<li>但是针对 Vue3 的调试工具支持还不够完美，比如还没有 time-travel 功能</li>
+</ul>
+</li>
+<li><p>模块热更新 </p>
+</li>
+<li><ul>
+<li>无需重新加载页面就可以修改模块</li>
+<li>热更新的时候会保持任何现有状态</li>
+</ul>
+</li>
+<li><p>支持使用插件扩展 Pinia 功能</p>
+</li>
+<li><p>支持服务端渲染</p>
+</li>
+</ul>
+<h3 id="三、Vite生成Vue3脚手架"><a href="#三、Vite生成Vue3脚手架" class="headerlink" title="三、Vite生成Vue3脚手架"></a>三、Vite生成Vue3脚手架</h3><pre><code class="ini">npm create vite@latest //构建vite+vue
+npm i //下载依赖
+npm run dev //启动项目
+</code></pre>
+<p><img src="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/image-20221119091852577.png"></p>
+<p><img src="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/image-20221119101610847.png"></p>
+<h3 id="四、集成pinia"><a href="#四、集成pinia" class="headerlink" title="四、集成pinia"></a>四、集成pinia</h3><pre><code class="ini">npm install pinia //安装pinia
+</code></pre>
+<p>pinia简单使用</p>
+<p><img src="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/image-20221119150910678.png"></p>
+<p>1.在main.ts中注册pinia</p>
+<pre><code class="tsx">//main.ts
+import &#123; createApp &#125; from &#39;vue&#39;
+import &#39;./style.css&#39;
+import App from &#39;./App.vue&#39;
+import &#123;createPinia&#125; from &#39;pinia&#39; 
+
+createApp(App).use(createPinia()).mount(&#39;#app&#39;)
+</code></pre>
+<p>2.创建src&#x2F;type&#x2F;user.d.ts</p>
+<pre><code class="tsx">// 用户的类型声明文件
+interface IUser &#123;
+    name: string;
+    age: number;
+&#125;  
+</code></pre>
+<p>3.创建src&#x2F;store&#x2F;user.ts</p>
+<pre><code class="tsx">//user.ts
+import &#123; defineStore &#125; from &quot;pinia&quot;;
+ 
+export default defineStore(&quot;user&quot;, &#123;
+  state() &#123;
+    return &#123;
+      userList: [] as IUser[],
+    &#125;;
+  &#125;,
+  actions: &#123;
+    getList() &#123;
+      // 模拟从后端获取数据
+      let resList: IUser[] = [
+        &#123; name: &quot;孟峰&quot;, age: 24 &#125;,
+        &#123; name: &quot;孟一&quot;, age: 19 &#125;
+      ];
+      this.userList = resList;
+    &#125;,
+  &#125;,
+&#125;);
+</code></pre>
+<p>4.创建src&#x2F;store&#x2F;index.ts</p>
+<pre><code class="tsx">//index.ts
+import useUserStore from &quot;./user&quot;;
+ 
+export default function useStore() &#123;
+  return &#123;
+    user: useUserStore(),
+  &#125;;
+&#125;
+</code></pre>
+<p>5.App.vue使用</p>
+<pre><code class="vue">&lt;script setup lang=&quot;ts&quot;&gt;
+// 从状态层导出指定模块
+import useStore from &quot;./store&quot;;
+const &#123; user &#125; = useStore();
+// 获取用户列表
+user.getList();
+&lt;/script&gt;
+ 
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;ul&gt;
+      &lt;li v-for=&quot;item in user.userList&quot;&gt;
+        姓名：&#123;&#123; item.name &#125;&#125; ---- 年龄：&#123;&#123; item.age &#125;&#125;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
+<p><img src="/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/image-20221119151532682.png"></p>
+<h3 id="五、集成pretter和eslint"><a href="#五、集成pretter和eslint" class="headerlink" title="五、集成pretter和eslint"></a>五、集成pretter和eslint</h3><pre><code class="ini">npm i prettier -D //安装prettier
+npm i eslint -D //安装eslint
+npx eslint --init //初始化eslint
+</code></pre>
+<p>根目录创建<code>.prettierrc.js</code>文件</p>
+<pre><code class="javascript">//.prettierrc.js
+module.exports = &#123;
+    printWidth: 140,// 超过最大值换行
+    tabWidth: 4, // tab键宽度，默认为4
+    useTabs: true,// 使用tab（制表符）缩进而非空格
+    singleQuote: true,// 用单引号代替双引号
+    semi: true,// 行末是否加分号
+    trailingComma: &#39;none&#39;,// 最后一个对象元素加逗号
+    bracketSpacing: true,// 对象，数组加空格
+    jsxBracketSameLine: true, // jsx &gt; 是否另起一行
+  
+  &#125;;
+</code></pre>
+<pre><code class="js">//.eslintrc.cjs
+module.exports = &#123;
+  root: true,
+  env: &#123;
+    browser: true,
+    node: true,
+    es6: true,
+    commonjs: true,
+    amd: true
+  &#125;,
+  // ts eslint 配置
+  parserOptions: &#123;
+    parser:&#39;@typescript-eslint/parser&#39;,
+  &#125;,
+  plugins: [&#39;@typescript-eslint&#39;],
+  extends: [&#39;plugin:vue/vue3-recommended&#39;,&#39;plugin:prettier/recommended&#39;,&#39;prettier/@typescript-eslint&#39;,&#39;plugin:@typescript-eslint/recommended&#39;],
+  // js eslint 配置
+  // parserOptions: &#123;
+  //   parser: &#39;babel-eslint&#39;,
+  //   sourceType: &#39;module&#39;
+  // &#125;,
+  // plugins: [&#39;html&#39;, &#39;vue&#39;],
+  // extends: [&#39;plugin:vue/recommended&#39;, &#39;eslint:recommended&#39;],
+ 
+  rules: &#123;
+    &#39;max-len&#39;: &#39;off&#39;,
+     // 统一豁免规则，原因：直接修改可能对现有功能产生影响
+     &#39;eqeqeq&#39;: 1,
+    //  &#39;vue/no-v-html&#39;: 1,
+     // 其中代码本身有问题的规则错误有
+     &#39;no-undef&#39;: 0,
+     &#39;import/no-duplicates&#39;: 0,
+ 
+     // 可能引起格式化问题但建议手动修改代码的有
+     &#39;no-plusplus&#39;: 0,
+     &#39;no-eval&#39;: 0,
+     &#39;no-prototype-builtins&#39;: 0,
+     &#39;no-multi-assign&#39;: 0,
+     &#39;no-unused-vars&#39;: 0,
+     &#39;no-useless-escape&#39;: 0,
+     &#39;camelcase&#39;: 0,
+     &#39;vue/no-unused-components&#39;: 0,
+     &#39;vue/return-in-computed-property&#39;: 0,
+     &#39;no-param-reassign&#39;: 0,
+     &#39;prefer-const&#39;: 0,
+     &#39;prefer-destructuring&#39;: 0,
+     &#39;no-underscore-dangle&#39;: 0,
+     &#39;no-restricted-syntax&#39;: 0,
+     &#39;no-nested-ternary&#39;: 0,
+     &#39;radix&#39;: 0,
+     &#39;vue/no-side-effects-in-computed-properties&#39;: 0,
+     &#39;vue/order-in-components&#39;: 0,
+     &#39;function-paren-newline&#39;: 0,
+  &#125;,
+&#125;;
+</code></pre>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[git仓库项目源码]: 	“<a target="_blank" rel="noopener" href="https://github.com/mengfeng/vite-vue3-pinia-ts">https://github.com/mengfeng/vite-vue3-pinia-ts</a> “<br>[Vite中文官网]: 		“<a target="_blank" rel="noopener" href="https://cn.vitejs.dev/">https://cn.vitejs.dev</a> “<br>[pinia中文官网]: 	“<a target="_blank" rel="noopener" href="https://pinia.web3doc.top/getting-started.html#%E5%AE%89%E8%A3%85">https://pinia.web3doc.top/getting-started.html#安装</a> “</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag">技术</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-webgl"
   class="article article-type-post"
   itemscope
@@ -2145,337 +2421,6 @@ CMD [&quot;python&quot;, &quot;app.py&quot;]
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-表白爱心biu"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/"
-    >表白爱心biu</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/" class="article-date">
-  <time datetime="2022-11-11T01:57:54.000Z" itemprop="datePublished">2022-11-11</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E8%B6%A3%E5%91%B3%E6%8A%80%E6%9C%AF/">趣味技术</a> / <a class="article-category-link" href="/categories/%E8%B6%A3%E5%91%B3%E6%8A%80%E6%9C%AF/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/">表白爱心biu</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="爱心代码（canvas）"><a href="#爱心代码（canvas）" class="headerlink" title="爱心代码（canvas）"></a>爱心代码（canvas）</h1><p>每天浪漫一点点</p>
-<p>发给你女朋友，有奖励🥳</p>
-<p><img src="/2022/11/11/%E8%A1%A8%E7%99%BD%E7%88%B1%E5%BF%83biu/image-20221111095138378.png"></p>
-<pre><code class="javascript">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;meta charset=&quot;utf-8&quot; /&gt;
-    &lt;title&gt;玥小公主爱心&lt;/title&gt;
-
-    &lt;style&gt;
-      html,
-      body &#123;
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        background: #000;
-      &#125;
-      canvas &#123;
-        width: 100%;
-        height: 100%;
-      &#125;
-    &lt;/style&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;canvas id=&quot;pinkboard&quot;&gt;&lt;/canvas&gt;
-    &lt;script&gt;
-      /*
-       * 参数配置
-       */
-      var settings = &#123;
-        particles: &#123;
-          length: 500, // 最大颗粒量
-          duration: 2, // 粒子持续时间（秒）
-          velocity: 110, // 粒子范围（像素/秒）
-          effect: -1.0, // 内轮廓
-          size: 35, // 颗粒大小（像素）
-        &#125;,
-      &#125;;
-
-      /*
-       * Point class
-       */
-      var Point = (function () &#123;
-        function Point(x, y) &#123;
-          this.x = typeof x !== &quot;undefined&quot; ? x : 0;
-          this.y = typeof y !== &quot;undefined&quot; ? y : 0;
-        &#125;
-        Point.prototype.clone = function () &#123;
-          return new Point(this.x, this.y);
-        &#125;;
-        Point.prototype.length = function (length) &#123;
-          if (typeof length == &quot;undefined&quot;)
-            return Math.sqrt(this.x * this.x + this.y * this.y);
-          this.normalize();
-          this.x *= length;
-          this.y *= length;
-          return this;
-        &#125;;
-        Point.prototype.normalize = function () &#123;
-          var length = this.length();
-          this.x /= length;
-          this.y /= length;
-          return this;
-        &#125;;
-        return Point;
-      &#125;)();
-
-      /*
-       * Particle class
-       */
-      var Particle = (function () &#123;
-        function Particle() &#123;
-          this.position = new Point();
-          this.velocity = new Point();
-          this.acceleration = new Point();
-          this.age = 0;
-        &#125;
-        Particle.prototype.initialize = function (x, y, dx, dy) &#123;
-          this.position.x = x;
-          this.position.y = y;
-          this.velocity.x = dx;
-          this.velocity.y = dy;
-          this.acceleration.x = dx * settings.particles.effect;
-          this.acceleration.y = dy * settings.particles.effect;
-          this.age = 0;
-        &#125;;
-        Particle.prototype.update = function (deltaTime) &#123;
-          this.position.x += this.velocity.x * deltaTime;
-          this.position.y += this.velocity.y * deltaTime;
-          this.velocity.x += this.acceleration.x * deltaTime;
-          this.velocity.y += this.acceleration.y * deltaTime;
-          this.age += deltaTime;
-        &#125;;
-        Particle.prototype.draw = function (context, image) &#123;
-          function ease(t) &#123;
-            return --t * t * t + 1;
-          &#125;
-          var size = image.width * ease(this.age / settings.particles.duration);
-          context.globalAlpha = 1 - this.age / settings.particles.duration;
-          context.drawImage(
-            image,
-            this.position.x - size / 2,
-            this.position.y - size / 2,
-            size,
-            size
-          );
-        &#125;;
-        return Particle;
-      &#125;)();
-
-      /*
-       * ParticlePool class
-       */
-      var ParticlePool = (function () &#123;
-        var particles,
-          firstActive = 0,
-          firstFree = 0,
-          duration = settings.particles.duration;
-
-        function ParticlePool(length) &#123;
-          // create and populate particle pool
-          particles = new Array(length);
-          for (var i = 0; i &lt; particles.length; i++)
-            particles[i] = new Particle();
-        &#125;
-        ParticlePool.prototype.add = function (x, y, dx, dy) &#123;
-          particles[firstFree].initialize(x, y, dx, dy);
-
-          // handle circular queue
-          firstFree++;
-          if (firstFree == particles.length) firstFree = 0;
-          if (firstActive == firstFree) firstActive++;
-          if (firstActive == particles.length) firstActive = 0;
-        &#125;;
-        ParticlePool.prototype.update = function (deltaTime) &#123;
-          var i;
-
-          // update active particles
-          if (firstActive &lt; firstFree) &#123;
-            for (i = firstActive; i &lt; firstFree; i++)
-              particles[i].update(deltaTime);
-          &#125;
-          if (firstFree &lt; firstActive) &#123;
-            for (i = firstActive; i &lt; particles.length; i++)
-              particles[i].update(deltaTime);
-            for (i = 0; i &lt; firstFree; i++) particles[i].update(deltaTime);
-          &#125;
-
-          // remove inactive particles
-          while (
-            particles[firstActive].age &gt;= duration &amp;&amp;
-            firstActive != firstFree
-          ) &#123;
-            firstActive++;
-            if (firstActive == particles.length) firstActive = 0;
-          &#125;
-        &#125;;
-        ParticlePool.prototype.draw = function (context, image) &#123;
-          // draw active particles
-          if (firstActive &lt; firstFree) &#123;
-            for (i = firstActive; i &lt; firstFree; i++)
-              particles[i].draw(context, image);
-          &#125;
-          if (firstFree &lt; firstActive) &#123;
-            for (i = firstActive; i &lt; particles.length; i++)
-              particles[i].draw(context, image);
-            for (i = 0; i &lt; firstFree; i++) particles[i].draw(context, image);
-          &#125;
-        &#125;;
-        return ParticlePool;
-      &#125;)();
-
-      /*
-       * Putting it all together
-       */
-      (function (canvas) &#123;
-        var context = canvas.getContext(&quot;2d&quot;),
-          particles = new ParticlePool(settings.particles.length),
-          particleRate =
-            settings.particles.length / settings.particles.duration, // particles/sec
-          time;
-
-        // get point on heart with -PI &lt;= t &lt;= PI
-        function pointOnHeart(t) &#123;
-          return new Point(
-            160 * Math.pow(Math.sin(t), 3),
-            130 * Math.cos(t) -
-              50 * Math.cos(2 * t) -
-              20 * Math.cos(3 * t) -
-              10 * Math.cos(4 * t) +
-              25
-          );
-        &#125;
-
-        // 使用虚拟画布创建粒子图像
-        var image = (function () &#123;
-          var canvas = document.createElement(&quot;canvas&quot;),
-            context = canvas.getContext(&quot;2d&quot;);
-          canvas.width = settings.particles.size;
-          canvas.height = settings.particles.size;
-          // helper function to create the path
-          function to(t) &#123;
-            var point = pointOnHeart(t);
-            point.x =
-              settings.particles.size / 2 +
-              (point.x * settings.particles.size) / 450;
-            point.y =
-              settings.particles.size / 2 -
-              (point.y * settings.particles.size) / 450;
-            return point;
-          &#125;
-          // create the path
-          context.beginPath();
-          var t = -Math.PI;
-          var point = to(t);
-          context.moveTo(point.x, point.y);
-          while (t &lt; Math.PI) &#123;
-            t += 0.03; // baby steps!
-            point = to(t);
-            context.lineTo(point.x, point.y);
-          &#125;
-          context.closePath();
-          // create the fill （更换爱心颜色）
-          context.fillStyle = &quot;#ea80b0&quot;;
-          context.fill();
-          // create the image
-          var image = new Image();
-          image.src = canvas.toDataURL();
-          return image;
-        &#125;)();
-
-        // render that thing!
-        function render() &#123;
-          // next animation frame
-          requestAnimationFrame(render);
-
-          // update time（粒子速度）
-          var newTime = new Date().getTime() / 1000,
-            deltaTime = newTime - (time || newTime);
-          time = newTime;
-
-          // clear canvas
-          context.clearRect(0, 0, canvas.width, canvas.height);
-
-          // create new particles
-          var amount = particleRate * deltaTime;
-          for (var i = 0; i &lt; amount; i++) &#123;
-            var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
-            var dir = pos.clone().length(settings.particles.velocity);
-            particles.add(
-              canvas.width / 2 + pos.x,
-              canvas.height / 2 - pos.y,
-              dir.x,
-              -dir.y
-            );
-          &#125;
-
-          // update and draw particles
-          particles.update(deltaTime);
-          particles.draw(context, image);
-        &#125;
-
-        // handle (re-)sizing of the canvas
-        function onResize() &#123;
-          canvas.width = canvas.clientWidth;
-          canvas.height = canvas.clientHeight;
-        &#125;
-        window.onresize = onResize;
-
-        // delay rendering bootstrap
-        setTimeout(function () &#123;
-          onResize();
-          render();
-        &#125;, 10);
-      &#125;)(document.getElementById(&quot;pinkboard&quot;));
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B5%AA%E6%BC%AB%E4%BB%A3%E7%A0%81/" rel="tag">浪漫代码</a></li></ul>
 
     </footer>
   </div>

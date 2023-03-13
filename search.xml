@@ -1111,6 +1111,193 @@ export default defineConfig(
       </tags>
   </entry>
   <entry>
+    <title>Vue-eventBus</title>
+    <url>/2022/12/23/Vue-eventBus/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vue-eventBus"><a href="#Vue-eventBus" class="headerlink" title="Vue-eventBus"></a>Vue-eventBus</h1><p>父子组件通信与兄弟组件通信</p>
+<p>vue组件非常常见的有父子组件通信，兄弟组件通信。</p>
+<pre><code>父子组件通信：方法有很多，比如：父组件通过 props 向下传数据给子组件，子组件通过 $emit 告诉父组件。
+兄弟组件通信：如果两个页面没有任何引入和被引入关系，需要额外的组件来通信，如：事件总线、Vuex。
+</code></pre>
+<h3 id="一、事件总线是什么"><a href="#一、事件总线是什么" class="headerlink" title="一、事件总线是什么"></a>一、事件总线是什么</h3><p>EventBus 又称为事件总线。在Vue中可以使用 EventBus 来作为沟通桥梁的概念，就像是所有组件共用相同的事件中心，可以向该中心注册发送事件或接收事件，所以组件都可以上下平行地通知其他组件。</p>
+<pre><code>EventBus若使用不慎，就会造成难以维护的“灾难”，因此才需要更完善的Vuex作为状态管理中心，将通知的概念上升到共享状态层次。 
+</code></pre>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>解决了多层组件之间繁琐的事件传播。<br>使用原理十分简单，代码量少</p>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>大家都知道vue是单页应用，如果你在某一个页面刷新了之后，与之相关的EventBus会被移除，这样就导致业务走不下去。<br>如果业务有反复操作的页面，EventBus在监听的时候就会触发很多次，也是一个非常大的隐患。这时候我们就需要好好处理EventBus在项目中的关系。通常在vue页面销毁时，同时移除EventBus事件监听。</p>
+<p>由于是都使用一个Vue实例，所以容易出现重复触发的情景：两个页面都定义了同一个事件名，并且没有用$off销毁（常出现在路由切换时）。</p>
+<h3 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h3><h4 id="1-创建事件"><a href="#1-创建事件" class="headerlink" title="1.创建事件"></a>1.创建事件</h4><p>首先需要创建事件总线并将其导出，以便其它模块可以使用或者监听它。</p>
+<p>方法1、非全局事件组件</p>
+<p> 新建EventBus.js</p>
+<pre><code class="javascript">import Vue from &#39;vue&#39;
+export const EventBus = new Vue()
+</code></pre>
+<p>法2、全局事件组件</p>
+<p>在项目中的 main.js 初始化 EventBus。在main.js添加如下一行：</p>
+<pre><code class="javascript">Vue.prototype.$EventBus = new Vue()
+</code></pre>
+<p>示例：</p>
+<pre><code class="vue">import Vue from &#39;vue&#39;
+import App from &#39;./App&#39;
+import router from &#39;./router&#39;
+
+Vue.config.productionTip = false
+
+Vue.prototype.$EventBus = new Vue();
+
+/* eslint-disable no-new */
+new Vue(&#123;
+  el: &#39;#app&#39;,
+  router,
+  components: &#123; App &#125;,
+  template: &#39;&lt;App/&gt;&#39;
+&#125;)
+</code></pre>
+<p>组件发送事件：this.$EventBus.$emit(…)</p>
+<p>组件接收事件：this.$EventBus.$on(…)</p>
+<p>移除事件</p>
+<p>一般在销毁组件（也就是离开组件）时移除事件。</p>
+<pre><code class="javascript">beforeDestroy()&#123;
+  EventBus.$off(&quot;eventName&quot;)
+&#125;
+</code></pre>
+<p>EventBus.$off()                           &#x2F;&#x2F;移除EventBus所有事件监听器</p>
+<p>EventBus.$off(‘eventName’)       &#x2F;&#x2F;移除’eventName’事件所有监听器</p>
+<p>EventBus.$off(‘eventName’, callback)    &#x2F;&#x2F;只移除这个回调的监听器。</p>
+<h4 id="2-事件运用"><a href="#2-事件运用" class="headerlink" title="2.事件运用"></a>2.事件运用</h4><p>本文父组件：CompA.vue，子组件1：ChildOne.vue，子组件2：ChildTwo.vue。子组件1发送事件给父组件和子组件2。</p>
+<pre><code class="javascript">router/index.js
+
+import Vue from &#39;vue&#39;
+import Router from &#39;vue-router&#39;
+import CompA from &quot;@/components/CompA&quot;;
+
+Vue.use(Router)
+
+export default new Router(&#123;
+  routes: [
+    &#123;
+      path: &#39;/compA&#39;,
+      name: &#39;compA&#39;,
+      component: CompA,
+    &#125;
+  ],
+&#125;)
+</code></pre>
+<p>1.创建EventBus</p>
+<p> 新建EventBus.js</p>
+<pre><code class="javascript">import Vue from &#39;vue&#39;
+export const EventBus = new Vue()
+</code></pre>
+<p>2.发送事件</p>
+<p> components&#x2F;ChildOne.vue</p>
+<pre><code class="javascript">&lt;template&gt;
+  &lt;div class=&quot;childOne&quot;&gt;
+    &lt;h1&gt;childOne&lt;/h1&gt;
+    &lt;button @click=&quot;sendEvent2CompA&quot;&gt;发送事件给父组件（CompA）&lt;/button&gt;
+    &lt;button @click=&quot;sendEvent2ChildTwo&quot;&gt;发送事件给兄弟组件（ChildTwo）&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import &#123;EventBus&#125; from &quot;./EventBus&quot;
+
+export default &#123;
+  data() &#123;
+    return &#123;
+      count1: 0,
+      count2: 0,
+    &#125;
+  &#125;,
+  methods:&#123;
+    sendEvent2CompA() &#123;
+      this.count1++;
+      EventBus.$emit(&quot;compA&quot;, &quot;compA事件触发次数：&quot; + this.count1)
+    &#125;,
+    sendEvent2ChildTwo() &#123;
+      this.count2++;
+      EventBus.$emit(&quot;childTwo&quot;, &quot;childTwo事件触发次数：&quot; + this.count2)
+    &#125;
+  &#125;
+&#125;
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+&lt;/style&gt;
+</code></pre>
+<p>3.接收事件</p>
+<p>父组件：components&#x2F;CompA.vue</p>
+<pre><code class="javascript">&lt;template&gt;
+  &lt;div class=&quot;compA&quot;&gt;
+    &lt;h1&gt;compA&lt;/h1&gt;
+    compA收到的事件内容：&#123;&#123;msg&#125;&#125;&lt;hr&gt;
+    &lt;child-one&gt;&lt;/child-one&gt;&lt;hr&gt;
+    &lt;child-two&gt;&lt;/child-two&gt;
+
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import &#123;EventBus&#125; from &quot;./EventBus&quot;
+import ChildOne from &quot;@/components/ChildOne&quot;;
+import ChildTwo from &quot;@/components/ChildTwo&quot;;
+
+export default &#123;
+  components: &#123;ChildOne, ChildTwo&#125;,
+  data() &#123;
+    return &#123;
+      msg: &quot;&quot;,
+    &#125;
+  &#125;,
+  mounted() &#123;
+    EventBus.$on(&quot;compA&quot;, (payload1)=&gt; &#123;
+      this.msg = payload1;
+    &#125;)
+  &#125;
+&#125;
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p>子组件2：components&#x2F;ChildTwo.vue</p>
+<pre><code class="javascript">&lt;template&gt;
+  &lt;div class=&quot;childTwo&quot;&gt;
+    &lt;h1&gt;childTwo&lt;/h1&gt;
+    childTwo收到的事件内容：&#123;&#123;msg&#125;&#125;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import &#123;EventBus&#125; from &quot;./EventBus&quot;
+
+export default &#123;
+  data() &#123;
+    return &#123;
+      msg: &quot;&quot;,
+    &#125;
+  &#125;,
+  mounted() &#123;
+    EventBus.$on(&quot;childTwo&quot;, (payload1)=&gt; &#123;
+      this.msg = payload1;
+    &#125;)
+  &#125;
+&#125;
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p>事物都有两面性，没有好坏之分，且全在于使用者，好钢用在刀刃上，不滥用即可。有其他更好的方式则优先使用。</p>
+]]></content>
+      <categories>
+        <category>uniapp</category>
+        <category>Vue-eventBus</category>
+      </categories>
+      <tags>
+        <tag>eventBus</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Vue3+Ts+Vite+Pinia组合的高效开发套件</title>
     <url>/2022/11/19/Vue3-Ts-Vite-Pinia%E7%BB%84%E5%90%88%E7%9A%84%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E5%A5%97%E4%BB%B6/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vue3-Ts-Vite-Pinia组合的高效开发套件"><a href="#Vue3-Ts-Vite-Pinia组合的高效开发套件" class="headerlink" title="Vue3+Ts+Vite+Pinia组合的高效开发套件"></a>Vue3+Ts+Vite+Pinia组合的高效开发套件</h1><p>2022年最受欢迎的组合</p>
@@ -1344,193 +1531,6 @@ module.exports = &#123;
       </categories>
       <tags>
         <tag>技术</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Vue-eventBus</title>
-    <url>/2022/12/23/Vue-eventBus/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Vue-eventBus"><a href="#Vue-eventBus" class="headerlink" title="Vue-eventBus"></a>Vue-eventBus</h1><p>父子组件通信与兄弟组件通信</p>
-<p>vue组件非常常见的有父子组件通信，兄弟组件通信。</p>
-<pre><code>父子组件通信：方法有很多，比如：父组件通过 props 向下传数据给子组件，子组件通过 $emit 告诉父组件。
-兄弟组件通信：如果两个页面没有任何引入和被引入关系，需要额外的组件来通信，如：事件总线、Vuex。
-</code></pre>
-<h3 id="一、事件总线是什么"><a href="#一、事件总线是什么" class="headerlink" title="一、事件总线是什么"></a>一、事件总线是什么</h3><p>EventBus 又称为事件总线。在Vue中可以使用 EventBus 来作为沟通桥梁的概念，就像是所有组件共用相同的事件中心，可以向该中心注册发送事件或接收事件，所以组件都可以上下平行地通知其他组件。</p>
-<pre><code>EventBus若使用不慎，就会造成难以维护的“灾难”，因此才需要更完善的Vuex作为状态管理中心，将通知的概念上升到共享状态层次。 
-</code></pre>
-<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>解决了多层组件之间繁琐的事件传播。<br>使用原理十分简单，代码量少</p>
-<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>大家都知道vue是单页应用，如果你在某一个页面刷新了之后，与之相关的EventBus会被移除，这样就导致业务走不下去。<br>如果业务有反复操作的页面，EventBus在监听的时候就会触发很多次，也是一个非常大的隐患。这时候我们就需要好好处理EventBus在项目中的关系。通常在vue页面销毁时，同时移除EventBus事件监听。</p>
-<p>由于是都使用一个Vue实例，所以容易出现重复触发的情景：两个页面都定义了同一个事件名，并且没有用$off销毁（常出现在路由切换时）。</p>
-<h3 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h3><h4 id="1-创建事件"><a href="#1-创建事件" class="headerlink" title="1.创建事件"></a>1.创建事件</h4><p>首先需要创建事件总线并将其导出，以便其它模块可以使用或者监听它。</p>
-<p>方法1、非全局事件组件</p>
-<p> 新建EventBus.js</p>
-<pre><code class="javascript">import Vue from &#39;vue&#39;
-export const EventBus = new Vue()
-</code></pre>
-<p>法2、全局事件组件</p>
-<p>在项目中的 main.js 初始化 EventBus。在main.js添加如下一行：</p>
-<pre><code class="javascript">Vue.prototype.$EventBus = new Vue()
-</code></pre>
-<p>示例：</p>
-<pre><code class="vue">import Vue from &#39;vue&#39;
-import App from &#39;./App&#39;
-import router from &#39;./router&#39;
-
-Vue.config.productionTip = false
-
-Vue.prototype.$EventBus = new Vue();
-
-/* eslint-disable no-new */
-new Vue(&#123;
-  el: &#39;#app&#39;,
-  router,
-  components: &#123; App &#125;,
-  template: &#39;&lt;App/&gt;&#39;
-&#125;)
-</code></pre>
-<p>组件发送事件：this.$EventBus.$emit(…)</p>
-<p>组件接收事件：this.$EventBus.$on(…)</p>
-<p>移除事件</p>
-<p>一般在销毁组件（也就是离开组件）时移除事件。</p>
-<pre><code class="javascript">beforeDestroy()&#123;
-  EventBus.$off(&quot;eventName&quot;)
-&#125;
-</code></pre>
-<p>EventBus.$off()                           &#x2F;&#x2F;移除EventBus所有事件监听器</p>
-<p>EventBus.$off(‘eventName’)       &#x2F;&#x2F;移除’eventName’事件所有监听器</p>
-<p>EventBus.$off(‘eventName’, callback)    &#x2F;&#x2F;只移除这个回调的监听器。</p>
-<h4 id="2-事件运用"><a href="#2-事件运用" class="headerlink" title="2.事件运用"></a>2.事件运用</h4><p>本文父组件：CompA.vue，子组件1：ChildOne.vue，子组件2：ChildTwo.vue。子组件1发送事件给父组件和子组件2。</p>
-<pre><code class="javascript">router/index.js
-
-import Vue from &#39;vue&#39;
-import Router from &#39;vue-router&#39;
-import CompA from &quot;@/components/CompA&quot;;
-
-Vue.use(Router)
-
-export default new Router(&#123;
-  routes: [
-    &#123;
-      path: &#39;/compA&#39;,
-      name: &#39;compA&#39;,
-      component: CompA,
-    &#125;
-  ],
-&#125;)
-</code></pre>
-<p>1.创建EventBus</p>
-<p> 新建EventBus.js</p>
-<pre><code class="javascript">import Vue from &#39;vue&#39;
-export const EventBus = new Vue()
-</code></pre>
-<p>2.发送事件</p>
-<p> components&#x2F;ChildOne.vue</p>
-<pre><code class="javascript">&lt;template&gt;
-  &lt;div class=&quot;childOne&quot;&gt;
-    &lt;h1&gt;childOne&lt;/h1&gt;
-    &lt;button @click=&quot;sendEvent2CompA&quot;&gt;发送事件给父组件（CompA）&lt;/button&gt;
-    &lt;button @click=&quot;sendEvent2ChildTwo&quot;&gt;发送事件给兄弟组件（ChildTwo）&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-import &#123;EventBus&#125; from &quot;./EventBus&quot;
-
-export default &#123;
-  data() &#123;
-    return &#123;
-      count1: 0,
-      count2: 0,
-    &#125;
-  &#125;,
-  methods:&#123;
-    sendEvent2CompA() &#123;
-      this.count1++;
-      EventBus.$emit(&quot;compA&quot;, &quot;compA事件触发次数：&quot; + this.count1)
-    &#125;,
-    sendEvent2ChildTwo() &#123;
-      this.count2++;
-      EventBus.$emit(&quot;childTwo&quot;, &quot;childTwo事件触发次数：&quot; + this.count2)
-    &#125;
-  &#125;
-&#125;
-&lt;/script&gt;
-
-&lt;style scoped&gt;
-&lt;/style&gt;
-</code></pre>
-<p>3.接收事件</p>
-<p>父组件：components&#x2F;CompA.vue</p>
-<pre><code class="javascript">&lt;template&gt;
-  &lt;div class=&quot;compA&quot;&gt;
-    &lt;h1&gt;compA&lt;/h1&gt;
-    compA收到的事件内容：&#123;&#123;msg&#125;&#125;&lt;hr&gt;
-    &lt;child-one&gt;&lt;/child-one&gt;&lt;hr&gt;
-    &lt;child-two&gt;&lt;/child-two&gt;
-
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-import &#123;EventBus&#125; from &quot;./EventBus&quot;
-import ChildOne from &quot;@/components/ChildOne&quot;;
-import ChildTwo from &quot;@/components/ChildTwo&quot;;
-
-export default &#123;
-  components: &#123;ChildOne, ChildTwo&#125;,
-  data() &#123;
-    return &#123;
-      msg: &quot;&quot;,
-    &#125;
-  &#125;,
-  mounted() &#123;
-    EventBus.$on(&quot;compA&quot;, (payload1)=&gt; &#123;
-      this.msg = payload1;
-    &#125;)
-  &#125;
-&#125;
-&lt;/script&gt;
-
-&lt;style scoped&gt;
-
-&lt;/style&gt;
-</code></pre>
-<p>子组件2：components&#x2F;ChildTwo.vue</p>
-<pre><code class="javascript">&lt;template&gt;
-  &lt;div class=&quot;childTwo&quot;&gt;
-    &lt;h1&gt;childTwo&lt;/h1&gt;
-    childTwo收到的事件内容：&#123;&#123;msg&#125;&#125;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-import &#123;EventBus&#125; from &quot;./EventBus&quot;
-
-export default &#123;
-  data() &#123;
-    return &#123;
-      msg: &quot;&quot;,
-    &#125;
-  &#125;,
-  mounted() &#123;
-    EventBus.$on(&quot;childTwo&quot;, (payload1)=&gt; &#123;
-      this.msg = payload1;
-    &#125;)
-  &#125;
-&#125;
-&lt;/script&gt;
-
-&lt;style scoped&gt;
-
-&lt;/style&gt;
-</code></pre>
-<p>事物都有两面性，没有好坏之分，且全在于使用者，好钢用在刀刃上，不滥用即可。有其他更好的方式则优先使用。</p>
-]]></content>
-      <categories>
-        <category>uniapp</category>
-        <category>Vue-eventBus</category>
-      </categories>
-      <tags>
-        <tag>eventBus</tag>
       </tags>
   </entry>
   <entry>
@@ -3475,107 +3475,6 @@ export default (api: IApi) =&gt; &#123;
       </tags>
   </entry>
   <entry>
-    <title>vite配置</title>
-    <url>/2022/11/22/vite%E9%85%8D%E7%BD%AE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="vite配置"><a href="#vite配置" class="headerlink" title="vite配置"></a>vite配置</h1><p>最直观的体验是“快速”、“清爽”，开发效率也得到明显提升（解决掉了webpack开发服务器存在的痛点）。</p>
-<p>初始化完成后，工程目录如下：</p>
-<p><img src="/2022/11/22/vite%E9%85%8D%E7%BD%AE/image-20221122094453903.png"></p>
-<p>VS Code插件：Vite</p>
-<p>配置详情：</p>
-<p>vite.config.ts</p>
-<pre><code class="javascript">import &#123; defineConfig, loadEnv &#125; from &#39;vite&#39;;
-import vue from &#39;@vitejs/plugin-vue&#39;;
-import vueJSX from &#39;@vitejs/plugin-vue-jsx&#39;;
-import Components from &#39;unplugin-vue-components/vite&#39;;
-import &#123; AntDesignVueResolver &#125; from &#39;unplugin-vue-components/resolvers&#39;;
-import &#123; resolve &#125; from &#39;path&#39;;
-import &#123; initDevProxy &#125; from &#39;./http-proxy&#39;;
-
-// https://vitejs.dev/config/
-export default defineConfig((&#123; mode &#125;) =&gt; &#123;
-  const env = loadEnv(mode, process.cwd(), &#39;&#39;);
-  return &#123;
-    // 自定义公共基础路径（取自 .env(.*) 文件）
-    base: env.VITE_BASE_PATH,
-    // 定义全局常量替换方式
-    define: &#123;
-      // 取消启用Vue.2x中选项式api（这部分不会被打包）
-      &#39;__VUE_OPTIONS_API__&#39;: false,
-    &#125;,
-    // 配置vite插件
-    plugins: [
-      vue(),
-      vueJSX(),
-      // 自动化的组件按需引入配置
-      Components(&#123;
-        extensions: [&#39;vue&#39;, &#39;tsx&#39;],
-        resolvers: [
-          AntDesignVueResolver(&#123; resolveIcons: true &#125;),
-        ],
-        include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/],
-      &#125;),
-    ],
-    // 配置解析项
-    resolve: &#123;
-      // 路径别名
-      alias: &#123;
-        &#39;@/&#39;: resolve(__dirname, &#39;src&#39;) + &#39;/&#39;,
-      &#125;,
-    &#125;,
-    // 样式处理配置项
-    css: &#123;
-      // CSS module
-      modules: &#123;
-        generateScopedName: `_[name]_[local]_[hash:base64:6]_`,
-      &#125;,
-      // 传递给特定css样式预处理器的配置
-      preprocessorOptions: &#123;
-        less: &#123;
-          javascriptEnabled: true,
-        &#125;,
-      &#125;,
-    &#125;,
-    // 配置开发服务器
-    server: &#123;
-      open: true,
-      proxy: initDevProxy(),
-    &#125;,
-    // 自定义打包项配置
-    build: &#123;
-      // 大文件告警阈值(kb)
-      chunkSizeWarningLimit: 400,
-    &#125;,
-  &#125;;
-&#125;);
-</code></pre>
-<p>http-proxy.ts</p>
-<pre><code class="javascript">import type &#123; ProxyOptions &#125; from &#39;vite&#39;;
-
-/**
- * 初始化开发服务器代理
- */
-export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt; &#123;
-  return &#123;
-    // 临时示例
-    &#39;/api&#39;: &#123;
-      target: &#39;&#39;,
-      changeOrigin: true,
-    &#125;,
-  &#125;;
-&#125;;
-</code></pre>
-<p>以上的配置是项目配置的一部分，其他所需要的配置按照自己的需要去官网查询就可以，官网基于没个配置都有详细讲解。</p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Vite中文官网]: 	“<a href="https://cn.vitejs.dev/guide/">https://cn.vitejs.dev/guide/</a> “</p>
-]]></content>
-      <categories>
-        <category>工程技术</category>
-        <category>vite配置</category>
-      </categories>
-      <tags>
-        <tag>vite</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>uniapp生命周期</title>
     <url>/2022/12/20/uniapp%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="uniapp生命周期"><a href="#uniapp生命周期" class="headerlink" title="uniapp生命周期"></a>uniapp生命周期</h1><h3 id="一、应用生命周期"><a href="#一、应用生命周期" class="headerlink" title="一、应用生命周期"></a>一、应用生命周期</h3><p>uni-app 支持如下应用生命周期函数：</p>
@@ -3895,6 +3794,107 @@ export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt
       </categories>
       <tags>
         <tag>uniapp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vite配置</title>
+    <url>/2022/11/22/vite%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="vite配置"><a href="#vite配置" class="headerlink" title="vite配置"></a>vite配置</h1><p>最直观的体验是“快速”、“清爽”，开发效率也得到明显提升（解决掉了webpack开发服务器存在的痛点）。</p>
+<p>初始化完成后，工程目录如下：</p>
+<p><img src="/2022/11/22/vite%E9%85%8D%E7%BD%AE/image-20221122094453903.png"></p>
+<p>VS Code插件：Vite</p>
+<p>配置详情：</p>
+<p>vite.config.ts</p>
+<pre><code class="javascript">import &#123; defineConfig, loadEnv &#125; from &#39;vite&#39;;
+import vue from &#39;@vitejs/plugin-vue&#39;;
+import vueJSX from &#39;@vitejs/plugin-vue-jsx&#39;;
+import Components from &#39;unplugin-vue-components/vite&#39;;
+import &#123; AntDesignVueResolver &#125; from &#39;unplugin-vue-components/resolvers&#39;;
+import &#123; resolve &#125; from &#39;path&#39;;
+import &#123; initDevProxy &#125; from &#39;./http-proxy&#39;;
+
+// https://vitejs.dev/config/
+export default defineConfig((&#123; mode &#125;) =&gt; &#123;
+  const env = loadEnv(mode, process.cwd(), &#39;&#39;);
+  return &#123;
+    // 自定义公共基础路径（取自 .env(.*) 文件）
+    base: env.VITE_BASE_PATH,
+    // 定义全局常量替换方式
+    define: &#123;
+      // 取消启用Vue.2x中选项式api（这部分不会被打包）
+      &#39;__VUE_OPTIONS_API__&#39;: false,
+    &#125;,
+    // 配置vite插件
+    plugins: [
+      vue(),
+      vueJSX(),
+      // 自动化的组件按需引入配置
+      Components(&#123;
+        extensions: [&#39;vue&#39;, &#39;tsx&#39;],
+        resolvers: [
+          AntDesignVueResolver(&#123; resolveIcons: true &#125;),
+        ],
+        include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/],
+      &#125;),
+    ],
+    // 配置解析项
+    resolve: &#123;
+      // 路径别名
+      alias: &#123;
+        &#39;@/&#39;: resolve(__dirname, &#39;src&#39;) + &#39;/&#39;,
+      &#125;,
+    &#125;,
+    // 样式处理配置项
+    css: &#123;
+      // CSS module
+      modules: &#123;
+        generateScopedName: `_[name]_[local]_[hash:base64:6]_`,
+      &#125;,
+      // 传递给特定css样式预处理器的配置
+      preprocessorOptions: &#123;
+        less: &#123;
+          javascriptEnabled: true,
+        &#125;,
+      &#125;,
+    &#125;,
+    // 配置开发服务器
+    server: &#123;
+      open: true,
+      proxy: initDevProxy(),
+    &#125;,
+    // 自定义打包项配置
+    build: &#123;
+      // 大文件告警阈值(kb)
+      chunkSizeWarningLimit: 400,
+    &#125;,
+  &#125;;
+&#125;);
+</code></pre>
+<p>http-proxy.ts</p>
+<pre><code class="javascript">import type &#123; ProxyOptions &#125; from &#39;vite&#39;;
+
+/**
+ * 初始化开发服务器代理
+ */
+export const initDevProxy = (): Record&lt;string, string | ProxyOptions&gt; =&gt; &#123;
+  return &#123;
+    // 临时示例
+    &#39;/api&#39;: &#123;
+      target: &#39;&#39;,
+      changeOrigin: true,
+    &#125;,
+  &#125;;
+&#125;;
+</code></pre>
+<p>以上的配置是项目配置的一部分，其他所需要的配置按照自己的需要去官网查询就可以，官网基于没个配置都有详细讲解。</p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Vite中文官网]: 	“<a href="https://cn.vitejs.dev/guide/">https://cn.vitejs.dev/guide/</a> “</p>
+]]></content>
+      <categories>
+        <category>工程技术</category>
+        <category>vite配置</category>
+      </categories>
+      <tags>
+        <tag>vite</tag>
       </tags>
   </entry>
   <entry>
@@ -6951,6 +6951,151 @@ type-block__element_modifier
       </tags>
   </entry>
   <entry>
+    <title>渲染优化（页面布局与重绘的优化）</title>
+    <url>/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="页面布局与重绘的优化"><a href="#页面布局与重绘的优化" class="headerlink" title="页面布局与重绘的优化"></a>页面布局与重绘的优化</h1><blockquote>
+<p>页面布局也叫作重排和回流，指的是浏览器对页面元素的几何属性进行计算并将最终结果绘制出来的过程。凡是元素的宽高尺寸、在页面中的位置及隐藏或显示等信息发生改变时，都会触发页面的重新布局。</p>
+<p>通常页面布局的作用范围会涉及整个文档，所以这个环节会带来大量的性能开销，我们在开发过程中，应当从代码层面出发，尽量避免页面布局或最小化其处理次数。如果仅修改了DOM元素的样式，而未影响其几何属性时，则浏览器会跳过页面布局的计算环节，直接进入重绘阶段。</p>
+<p>虽然重绘的性能开销不及页面布局高，但为了更高的性能体验，也应当降低重绘发生的频率和复杂度。本节接下来便针对这两个环节的性能优化给出一些实用性的建议。</p>
+</blockquote>
+<h3 id="一、触发页面布局与重绘的操作"><a href="#一、触发页面布局与重绘的操作" class="headerlink" title="一、触发页面布局与重绘的操作"></a>一、触发页面布局与重绘的操作</h3><p>​		要想避免或减少页面布局与重绘的发生，首先就是需要知道有哪些操作能够触发浏览器的页面布局与重绘的操作，然后在开发过程中尽量去避免。</p>
+<p>​		这些操作大致可以分为三类:首先就是对DOM元素几何属性的修改，这些属性包括width、height、 padding、 margin、 left、 top 等，某元素的这些属性发生变化时，便会波及与它相关的所有节点元素进行几何属性的重新计算，这会带来巨大的计算量;其次是更改DOM树的结构，浏览器进行页面布局时的计算顺序，可类比树的前序遍历，即从上向下、从左向右。</p>
+<p>​		这里对DOM树节点的增、删、移动等操作，只会影响当前节点后的所有节点元素，而不会再次影响前面已经遍历过的元素；最后一类是获取某些特定的属性值操作，比如页面可见区域宽高offsetWidth offsetHeight， 页面视窗中元素与视窗边界的距离offsetTop,offsetLeft,类似的属性值还有scrollTop、scrollLeft、scrollWidth、scrollHeight、clientTop、clientWidth、clientHeight及调用window.getComputedStyle方法。</p>
+<p>​		这些属性和方法有一个共性，就是需要通过即时计算得到，所以浏览器就需要重新进行页面布局计算。</p>
+<h3 id="二、避免对样式的频繁改动"><a href="#二、避免对样式的频繁改动" class="headerlink" title="二、避免对样式的频繁改动"></a>二、避免对样式的频繁改动</h3><p>​		在通常情况下，页面的一帧内容被渲染到屏幕上会按照如下顺序依次进行,首先执行JavaScript代码，然后依次是样式计算、页面布局、绘制与合成。如果在JavaScript运行阶段涉及上述三类操作，浏览器就会强制提前页面布局的执行，为了尽量降低页面布局计算带来的性能损耗，我们应当避免使用JavaScript对样式进行频繁的修改，如果一定要修改样式，则可通过以下几种方式来降低触发重排或回流的频次。</p>
+<h4 id="1-使用类名对样式逐条修改"><a href="#1-使用类名对样式逐条修改" class="headerlink" title="1.使用类名对样式逐条修改"></a>1.使用类名对样式逐条修改</h4><p>​		在JavaScript代码中逐行执行对元素样式的修改，是种糟糕的编码方式，对未形成编码规范的前端初学者来说经常会出现这类的问题。错误代码示范如下:</p>
+<pre><code class="css">//获取DOM元素逐行修改样式
+const div = document .getElementById(&#39;mydiv&#39;);
+div.style.height = &#39;100px&#39;;
+div.style.width = &#39;100px&#39;;
+div.style.border = &#39;2px solid blue&#39;
+</code></pre>
+<p>​		上述代码对样式逐行修改，每行都会触发一次对渲染树的更改， 于是会导致页面布局重新计算而带来巨大的性能开销。合理的做法是，将多行的样式修改合并到一个类名中，仅在JavaScript脚本中添加或更改类名即可。CSS 类名可预先定义:</p>
+<pre><code class="css">.my-div&#123;
+    height: 100px;
+    border: 2px solid blue;
+    width: 100px; 
+&#125;
+</code></pre>
+<p>然后统一在JavaScript中通过给指定元素添加类的方式一次完成，这样便可避免触发多次对页面布局的重新计算:</p>
+<pre><code class="css">const div = document.getElementById(&#39;mydiv&#39;);
+mydiv.classList.add(&#39;my-div&#39;);
+</code></pre>
+<h4 id="2-缓存对敏感属性值的计算"><a href="#2-缓存对敏感属性值的计算" class="headerlink" title="2.缓存对敏感属性值的计算"></a>2.缓存对敏感属性值的计算</h4><p>​		有些场景我们想要通过多次计算来获得某个元素在页面中的布局位置，比如:</p>
+<pre><code class="js">const list = document.getElementById(&#39;list&#39;);
+for (let i =0; i&lt;10; i++) &#123;
+list.style.top = &#39;$&#123;list.offsetTop + 10&#125;px&#39;;
+list.style.left = &#39;$&#123;list.offsetLeft + 10&#125;px&#39;;
+&#125;
+</code></pre>
+<p>​		这不但在赋值环节会触发页面布局的重新计算，而且取值涉及即时敏感属性的获取，如offsetTop和offsetLeft,也会触发页面布局的重新计算。这样的性能是非常糟糕的，作为优化我们可以将敏感属性通过变量的形式缓存起来，等计算完成后再统一进行赋值触发布局重排。</p>
+<pre><code class="js">const list = document.getElementById(&#39;list&#39;);
+//将敏感属性缓存起来
+let offsetTop = list.offsetTop, offsetLeft = list.offsetLeft;
+for(let i=0;i&lt;10;i++)&#123;
+offsetTop += 10;
+offsetLeft += 10;
+&#125;
+//计算完成后统一赋值触发重排
+list.sty1e.left = offsetLeft;
+list.sty1e.top = offsetTop;
+</code></pre>
+<h4 id="3-使用requestAnimationFrame方法控制渲染帧"><a href="#3-使用requestAnimationFrame方法控制渲染帧" class="headerlink" title="3.使用requestAnimationFrame方法控制渲染帧"></a>3.使用requestAnimationFrame方法控制渲染帧</h4><p>前面讲JavaScript动画时，提到了requestAnimationFrame方法可以控制回调在两个植染帧之间仅触发一次， 如果在其回调函数中一开始就取值 到即时敏感属性，其实获取的是上一帧旧布局的值，并不会触发页面布局的重新计算。</p>
+<pre><code class="js">//在帧开始时触发回调
+requestAnimationFrame (queryDivHeight);
+function queryDivHeight() &#123;
+const div = document.getElementById(&#39;div&#39;)
+//获取并在命令行中打印出指定div元素的高
+console.log (div.offsetHeight)
+&#125;
+</code></pre>
+<p>如果在请求此元素高度之前更改其样式，浏览器就无法直接使用上一帧的旧有属性值，而需要先应用更改的样式，再运行页面布局计算后，才能返回所需的正确高度值。这样多余的开销显然是没有必要的。因此考虑到性能因素，在requestAnimationFrame方法的回调函数中，应始终优先样式的读取，然后再执行相应的写操作:</p>
+<pre><code class="js">//requestAnimationFrame方法的回调函数
+function queryDivHeight () &#123;
+const div = document .getElementById(&#39;div&#39;)
+//获取并在命令行中打印出指定div元素的高
+console.log (div.offsetHeight)
+//样式的写操作应放在读取操作后进行
+div.classList.add(&#39;my-div&#39;)
+&#125;
+</code></pre>
+<h3 id="三、通过工具对绘制进行评估"><a href="#三、通过工具对绘制进行评估" class="headerlink" title="三、通过工具对绘制进行评估"></a>三、通过工具对绘制进行评估</h3><p>除了通过经验去绕过一些明显的性能缺陷，使用工具对网站页面性能进行评估和实时分析也是发现问题的有效手段。这里介绍一 些基于Chrome开发者工具的分析方法，来辅助我们发现渲染阶段可能存在的性能问题。</p>
+<h4 id="1-监控渲染信息"><a href="#1-监控渲染信息" class="headerlink" title="1.监控渲染信息"></a>1.监控渲染信息</h4><p>打开Chrome的开发者工具，可以在“设置”→“更多工具”中，发现许多很实用的性能辅助小工具，比如监控渲染的Rendering工具，如图所示。</p>
+<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313105005172.png"></p>
+<p>​		打开Rendering 的工具面板后，会发现许多功能开关与选择器，下面举例介绍其中若干常用功能项。首先是Paint flashing, 当我们开启该功能后，操作页面发生重新渲染，Chrome会让重绘区域进行一次绿色闪动。</p>
+<p>​		这样就可以通过观察闪动区域来判断是否存在多余的绘制开销，比如若仅单击Select组件弹出下拉列表框，却发现整个屏幕区域都发生了闪动，或与此操作组件的无关区域发生了闪动，这都意味着有多余的绘制开销存在，需要进一步研究和优化。</p>
+<p>​		Layer borders功能开启后，会在页面上显示出绘制的图层边界。</p>
+<p>​		FPS meter功能开启后，会在当前页面的左上角显示实时的帧率情况，GPU 功能是否开启及GPU内存占用情况，如图所示。</p>
+<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313105326423.png"></p>
+<h4 id="2-查看图层详情"><a href="#2-查看图层详情" class="headerlink" title="2.查看图层详情"></a>2.查看图层详情</h4><p>​		当我们通过Rendering工具发现存在有多余的图层渲染时，由于闪动是难于捕捉的，所以还需要工具辅助显示出各个图层的详细信息，这便需要用到Layers图层工具，如图所示。</p>
+<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313110038852.png"></p>
+<p>​		如图所示工具界面大体分为三部分，①号矩形框区域为当前页面的图层列表:②号矩形框区域为页面带有图层边框的视图:③号矩形框区域为选中图层的详细信息，包括页面尺寸、内存占用、绘制次数等。</p>
+<p>​		通过这些信息能够帮助我们快速定位到所要查看的图层信息。当我们使用Rendering工具监控页面交互过程中有不恰当的图层存在时，便可使用Layers 工具进行问题复现:首先打开目标页面，然后从左 侧图层列表中依次查找出问题图层，接着分析引起该图层发生重绘的原因。</p>
+<h3 id="四、降低绘制复杂度"><a href="#四、降低绘制复杂度" class="headerlink" title="四、降低绘制复杂度"></a>四、降低绘制复杂度</h3><p>​		如前所述，绘制是在页面布局确定后，将元素的可视内容绘制到屏幕上的过程。虽然不同的CSS绘制样式看不出性能上明显的不同，但并非所有属性都有同样的性能开销。例如，绘制带有阴影效果的元素内容，就会比仅绘制单色边框所耗费的时间要长，因为涉及模糊就意味着更高的复杂度。CSS属性如下:</p>
+<pre><code class="css">// 绘制时间相对较短的边枢颜色
+border-color: red;
+//绘制时间更长的阴影内容
+box-shadow: 0, 8px, rgba(255,0,0,0.5);
+</code></pre>
+<p>​		当我们使用之前介绍过的渲染性能分析工具，发现了有明显性能瓶颈需要优化时，需要确认是否存在高复杂度的绘制内容，可以使用其他实现方式来替换以降低绘制的复杂度。比如位图的阴影效果，可以考虑使用Photoshop 等图像处理工具直接为图片本身添加阴影效果，而非全交给CSS样式去处理。</p>
+<p>​		除此之外，还要注意对绘制区域的控制，对不需要重新绘制的区域应尽量避免重绘。例如，页面的顶部有一个固定区域的header标头，若它与页面其他位置的某个区域位于同一图层，当后者发生重绘时，就有可能触发包括固定标头区域在内的整个页面的重绘。对于固定不变不期望发生重绘的区域，建议可将其提升为独立的绘图层，避免被其他区域的重绘连带着触发重绘。</p>
+<h3 id="五、合成处理"><a href="#五、合成处理" class="headerlink" title="五、合成处理"></a>五、合成处理</h3><p>​		合成处理是将已绘制的不同图层放在一起， 最终在屏幕上渲染出来的过程。在这个环节中，有两个因素可能会影响页面性能:一个是所需合成的图层数量，另一个是实现动画的相关属性。</p>
+<h4 id="1-新增图层"><a href="#1-新增图层" class="headerlink" title="1.新增图层"></a>1.新增图层</h4><p>在降低绘制复杂度小节中讲到，可通过将固定区域和动画区域拆分到不同图层上进行绘制，来达到绘制区域最小化的目的。接下来我们就来探讨如何创建新的图层，最佳方式便是使用CSS属性will-change来创建:</p>
+<pre><code class="css">.new-layer&#123;
+ will-change: transform; 
+&#125;
+</code></pre>
+<p>该方法在Chrome、Firefox 及Opera上均有效，而对于Safari等不支持will-change属性的浏览器，则可以使用3D变换来强制创建:</p>
+<pre><code class="css">.new-layer&#123;
+ transform: translate(0); 
+&#125;
+</code></pre>
+<p>​		虽然创建新的图层能够在定程度 上减少绘制区域，但也应 当注意不能创建太多的图层，因为每个图层都需要浏览器为其分配内存及管理开销。如果已经将个一元素提升到所创建的新图层上，也最好使用Chrome开发者工具中的Layers对图层详情进行评估，确定是否真的带来了性能提升，切忌在未经分析评估前就盲目地进行图层创建。</p>
+<h4 id="2-仅与合成相关的动画属性"><a href="#2-仅与合成相关的动画属性" class="headerlink" title="2.仅与合成相关的动画属性"></a>2.仅与合成相关的动画属性</h4><p>在了解了谊染过程各部分的功能和作用后，我们知道如果个动画的实现不经过页面布局和重绘环节，仅在合成处理阶段就能完成，则将会节省大量的性能开销。目前能够符合这一要求的动画属性只有两个:透明度opacity 和图层变换transform. 它们所能实现的动画效果如表所示，其中用n来表示数字。</p>
+<table>
+<thead>
+<tr>
+<th align="center">动画效果</th>
+<th align="center">实现方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">位移</td>
+<td align="center">transform:translate(npx,npx);</td>
+</tr>
+<tr>
+<td align="center">缩放</td>
+<td align="center">transform:scale(n);</td>
+</tr>
+<tr>
+<td align="center">旋转</td>
+<td align="center">transform:rotate(ndeg)</td>
+</tr>
+<tr>
+<td align="center">倾斜</td>
+<td align="center">transform:skew(X|Y)(ndeg);</td>
+</tr>
+<tr>
+<td align="center">矩阵变换</td>
+<td align="center">transform:matrix(3d)(&#x2F;<em>矩阵变换</em>&#x2F;)</td>
+</tr>
+<tr>
+<td align="center">透明度</td>
+<td align="center">opacity:0…1</td>
+</tr>
+</tbody></table>
+<p>​		在使用opacity和transform实现相应的动画效果时，需要注意动画元素应当位于独立的绘图层上，以避免影响其他绘制区域。这就需要将动画元素提升至一个新的绘图层。</p>
+]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>渲染优化（页面布局与重绘的优化）</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+        <tag>渲染优化</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>渲染优化（页面渲染性能）</title>
     <url>/2023/03/01/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%EF%BC%89/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="页面渲染性能"><a href="#页面渲染性能" class="headerlink" title="页面渲染性能"></a>页面渲染性能</h1><blockquote>
@@ -7348,439 +7493,6 @@ type-block__element_modifier
       </categories>
       <tags>
         <tag>浪漫代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Electron-d-2.0</title>
-    <url>/2022/11/25/Electron-d-2-0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><p>本篇文章接上一篇文章，详细讲解主进程和渲染进程一些常用的API</p>
-<h3 id="主进程API"><a href="#主进程API" class="headerlink" title="主进程API"></a>主进程API</h3><h4 id="1-App-BrowserWindow"><a href="#1-App-BrowserWindow" class="headerlink" title="1.App+BrowserWindow"></a>1.App+BrowserWindow</h4><h5 id="App事件："><a href="#App事件：" class="headerlink" title="App事件："></a>App事件：</h5><h6 id="（1）Before-quit"><a href="#（1）Before-quit" class="headerlink" title="（1）Before-quit"></a>（1）Before-quit</h6><ul>
-<li><code>event</code> Event #返回</li>
-</ul>
-<p> 在程序关闭窗口前触发（macOS不是关闭窗口触发，而是关闭程序）</p>
-<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125085755781.png"></p>
-<h6 id="（2）browser-window-blur"><a href="#（2）browser-window-blur" class="headerlink" title="（2）browser-window-blur"></a>（2）browser-window-blur</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>window</code> BrowserWindow #返回</li>
-</ul>
-<p>当一个 browserWindow （窗口）失去焦点时触发。当我们鼠标点击窗口以外的地方就会失焦。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090204480.png"></p>
-<h6 id="（3）browser-window-focus"><a href="#（3）browser-window-focus" class="headerlink" title="（3）browser-window-focus"></a>（3）browser-window-focus</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>window</code> BrowserWindow #返回</li>
-</ul>
-<p>当一个 browserWindow 获得焦点时触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090450485.png"></p>
-<h6 id="（4）quit"><a href="#（4）quit" class="headerlink" title="（4）quit"></a>（4）quit</h6><ul>
-<li><code>event</code> Event #返回</li>
-<li><code>exitCode</code> Integer #返回</li>
-</ul>
-<p>在应用程序退出时发出。</p>
-<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090654139.png"></p>
-<h6 id="（5）window-all-closed"><a href="#（5）window-all-closed" class="headerlink" title="（5）window-all-closed"></a>（5）window-all-closed</h6><p>当所有的窗口都被关闭时触发。</p>
-<p>如果你没有监听此事件并且所有窗口都关闭了，默认的行为是控制退出程序；但如果你监听了此事件，你可以控制是否退出程序。 如果用户按下了 <code>Cmd + Q</code>，或者开发者调用了 <code>app.quit()</code>，Electron 会首先关闭所有的窗口然后触发 <code>will-quit</code> 事件，在这种情况下 <code>window-all-closed</code>事件不会被触发。</p>
-<p>代码以及程序演示：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090909458.png"></p>
-<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><p>由于各种app.方法使用频率都差不多，那么我们根据需要看官方文档吧（也比较容易看懂）</p>
-<p>[App.方法 文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app#%E6%96%B9%E6%B3%95">https://www.electronjs.org/zh/docs/latest/api/app#方法</a> “</p>
-<h5 id="BrowserWindow："><a href="#BrowserWindow：" class="headerlink" title="BrowserWindow："></a>BrowserWindow：</h5><p><code>BrowserWindow</code> 类暴露了各种方法来修改应用窗口的外观和行为</p>
-<h6 id="（1）优雅的打开窗口"><a href="#（1）优雅的打开窗口" class="headerlink" title="（1）优雅的打开窗口"></a>（1）优雅的打开窗口</h6><p><code>ready-to-show</code> 事件</p>
-<p>在加载页面时，渲染进程第一次完成绘制时，如果窗口还没有被显示，渲染进程会发出 <code>ready-to-show</code> 事件 。 在此事件后显示窗口将没有视觉闪烁：（不会有白屏出现，但如果绘制没有完成，窗口出现的时间也会延长，根据业务需求来选择是否要选择这种优雅的打开窗口方式）</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093133167.png"></p>
-<p>这个事件通常在 <code>did-finish-load</code> 事件之后发出，但是页面有许多远程资源时，它可能会在 <code>did-finish-load</code>之前发出事件。</p>
-<p><code>backgroundColor</code>属性</p>
-<p>对于一个复杂的应用，<code>ready-to-show</code> 可能发出的太晚，会让应用感觉缓慢。 在这种情况下，建议立刻显示窗口，并使用接近应用程序背景的 <code>backgroundColor</code></p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093813389.png"></p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093827541.png"></p>
-<p>建议 设置 <code>backgroundColor</code>和 <code>ready-to-show</code> 事件一起用，以使应用感觉更接近原生。</p>
-<pre><code class="javascript">//backgroundColor有效值
-const win = new BrowserWindow()
-win.setBackgroundColor(&#39;hsl(230, 100%, 50%)&#39;)
-win.setBackgroundColor(&#39;rgb(255, 145, 145)&#39;)
-win.setBackgroundColor(&#39;#ff00a3&#39;)
-win.setBackgroundColor(&#39;blueviolet&#39;)
-</code></pre>
-<h6 id="（2）父子窗口-amp-amp-模态窗口"><a href="#（2）父子窗口-amp-amp-模态窗口" class="headerlink" title="（2）父子窗口&amp;&amp;模态窗口"></a>（2）父子窗口&amp;&amp;模态窗口</h6><p>父子窗口：</p>
-<p>通过使用 <code>parent</code> 选项，你可以创建子窗口：</p>
-<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const top = new BrowserWindow()
-const child = new BrowserWindow(&#123; parent: top &#125;)
-child.show()
-top.show()
-</code></pre>
-<p><code>child</code> 窗口将总是显示在 <code>top</code> 窗口的顶部.</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125094829288.png"></p>
-<p>模态窗口</p>
-<p>模态窗口是禁用父窗口的子窗口，创建模态窗口必须设置 <code>parent</code> 和 <code>modal</code> 选项：</p>
-<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
-
-const child = new BrowserWindow(&#123; parent: top, modal: true, show: false &#125;)
-child.loadURL(&#39;https://github.com&#39;)
-child.once(&#39;ready-to-show&#39;, () =&gt; &#123;
-  child.show()
-&#125;)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125095057232.png"></p>
-<h6 id="（3）BrowserWindow属性"><a href="#（3）BrowserWindow属性" class="headerlink" title="（3）BrowserWindow属性"></a>（3）BrowserWindow属性</h6><p>这个BrowserWindow属性 比较多，而且都是设置窗口的一些属性，也是不难理解，我们就对照我们的官方文档来学习吧！</p>
-<p>[BrowserWindow属性]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions">https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions</a> “</p>
-<h6 id="（4）webContents"><a href="#（4）webContents" class="headerlink" title="（4）webContents"></a>（4）webContents</h6><p><code>did-finish-load</code> 事件</p>
-<p>导航完成时触发，即选项卡的旋转器将停止旋转，并指派<code>onload</code>事件后。</p>
-<p>[webContents类实例事件]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/web-contents#%E7%B1%BB-webcontents">https://www.electronjs.org/zh/docs/latest/api/web-contents#类-webcontents</a> “</p>
-<h6 id="（5）保存窗口状态"><a href="#（5）保存窗口状态" class="headerlink" title="（5）保存窗口状态"></a>（5）保存窗口状态</h6><p>当我们使用桌面程序的时候，那么我们有时候希望我们关闭程序再次打开程序的时候，程序的界面和状态能够是我们关闭前的样子，不希望再去重新设置。那我们就需要一个包<code>electron-win-state</code> </p>
-<p>安装这个包</p>
-<pre><code class="ini">npm i electron-win-state -S
-</code></pre>
-<p>我们可以在npmjs官网上找到这个包，去看它的说明文档</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101014250.png"></p>
-<p>根据使用说明，我们代码如下：</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101245297.png"></p>
-<p>我们发现报错了，WinState is not a constructor</p>
-<p>当我们打印一下WinState看看什么情况</p>
-<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;)
-console.log(WinState)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101446532.png"></p>
-<p>发现没有直接引入WinState，我们修改一下</p>
-<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;).default 
-</code></pre>
-<p>现在就没报错了。</p>
-<p>但是我们发现，虽然安装了这个包，但是我们程序的状态还是没有改变，这就很奇怪了，其实，是我们自己已经给窗口设置了自定义宽高，覆盖了。我们也缺了一句代码；</p>
-<pre><code class="javascript"> winState.manage(win)
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125102737449.png"></p>
-<p>现在我们的状态保存就没问题了。当我们关闭窗口再次打开的时候就是关闭之前的样子了。</p>
-<h4 id="2-dialog"><a href="#2-dialog" class="headerlink" title="2.dialog"></a>2.dialog</h4><p>这些具体参数请看官方文档，下面几个方法返回一个promise对象</p>
-<h6 id="（1）dialog-showOpenDialog-browserWindow-options"><a href="#（1）dialog-showOpenDialog-browserWindow-options" class="headerlink" title="（1）dialog.showOpenDialog([browserWindow, ]options)"></a>（1）<code>dialog.showOpenDialog([browserWindow, ]options)</code></h6><h6 id="（2）dialog-showSaveDialog-browserWindow-options"><a href="#（2）dialog-showSaveDialog-browserWindow-options" class="headerlink" title="（2）dialog.showSaveDialog([browserWindow, ]options)"></a>（2）<code>dialog.showSaveDialog([browserWindow, ]options)</code></h6><h6 id="（3）dialog-showMessageBox-browserWindow-options"><a href="#（3）dialog-showMessageBox-browserWindow-options" class="headerlink" title="（3）dialog.showMessageBox([browserWindow, ]options)"></a>（3）<code>dialog.showMessageBox([browserWindow, ]options)</code></h6><p>[dialog文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options">https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options</a> “</p>
-<h4 id="3-快捷键（globalShortcut）"><a href="#3-快捷键（globalShortcut）" class="headerlink" title="3.快捷键（globalShortcut）"></a>3.快捷键（globalShortcut）</h4><blockquote>
-<p>在应用程序没有键盘焦点时，监听键盘事件。</p>
-</blockquote>
-<p><code>globalShortcut</code> 模块可以在操作系统中注册&#x2F;注销全局快捷键, 以便可以为操作定制各种快捷键。</p>
-<p><strong>注意:</strong> 快捷方式是全局的; 即使应用程序没有键盘焦点, 它也仍然在持续监听键盘事件。 在 app 模块的 <code>ready</code> 事件就绪之前，这个模块不能使用。</p>
-<pre><code class="javascript">const &#123; app, globalShortcut &#125; = require(&#39;electron&#39;)
-
-app.whenReady().then(() =&gt; &#123;
-  // 注册一个&#39;CommandOrControl+X&#39; 快捷键监听器
-  const ret = globalShortcut.register(&#39;CommandOrControl+X&#39;, () =&gt; &#123;
-    console.log(&#39;CommandOrControl+X is pressed&#39;)
-  &#125;)
-
-  if (!ret) &#123;
-    console.log(&#39;registration failed&#39;)
-  &#125;
-
-  // 检查快捷键是否注册成功
-  console.log(globalShortcut.isRegistered(&#39;CommandOrControl+X&#39;))
-&#125;)
-
-app.on(&#39;will-quit&#39;, () =&gt; &#123;
-  // 注销快捷键
-  globalShortcut.unregister(&#39;CommandOrControl+X&#39;)
-
-  // 注销所有快捷键
-  globalShortcut.unregisterAll()
-&#125;)
-</code></pre>
-<p>方法</p>
-<p><code>globalShortcut</code> 模块具有以下方法:</p>
-<h6 id="（1）globalShortcut-register-accelerator-callback"><a href="#（1）globalShortcut-register-accelerator-callback" class="headerlink" title="（1）globalShortcut.register(accelerator, callback)"></a>（1）<code>globalShortcut.register(accelerator, callback)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-<li><code>callback</code> Function</li>
-</ul>
-<p>返回<code>boolean</code> - 快捷键注册是否成功</p>
-<p>注册 <code>accelerator</code> 的全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
-<p>如果指定的快捷键已经被其他应用程序注册掉, 调用会默默失败。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
-<ul>
-<li>“Media Play&#x2F;Pause”</li>
-<li>“Media Next Track”</li>
-<li>“Media Previous Track”</li>
-<li>“Media Stop”</li>
-</ul>
-<h6 id="（2）globalShortcut-registerAll-accelerators-callback"><a href="#（2）globalShortcut-registerAll-accelerators-callback" class="headerlink" title="（2）globalShortcut.registerAll(accelerators, callback)"></a>（2）<code>globalShortcut.registerAll(accelerators, callback)</code></h6><ul>
-<li><code>accelerators</code> string[] - an array of Accelerators.</li>
-<li><code>callback</code> Function</li>
-</ul>
-<p>注册多个全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
-<p>如果定义的快捷键已经被其他应用占用，这个调用会失效。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
-<ul>
-<li>“Media Play&#x2F;Pause”</li>
-<li>“Media Next Track”</li>
-<li>“Media Previous Track”</li>
-<li>“Media Stop”</li>
-</ul>
-<h6 id="（3）globalShortcut-isRegistered-accelerator"><a href="#（3）globalShortcut-isRegistered-accelerator" class="headerlink" title="（3）globalShortcut.isRegistered(accelerator)"></a>（3）<code>globalShortcut.isRegistered(accelerator)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-</ul>
-<p>Returns <code>boolean</code> - 表示 <code>accelerator</code> 全局快捷键是否注册成功</p>
-<p>当快捷键已经被其他应用程序注册时, 此调用依然将返回 <code>false</code>。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
-<h6 id="（4）globalShortcut-unregister-accelerator"><a href="#（4）globalShortcut-unregister-accelerator" class="headerlink" title="（4）globalShortcut.unregister(accelerator)"></a>（4）<code>globalShortcut.unregister(accelerator)</code></h6><ul>
-<li><code>accelerator</code> Accelerator</li>
-</ul>
-<p>注销 <code>accelerator</code> 的全局快捷键。</p>
-<h6 id="（5）globalShortcut-unregisterAll"><a href="#（5）globalShortcut-unregisterAll" class="headerlink" title="（5）globalShortcut.unregisterAll()"></a>（5）<code>globalShortcut.unregisterAll()</code></h6><p>注销所有的全局快捷键（清空该应用程序的所有全局快捷键）。</p>
-<h4 id="4-菜单（Menu）"><a href="#4-菜单（Menu）" class="headerlink" title="4.菜单（Menu）"></a>4.菜单（Menu）</h4><p>我们这举个例子：</p>
-<pre><code class="javascript">//一个简单的菜单模板
-const &#123; app, Menu &#125; = require(&#39;electron&#39;)
-
-const isMac = process.platform === &#39;darwin&#39;//判断是不是macOS
-//role：菜单选项
-const template = [
-  // &#123; role: &#39;appMenu&#39; &#125;
-  ...(isMac ? [&#123;
-    label: app.name,//我们程序名称
-    submenu: [
-      &#123; role: &#39;about&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;services&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;hide&#39; &#125;,
-      &#123; role: &#39;hideOthers&#39; &#125;,
-      &#123; role: &#39;unhide&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;quit&#39; &#125;
-    ]
-  &#125;] : []),
-  // &#123; role: &#39;fileMenu&#39; &#125;
-  &#123;
-    label: &#39;File&#39;,
-    submenu: [
-      isMac ? &#123; role: &#39;close&#39; &#125; : &#123; role: &#39;quit&#39; &#125;
-    ]
-  &#125;,
-  // &#123; role: &#39;editMenu&#39; &#125;
-  &#123;
-    label: &#39;Edit&#39;,
-    submenu: [
-      &#123; role: &#39;undo&#39; &#125;,
-      &#123; role: &#39;redo&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;cut&#39; &#125;,
-      &#123; role: &#39;copy&#39; &#125;,
-      &#123; role: &#39;paste&#39; &#125;,
-      ...(isMac ? [
-        &#123; role: &#39;pasteAndMatchStyle&#39; &#125;,
-        &#123; role: &#39;delete&#39; &#125;,
-        &#123; role: &#39;selectAll&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123;
-          label: &#39;Speech&#39;,
-          submenu: [
-            &#123; role: &#39;startSpeaking&#39; &#125;,
-            &#123; role: &#39;stopSpeaking&#39; &#125;
-          ]
-        &#125;
-      ] : [
-        &#123; role: &#39;delete&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;selectAll&#39; &#125;
-      ])
-    ]
-  &#125;,
-  // &#123; role: &#39;viewMenu&#39; &#125;
-  &#123;
-    label: &#39;View&#39;,
-    submenu: [
-      &#123; role: &#39;reload&#39; &#125;,
-      &#123; role: &#39;forceReload&#39; &#125;,
-      &#123; role: &#39;toggleDevTools&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;resetZoom&#39; &#125;,
-      &#123; role: &#39;zoomIn&#39; &#125;,
-      &#123; role: &#39;zoomOut&#39; &#125;,
-      &#123; type: &#39;separator&#39; &#125;,//分割线
-      &#123; role: &#39;togglefullscreen&#39; &#125;
-    ]
-  &#125;,
-  // &#123; role: &#39;windowMenu&#39; &#125;
-  &#123;
-    label: &#39;Window&#39;,
-    submenu: [
-      &#123; role: &#39;minimize&#39; &#125;,
-      &#123; role: &#39;zoom&#39; &#125;,
-      ...(isMac ? [
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;front&#39; &#125;,
-        &#123; type: &#39;separator&#39; &#125;,//分割线
-        &#123; role: &#39;window&#39; &#125;
-      ] : [
-        &#123; role: &#39;close&#39; &#125;
-      ])
-    ]
-  &#125;,
-  &#123;
-    role: &#39;help&#39;,
-    submenu: [
-      &#123;
-        label: &#39;Learn More&#39;,
-        click: async () =&gt; &#123;
-          //定义自己的菜单方法
-          const &#123; shell &#125; = require(&#39;electron&#39;)
-          await shell.openExternal(&#39;https://electronjs.org&#39;)
-        &#125;
-      &#125;,
-      &#123;
-        label:&#39;alanmf&#39;,
-          click:()=&gt;&#123;console.log(&#39;shift+G&#39;)&#125;,
-          accelerator:&#39;shift+G&#39;//定义快捷键
-      &#125;
-    ]
-  &#125;
-]
-
-const menu = Menu.buildFromTemplate(template)//一般来说， template是一个options类型的数组，用于构建MenuItem。 使用方法可参考前文。还可以将其他字段附加到template，它们将成为菜单项的属性。
-Menu.setApplicationMenu(menu)//在macOS上将 menu设置成应用内菜单 在windows和Linux上，menu 将会被设置成窗口顶部菜单在Windows和Linux中
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125155603331.png"></p>
-<p>[Menu菜单文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu">https://www.electronjs.org/zh/docs/latest/api/menu</a> “<br>[role的属性值]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu-item#%E8%A7%92%E8%89%B2">https://www.electronjs.org/zh/docs/latest/api/menu-item#角色</a> “</p>
-<h4 id="5-系统托盘（Tray）"><a href="#5-系统托盘（Tray）" class="headerlink" title="5.系统托盘（Tray）"></a>5.系统托盘（Tray）</h4><blockquote>
-<p>添加图标和上下文菜单到系统通知区</p>
-</blockquote>
-<pre><code class="javascript">const &#123; app, Menu, Tray &#125; = require(&#39;electron&#39;)
-
-let tray = null
-app.whenReady().then(() =&gt; &#123;
-  tray = new Tray(&#39;/path/to/my/icon&#39;) //定义icon的路径
-  const contextMenu = Menu.buildFromTemplate([
-    &#123; label: &#39;Item1&#39;, type: &#39;radio&#39; &#125;,
-    &#123; label: &#39;Item2&#39;, type: &#39;radio&#39; &#125;,
-    &#123; label: &#39;Item3&#39;, type: &#39;radio&#39;, checked: true &#125;,
-    &#123; label: &#39;Item4&#39;, type: &#39;radio&#39; &#125;
-  ])
-  tray.setToolTip(&#39;This is my application.&#39;)//设置鼠标指针在托盘图标上悬停时显示的文本
-  tray.setContextMenu(contextMenu)//设置上下文菜单到托盘
-&#125;)
-</code></pre>
-<p>其实这个Tray跟Menu是布局差不太多的，所以学习起来也不是很难理解了。具体事件和方法也不是特别多，我们就直接看官方API文档吧！</p>
-<p>[Tray文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/tray">https://www.electronjs.org/zh/docs/latest/api/tray</a> “</p>
-<h4 id="6-触控板（TouchBar）"><a href="#6-触控板（TouchBar）" class="headerlink" title="6.触控板（TouchBar）"></a>6.触控板（TouchBar）</h4><p><strong>注意:</strong> TouchBar API目前为实验性质，可能会更改或删除。</p>
-<p>如果官网推荐的TouchBar模拟器下载失败，自己搜索一下即可。（如果下载的打不开，那就在应用程序-&gt;右键显示包内容-&gt;如下）执行就可以了</p>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172856290.png"></p>
-<pre><code class="javascript">//touchbar.js
-const &#123; app, BrowserWindow, TouchBar &#125; = require(&#39;electron&#39;)
-
-const &#123; TouchBarLabel, TouchBarButton, TouchBarSpacer &#125; = TouchBar
-
-let spinning = false
-
-// 类似老虎机的滚轴标签
-const reel1 = new TouchBarLabel()
-const reel2 = new TouchBarLabel()
-const reel3 = new TouchBarLabel()
-
-// 旋转结果标签
-const result = new TouchBarLabel()
-
-// 旋转按钮
-const spin = new TouchBarButton(&#123;
-  label: &#39;🎰 Spin&#39;,
-  backgroundColor: &#39;#7851A9&#39;,
-  click: () =&gt; &#123;
-    // Ignore clicks if already spinning
-    if (spinning) &#123;
-      return
-    &#125;
-
-    spinning = true
-    result.label = &#39;&#39;
-
-    let timeout = 10
-    const spinLength = 4 * 1000 // 4 seconds
-    const startTime = Date.now()
-
-    const spinReels = () =&gt; &#123;
-      updateReels()
-
-      if ((Date.now() - startTime) &gt;= spinLength) &#123;
-        finishSpin()
-      &#125; else &#123;
-        // Slow down a bit on each spin
-        timeout *= 1.1
-        setTimeout(spinReels, timeout)
-      &#125;
-    &#125;
-
-    spinReels()
-  &#125;
-&#125;)
-
-const getRandomValue = () =&gt; &#123;
-  const values = [&#39;🍒&#39;, &#39;💎&#39;, &#39;7️⃣&#39;, &#39;🍊&#39;, &#39;🔔&#39;, &#39;⭐&#39;, &#39;🍇&#39;, &#39;🍀&#39;]
-  return values[Math.floor(Math.random() * values.length)]
-&#125;
-
-const updateReels = () =&gt; &#123;
-  reel1.label = getRandomValue()
-  reel2.label = getRandomValue()
-  reel3.label = getRandomValue()
-&#125;
-
-const finishSpin = () =&gt; &#123;
-  const uniqueValues = new Set([reel1.label, reel2.label, reel3.label]).size
-  if (uniqueValues === 1) &#123;
-    // All 3 values are the same
-    result.label = &#39;💰 Jackpot!&#39;
-    result.textColor = &#39;#FDFF00&#39;
-  &#125; else if (uniqueValues === 2) &#123;
-    // 2个值相同
-    result.label = &#39;😍 Winner!&#39;
-    result.textColor = &#39;#FDFF00&#39;
-  &#125; else &#123;
-    // 没有值相同
-    result.label = &#39;🙁 Spin Again&#39;
-    result.textColor = null
-  &#125;
-  spinning = false
-&#125;
-
-const touchBar = new TouchBar(&#123;
-  items: [
-    spin,
-    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
-    reel1,
-    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
-    reel2,
-    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
-    reel3,
-    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
-    result
-  ]
-&#125;)
-
-let window
-
-app.whenReady().then(() =&gt; &#123;
-  window = new BrowserWindow(&#123;
-    frame: false,
-    titleBarStyle: &#39;hiddenInset&#39;,
-    width: 200,
-    height: 200,
-    backgroundColor: &#39;#000&#39;
-  &#125;)
-  window.loadURL(&#39;about:blank&#39;)
-  window.setTouchBar(touchBar)
-&#125;)
-</code></pre>
-<p>运行命令：</p>
-<pre><code class="ini">./node_modules/.bin/electron touchbar.js
-</code></pre>
-<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
-<p>[TouchBar文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
-]]></content>
-      <categories>
-        <category>Electron</category>
-        <category>Electron-d-2.0</category>
-      </categories>
-      <tags>
-        <tag>electron</tag>
       </tags>
   </entry>
   <entry>
@@ -8250,6 +7962,439 @@ ipcMain.on(&#39;counter-value&#39;, (_event, value) =&gt; &#123;
       <categories>
         <category>Electron</category>
         <category>Electron-d-1.0</category>
+      </categories>
+      <tags>
+        <tag>electron</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Electron-d-2.0</title>
+    <url>/2022/11/25/Electron-d-2-0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="Electron"><a href="#Electron" class="headerlink" title="Electron"></a>Electron</h1><p>本篇文章接上一篇文章，详细讲解主进程和渲染进程一些常用的API</p>
+<h3 id="主进程API"><a href="#主进程API" class="headerlink" title="主进程API"></a>主进程API</h3><h4 id="1-App-BrowserWindow"><a href="#1-App-BrowserWindow" class="headerlink" title="1.App+BrowserWindow"></a>1.App+BrowserWindow</h4><h5 id="App事件："><a href="#App事件：" class="headerlink" title="App事件："></a>App事件：</h5><h6 id="（1）Before-quit"><a href="#（1）Before-quit" class="headerlink" title="（1）Before-quit"></a>（1）Before-quit</h6><ul>
+<li><code>event</code> Event #返回</li>
+</ul>
+<p> 在程序关闭窗口前触发（macOS不是关闭窗口触发，而是关闭程序）</p>
+<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125085755781.png"></p>
+<h6 id="（2）browser-window-blur"><a href="#（2）browser-window-blur" class="headerlink" title="（2）browser-window-blur"></a>（2）browser-window-blur</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>window</code> BrowserWindow #返回</li>
+</ul>
+<p>当一个 browserWindow （窗口）失去焦点时触发。当我们鼠标点击窗口以外的地方就会失焦。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090204480.png"></p>
+<h6 id="（3）browser-window-focus"><a href="#（3）browser-window-focus" class="headerlink" title="（3）browser-window-focus"></a>（3）browser-window-focus</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>window</code> BrowserWindow #返回</li>
+</ul>
+<p>当一个 browserWindow 获得焦点时触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090450485.png"></p>
+<h6 id="（4）quit"><a href="#（4）quit" class="headerlink" title="（4）quit"></a>（4）quit</h6><ul>
+<li><code>event</code> Event #返回</li>
+<li><code>exitCode</code> Integer #返回</li>
+</ul>
+<p>在应用程序退出时发出。</p>
+<p>**注:**在 Windows 系统中，如果应用程序因系统关机&#x2F;重启或用户注销而关闭，那么这个事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090654139.png"></p>
+<h6 id="（5）window-all-closed"><a href="#（5）window-all-closed" class="headerlink" title="（5）window-all-closed"></a>（5）window-all-closed</h6><p>当所有的窗口都被关闭时触发。</p>
+<p>如果你没有监听此事件并且所有窗口都关闭了，默认的行为是控制退出程序；但如果你监听了此事件，你可以控制是否退出程序。 如果用户按下了 <code>Cmd + Q</code>，或者开发者调用了 <code>app.quit()</code>，Electron 会首先关闭所有的窗口然后触发 <code>will-quit</code> 事件，在这种情况下 <code>window-all-closed</code>事件不会被触发。</p>
+<p>代码以及程序演示：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125090909458.png"></p>
+<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><p>由于各种app.方法使用频率都差不多，那么我们根据需要看官方文档吧（也比较容易看懂）</p>
+<p>[App.方法 文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app#%E6%96%B9%E6%B3%95">https://www.electronjs.org/zh/docs/latest/api/app#方法</a> “</p>
+<h5 id="BrowserWindow："><a href="#BrowserWindow：" class="headerlink" title="BrowserWindow："></a>BrowserWindow：</h5><p><code>BrowserWindow</code> 类暴露了各种方法来修改应用窗口的外观和行为</p>
+<h6 id="（1）优雅的打开窗口"><a href="#（1）优雅的打开窗口" class="headerlink" title="（1）优雅的打开窗口"></a>（1）优雅的打开窗口</h6><p><code>ready-to-show</code> 事件</p>
+<p>在加载页面时，渲染进程第一次完成绘制时，如果窗口还没有被显示，渲染进程会发出 <code>ready-to-show</code> 事件 。 在此事件后显示窗口将没有视觉闪烁：（不会有白屏出现，但如果绘制没有完成，窗口出现的时间也会延长，根据业务需求来选择是否要选择这种优雅的打开窗口方式）</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093133167.png"></p>
+<p>这个事件通常在 <code>did-finish-load</code> 事件之后发出，但是页面有许多远程资源时，它可能会在 <code>did-finish-load</code>之前发出事件。</p>
+<p><code>backgroundColor</code>属性</p>
+<p>对于一个复杂的应用，<code>ready-to-show</code> 可能发出的太晚，会让应用感觉缓慢。 在这种情况下，建议立刻显示窗口，并使用接近应用程序背景的 <code>backgroundColor</code></p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093813389.png"></p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125093827541.png"></p>
+<p>建议 设置 <code>backgroundColor</code>和 <code>ready-to-show</code> 事件一起用，以使应用感觉更接近原生。</p>
+<pre><code class="javascript">//backgroundColor有效值
+const win = new BrowserWindow()
+win.setBackgroundColor(&#39;hsl(230, 100%, 50%)&#39;)
+win.setBackgroundColor(&#39;rgb(255, 145, 145)&#39;)
+win.setBackgroundColor(&#39;#ff00a3&#39;)
+win.setBackgroundColor(&#39;blueviolet&#39;)
+</code></pre>
+<h6 id="（2）父子窗口-amp-amp-模态窗口"><a href="#（2）父子窗口-amp-amp-模态窗口" class="headerlink" title="（2）父子窗口&amp;&amp;模态窗口"></a>（2）父子窗口&amp;&amp;模态窗口</h6><p>父子窗口：</p>
+<p>通过使用 <code>parent</code> 选项，你可以创建子窗口：</p>
+<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
+
+const top = new BrowserWindow()
+const child = new BrowserWindow(&#123; parent: top &#125;)
+child.show()
+top.show()
+</code></pre>
+<p><code>child</code> 窗口将总是显示在 <code>top</code> 窗口的顶部.</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125094829288.png"></p>
+<p>模态窗口</p>
+<p>模态窗口是禁用父窗口的子窗口，创建模态窗口必须设置 <code>parent</code> 和 <code>modal</code> 选项：</p>
+<pre><code class="javascript">const &#123; BrowserWindow &#125; = require(&#39;electron&#39;)
+
+const child = new BrowserWindow(&#123; parent: top, modal: true, show: false &#125;)
+child.loadURL(&#39;https://github.com&#39;)
+child.once(&#39;ready-to-show&#39;, () =&gt; &#123;
+  child.show()
+&#125;)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125095057232.png"></p>
+<h6 id="（3）BrowserWindow属性"><a href="#（3）BrowserWindow属性" class="headerlink" title="（3）BrowserWindow属性"></a>（3）BrowserWindow属性</h6><p>这个BrowserWindow属性 比较多，而且都是设置窗口的一些属性，也是不难理解，我们就对照我们的官方文档来学习吧！</p>
+<p>[BrowserWindow属性]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions">https://www.electronjs.org/zh/docs/latest/api/browser-window#new-browserwindowoptions</a> “</p>
+<h6 id="（4）webContents"><a href="#（4）webContents" class="headerlink" title="（4）webContents"></a>（4）webContents</h6><p><code>did-finish-load</code> 事件</p>
+<p>导航完成时触发，即选项卡的旋转器将停止旋转，并指派<code>onload</code>事件后。</p>
+<p>[webContents类实例事件]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/web-contents#%E7%B1%BB-webcontents">https://www.electronjs.org/zh/docs/latest/api/web-contents#类-webcontents</a> “</p>
+<h6 id="（5）保存窗口状态"><a href="#（5）保存窗口状态" class="headerlink" title="（5）保存窗口状态"></a>（5）保存窗口状态</h6><p>当我们使用桌面程序的时候，那么我们有时候希望我们关闭程序再次打开程序的时候，程序的界面和状态能够是我们关闭前的样子，不希望再去重新设置。那我们就需要一个包<code>electron-win-state</code> </p>
+<p>安装这个包</p>
+<pre><code class="ini">npm i electron-win-state -S
+</code></pre>
+<p>我们可以在npmjs官网上找到这个包，去看它的说明文档</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101014250.png"></p>
+<p>根据使用说明，我们代码如下：</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101245297.png"></p>
+<p>我们发现报错了，WinState is not a constructor</p>
+<p>当我们打印一下WinState看看什么情况</p>
+<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;)
+console.log(WinState)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125101446532.png"></p>
+<p>发现没有直接引入WinState，我们修改一下</p>
+<pre><code class="javascript">const WinState = require(&#39;electron-win-state&#39;).default 
+</code></pre>
+<p>现在就没报错了。</p>
+<p>但是我们发现，虽然安装了这个包，但是我们程序的状态还是没有改变，这就很奇怪了，其实，是我们自己已经给窗口设置了自定义宽高，覆盖了。我们也缺了一句代码；</p>
+<pre><code class="javascript"> winState.manage(win)
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125102737449.png"></p>
+<p>现在我们的状态保存就没问题了。当我们关闭窗口再次打开的时候就是关闭之前的样子了。</p>
+<h4 id="2-dialog"><a href="#2-dialog" class="headerlink" title="2.dialog"></a>2.dialog</h4><p>这些具体参数请看官方文档，下面几个方法返回一个promise对象</p>
+<h6 id="（1）dialog-showOpenDialog-browserWindow-options"><a href="#（1）dialog-showOpenDialog-browserWindow-options" class="headerlink" title="（1）dialog.showOpenDialog([browserWindow, ]options)"></a>（1）<code>dialog.showOpenDialog([browserWindow, ]options)</code></h6><h6 id="（2）dialog-showSaveDialog-browserWindow-options"><a href="#（2）dialog-showSaveDialog-browserWindow-options" class="headerlink" title="（2）dialog.showSaveDialog([browserWindow, ]options)"></a>（2）<code>dialog.showSaveDialog([browserWindow, ]options)</code></h6><h6 id="（3）dialog-showMessageBox-browserWindow-options"><a href="#（3）dialog-showMessageBox-browserWindow-options" class="headerlink" title="（3）dialog.showMessageBox([browserWindow, ]options)"></a>（3）<code>dialog.showMessageBox([browserWindow, ]options)</code></h6><p>[dialog文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options">https://www.electronjs.org/zh/docs/latest/api/dialog#dialogshowopendialogsyncbrowserwindow-options</a> “</p>
+<h4 id="3-快捷键（globalShortcut）"><a href="#3-快捷键（globalShortcut）" class="headerlink" title="3.快捷键（globalShortcut）"></a>3.快捷键（globalShortcut）</h4><blockquote>
+<p>在应用程序没有键盘焦点时，监听键盘事件。</p>
+</blockquote>
+<p><code>globalShortcut</code> 模块可以在操作系统中注册&#x2F;注销全局快捷键, 以便可以为操作定制各种快捷键。</p>
+<p><strong>注意:</strong> 快捷方式是全局的; 即使应用程序没有键盘焦点, 它也仍然在持续监听键盘事件。 在 app 模块的 <code>ready</code> 事件就绪之前，这个模块不能使用。</p>
+<pre><code class="javascript">const &#123; app, globalShortcut &#125; = require(&#39;electron&#39;)
+
+app.whenReady().then(() =&gt; &#123;
+  // 注册一个&#39;CommandOrControl+X&#39; 快捷键监听器
+  const ret = globalShortcut.register(&#39;CommandOrControl+X&#39;, () =&gt; &#123;
+    console.log(&#39;CommandOrControl+X is pressed&#39;)
+  &#125;)
+
+  if (!ret) &#123;
+    console.log(&#39;registration failed&#39;)
+  &#125;
+
+  // 检查快捷键是否注册成功
+  console.log(globalShortcut.isRegistered(&#39;CommandOrControl+X&#39;))
+&#125;)
+
+app.on(&#39;will-quit&#39;, () =&gt; &#123;
+  // 注销快捷键
+  globalShortcut.unregister(&#39;CommandOrControl+X&#39;)
+
+  // 注销所有快捷键
+  globalShortcut.unregisterAll()
+&#125;)
+</code></pre>
+<p>方法</p>
+<p><code>globalShortcut</code> 模块具有以下方法:</p>
+<h6 id="（1）globalShortcut-register-accelerator-callback"><a href="#（1）globalShortcut-register-accelerator-callback" class="headerlink" title="（1）globalShortcut.register(accelerator, callback)"></a>（1）<code>globalShortcut.register(accelerator, callback)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+<li><code>callback</code> Function</li>
+</ul>
+<p>返回<code>boolean</code> - 快捷键注册是否成功</p>
+<p>注册 <code>accelerator</code> 的全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
+<p>如果指定的快捷键已经被其他应用程序注册掉, 调用会默默失败。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
+<ul>
+<li>“Media Play&#x2F;Pause”</li>
+<li>“Media Next Track”</li>
+<li>“Media Previous Track”</li>
+<li>“Media Stop”</li>
+</ul>
+<h6 id="（2）globalShortcut-registerAll-accelerators-callback"><a href="#（2）globalShortcut-registerAll-accelerators-callback" class="headerlink" title="（2）globalShortcut.registerAll(accelerators, callback)"></a>（2）<code>globalShortcut.registerAll(accelerators, callback)</code></h6><ul>
+<li><code>accelerators</code> string[] - an array of Accelerators.</li>
+<li><code>callback</code> Function</li>
+</ul>
+<p>注册多个全局快捷键。 当用户按下注册快捷键时， <code>callback</code> 会被调用。</p>
+<p>如果定义的快捷键已经被其他应用占用，这个调用会失效。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<p>在 macOS 10.14 Mojave 下面，如果 app 没有被授权为可信任使用的客户端，那么下列快捷键会注册失败：</p>
+<ul>
+<li>“Media Play&#x2F;Pause”</li>
+<li>“Media Next Track”</li>
+<li>“Media Previous Track”</li>
+<li>“Media Stop”</li>
+</ul>
+<h6 id="（3）globalShortcut-isRegistered-accelerator"><a href="#（3）globalShortcut-isRegistered-accelerator" class="headerlink" title="（3）globalShortcut.isRegistered(accelerator)"></a>（3）<code>globalShortcut.isRegistered(accelerator)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+</ul>
+<p>Returns <code>boolean</code> - 表示 <code>accelerator</code> 全局快捷键是否注册成功</p>
+<p>当快捷键已经被其他应用程序注册时, 此调用依然将返回 <code>false</code>。 该特性由操作系统定义，因为操作系统不希望多个程序的全局快捷键互相冲突。</p>
+<h6 id="（4）globalShortcut-unregister-accelerator"><a href="#（4）globalShortcut-unregister-accelerator" class="headerlink" title="（4）globalShortcut.unregister(accelerator)"></a>（4）<code>globalShortcut.unregister(accelerator)</code></h6><ul>
+<li><code>accelerator</code> Accelerator</li>
+</ul>
+<p>注销 <code>accelerator</code> 的全局快捷键。</p>
+<h6 id="（5）globalShortcut-unregisterAll"><a href="#（5）globalShortcut-unregisterAll" class="headerlink" title="（5）globalShortcut.unregisterAll()"></a>（5）<code>globalShortcut.unregisterAll()</code></h6><p>注销所有的全局快捷键（清空该应用程序的所有全局快捷键）。</p>
+<h4 id="4-菜单（Menu）"><a href="#4-菜单（Menu）" class="headerlink" title="4.菜单（Menu）"></a>4.菜单（Menu）</h4><p>我们这举个例子：</p>
+<pre><code class="javascript">//一个简单的菜单模板
+const &#123; app, Menu &#125; = require(&#39;electron&#39;)
+
+const isMac = process.platform === &#39;darwin&#39;//判断是不是macOS
+//role：菜单选项
+const template = [
+  // &#123; role: &#39;appMenu&#39; &#125;
+  ...(isMac ? [&#123;
+    label: app.name,//我们程序名称
+    submenu: [
+      &#123; role: &#39;about&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;services&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;hide&#39; &#125;,
+      &#123; role: &#39;hideOthers&#39; &#125;,
+      &#123; role: &#39;unhide&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;quit&#39; &#125;
+    ]
+  &#125;] : []),
+  // &#123; role: &#39;fileMenu&#39; &#125;
+  &#123;
+    label: &#39;File&#39;,
+    submenu: [
+      isMac ? &#123; role: &#39;close&#39; &#125; : &#123; role: &#39;quit&#39; &#125;
+    ]
+  &#125;,
+  // &#123; role: &#39;editMenu&#39; &#125;
+  &#123;
+    label: &#39;Edit&#39;,
+    submenu: [
+      &#123; role: &#39;undo&#39; &#125;,
+      &#123; role: &#39;redo&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;cut&#39; &#125;,
+      &#123; role: &#39;copy&#39; &#125;,
+      &#123; role: &#39;paste&#39; &#125;,
+      ...(isMac ? [
+        &#123; role: &#39;pasteAndMatchStyle&#39; &#125;,
+        &#123; role: &#39;delete&#39; &#125;,
+        &#123; role: &#39;selectAll&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123;
+          label: &#39;Speech&#39;,
+          submenu: [
+            &#123; role: &#39;startSpeaking&#39; &#125;,
+            &#123; role: &#39;stopSpeaking&#39; &#125;
+          ]
+        &#125;
+      ] : [
+        &#123; role: &#39;delete&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;selectAll&#39; &#125;
+      ])
+    ]
+  &#125;,
+  // &#123; role: &#39;viewMenu&#39; &#125;
+  &#123;
+    label: &#39;View&#39;,
+    submenu: [
+      &#123; role: &#39;reload&#39; &#125;,
+      &#123; role: &#39;forceReload&#39; &#125;,
+      &#123; role: &#39;toggleDevTools&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;resetZoom&#39; &#125;,
+      &#123; role: &#39;zoomIn&#39; &#125;,
+      &#123; role: &#39;zoomOut&#39; &#125;,
+      &#123; type: &#39;separator&#39; &#125;,//分割线
+      &#123; role: &#39;togglefullscreen&#39; &#125;
+    ]
+  &#125;,
+  // &#123; role: &#39;windowMenu&#39; &#125;
+  &#123;
+    label: &#39;Window&#39;,
+    submenu: [
+      &#123; role: &#39;minimize&#39; &#125;,
+      &#123; role: &#39;zoom&#39; &#125;,
+      ...(isMac ? [
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;front&#39; &#125;,
+        &#123; type: &#39;separator&#39; &#125;,//分割线
+        &#123; role: &#39;window&#39; &#125;
+      ] : [
+        &#123; role: &#39;close&#39; &#125;
+      ])
+    ]
+  &#125;,
+  &#123;
+    role: &#39;help&#39;,
+    submenu: [
+      &#123;
+        label: &#39;Learn More&#39;,
+        click: async () =&gt; &#123;
+          //定义自己的菜单方法
+          const &#123; shell &#125; = require(&#39;electron&#39;)
+          await shell.openExternal(&#39;https://electronjs.org&#39;)
+        &#125;
+      &#125;,
+      &#123;
+        label:&#39;alanmf&#39;,
+          click:()=&gt;&#123;console.log(&#39;shift+G&#39;)&#125;,
+          accelerator:&#39;shift+G&#39;//定义快捷键
+      &#125;
+    ]
+  &#125;
+]
+
+const menu = Menu.buildFromTemplate(template)//一般来说， template是一个options类型的数组，用于构建MenuItem。 使用方法可参考前文。还可以将其他字段附加到template，它们将成为菜单项的属性。
+Menu.setApplicationMenu(menu)//在macOS上将 menu设置成应用内菜单 在windows和Linux上，menu 将会被设置成窗口顶部菜单在Windows和Linux中
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125155603331.png"></p>
+<p>[Menu菜单文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu">https://www.electronjs.org/zh/docs/latest/api/menu</a> “<br>[role的属性值]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/menu-item#%E8%A7%92%E8%89%B2">https://www.electronjs.org/zh/docs/latest/api/menu-item#角色</a> “</p>
+<h4 id="5-系统托盘（Tray）"><a href="#5-系统托盘（Tray）" class="headerlink" title="5.系统托盘（Tray）"></a>5.系统托盘（Tray）</h4><blockquote>
+<p>添加图标和上下文菜单到系统通知区</p>
+</blockquote>
+<pre><code class="javascript">const &#123; app, Menu, Tray &#125; = require(&#39;electron&#39;)
+
+let tray = null
+app.whenReady().then(() =&gt; &#123;
+  tray = new Tray(&#39;/path/to/my/icon&#39;) //定义icon的路径
+  const contextMenu = Menu.buildFromTemplate([
+    &#123; label: &#39;Item1&#39;, type: &#39;radio&#39; &#125;,
+    &#123; label: &#39;Item2&#39;, type: &#39;radio&#39; &#125;,
+    &#123; label: &#39;Item3&#39;, type: &#39;radio&#39;, checked: true &#125;,
+    &#123; label: &#39;Item4&#39;, type: &#39;radio&#39; &#125;
+  ])
+  tray.setToolTip(&#39;This is my application.&#39;)//设置鼠标指针在托盘图标上悬停时显示的文本
+  tray.setContextMenu(contextMenu)//设置上下文菜单到托盘
+&#125;)
+</code></pre>
+<p>其实这个Tray跟Menu是布局差不太多的，所以学习起来也不是很难理解了。具体事件和方法也不是特别多，我们就直接看官方API文档吧！</p>
+<p>[Tray文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/tray">https://www.electronjs.org/zh/docs/latest/api/tray</a> “</p>
+<h4 id="6-触控板（TouchBar）"><a href="#6-触控板（TouchBar）" class="headerlink" title="6.触控板（TouchBar）"></a>6.触控板（TouchBar）</h4><p><strong>注意:</strong> TouchBar API目前为实验性质，可能会更改或删除。</p>
+<p>如果官网推荐的TouchBar模拟器下载失败，自己搜索一下即可。（如果下载的打不开，那就在应用程序-&gt;右键显示包内容-&gt;如下）执行就可以了</p>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172856290.png"></p>
+<pre><code class="javascript">//touchbar.js
+const &#123; app, BrowserWindow, TouchBar &#125; = require(&#39;electron&#39;)
+
+const &#123; TouchBarLabel, TouchBarButton, TouchBarSpacer &#125; = TouchBar
+
+let spinning = false
+
+// 类似老虎机的滚轴标签
+const reel1 = new TouchBarLabel()
+const reel2 = new TouchBarLabel()
+const reel3 = new TouchBarLabel()
+
+// 旋转结果标签
+const result = new TouchBarLabel()
+
+// 旋转按钮
+const spin = new TouchBarButton(&#123;
+  label: &#39;🎰 Spin&#39;,
+  backgroundColor: &#39;#7851A9&#39;,
+  click: () =&gt; &#123;
+    // Ignore clicks if already spinning
+    if (spinning) &#123;
+      return
+    &#125;
+
+    spinning = true
+    result.label = &#39;&#39;
+
+    let timeout = 10
+    const spinLength = 4 * 1000 // 4 seconds
+    const startTime = Date.now()
+
+    const spinReels = () =&gt; &#123;
+      updateReels()
+
+      if ((Date.now() - startTime) &gt;= spinLength) &#123;
+        finishSpin()
+      &#125; else &#123;
+        // Slow down a bit on each spin
+        timeout *= 1.1
+        setTimeout(spinReels, timeout)
+      &#125;
+    &#125;
+
+    spinReels()
+  &#125;
+&#125;)
+
+const getRandomValue = () =&gt; &#123;
+  const values = [&#39;🍒&#39;, &#39;💎&#39;, &#39;7️⃣&#39;, &#39;🍊&#39;, &#39;🔔&#39;, &#39;⭐&#39;, &#39;🍇&#39;, &#39;🍀&#39;]
+  return values[Math.floor(Math.random() * values.length)]
+&#125;
+
+const updateReels = () =&gt; &#123;
+  reel1.label = getRandomValue()
+  reel2.label = getRandomValue()
+  reel3.label = getRandomValue()
+&#125;
+
+const finishSpin = () =&gt; &#123;
+  const uniqueValues = new Set([reel1.label, reel2.label, reel3.label]).size
+  if (uniqueValues === 1) &#123;
+    // All 3 values are the same
+    result.label = &#39;💰 Jackpot!&#39;
+    result.textColor = &#39;#FDFF00&#39;
+  &#125; else if (uniqueValues === 2) &#123;
+    // 2个值相同
+    result.label = &#39;😍 Winner!&#39;
+    result.textColor = &#39;#FDFF00&#39;
+  &#125; else &#123;
+    // 没有值相同
+    result.label = &#39;🙁 Spin Again&#39;
+    result.textColor = null
+  &#125;
+  spinning = false
+&#125;
+
+const touchBar = new TouchBar(&#123;
+  items: [
+    spin,
+    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
+    reel1,
+    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
+    reel2,
+    new TouchBarSpacer(&#123; size: &#39;small&#39; &#125;),
+    reel3,
+    new TouchBarSpacer(&#123; size: &#39;large&#39; &#125;),
+    result
+  ]
+&#125;)
+
+let window
+
+app.whenReady().then(() =&gt; &#123;
+  window = new BrowserWindow(&#123;
+    frame: false,
+    titleBarStyle: &#39;hiddenInset&#39;,
+    width: 200,
+    height: 200,
+    backgroundColor: &#39;#000&#39;
+  &#125;)
+  window.loadURL(&#39;about:blank&#39;)
+  window.setTouchBar(touchBar)
+&#125;)
+</code></pre>
+<p>运行命令：</p>
+<pre><code class="ini">./node_modules/.bin/electron touchbar.js
+</code></pre>
+<p><img src="/2022/11/25/Electron-d-2-0/image-20221125172447369.png"></p>
+<p>[TouchBar文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;">https://www.electronjs.org/zh/docs/latest/api/touch-bar&quot;</a></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[Electron官方文档]: 	“<a href="https://www.electronjs.org/zh/docs/latest/api/app">https://www.electronjs.org/zh/docs/latest/api/app</a> “<br>[npmjs]: 	“<a href="https://www.npmjs.com/">https://www.npmjs.com/</a> “</p>
+]]></content>
+      <categories>
+        <category>Electron</category>
+        <category>Electron-d-2.0</category>
       </categories>
       <tags>
         <tag>electron</tag>
@@ -10127,173 +10272,6 @@ module.exports = &#123;
       </tags>
   </entry>
   <entry>
-    <title>加载优化（图像延迟加载）</title>
-    <url>/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="图像延迟加载"><a href="#图像延迟加载" class="headerlink" title="图像延迟加载"></a>图像延迟加载</h1><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>​		相要得到更好的性能体验，只靠资源压缩与恰当的文件格式选型，是很难满足期望的。我们还需要针对资源加载过程进行优化，该环节所要做的内容可概括为分清资源加载的优先级顺序，仅加载当前所必需的资源，并利用系统空闲提前加载可能会用利的资源。这便是本章将要探讨的内容:资源的优先级、延迟加载和预加载。</p>
-<p>​		什么是图像的延迟加载，如何高效地实现延迟加载。随着近些年视频资源越来越多的使用，也会捎带介绍视频资源的延迟加载。然后谈谈浏览器对于资源优先级的划分和控制，既然可以通过将非关键资源延迟加载来提升性能，那么是否可以利用系统使用的空闲，预先去加载可能会使用到的资源。</p>
-<p>​		本节介绍什么是延迟加载，以及这种优化策略产生的逻辑和实现原理。笔者认为只有先理解了一种原理或方法的缘起流变，才能知道怎样的实现方式是更高效的、更贴近业务场景的。</p>
-<h3 id="一、什么是延迟加载"><a href="#一、什么是延迟加载" class="headerlink" title="一、什么是延迟加载"></a>一、什么是延迟加载</h3><p>​		首先来想象一个场景，当浏览一个内容丰富的网站时，比如电商的商品列表页、主流视频网站的节目列表等，由于屏幕尺寸的限制，每次只能查看到视窗中的那部分内容，而要浏览完页面所包含的全部信息，就需要滚动页面，让屏幕视窗依次展示出个页面的所有局部内容。</p>
-<p>​		显而易见，对于首屏之外的内容，特别是图片和视频，一方面 由于资源文件很大，若是全部加载完，既费时又费力，还容易阻塞渲染引起卡顿:另一方面，就算加载完成，用户也不一定会滚动屏幕浏览到全部页面内容，如果首屏内容没能吸引住用户，那么很可能整个页面就将遭到关闭。</p>
-<p>​		既然如此，本着节约不浪费的原则，在首次打开网站时，应尽量只加载首屏内容所包含的资源，而首屏之外涉及的图片或视频，可以等到用户滚动视窗浏览时再去加载。</p>
-<p>​		以上就是延迟加载优化策略的产生逻辑，通过延迟加载“非关键”的图片及视频资源，使得页面内容更快地呈现在用户面前。这里的“非关键”资源指的就是首屏之外的图片或视频资源，相较于文本、脚本等其他资源来说，图片的资源大小不容小觑。这个优化策略在业界已经被广泛使用，接下来笔者就以天猫购物网站的商品列表页为例，具体看看延迟加载是如何实现的，如图所示。</p>
-<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209161519677.png"></p>
-<p>​		图左侧是手机端常见的电商购物平台的商品列表页，右侧是其对应的DOM树结构。其中在区域上方，整齐如排比句般的<div>结构，所对应的正是列表页中一行行的商品项。以其中一件商品为例， 展开它的DOM树，直到找到展示该商品图片的<img>标签。为了方便说明，笔者将这个<img>标签的相关细节摘录如下:</p>
-<pre><code class="html">&lt;img class=&quot;boom-item-item&quot; autowebp=&quot;false&quot; autopixelratio=&quot;true&quot; forceupdate=&quot;true&quot; data-bindkey=&quot;pic&quot; data-itemid=&quot;700023719087&quot; data-size=&quot;348x348&quot; data-rewrite=&quot;&#123;size:&#39;348x348&#39;&#125;&quot; data-lazy-type=&quot;img&quot; data-lazy-id=&quot;lazyId-11&quot; data-lazy-manager-id=&quot;gLazyM-1&quot; data-in-view-range=&quot;1&quot; src=&quot;//gw.alicdn.com/bao/uploaded/i3/3058655500/O1CN01CyNBBW1qV3AjEusqC_!!0-item_pic.jpg_360x360q75.jpg_.webp&quot;&gt;
-</code></pre>
-<p>​		这里主要关注其中的src属性，src 属性代表了一个CDN上的图片资源。要知道当<img>标签的src属性被赋予了一一个URL后，它就会立刻向该URL发起资源请求。所以这个商品的<img>标签代表的就是一个商品图片的占位符。</p>
-<p>​		接下来我们找到一个位于屏幕视窗外，还未加载的商品图片和已加载的图片，相比较看看二者标签上的属性值有何不同。首先保持左侧页面显示窗口不发生滚动，在DevTools工具的Elements页签下，寻找还未呈现在左侧视窗中的商品项，容易找到它的DOM结构。</p>
-<p>​		首先，我们依然关注<img>标签的src属性，这里并不是图片资源的外链URL,取而代之的是一个在图像优化章节中介绍过的Base64图片，与外链URL不同的是，Base64图片已经包含了图片的完全编码，可以直接拿来渲染，而无须发起任何网络请求。</p>
-<p>​		这意味着该Base64图片仅仅是在真实图片显示出来前用以占位的，同时注意到所有未展示在页面视窗中的商品，其图片占位src属性值均使用了相同的Base64的值.当页面发生滚动时，之前未出现在视窗中的商品出现在视窗中后，其商品图片的真实URL会被替换到<img>标签的src属性上，进而发起资源请求。</p>
-<p>​		我们知道了什么是延迟加载。以及为什么要使用延迟加载，并通过观察一个商品列表页的案例，基本清楚了延迟加载的处理过程，接下来将通过三种方法来具体实现延迟加载。</p>
-<h3 id="二、实现图片的延迟加载：传统方式"><a href="#二、实现图片的延迟加载：传统方式" class="headerlink" title="二、实现图片的延迟加载：传统方式"></a>二、实现图片的延迟加载：传统方式</h3><p>​		就是事件监听的方式，通过监听scroll事件与resize 事件，并在事件的回调函费中去判断，需要进行延迟加载的图片是否进入视窗区域。</p>
-<p>​		首先根据前面的例子，定义出将要实现延迟加载的<img>标签结构:</p>
-<p>我们只需要关注三个属性。</p>
-<ul>
-<li>class 属性，稍后会在JavaScript中使用类选择器选取需要延迟加载处理的<img>标签。</li>
-<li>src属性，加载前的占位符图片，可用Base64图片或低分辨率的图片。</li>
-<li>data-src属性，通过该自定义属性保存图片真实的URL外链。</li>
-</ul>
-<p>假设以三张图片为例进行延迟加载的<img>标签列表如下:</p>
-<pre><code class="html">&lt;img class=&quot;lazy&quot; src-&quot;data: image/gif;base64, iVBORwOKGg.. .BJRUErkJgqs-.data-src=&quot;https://res.cloudinary.com/ .../tacos-2x.jpg&quot;width=&quot;385&quot; height=&quot;108&quot; alt=&quot;Some tacos. &quot;&gt;
-
-&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg. . . BJRU5ErkJggg==&quot; data-src=&quot;https:// res.cloudinary.com/d. . ./modem-2x . png&quot; width=&quot;320&quot; height=&quot;176&quot; alt=&quot;A 56k modem. &quot;&gt;
-
-&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg.. . BJRU5ErkJggg==&quot; data-src=&quot;https ://res. cloudinary. com/ ../st-paul-2x. jpg&quot; width=&quot;400&quot; height=&quot;267&quot; alt=&quot;A city skyline. &quot;&gt;
-</code></pre>
-<p>​		具体的JvsSerpr实现逻辑如下，在文档的DOMContentLoaded事件中，添加延迟加载处理逻辑，首先获取class属性名为lazy的所有<img>标签，将这些标签看存在一个名为lazylmages 的数组中，表示需要进行延迟加载但还未加载的图片集合。当一个图片被加载后，便将其从lazylmages数组中移除，直到lazyImages数组为空时，表示所有待延迟加载的图片均已经加载完成，此时便可将页面滚动事件移除。</p>
-<p>​		接下来的关键就是判断图片是否出现在视窗中，这里使用了getBoundingClientRect()函数获取元素的相对位置，如图所示。它会返回图片元素的宽width和高height,及其与视窗的相对位置:元素上边缘与屏幕视窗顶部之间的距离top,元素左边缘和屏幕视窗左侧之间的距离left,元素下边缘和屏幕视窗顶部之间的距离bottom 以及元素右边缘和屏幕视窗左侧之间的距离right, 其具体含义可参考示意图，window.innerHeight 表示整个视窗的高度。</p>
-<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209164625464.png" alt="getBoundingClientRect()函数获取元素的相对位置"></p>
-<p>​		对于只可上下滚动的页面，判断一个图片 元素是否出现在屏幕视窗中的方法其实显而易见，即当元素上边缘距屏幕视窗顶部的top 值小于整个视窗的高度window.innerHeight时，预加载的事件处理代码如下:</p>
-<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
-  //获取所有需要延迟加载的图片
-  let lazyImages = [].sllce.call(document.querySelectorAll(&quot;img.1azy&quot;));
-  //限制函数频繁被调用
-  let active = false;
-  const lazyLoad = function () &#123;
-    if (active === false) &#123;
-      active = true;
-      setTimeout(function () &#123;
-        lazyImages.forEach(function (lazyImage) &#123;
-          //判断图片是否出现在视窗中
-          if (
-            lazyImage.getBoundingClientRect().top &lt;= window.innerHeight &amp;&amp;
-            lazyImage.getBoundingClientRect().bottom &gt;= 0 &amp;&amp;
-            getComputedstyle(lazyImage).display !== &quot;none&quot;
-          ) &#123;
-            // 将真实的图片URL赋值给src属性，发起请求加载资源
-
-            lazyImage.src = lazyImage.dataset.src;
-
-            //图片加载完成后，取消监控以防止重复加载
-
-            lazyImage.classList.remove(&quot;1azy&quot;);
-
-            lazyImages = lazyImages.filter(function (image) &#123;
-              return image !== lazyImage;
-            &#125;);
-
-            //所有延迟加载图片加载完成后，移除事件触发处理函数
-
-            if (lazyImages.length === 0) &#123;
-              document.removeEventListener(&quot;scroll&quot;, lazyLoad);
-              window.removeEventListener(&quot;resize&quot;, lazyload);
-              window.removeEventListener(&quot;orientationchange&quot;, lazyLoad);
-            &#125;
-          &#125;
-        &#125;);
-
-        active = false;
-      &#125;, 200);
-    &#125;
-  &#125;;
-
-  document.addEventListener(&quot;scroll&quot;, lazyLoad);
-  window.addEventListener(&quot;resize&quot;, lazyLoad);
-  window.addEventListener(&quot;orientationchange&quot;, lazyLoad);
-&#125;);
-</code></pre>
-<p>​	由于无法控制用户随心所欲地滑动鼠标滚轮，从而造成scroll 事件被触发地过于频繁，导致过多的冗余计算影响性能。所以此处笔者将延迟加载的处理过程置于一个200ms的异步定时器中，并在每次处理完成后，通过修改标志位active 的方式来对方法的执行进行限流。</p>
-<p>​		即便如此也有潜在的性能问题，因为重复的setTimeout调用是浪费的，虽然进行了触发限制，但当文档滚动或窗口大小调整时，不论图片是否出现在视窗中，每200ms都会运行一次检查，并且跟踪尚未加载的图片数量，以及完全加载完后，取消绑定滚动事件的处理函数等操作都需要开发者来考虑。</p>
-<p>​		如此来看，虽然传统的延迟加载实现方式具有更好的浏览器兼容性，但也存在如上所述不可逾越的性能问题与编码的烦琐性，这便有了下面一种新的实现方式。</p>
-<h3 id="三、实现图片的延迟加载-Intersection-Observer方式"><a href="#三、实现图片的延迟加载-Intersection-Observer方式" class="headerlink" title="三、实现图片的延迟加载: Intersection Observer方式"></a>三、实现图片的延迟加载: Intersection Observer方式</h3><p>​		现代浏览器已大多支持了Intersection Observer API,可以通过它来检查目标元素的可见性，这种方式的性能和效率都比较好。</p>
-<p>​		关于Intersection Observer的概念和用法，可以参考阅读相关文档，这里用一句话简述:每当因页面滚动或窗口尺寸发生变化，使得目标元素(target) 与设备视窗或其他指定元素产生交集时，便会触发通过Intersection Observer API配置的回调函数，在该回调函数中进行延迟加载的逻辑处理，会比传统方式显得更加简洁而高效。</p>
-<p>​		以下便是Intersection Observer 方式的具体实现，此方式仅需创建一个新的Observer,并在类名为lazy的<img>标签进入视窗后触发回调。</p>
-<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
-  var lazyImages = [].slice.call(document.querySelectorAll(&quot;img.lazy&quot;));
-  //判断浏览器兼容性
-  if (
-    &quot;Intersectionobserver&quot; in window &amp;&amp;
-    &quot;IntersectionObserverEntry&quot; in window &amp;&amp;
-    &quot;intersectionRatio&quot; in window.Intersection0bserverEntry.prototype
-  ) &#123;
-    //新建Intersectionobserver对象，并在其回调函数中实现关键加载逻辑
-    let lazyImageObserver = new IntersectionObserver(function (
-      entries,observer
-    ) &#123;
-      entries.forEach(function (entry) &#123;
-        //判断图片是否出现在视窗中
-        if (entry.isIntersecting) &#123;
-          let lazyImage = entry.target;
-
-          lazyImage.src = lazyImage.dataset.src;
-          //图片加载完成后，取消监控防止重复加载
-          lazyImage.classList.remove(&quot;lazy&quot;);
-          lazyImageObserver.unobserve(lazyImage);
-        &#125;
-      &#125;);
-    &#125;);
-    lazyImages.forEach(function (lazyImage) &#123;
-      lazyImageObserver.observe(lazyImage);
-    &#125;);
-  &#125;
-&#125;);
-</code></pre>
-<p>​		这种方式判断元素是否出现在视窗中更为简单直观，应在实际开发中尽量使用，但其问题是并非所有浏览器都能兼容。具其体的浏览器兼容情况可在站点上进行查看，根据网站用户的硬件分布情况来权衡是否使用，以及使用后是否需要进行兼容处理。在将这种方式引入项目之前，应当确保已做到以下两点。</p>
-<p>（1）做好尽量完备浏览器兼容性检查，对于兼容Intersection Observer API的浏览器，采用这种方式进行处理，而对于不兼容的浏览器，则切换回传统的实现方式进行处理。</p>
-<p>（2）使用相应兼容的polyfill插件，在W3C官方Git账号下就有提供。除此之外，还有第三种通过Css属性的实现方案。</p>
-<h3 id="四、实现图片的延迟加载：CSS类名方式"><a href="#四、实现图片的延迟加载：CSS类名方式" class="headerlink" title="四、实现图片的延迟加载：CSS类名方式"></a>四、实现图片的延迟加载：CSS类名方式</h3><p>​		这种实现方式通过css的 backgound-image 属性来加载图片，与判断<img>标签src属性是否有要请求图片的URL不同，Css中图片加载的行为建立在浏览器对文档分析基础之上。</p>
-<p>​		具体来说，当DOM树、CSSOM树及渲染树生成后，浏览器会去检查CSS以何种方式应用于文档，再决定是否请求外部资源。如果浏览器确定涉及外部资源请求的CSS规则在当前文档中不存在时，便不会去请求该资源。图片列表如下所示:</p>
-<pre><code class="html">&lt;div class=&quot;wrapper&quot;&gt;
-&lt;div class=&quot;lazy-background one&quot;&gt;&lt;/div&gt;
-&lt;div class=&quot;lazy-background two&quot;&gt;&lt;/div&gt;
-&lt;div class=&quot;lazy-background three&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;
-</code></pre>
-<p>​		具体的实现方式是通过javascript来判断元素是否出现在视窗中的，当在视窗中出现的时候，为其class属性添加visible类名，而在css文件中，为同一类名元素定义出带 .visible和不带.visible的两种包含 background-image规则。</p>
-<p>​		不带 .visible的图片规则中的background-image属性可以是低分辨辨率的图片或Base64图片，而带.visible的图片规则中的background-image属性为为希望展示的真实图片URL.</p>
-<p>​		具体JavaScript的实现过程如下所示，判断图片元素是否出现在视窗内的逻辑，与上面的Intersection Observer 方式相同。同样为了确保浏览器的兼容性，在实际应用中应确保提供回退方案或polyfill。</p>
-<h3 id="五、原生的延迟加载支持"><a href="#五、原生的延迟加载支持" class="headerlink" title="五、原生的延迟加载支持"></a>五、原生的延迟加载支持</h3><p>​		除了上述通过开发者手动实现延迟加载逻辑的方式，从Chrome 75版本开始，已经可以通过 img 和 ifram e标签的loading属性原生支持延迟加载了，loading 属性包含以下三种取值。</p>
-<ul>
-<li>lazy: 进行延迟加载。</li>
-<li>eager: 立即加载。</li>
-<li>auto:浏览器自行决定是否进行延迟加载。</li>
-</ul>
-<p>若不指定任何属性值，loading 默认取值auto。</p>
-<p>​		之前讲到延迟加载的独发触发机，都是当目标图像文件经页面滚动出现在屏幕视窗中时，能发对图像资源的请求。但从体验上考虑，这样处理并不完美，因为当图像标签出现在屏幕视窗中时，还只是占位符图像。</p>
-<p>​		如果网络存在延迟或图像资源过大，那么它的请求加载过程是可以被用户感知的。更好的做法是在图像即将滚动出现在屏幕视窗之前一段距离， 就开始请求加载图像或iframe中的内容，这样能很好地缩短用户的等待加载时长。</p>
-<p>​		兼容性处理:通过使用新技术优化了延迟加载的实现方式，同时也应当注意新技本在不同览器之间的兼容性，在使用前需要对浏览器特性进行检查，如下所示:</p>
-<pre><code class="js">&lt;script&gt;
-if (&#39;loading&#39; in HTMLImageElement . prototype)&#123;
-//浏览器支持loading=&quot;lazy&quot;的延迟加载方式
-&#125; else &#123;
-//获取其他JavaScript库来实现延迟加载
-&#125;
-&lt;/script&gt;
-</code></pre>
-<p>​	当判断浏览器支持通过属性loading&#x3D;”lazy”来进行延迟加载时，我们就在JavaScript处理程序中，将真实图像资源的URL赋值在其src属性上。而对于不支持该属性配置的延迟加载方式，就需要默认将真实图像资源的URL挂在data-src 属性上，仅当延迟加载的滚动事件触发时，才将data-src属性上的值换到src属性上。</p>
-<p>​		这也正是我们在传统方式中实现的加载策略，其原因是如果浏览器不支持<img>标签的loading属性，便会立刻发起对src 属性上URL资源的网络请求。当然我们也可以使用CSS类名的方式触发对资源的加载。</p>
-<p>&lt; img data-src&#x3D; “photo.jpg” loading&#x3D;”lazy” class&#x3D;”lazyload” alt&#x3D;”photo” &#x2F;&gt;不过对于这种方式，笔者建议等到loading属性在浏览器的稳定版本中被引入后，再在项目的生产环境中使用。</p>
-<h3 id="参考书籍：前端性能优化"><a href="#参考书籍：前端性能优化" class="headerlink" title="参考书籍：前端性能优化"></a>参考书籍：前端性能优化</h3>]]></content>
-      <categories>
-        <category>前端性能优化</category>
-        <category>加载优化（图像延迟加载)</category>
-      </categories>
-      <tags>
-        <tag>性能优化</tag>
-        <tag>加载优化</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>前端页面的生命周期</title>
     <url>/2023/01/08/%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="前端页面的生命周期"><a href="#前端页面的生命周期" class="headerlink" title="前端页面的生命周期"></a>前端页面的生命周期</h1><blockquote>
@@ -10527,6 +10505,173 @@ img&#123; float: right; &#125;
       </categories>
       <tags>
         <tag>性能优化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>加载优化（图像延迟加载）</title>
+    <url>/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1 id="图像延迟加载"><a href="#图像延迟加载" class="headerlink" title="图像延迟加载"></a>图像延迟加载</h1><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>​		相要得到更好的性能体验，只靠资源压缩与恰当的文件格式选型，是很难满足期望的。我们还需要针对资源加载过程进行优化，该环节所要做的内容可概括为分清资源加载的优先级顺序，仅加载当前所必需的资源，并利用系统空闲提前加载可能会用利的资源。这便是本章将要探讨的内容:资源的优先级、延迟加载和预加载。</p>
+<p>​		什么是图像的延迟加载，如何高效地实现延迟加载。随着近些年视频资源越来越多的使用，也会捎带介绍视频资源的延迟加载。然后谈谈浏览器对于资源优先级的划分和控制，既然可以通过将非关键资源延迟加载来提升性能，那么是否可以利用系统使用的空闲，预先去加载可能会使用到的资源。</p>
+<p>​		本节介绍什么是延迟加载，以及这种优化策略产生的逻辑和实现原理。笔者认为只有先理解了一种原理或方法的缘起流变，才能知道怎样的实现方式是更高效的、更贴近业务场景的。</p>
+<h3 id="一、什么是延迟加载"><a href="#一、什么是延迟加载" class="headerlink" title="一、什么是延迟加载"></a>一、什么是延迟加载</h3><p>​		首先来想象一个场景，当浏览一个内容丰富的网站时，比如电商的商品列表页、主流视频网站的节目列表等，由于屏幕尺寸的限制，每次只能查看到视窗中的那部分内容，而要浏览完页面所包含的全部信息，就需要滚动页面，让屏幕视窗依次展示出个页面的所有局部内容。</p>
+<p>​		显而易见，对于首屏之外的内容，特别是图片和视频，一方面 由于资源文件很大，若是全部加载完，既费时又费力，还容易阻塞渲染引起卡顿:另一方面，就算加载完成，用户也不一定会滚动屏幕浏览到全部页面内容，如果首屏内容没能吸引住用户，那么很可能整个页面就将遭到关闭。</p>
+<p>​		既然如此，本着节约不浪费的原则，在首次打开网站时，应尽量只加载首屏内容所包含的资源，而首屏之外涉及的图片或视频，可以等到用户滚动视窗浏览时再去加载。</p>
+<p>​		以上就是延迟加载优化策略的产生逻辑，通过延迟加载“非关键”的图片及视频资源，使得页面内容更快地呈现在用户面前。这里的“非关键”资源指的就是首屏之外的图片或视频资源，相较于文本、脚本等其他资源来说，图片的资源大小不容小觑。这个优化策略在业界已经被广泛使用，接下来笔者就以天猫购物网站的商品列表页为例，具体看看延迟加载是如何实现的，如图所示。</p>
+<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209161519677.png"></p>
+<p>​		图左侧是手机端常见的电商购物平台的商品列表页，右侧是其对应的DOM树结构。其中在区域上方，整齐如排比句般的<div>结构，所对应的正是列表页中一行行的商品项。以其中一件商品为例， 展开它的DOM树，直到找到展示该商品图片的<img>标签。为了方便说明，笔者将这个<img>标签的相关细节摘录如下:</p>
+<pre><code class="html">&lt;img class=&quot;boom-item-item&quot; autowebp=&quot;false&quot; autopixelratio=&quot;true&quot; forceupdate=&quot;true&quot; data-bindkey=&quot;pic&quot; data-itemid=&quot;700023719087&quot; data-size=&quot;348x348&quot; data-rewrite=&quot;&#123;size:&#39;348x348&#39;&#125;&quot; data-lazy-type=&quot;img&quot; data-lazy-id=&quot;lazyId-11&quot; data-lazy-manager-id=&quot;gLazyM-1&quot; data-in-view-range=&quot;1&quot; src=&quot;//gw.alicdn.com/bao/uploaded/i3/3058655500/O1CN01CyNBBW1qV3AjEusqC_!!0-item_pic.jpg_360x360q75.jpg_.webp&quot;&gt;
+</code></pre>
+<p>​		这里主要关注其中的src属性，src 属性代表了一个CDN上的图片资源。要知道当<img>标签的src属性被赋予了一一个URL后，它就会立刻向该URL发起资源请求。所以这个商品的<img>标签代表的就是一个商品图片的占位符。</p>
+<p>​		接下来我们找到一个位于屏幕视窗外，还未加载的商品图片和已加载的图片，相比较看看二者标签上的属性值有何不同。首先保持左侧页面显示窗口不发生滚动，在DevTools工具的Elements页签下，寻找还未呈现在左侧视窗中的商品项，容易找到它的DOM结构。</p>
+<p>​		首先，我们依然关注<img>标签的src属性，这里并不是图片资源的外链URL,取而代之的是一个在图像优化章节中介绍过的Base64图片，与外链URL不同的是，Base64图片已经包含了图片的完全编码，可以直接拿来渲染，而无须发起任何网络请求。</p>
+<p>​		这意味着该Base64图片仅仅是在真实图片显示出来前用以占位的，同时注意到所有未展示在页面视窗中的商品，其图片占位src属性值均使用了相同的Base64的值.当页面发生滚动时，之前未出现在视窗中的商品出现在视窗中后，其商品图片的真实URL会被替换到<img>标签的src属性上，进而发起资源请求。</p>
+<p>​		我们知道了什么是延迟加载。以及为什么要使用延迟加载，并通过观察一个商品列表页的案例，基本清楚了延迟加载的处理过程，接下来将通过三种方法来具体实现延迟加载。</p>
+<h3 id="二、实现图片的延迟加载：传统方式"><a href="#二、实现图片的延迟加载：传统方式" class="headerlink" title="二、实现图片的延迟加载：传统方式"></a>二、实现图片的延迟加载：传统方式</h3><p>​		就是事件监听的方式，通过监听scroll事件与resize 事件，并在事件的回调函费中去判断，需要进行延迟加载的图片是否进入视窗区域。</p>
+<p>​		首先根据前面的例子，定义出将要实现延迟加载的<img>标签结构:</p>
+<p>我们只需要关注三个属性。</p>
+<ul>
+<li>class 属性，稍后会在JavaScript中使用类选择器选取需要延迟加载处理的<img>标签。</li>
+<li>src属性，加载前的占位符图片，可用Base64图片或低分辨率的图片。</li>
+<li>data-src属性，通过该自定义属性保存图片真实的URL外链。</li>
+</ul>
+<p>假设以三张图片为例进行延迟加载的<img>标签列表如下:</p>
+<pre><code class="html">&lt;img class=&quot;lazy&quot; src-&quot;data: image/gif;base64, iVBORwOKGg.. .BJRUErkJgqs-.data-src=&quot;https://res.cloudinary.com/ .../tacos-2x.jpg&quot;width=&quot;385&quot; height=&quot;108&quot; alt=&quot;Some tacos. &quot;&gt;
+
+&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg. . . BJRU5ErkJggg==&quot; data-src=&quot;https:// res.cloudinary.com/d. . ./modem-2x . png&quot; width=&quot;320&quot; height=&quot;176&quot; alt=&quot;A 56k modem. &quot;&gt;
+
+&lt;img class=&quot;lazy&quot; src=&quot;data:image/gif;base64, iVBORw0KGg.. . BJRU5ErkJggg==&quot; data-src=&quot;https ://res. cloudinary. com/ ../st-paul-2x. jpg&quot; width=&quot;400&quot; height=&quot;267&quot; alt=&quot;A city skyline. &quot;&gt;
+</code></pre>
+<p>​		具体的JvsSerpr实现逻辑如下，在文档的DOMContentLoaded事件中，添加延迟加载处理逻辑，首先获取class属性名为lazy的所有<img>标签，将这些标签看存在一个名为lazylmages 的数组中，表示需要进行延迟加载但还未加载的图片集合。当一个图片被加载后，便将其从lazylmages数组中移除，直到lazyImages数组为空时，表示所有待延迟加载的图片均已经加载完成，此时便可将页面滚动事件移除。</p>
+<p>​		接下来的关键就是判断图片是否出现在视窗中，这里使用了getBoundingClientRect()函数获取元素的相对位置，如图所示。它会返回图片元素的宽width和高height,及其与视窗的相对位置:元素上边缘与屏幕视窗顶部之间的距离top,元素左边缘和屏幕视窗左侧之间的距离left,元素下边缘和屏幕视窗顶部之间的距离bottom 以及元素右边缘和屏幕视窗左侧之间的距离right, 其具体含义可参考示意图，window.innerHeight 表示整个视窗的高度。</p>
+<p><img src="/2023/02/09/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%9B%BE%E5%83%8F%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230209164625464.png" alt="getBoundingClientRect()函数获取元素的相对位置"></p>
+<p>​		对于只可上下滚动的页面，判断一个图片 元素是否出现在屏幕视窗中的方法其实显而易见，即当元素上边缘距屏幕视窗顶部的top 值小于整个视窗的高度window.innerHeight时，预加载的事件处理代码如下:</p>
+<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
+  //获取所有需要延迟加载的图片
+  let lazyImages = [].sllce.call(document.querySelectorAll(&quot;img.1azy&quot;));
+  //限制函数频繁被调用
+  let active = false;
+  const lazyLoad = function () &#123;
+    if (active === false) &#123;
+      active = true;
+      setTimeout(function () &#123;
+        lazyImages.forEach(function (lazyImage) &#123;
+          //判断图片是否出现在视窗中
+          if (
+            lazyImage.getBoundingClientRect().top &lt;= window.innerHeight &amp;&amp;
+            lazyImage.getBoundingClientRect().bottom &gt;= 0 &amp;&amp;
+            getComputedstyle(lazyImage).display !== &quot;none&quot;
+          ) &#123;
+            // 将真实的图片URL赋值给src属性，发起请求加载资源
+
+            lazyImage.src = lazyImage.dataset.src;
+
+            //图片加载完成后，取消监控以防止重复加载
+
+            lazyImage.classList.remove(&quot;1azy&quot;);
+
+            lazyImages = lazyImages.filter(function (image) &#123;
+              return image !== lazyImage;
+            &#125;);
+
+            //所有延迟加载图片加载完成后，移除事件触发处理函数
+
+            if (lazyImages.length === 0) &#123;
+              document.removeEventListener(&quot;scroll&quot;, lazyLoad);
+              window.removeEventListener(&quot;resize&quot;, lazyload);
+              window.removeEventListener(&quot;orientationchange&quot;, lazyLoad);
+            &#125;
+          &#125;
+        &#125;);
+
+        active = false;
+      &#125;, 200);
+    &#125;
+  &#125;;
+
+  document.addEventListener(&quot;scroll&quot;, lazyLoad);
+  window.addEventListener(&quot;resize&quot;, lazyLoad);
+  window.addEventListener(&quot;orientationchange&quot;, lazyLoad);
+&#125;);
+</code></pre>
+<p>​	由于无法控制用户随心所欲地滑动鼠标滚轮，从而造成scroll 事件被触发地过于频繁，导致过多的冗余计算影响性能。所以此处笔者将延迟加载的处理过程置于一个200ms的异步定时器中，并在每次处理完成后，通过修改标志位active 的方式来对方法的执行进行限流。</p>
+<p>​		即便如此也有潜在的性能问题，因为重复的setTimeout调用是浪费的，虽然进行了触发限制，但当文档滚动或窗口大小调整时，不论图片是否出现在视窗中，每200ms都会运行一次检查，并且跟踪尚未加载的图片数量，以及完全加载完后，取消绑定滚动事件的处理函数等操作都需要开发者来考虑。</p>
+<p>​		如此来看，虽然传统的延迟加载实现方式具有更好的浏览器兼容性，但也存在如上所述不可逾越的性能问题与编码的烦琐性，这便有了下面一种新的实现方式。</p>
+<h3 id="三、实现图片的延迟加载-Intersection-Observer方式"><a href="#三、实现图片的延迟加载-Intersection-Observer方式" class="headerlink" title="三、实现图片的延迟加载: Intersection Observer方式"></a>三、实现图片的延迟加载: Intersection Observer方式</h3><p>​		现代浏览器已大多支持了Intersection Observer API,可以通过它来检查目标元素的可见性，这种方式的性能和效率都比较好。</p>
+<p>​		关于Intersection Observer的概念和用法，可以参考阅读相关文档，这里用一句话简述:每当因页面滚动或窗口尺寸发生变化，使得目标元素(target) 与设备视窗或其他指定元素产生交集时，便会触发通过Intersection Observer API配置的回调函数，在该回调函数中进行延迟加载的逻辑处理，会比传统方式显得更加简洁而高效。</p>
+<p>​		以下便是Intersection Observer 方式的具体实现，此方式仅需创建一个新的Observer,并在类名为lazy的<img>标签进入视窗后触发回调。</p>
+<pre><code class="js">document.addEventListener(&quot;DOMContentLoaded&quot;, function () &#123;
+  var lazyImages = [].slice.call(document.querySelectorAll(&quot;img.lazy&quot;));
+  //判断浏览器兼容性
+  if (
+    &quot;Intersectionobserver&quot; in window &amp;&amp;
+    &quot;IntersectionObserverEntry&quot; in window &amp;&amp;
+    &quot;intersectionRatio&quot; in window.Intersection0bserverEntry.prototype
+  ) &#123;
+    //新建Intersectionobserver对象，并在其回调函数中实现关键加载逻辑
+    let lazyImageObserver = new IntersectionObserver(function (
+      entries,observer
+    ) &#123;
+      entries.forEach(function (entry) &#123;
+        //判断图片是否出现在视窗中
+        if (entry.isIntersecting) &#123;
+          let lazyImage = entry.target;
+
+          lazyImage.src = lazyImage.dataset.src;
+          //图片加载完成后，取消监控防止重复加载
+          lazyImage.classList.remove(&quot;lazy&quot;);
+          lazyImageObserver.unobserve(lazyImage);
+        &#125;
+      &#125;);
+    &#125;);
+    lazyImages.forEach(function (lazyImage) &#123;
+      lazyImageObserver.observe(lazyImage);
+    &#125;);
+  &#125;
+&#125;);
+</code></pre>
+<p>​		这种方式判断元素是否出现在视窗中更为简单直观，应在实际开发中尽量使用，但其问题是并非所有浏览器都能兼容。具其体的浏览器兼容情况可在站点上进行查看，根据网站用户的硬件分布情况来权衡是否使用，以及使用后是否需要进行兼容处理。在将这种方式引入项目之前，应当确保已做到以下两点。</p>
+<p>（1）做好尽量完备浏览器兼容性检查，对于兼容Intersection Observer API的浏览器，采用这种方式进行处理，而对于不兼容的浏览器，则切换回传统的实现方式进行处理。</p>
+<p>（2）使用相应兼容的polyfill插件，在W3C官方Git账号下就有提供。除此之外，还有第三种通过Css属性的实现方案。</p>
+<h3 id="四、实现图片的延迟加载：CSS类名方式"><a href="#四、实现图片的延迟加载：CSS类名方式" class="headerlink" title="四、实现图片的延迟加载：CSS类名方式"></a>四、实现图片的延迟加载：CSS类名方式</h3><p>​		这种实现方式通过css的 backgound-image 属性来加载图片，与判断<img>标签src属性是否有要请求图片的URL不同，Css中图片加载的行为建立在浏览器对文档分析基础之上。</p>
+<p>​		具体来说，当DOM树、CSSOM树及渲染树生成后，浏览器会去检查CSS以何种方式应用于文档，再决定是否请求外部资源。如果浏览器确定涉及外部资源请求的CSS规则在当前文档中不存在时，便不会去请求该资源。图片列表如下所示:</p>
+<pre><code class="html">&lt;div class=&quot;wrapper&quot;&gt;
+&lt;div class=&quot;lazy-background one&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;lazy-background two&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;lazy-background three&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>​		具体的实现方式是通过javascript来判断元素是否出现在视窗中的，当在视窗中出现的时候，为其class属性添加visible类名，而在css文件中，为同一类名元素定义出带 .visible和不带.visible的两种包含 background-image规则。</p>
+<p>​		不带 .visible的图片规则中的background-image属性可以是低分辨辨率的图片或Base64图片，而带.visible的图片规则中的background-image属性为为希望展示的真实图片URL.</p>
+<p>​		具体JavaScript的实现过程如下所示，判断图片元素是否出现在视窗内的逻辑，与上面的Intersection Observer 方式相同。同样为了确保浏览器的兼容性，在实际应用中应确保提供回退方案或polyfill。</p>
+<h3 id="五、原生的延迟加载支持"><a href="#五、原生的延迟加载支持" class="headerlink" title="五、原生的延迟加载支持"></a>五、原生的延迟加载支持</h3><p>​		除了上述通过开发者手动实现延迟加载逻辑的方式，从Chrome 75版本开始，已经可以通过 img 和 ifram e标签的loading属性原生支持延迟加载了，loading 属性包含以下三种取值。</p>
+<ul>
+<li>lazy: 进行延迟加载。</li>
+<li>eager: 立即加载。</li>
+<li>auto:浏览器自行决定是否进行延迟加载。</li>
+</ul>
+<p>若不指定任何属性值，loading 默认取值auto。</p>
+<p>​		之前讲到延迟加载的独发触发机，都是当目标图像文件经页面滚动出现在屏幕视窗中时，能发对图像资源的请求。但从体验上考虑，这样处理并不完美，因为当图像标签出现在屏幕视窗中时，还只是占位符图像。</p>
+<p>​		如果网络存在延迟或图像资源过大，那么它的请求加载过程是可以被用户感知的。更好的做法是在图像即将滚动出现在屏幕视窗之前一段距离， 就开始请求加载图像或iframe中的内容，这样能很好地缩短用户的等待加载时长。</p>
+<p>​		兼容性处理:通过使用新技术优化了延迟加载的实现方式，同时也应当注意新技本在不同览器之间的兼容性，在使用前需要对浏览器特性进行检查，如下所示:</p>
+<pre><code class="js">&lt;script&gt;
+if (&#39;loading&#39; in HTMLImageElement . prototype)&#123;
+//浏览器支持loading=&quot;lazy&quot;的延迟加载方式
+&#125; else &#123;
+//获取其他JavaScript库来实现延迟加载
+&#125;
+&lt;/script&gt;
+</code></pre>
+<p>​	当判断浏览器支持通过属性loading&#x3D;”lazy”来进行延迟加载时，我们就在JavaScript处理程序中，将真实图像资源的URL赋值在其src属性上。而对于不支持该属性配置的延迟加载方式，就需要默认将真实图像资源的URL挂在data-src 属性上，仅当延迟加载的滚动事件触发时，才将data-src属性上的值换到src属性上。</p>
+<p>​		这也正是我们在传统方式中实现的加载策略，其原因是如果浏览器不支持<img>标签的loading属性，便会立刻发起对src 属性上URL资源的网络请求。当然我们也可以使用CSS类名的方式触发对资源的加载。</p>
+<p>&lt; img data-src&#x3D; “photo.jpg” loading&#x3D;”lazy” class&#x3D;”lazyload” alt&#x3D;”photo” &#x2F;&gt;不过对于这种方式，笔者建议等到loading属性在浏览器的稳定版本中被引入后，再在项目的生产环境中使用。</p>
+<h3 id="参考书籍：前端性能优化"><a href="#参考书籍：前端性能优化" class="headerlink" title="参考书籍：前端性能优化"></a>参考书籍：前端性能优化</h3>]]></content>
+      <categories>
+        <category>前端性能优化</category>
+        <category>加载优化（图像延迟加载)</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+        <tag>加载优化</tag>
       </tags>
   </entry>
   <entry>

@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>渲染优化（计算样式优化） |  艺术码畜</title>
+      <title>渲染优化（页面布局与重绘的优化） |  艺术码畜</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -84,7 +84,7 @@ var _hmt = _hmt || [];
     <main class="content on">
       <section class="outer">
   <article
-  id="post-渲染优化（计算样式优化）"
+  id="post-渲染优化（页面布局与重绘的优化）"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -95,7 +95,7 @@ var _hmt = _hmt || [];
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  渲染优化（计算样式优化）
+  渲染优化（页面布局与重绘的优化）
 </h1>
  
 
@@ -103,11 +103,11 @@ var _hmt = _hmt || [];
     </header>
      
     <div class="article-meta">
-      <a href="/2023/03/09/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-date">
-  <time datetime="2023-03-09T01:41:38.000Z" itemprop="datePublished">2023-03-09</time>
+      <a href="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-date">
+  <time datetime="2023-03-13T03:17:26.000Z" itemprop="datePublished">2023-03-13</time>
 </a> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/">渲染优化（计算样式优化）</a>
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/">渲染优化（页面布局与重绘的优化）</a>
   </div>
   
 <div class="word_count">
@@ -115,7 +115,7 @@ var _hmt = _hmt || [];
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">1.8k</span>
+            <span class="post-count">3.4k</span>
         </span>
     </span>
 
@@ -124,7 +124,7 @@ var _hmt = _hmt || [];
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">6 min</span>
+            <span class="post-count">12 min</span>
         </span>
     </span>
 </div>
@@ -139,67 +139,138 @@ var _hmt = _hmt || [];
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h1 id="计算样式优化"><a href="#计算样式优化" class="headerlink" title="计算样式优化"></a>计算样式优化</h1><blockquote>
-<p>在JavaScript处理过后，若发生了添加和删除元素，对样式属性和类进行了修改，就都会导致浏览器重新计算所涉及元素的样式，某些修改还可能会引起页面布局的更改和浏览器的重新绘制，本节就着眼于样式相关的优化点，来看看如何提升前端渲染性能。</p>
+  <h1 id="页面布局与重绘的优化"><a href="#页面布局与重绘的优化" class="headerlink" title="页面布局与重绘的优化"></a>页面布局与重绘的优化</h1><blockquote>
+<p>页面布局也叫作重排和回流，指的是浏览器对页面元素的几何属性进行计算并将最终结果绘制出来的过程。凡是元素的宽高尺寸、在页面中的位置及隐藏或显示等信息发生改变时，都会触发页面的重新布局。</p>
+<p>通常页面布局的作用范围会涉及整个文档，所以这个环节会带来大量的性能开销，我们在开发过程中，应当从代码层面出发，尽量避免页面布局或最小化其处理次数。如果仅修改了DOM元素的样式，而未影响其几何属性时，则浏览器会跳过页面布局的计算环节，直接进入重绘阶段。</p>
+<p>虽然重绘的性能开销不及页面布局高，但为了更高的性能体验，也应当降低重绘发生的频率和复杂度。本节接下来便针对这两个环节的性能优化给出一些实用性的建议。</p>
 </blockquote>
-<h3 id="一、减少要计算样式的元素数量"><a href="#一、减少要计算样式的元素数量" class="headerlink" title="一、减少要计算样式的元素数量"></a>一、减少要计算样式的元素数量</h3><p>​		首先我们需要知道与计算样式相关的一条重要机制: CSS 引擎在查找样式表时，对每条规则的匹配顺序是从右向左的，这与我们通常从左向右的书写习惯相反。举个例子，如下CSS规则:</p>
-<pre><code class="css">.product-list li &#123;&#125;
+<h3 id="一、触发页面布局与重绘的操作"><a href="#一、触发页面布局与重绘的操作" class="headerlink" title="一、触发页面布局与重绘的操作"></a>一、触发页面布局与重绘的操作</h3><p>​		要想避免或减少页面布局与重绘的发生，首先就是需要知道有哪些操作能够触发浏览器的页面布局与重绘的操作，然后在开发过程中尽量去避免。</p>
+<p>​		这些操作大致可以分为三类:首先就是对DOM元素几何属性的修改，这些属性包括width、height、 padding、 margin、 left、 top 等，某元素的这些属性发生变化时，便会波及与它相关的所有节点元素进行几何属性的重新计算，这会带来巨大的计算量;其次是更改DOM树的结构，浏览器进行页面布局时的计算顺序，可类比树的前序遍历，即从上向下、从左向右。</p>
+<p>​		这里对DOM树节点的增、删、移动等操作，只会影响当前节点后的所有节点元素，而不会再次影响前面已经遍历过的元素；最后一类是获取某些特定的属性值操作，比如页面可见区域宽高offsetWidth offsetHeight， 页面视窗中元素与视窗边界的距离offsetTop,offsetLeft,类似的属性值还有scrollTop、scrollLeft、scrollWidth、scrollHeight、clientTop、clientWidth、clientHeight及调用window.getComputedStyle方法。</p>
+<p>​		这些属性和方法有一个共性，就是需要通过即时计算得到，所以浏览器就需要重新进行页面布局计算。</p>
+<h3 id="二、避免对样式的频繁改动"><a href="#二、避免对样式的频繁改动" class="headerlink" title="二、避免对样式的频繁改动"></a>二、避免对样式的频繁改动</h3><p>​		在通常情况下，页面的一帧内容被渲染到屏幕上会按照如下顺序依次进行,首先执行JavaScript代码，然后依次是样式计算、页面布局、绘制与合成。如果在JavaScript运行阶段涉及上述三类操作，浏览器就会强制提前页面布局的执行，为了尽量降低页面布局计算带来的性能损耗，我们应当避免使用JavaScript对样式进行频繁的修改，如果一定要修改样式，则可通过以下几种方式来降低触发重排或回流的频次。</p>
+<h4 id="1-使用类名对样式逐条修改"><a href="#1-使用类名对样式逐条修改" class="headerlink" title="1.使用类名对样式逐条修改"></a>1.使用类名对样式逐条修改</h4><p>​		在JavaScript代码中逐行执行对元素样式的修改，是种糟糕的编码方式，对未形成编码规范的前端初学者来说经常会出现这类的问题。错误代码示范如下:</p>
+<pre><code class="css">//获取DOM元素逐行修改样式
+const div = document .getElementById(&#39;mydiv&#39;);
+div.style.height = &#39;100px&#39;;
+div.style.width = &#39;100px&#39;;
+div.style.border = &#39;2px solid blue&#39;
 </code></pre>
-<p>​		如果不知道样式规则查找顺序，则推测这个选择器规则应该不会太费力，首先类选择器product-list的数量有限应该很快就能查找到，然后缩小范围再查找其下的 li 标签就顺理成章。</p>
-<p>​		但CSS选择器的匹配规则实际上是从右向左的，这样再回看上面的规则匹配，其实开销相当高，因为CSS引擎需要首先遍历页面上的所有 li 标签元素，然后确认每个 li 标签有包含类名为product-list的父元素才是目标元素，所以为了提高页面的渲染性能，计算样式阶段应当尽量减少参与样式计算的元素数量，这里总结了如下几点实战建议:</p>
-<p>​		使用类选择器替代标签选择器，对于上面 li 标签的错误示范，如果想对类名为product-list下的 li 标签添加样式规则，可直接为相应的 li 标签定义名为product-list_li的类选择器规则，这样做的好处是在计算样式时，减少了从整个页面中查找标签元素的范围，毕竟在CSS选择器中，标签选择器的区分度是最低的。</p>
-<p>​		避免使用通配符做选择器，对于刚入门前端的小伙伴，通常在编写CsS样式之前都会有使用通配符去清楚默认样式的习惯，如下所示:</p>
-<pre><code class="css">* &#123;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
+<p>​		上述代码对样式逐行修改，每行都会触发一次对渲染树的更改， 于是会导致页面布局重新计算而带来巨大的性能开销。合理的做法是，将多行的样式修改合并到一个类名中，仅在JavaScript脚本中添加或更改类名即可。CSS 类名可预先定义:</p>
+<pre><code class="css">.my-div&#123;
+    height: 100px;
+    border: 2px solid blue;
+    width: 100px; 
 &#125;
 </code></pre>
-<p>​		这种操作在标签规模较小的demo项目中，几乎看不出有任何性能差异。但对实际的工程项目来说，使用通配符就意味着在计算样式时，浏览器需要去遍历页面中的每一个元素，这样的性能开销很大，应当避免使用。</p>
-<h3 id="二、降低选择器的复杂性"><a href="#二、降低选择器的复杂性" class="headerlink" title="二、降低选择器的复杂性"></a>二、降低选择器的复杂性</h3><p>​		随着项目不断迭代，复杂性会越来越高，或许刚开始仅有一个名为content的类选择元素，但慢慢地单个元素可能会并列出列表，列表又会包裹在某个容容元素下，甚至该列表中的部分元素的样式又写其他兄弟元素有所差异，这样原本的个类选择器就会被扩展成如下形式:</p>
-<pre><code class="css">.container:nth-child(-n+1) .content&#123;/*样式属性*/&#125;
+<p>然后统一在JavaScript中通过给指定元素添加类的方式一次完成，这样便可避免触发多次对页面布局的重新计算:</p>
+<pre><code class="css">const div = document.getElementById(&#39;mydiv&#39;);
+mydiv.classList.add(&#39;my-div&#39;);
 </code></pre>
-<p>​		浏览器在计算上述样式时，首先就需要查询有哪些应用了content 类的元素，并且其父元素怡好带有container类的倒数第n+1个元素，这个计算过程可能就会花费许多时间，如果仅对确定的元素使用单一的类名选择器，那么浏览器的计算开销就会大幅度降低。</p>
-<p>​		比如使用名为final-container-content 的类选择替代上述的复杂样式计算，直接漆加到目标元素上。而且复杂的匹配规则，可能也会存在考虑不周从而导致画蛇添足的情况，例如，通过id选择器已经可以唯一确定 目标元素了，就无须再附加其他多余的选择器:</p>
-<pre><code class="css">/*错误示范*/
-.content #my-content
-/*正确方式*/
-#my-content
+<h4 id="2-缓存对敏感属性值的计算"><a href="#2-缓存对敏感属性值的计算" class="headerlink" title="2.缓存对敏感属性值的计算"></a>2.缓存对敏感属性值的计算</h4><p>​		有些场景我们想要通过多次计算来获得某个元素在页面中的布局位置，比如:</p>
+<pre><code class="js">const list = document.getElementById(&#39;list&#39;);
+for (let i =0; i&lt;10; i++) &#123;
+list.style.top = &#39;$&#123;list.offsetTop + 10&#125;px&#39;;
+list.style.left = &#39;$&#123;list.offsetLeft + 10&#125;px&#39;;
+&#125;
 </code></pre>
-<p>​		由于id选择器本身就是唯一存在的， 定位到目标元素数后再去查找名为content的类选择器元素就多此一举。当然在实际项目中的情况会复杂得多，但若能做故到尽量降低选择器的复杂性，则类似的问题也会容易避免。</p>
-<h3 id="三、使用BEM规范"><a href="#三、使用BEM规范" class="headerlink" title="三、使用BEM规范"></a>三、使用BEM规范</h3><p>​		BEM是一种CSS的书写规范，它的名称是由三个单词的首字母组成的，分别是块(Block)、元素(Element)和修饰符(Modifier)。理论上它希望每行CSS代码只有一个选择器，这就是为了降低选择器的复杂性，对对选择器的命名要求通过以下三个符号的组合来实现。</p>
-<ul>
-<li>中画线( - ): 仅作为连字符使用，表示某个块或子元素的多个单词之间的连接行。</li>
-<li>单下画线( _ ):作为描述一个块或其子元素的种状态。</li>
-<li>双下画线( _ _ );作为连接块与块的子元素。</li>
-</ul>
-<p>接下来首先给出一个基于BEM的选择器命名形式，然后再分别看块、元素与修饰符的含义和使用示例:</p>
-<pre><code class="css">/* BEM命名示例*/
-type-block__element_modifier
+<p>​		这不但在赋值环节会触发页面布局的重新计算，而且取值涉及即时敏感属性的获取，如offsetTop和offsetLeft,也会触发页面布局的重新计算。这样的性能是非常糟糕的，作为优化我们可以将敏感属性通过变量的形式缓存起来，等计算完成后再统一进行赋值触发布局重排。</p>
+<pre><code class="js">const list = document.getElementById(&#39;list&#39;);
+//将敏感属性缓存起来
+let offsetTop = list.offsetTop, offsetLeft = list.offsetLeft;
+for(let i=0;i&lt;10;i++)&#123;
+offsetTop += 10;
+offsetLeft += 10;
+&#125;
+//计算完成后统一赋值触发重排
+list.sty1e.left = offsetLeft;
+list.sty1e.top = offsetTop;
 </code></pre>
-<h4 id="1-块"><a href="#1-块" class="headerlink" title="1.块"></a>1.块</h4><p>通常来说，凡是独立的页面元素，无论简单或是复杂都可以被视作一个块，在HTML文档中会用一个唯一的类名来表示这个块。具体的命名规则包括三个:只能使用类选择器，而不使用ID选择器;每个块应定义一个前缀用来表示命名空间;每条样式规则必须属于一个块。比如一个自定义列表就可视作为一个块， 其类名匹配规则可写为:</p>
-<pre><code class="css">.mylist&#123;&#125;
+<h4 id="3-使用requestAnimationFrame方法控制渲染帧"><a href="#3-使用requestAnimationFrame方法控制渲染帧" class="headerlink" title="3.使用requestAnimationFrame方法控制渲染帧"></a>3.使用requestAnimationFrame方法控制渲染帧</h4><p>前面讲JavaScript动画时，提到了requestAnimationFrame方法可以控制回调在两个植染帧之间仅触发一次， 如果在其回调函数中一开始就取值 到即时敏感属性，其实获取的是上一帧旧布局的值，并不会触发页面布局的重新计算。</p>
+<pre><code class="js">//在帧开始时触发回调
+requestAnimationFrame (queryDivHeight);
+function queryDivHeight() &#123;
+const div = document.getElementById(&#39;div&#39;)
+//获取并在命令行中打印出指定div元素的高
+console.log (div.offsetHeight)
+&#125;
 </code></pre>
-<h4 id="2-元素"><a href="#2-元素" class="headerlink" title="2.元素"></a>2.元素</h4><p>元素即指块中的子元素，且子元素也被视作块的直接子元素，其类名需要使用块的名称作为前缀。以上面自定义列表中的子元素类名写法为例，与常规写法对比如下:</p>
-<pre><code class="css">//常规写法
-.mylist &#123;&#125;
-.mylist .item &#123;&#125;
-//BEM写法
-.mylist &#123;&#125;
-.mylist__item &#123;&#125;
+<p>如果在请求此元素高度之前更改其样式，浏览器就无法直接使用上一帧的旧有属性值，而需要先应用更改的样式，再运行页面布局计算后，才能返回所需的正确高度值。这样多余的开销显然是没有必要的。因此考虑到性能因素，在requestAnimationFrame方法的回调函数中，应始终优先样式的读取，然后再执行相应的写操作:</p>
+<pre><code class="js">//requestAnimationFrame方法的回调函数
+function queryDivHeight () &#123;
+const div = document .getElementById(&#39;div&#39;)
+//获取并在命令行中打印出指定div元素的高
+console.log (div.offsetHeight)
+//样式的写操作应放在读取操作后进行
+div.classList.add(&#39;my-div&#39;)
+&#125;
 </code></pre>
-<h4 id="3-修饰符"><a href="#3-修饰符" class="headerlink" title="3.修饰符"></a>3.修饰符</h4><p>修饰符可以看作是块或元素的某个特定状态，以按钮为例，它可能包含大、中、小三种默认尺寸及自定义尺寸，对此可使用small、normal、 big 或size-N来修饰具体按钮的选择器类名，示例如下:</p>
-<pre><code class="css">//自定又列表下子元素大、中、小三种尺寸的类选择器
-.mylist__item_big &#123;&#125;
-.mylist__item_normal &#123;&#125;
-.mylist__item_small &#123;&#125;
-//带自定义尺寸修饰符的类选择器
-.mylist__item_size-10
+<h3 id="三、通过工具对绘制进行评估"><a href="#三、通过工具对绘制进行评估" class="headerlink" title="三、通过工具对绘制进行评估"></a>三、通过工具对绘制进行评估</h3><p>除了通过经验去绕过一些明显的性能缺陷，使用工具对网站页面性能进行评估和实时分析也是发现问题的有效手段。这里介绍一 些基于Chrome开发者工具的分析方法，来辅助我们发现渲染阶段可能存在的性能问题。</p>
+<h4 id="1-监控渲染信息"><a href="#1-监控渲染信息" class="headerlink" title="1.监控渲染信息"></a>1.监控渲染信息</h4><p>打开Chrome的开发者工具，可以在“设置”→“更多工具”中，发现许多很实用的性能辅助小工具，比如监控渲染的Rendering工具，如图所示。</p>
+<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313105005172.png"></p>
+<p>​		打开Rendering 的工具面板后，会发现许多功能开关与选择器，下面举例介绍其中若干常用功能项。首先是Paint flashing, 当我们开启该功能后，操作页面发生重新渲染，Chrome会让重绘区域进行一次绿色闪动。</p>
+<p>​		这样就可以通过观察闪动区域来判断是否存在多余的绘制开销，比如若仅单击Select组件弹出下拉列表框，却发现整个屏幕区域都发生了闪动，或与此操作组件的无关区域发生了闪动，这都意味着有多余的绘制开销存在，需要进一步研究和优化。</p>
+<p>​		Layer borders功能开启后，会在页面上显示出绘制的图层边界。</p>
+<p>​		FPS meter功能开启后，会在当前页面的左上角显示实时的帧率情况，GPU 功能是否开启及GPU内存占用情况，如图所示。</p>
+<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313105326423.png"></p>
+<h4 id="2-查看图层详情"><a href="#2-查看图层详情" class="headerlink" title="2.查看图层详情"></a>2.查看图层详情</h4><p>​		当我们通过Rendering工具发现存在有多余的图层渲染时，由于闪动是难于捕捉的，所以还需要工具辅助显示出各个图层的详细信息，这便需要用到Layers图层工具，如图所示。</p>
+<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313110038852.png"></p>
+<p>​		如图所示工具界面大体分为三部分，①号矩形框区域为当前页面的图层列表:②号矩形框区域为页面带有图层边框的视图:③号矩形框区域为选中图层的详细信息，包括页面尺寸、内存占用、绘制次数等。</p>
+<p>​		通过这些信息能够帮助我们快速定位到所要查看的图层信息。当我们使用Rendering工具监控页面交互过程中有不恰当的图层存在时，便可使用Layers 工具进行问题复现:首先打开目标页面，然后从左 侧图层列表中依次查找出问题图层，接着分析引起该图层发生重绘的原因。</p>
+<h3 id="四、降低绘制复杂度"><a href="#四、降低绘制复杂度" class="headerlink" title="四、降低绘制复杂度"></a>四、降低绘制复杂度</h3><p>​		如前所述，绘制是在页面布局确定后，将元素的可视内容绘制到屏幕上的过程。虽然不同的CSS绘制样式看不出性能上明显的不同，但并非所有属性都有同样的性能开销。例如，绘制带有阴影效果的元素内容，就会比仅绘制单色边框所耗费的时间要长，因为涉及模糊就意味着更高的复杂度。CSS属性如下:</p>
+<pre><code class="css">// 绘制时间相对较短的边枢颜色
+border-color: red;
+//绘制时间更长的阴影内容
+box-shadow: 0, 8px, rgba(255,0,0,0.5);
 </code></pre>
-<p>​		BEM样式编码规范建议所有元素都被单一的类选择器修饰，从CSS代码结构角度来说这样不但更加清晰，而且由于样式查找得到了简化，谊染阶段的样式计算性能也会得到提升。</p>
+<p>​		当我们使用之前介绍过的渲染性能分析工具，发现了有明显性能瓶颈需要优化时，需要确认是否存在高复杂度的绘制内容，可以使用其他实现方式来替换以降低绘制的复杂度。比如位图的阴影效果，可以考虑使用Photoshop 等图像处理工具直接为图片本身添加阴影效果，而非全交给CSS样式去处理。</p>
+<p>​		除此之外，还要注意对绘制区域的控制，对不需要重新绘制的区域应尽量避免重绘。例如，页面的顶部有一个固定区域的header标头，若它与页面其他位置的某个区域位于同一图层，当后者发生重绘时，就有可能触发包括固定标头区域在内的整个页面的重绘。对于固定不变不期望发生重绘的区域，建议可将其提升为独立的绘图层，避免被其他区域的重绘连带着触发重绘。</p>
+<h3 id="五、合成处理"><a href="#五、合成处理" class="headerlink" title="五、合成处理"></a>五、合成处理</h3><p>​		合成处理是将已绘制的不同图层放在一起， 最终在屏幕上渲染出来的过程。在这个环节中，有两个因素可能会影响页面性能:一个是所需合成的图层数量，另一个是实现动画的相关属性。</p>
+<h4 id="1-新增图层"><a href="#1-新增图层" class="headerlink" title="1.新增图层"></a>1.新增图层</h4><p>在降低绘制复杂度小节中讲到，可通过将固定区域和动画区域拆分到不同图层上进行绘制，来达到绘制区域最小化的目的。接下来我们就来探讨如何创建新的图层，最佳方式便是使用CSS属性will-change来创建:</p>
+<pre><code class="css">.new-layer&#123;
+ will-change: transform; 
+&#125;
+</code></pre>
+<p>该方法在Chrome、Firefox 及Opera上均有效，而对于Safari等不支持will-change属性的浏览器，则可以使用3D变换来强制创建:</p>
+<pre><code class="css">.new-layer&#123;
+ transform: translate(0); 
+&#125;
+</code></pre>
+<p>​		虽然创建新的图层能够在定程度 上减少绘制区域，但也应 当注意不能创建太多的图层，因为每个图层都需要浏览器为其分配内存及管理开销。如果已经将个一元素提升到所创建的新图层上，也最好使用Chrome开发者工具中的Layers对图层详情进行评估，确定是否真的带来了性能提升，切忌在未经分析评估前就盲目地进行图层创建。</p>
+<h4 id="2-仅与合成相关的动画属性"><a href="#2-仅与合成相关的动画属性" class="headerlink" title="2.仅与合成相关的动画属性"></a>2.仅与合成相关的动画属性</h4><p>在了解了谊染过程各部分的功能和作用后，我们知道如果个动画的实现不经过页面布局和重绘环节，仅在合成处理阶段就能完成，则将会节省大量的性能开销。目前能够符合这一要求的动画属性只有两个:透明度opacity 和图层变换transform. 它们所能实现的动画效果如表所示，其中用n来表示数字。</p>
+<table>
+<thead>
+<tr>
+<th align="center">动画效果</th>
+<th align="center">实现方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">位移</td>
+<td align="center">transform:translate(npx,npx);</td>
+</tr>
+<tr>
+<td align="center">缩放</td>
+<td align="center">transform:scale(n);</td>
+</tr>
+<tr>
+<td align="center">旋转</td>
+<td align="center">transform:rotate(ndeg)</td>
+</tr>
+<tr>
+<td align="center">倾斜</td>
+<td align="center">transform:skew(X|Y)(ndeg);</td>
+</tr>
+<tr>
+<td align="center">矩阵变换</td>
+<td align="center">transform:matrix(3d)(&#x2F;<em>矩阵变换</em>&#x2F;)</td>
+</tr>
+<tr>
+<td align="center">透明度</td>
+<td align="center">opacity:0…1</td>
+</tr>
+</tbody></table>
+<p>​		在使用opacity和transform实现相应的动画效果时，需要注意动画元素应当位于独立的绘图层上，以避免影响其他绘制区域。这就需要将动画元素提升至一个新的绘图层。</p>
  
       <!-- reward -->
       
@@ -270,7 +341,7 @@ type-block__element_modifier
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/03/09/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -283,19 +354,10 @@ type-block__element_modifier
    
   <nav class="article-nav">
     
-      <a href="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            渲染优化（页面布局与重绘的优化）
-          
-        </div>
-      </a>
     
-    
-      <a href="/2023/03/05/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-nav-link">
+      <a href="/2023/03/09/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">渲染优化（JavaScript执行优化）</div>
+        <div class="article-nav-title">渲染优化（计算样式优化）</div>
       </a>
     
   </nav>

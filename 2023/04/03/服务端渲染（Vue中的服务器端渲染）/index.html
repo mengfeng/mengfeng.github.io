@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>服务端渲染（页面渲染） |  艺术码畜</title>
+      <title>服务端渲染（Vue中的服务器端渲染） |  艺术码畜</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -84,7 +84,7 @@ var _hmt = _hmt || [];
     <main class="content on">
       <section class="outer">
   <article
-  id="post-服务端渲染（页面渲染）"
+  id="post-服务端渲染（Vue中的服务器端渲染）"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -95,7 +95,7 @@ var _hmt = _hmt || [];
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  服务端渲染（页面渲染）
+  服务端渲染（Vue中的服务器端渲染）
 </h1>
  
 
@@ -103,11 +103,11 @@ var _hmt = _hmt || [];
     </header>
      
     <div class="article-meta">
-      <a href="/2023/03/25/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%89/" class="article-date">
-  <time datetime="2023-03-25T01:30:33.000Z" itemprop="datePublished">2023-03-25</time>
+      <a href="/2023/04/03/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88Vue%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/" class="article-date">
+  <time datetime="2023-04-03T09:50:53.000Z" itemprop="datePublished">2023-04-03</time>
 </a> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%89/">服务端渲染（页面渲染）</a>
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88Vue%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/">服务端渲染（Vue中的服务器端渲染）</a>
   </div>
   
 <div class="word_count">
@@ -115,7 +115,7 @@ var _hmt = _hmt || [];
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">2.2k</span>
+            <span class="post-count">2.3k</span>
         </span>
     </span>
 
@@ -124,7 +124,7 @@ var _hmt = _hmt || [];
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">7 min</span>
+            <span class="post-count">9 min</span>
         </span>
     </span>
 </div>
@@ -139,32 +139,135 @@ var _hmt = _hmt || [];
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>前端工程师的工作范畴其实不仅仅局限在客户端浏览器，特别是在处理性能优化问题时，往往需要站在全栈的角度去审视系统的每个细节。</p>
-<p>​		本章首先介绍前端页面渲染技术演进背后所隐藏的一个性能隐患，以及如何使用服务器端计算能力来对其进行改进,从而诞生服务器端渲染技术:然后分别以基于Vue和React两个现代前端框架的项目实例，对服务器端渲染的实现技术和细节进行梳理和探讨。通过本章的学习，能够对服务器端渲染的全貌和相关技巧都有所理解。</p>
-<h1 id="页面渲染"><a href="#页面渲染" class="headerlink" title="页面渲染"></a>页面渲染</h1><blockquote>
-<p>随着前端技术战的演进，Vue. React等现代前端框架的出现，不但让大型项目的开发越来越简单高效，而且其合理的的代码组织结构也让项目的维护成本得到显著降低。</p>
-<p>如果深入去探讨这些现代前端框架的首屏值染过程，就会发现其优势特性的背后隐藏着个明显的性能缺陷。 本节首先对此缺陷的产生原理进行分析，然后引出相应的优化解决方案一服务器端渲染。</p>
+  <h1 id="Vue中的服务器端渲染"><a href="#Vue中的服务器端渲染" class="headerlink" title="Vue中的服务器端渲染"></a>Vue中的服务器端渲染</h1><blockquote>
+<p>本节以Vue的服务器端渲染为例，首先介绍基本流程，然后通过一个代码实例探讨其中的若干细节，并从中带领读者体会服务器端渲染是如何解决首屏性能问题的。</p>
 </blockquote>
-<h3 id="一、页面渲染的发展"><a href="#一、页面渲染的发展" class="headerlink" title="一、页面渲染的发展"></a>一、页面渲染的发展</h3><p>​		在早些年还没有Vue和React这些前端框架的时候，做网站开发的主要技术栈基本就是JSP和PHP,而渲染所需的HTML页面都是先在服务器端进行动态的数据填充，然后当客户端向服务器端发出请求后，客户端将响应收到的HTML文件直接在浏览器端渲染出来。</p>
-<p>​		随着前端复杂度的增加与技术发展的迭代，若将所有逻辑都放在后端处理，则其开发效率和交互性能都会受到限制，所以这样的方式便被逐渐淘汰掉了。</p>
-<p>​			现代前端框架出现后，基于MVVM及组件化的开发模式逐渐取代了原有MVC的开发模式，这使得代码开发效率得到提高并且代码维护成本大幅降低，于是前端工程师的关注点可以更多地放在业务需求的实现上，用户与页面的更改交由框架以数据驱动的方式去完成，如图所示是MVVM模式框架实现数据更新的逻辑视图。</p>
-<p><img src="/2023/03/25/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230325092841407.png" alt="MVVM框架的数据更新方式"></p>
-<p>​		除此之外，框架还提供了许多额外的便利，比如虚拟DOM、前端路由、组件化等特性，这些特性所带来便利的背后也隐藏着一个明显的问题，就是基于这些框架开发出的业务代码依赖于框架代码，运行业务代码之前，首先需要等待框架的代码加载完成，接着执行框架将业务代码编译成最终所要展示的HTML文件后，才能进行页面谊染。</p>
-<p>​		框架包含的特性越多，其代码包尺寸就会越大，这无疑会增加打开网站到渲染出页面之间的等待时间，如果所有前端页面都依赖于框架代码，那么等待期间的网站页面便会直处于空白状态， 这样的首屏用户体验是非常糟糕的。</p>
-<p>​		前端技术栈的发展其实也非常类似于计算机语言的发展过程:最早给计算机编程使用的是机器语言，利用穿孔打印机进行输入，这对于计算机的执行效率来说是非常高的，因为它不需要任何编译或者解释操作，但其缺点是对程序开发人员来说几乎不具有任何可读性，如果原有的程序逻辑需要调整，那么修改机器语言的程序将会非常烦琐。</p>
-<p>​		为了让计算机程序开发人员能够更高效地编写程序，于是从计算机底层向上层逐渐发展出了汇编语言、C语言、Java语言及前端最常用的JavaSript语言。</p>
-<p>​		越靠近用户端的语言在执行效事及性能上，都明显不及底层语言，但对开发者来说却非常友好，让开发者能够更方便地编写出更复杂的业务逻辑。所以在面对高性能与易维护扩展两方面时，就需要做一个权衡取合，而好的优化方案通常都是兼顾折中的。</p>
-<p>​		前端在面对页面渲染性能上与代码开发方式时，也需要进行类似的权衡，我们不可能仅为了更快的页面渲染就退回过去JSP&#x2F;PHP的开发方式。那样虽然能加快首屏渲染，但与现代前端框架相比，其不仅开发效率低而且代码维护成本高。</p>
-<p>​		因此我们应当去思考，如何在现代前端框架内部去有效地改善首屏渲染，既兼顾性能体验又保证开发效率。接下来就以Vue框架为例，来讨论一个多层次的优化方案。</p>
-<h3 id="二、多层次优化方案"><a href="#二、多层次优化方案" class="headerlink" title="二、多层次优化方案"></a>二、多层次优化方案</h3><p>多层次优化方案大体可分为三个层次的优化:构建层模板编译、预渲染数据无关的页面及服务器渲染。</p>
-<h4 id="1-构建层模板编译"><a href="#1-构建层模板编译" class="headerlink" title="1.构建层模板编译"></a>1.构建层模板编译</h4><p>​		从Vue 2.0开始其核心代码就已经拆成了两个部分: 一部分负责框架模板编译，另部分负责运行时执行。这就给我们提供了一个优化方案，可以将模板编译从浏览器执行阶段提前到webpack构建阶段。</p>
-<p>​		我们知道通过Vue编写的页面文件通常包括三部分: CSS样式、JavaScript 代码及Template页面模板，该页面文件是无法直接被浏览器解释执行的，它需要依赖Vue的核心代码进行编译后才能执行，如果将编译的耗时提前到webpack的构建阶段完成，那么当浏览器请求到数据后就可以直接运行编译结果显示页面。</p>
-<h4 id="2-预渲染数据无关的页面"><a href="#2-预渲染数据无关的页面" class="headerlink" title="2.预渲染数据无关的页面"></a>2.预渲染数据无关的页面</h4><p>​		在通常情况下，页面都是数据相关的，比如用Vue开发了一个用户中心， 那么其中肯定包含了些用户相关的个性化数据，每个用户进入该页面所获取的数据是不一样的，这种场景不适用预渲染进行优化。</p>
-<p>​		如果是一个营销活动页面，所有用户进来看到的内容基本都一样， 那么就可以在构建层直接执行Vue核心代码，将相应的页面生成最终可直接渲染的HTML文件，然后通过该HTML文件去访问相应的Vue页面。这样将Vue的模板编译和执行都放在构建层去完成，就可以省去浏览器端的运行开销。</p>
-<h4 id="3-服务器端渲染"><a href="#3-服务器端渲染" class="headerlink" title="3.服务器端渲染"></a>3.服务器端渲染</h4><p>​		在大多数网站中，数据无关的页面其实并不多。对于数据相关的页面，比如用户中心的例子，需要获取到与用户相关的数据后再去进行编译和渲染，对此可以考虑将这些步骤放在服务器端去执行。</p>
-<p>​		能这么做的原因是，首先数据获取本身就需要向服务器端发起请求，这一步服务器端具有天然的优势，其次服务器端的nodejs与浏览器同样都使用JavaScript语言，这就使得服务器端能在获取到数据后，就去执行Vue 核心代码进行编译及渲染，从而生成可在浏览器端直接渲染的HTML文件。当然这个HTML文件最终还需要在浏览器端与Vue框架进行混入，让Vue框架来管理相应的数据。</p>
-<p>​		这就是所谓的服务器端渲染，简单说就是将原本在客户端执行的与首屏谊染相关JavaScript处理逻辑，移到服务器端进行处理。</p>
-<p>​		这样做虽然可以减少等待Vue框架加载与执行的时间，但会增加服务器的算力压力，同时也有可能面临服务器端内存泄漏的风险。可是考虑到服务器端集群的运算能力，肯定会高于用户端单个手机或电脑等设备上浏览器的运算能力，所以在有限的页面上，采取服务器端渲染能够明显提升首屏页面的渲染速度，同时在具体使用的页面范围上，也应当参考运算能力平衡考虑。</p>
+<h3 id="一、Vue-的SSR基本流程"><a href="#一、Vue-的SSR基本流程" class="headerlink" title="一、Vue 的SSR基本流程"></a>一、Vue 的SSR基本流程</h3><p>​		如图所示，描述了Vue服务器端渲染的整体流程，左边的是通用业务代码，可以看出无论是服务器端还是浏览器客户端，二者使用的是同套代码。 由于Vue组件生命周期在服务器端和在客户端上不一致，因此需要针对服务器端渲染编写相应的组件代码。</p>
+<p>​		比如Vue组件在进行服务器端渲染的时候，不存在真实DOM节点渲染的情况，所以并不存在mounted这个生命周期函数，那么原本在客户端编写的组件，就需要将mounted中的业务逻辑迁移到组件的其他位置上。</p>
+<p><img src="/2023/04/03/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88Vue%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230403163517264.png" alt="Vue服务器端渲染"></p>
+<p>​		接着往右看，业务源代码从 app.js 处分出了两个构建入口，webpack 会根据不同的入口配置，分别生成用于服务器端谊染所需的Sever Bundle 和客户端准染所需的Client Bundle其中Server Bundle会在所定义的包渲染器中，被编译生成可以在浏览器端直接进行渲染的HTML文件。</p>
+<p>​		这里还存在一个小问题: 由于这份服务器端渲染所得的HTML文件，也是由Vue组件和相应的数据生成的，其包含的数据到了客户端之后，还是需要通过浏览器端的Vue框架进行管理的。</p>
+<p>​		那么客户端的Vue框架如何知道服务器渲染出的页面中，哪些数据与客户端代码中的相应组件存在关联呢?所以在浏览器的客户端部分就需要存在一个混入处理的阶段，将二者有效关联起来。这样在客户端中发生相应数据的改变后，服务器端渲染生成的页面也能够有响应式的联动变化。</p>
+<h3 id="二、Vue-的SSR项目实例"><a href="#二、Vue-的SSR项目实例" class="headerlink" title="二、Vue 的SSR项目实例"></a>二、Vue 的SSR项目实例</h3><p>​		为了更清楚地介绍Vue服务器端溶染的处理过程，下面借助 GitHub上的Demo项目源代码进行说明，其目录结构如下所示:</p>
+<pre><code class="ins">bulid/
+|-- webpack.base.config.js
+|-- webpack.client.config.js
+|-- webpack.server.config.js
+|-- vue-loader.config.js
+|-- setup-dev-server.js
+dist/
+public/
+src/
+|-- components/
+| |-- movieComment.vue
+| |-- moviesTag.vue
+| |-- searchTag.vue
+|-- router/
+| |-- index.js
+|-- store/
+| |-- moving/
+| |-- index.js
+|-- style/
+| |-- base.css
+|-- views/
+| |-- userView.vue
+| |-- moviesDetail.vue
+|-- App.vue
+|-- app.js
+|-- entry-client.js
+|-- entry-server.js
+|-- index.template.html
+server.js
+</code></pre>
+<p>​		build下存放与项目构建相关的配置文件，public 中存放着项目中用到的一些静态资源文件，dist存放着工程构建打包的输出文件，src目录下为项目的主要源代码文件，可以看出这是一个基于Vue的典型前端项目。</p>
+<p>​		其中包含了组建目录components、路由设置router、基于Vuex状态管理的store、页面视图views及相应的入口文件。接下来将对该Vue项目的服务器端渲染过程进行简要介绍。</p>
+<h4 id="1-服务器端渲染所返回的HTML文件"><a href="#1-服务器端渲染所返回的HTML文件" class="headerlink" title="1.服务器端渲染所返回的HTML文件"></a>1.服务器端渲染所返回的HTML文件</h4><p>​		服务器端渲染的目的是为浏览器返回一个可供直接进行绘制的HTML文件，从而减少首屏出现的时间，在该项目中文件 index.template.html 即为最终所要生成的服务器端渲染结果的模板文件，其内容如下:</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;&#123;&#123;title&#125;&#125;&lt;/title&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui&quot; /&gt;
+    &lt;link rel=&quot;shortcut icon&quot; sizes=&quot;48x48&quot; href=&quot;/public/logo-48.png&quot;&gt;
+    &lt;meta name=&quot;theme-color&quot; content=&quot;#f60&quot;&gt;
+    &lt;link rel=&quot;manifest&quot; href=&quot;/manifest.json&quot;&gt;
+    &lt;% for (var chunk of chunk.files)&#123;
+      for (var file of chunk.files)&#123;
+        if (file.match(/\.(js|css)$/))&#123;
+          %&gt;
+    &lt;link rel=&quot;&lt;%= chunk.initial?&#39;preload&#39;:&#39;prefetch&#39; %&gt;&quot; href=&quot;&lt;%=htmlWebpackPlugin.files.publicPath + file %&gt;&quot; as=&quot;&lt;%= file.match(/\.css$/)?&#39;style&#39;:&#39;script&#39; %&gt;&quot;&gt;&lt;%&#125;&#125;&#125;%&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!--vue-ssr-outlet--&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>​		在head标签中包含了title、 显示设置、样式文件及一些预加载和预获取的文件配置，而在body标签中则通过注释的方式(vue-ssr-oulet) 标定出了服务器端渲染DOM所要注入的节点位置。</p>
+<h4 id="2-输出HTML文件的编译过程"><a href="#2-输出HTML文件的编译过程" class="headerlink" title="2.输出HTML文件的编译过程"></a>2.输出HTML文件的编译过程</h4><p>​	明确了模板文件 index.template.html的作用后，接下来我们分析该模板文件如何处理并最终生成给浏览器直接渲染的HTML文件，这个过程必定是通过webpack构建完成的，可在配置文件中搜索模板文件的文件名，在webpack.client.config.js 中查到如下配置信息:</p>
+<pre><code class="js">const config = merge(base,&#123;
+  plugins:[
+    //...其他配置
+    new HTML.Plugin(&#123;
+      template:&#39;src/index.template.html&#39;
+    &#125;)
+  ]
+&#125;)
+</code></pre>
+<p>​		该配置插件HTMLPlugin的作用是编译入参中指定的模板文件，并在dist目录下生成最终所需的index.html文件。要追溯编译构建过程，可从启动项目的命令npm run dev开始查询服务器启动代码server.js,代码如下:</p>
+<pre><code class="js">//定义服务器渲染结果字符串
+let renderer
+//若为生产环境
+if (!isprod)&#123;
+  //在生产环境下，使用Server bundle 和 index.template.html 模版生产渲染内容的字符串
+  //通过 vue-ssr-webpack-plugin生产所需的 Server bundle
+  const bundle = require(&#39;./dist/vue-ssr-bundle.json&#39;)
+  //同步读取预编译好的HTML文件
+  const template = fs.readFileSync(resolve(&#39;./dist/index.html&#39;),&#39;utf-8&#39;)
+  renderer = createRenderer(bundle,template)
+&#125;else&#123;
+  //在开发环境下，调用setup-dev-server 启动一个开发服务器监控项目文件修改并进行热加载
+  require(&#39;./build/setup-dev-server&#39;)(app,(bundle,template) =&gt; &#123;
+    renderer = createRenderer(bundle,template)
+  &#125;)
+&#125;
+</code></pre>
+<p>​		这里是服务器启动处理的一个中间环节，一方面开发环境下更具体的处理流程在 &#x2F;build&#x2F;setup-dev-server.js文件中进行，在其中会启动一个开发调试用的服务器:另一方面当文件修改发生后，会调用createRenderer方法生成服务器返回给浏览器的HTML文件中的内容字符串。</p>
+<p>​		在服务器启动环节中的主要操作分别根据 webpack.client.config.js 和 webpack.server.config.js的配置文件构建打包出Client Bundle和Server Bundle,其中处理Server Bundle的代码如下:</p>
+<pre><code class="js">//引入服务器端代码构建配置
+const serverConfig = require(&#39;./webpack.server.config&#39;)
+//引入内存文件系统
+const MFS = require(&#39;memory-fs&#39;)
+const serverCompiler = webpack(serverConfig)
+const mfs = new MFS()
+serverCompiler.outputFileSystem = mfs
+//监控文件修改时的处理
+serverCompiler.watch(&#123;&#125;,(err,stats) =&gt; &#123;
+  if(err) throw err
+  stats = stats.toJson()
+  stats.errors.forEach(err =&gt; console.error(err))
+  stats.warnings.forEach(err =&gt; console.warn(err))
+  //若构建无误则输出 Bundle 文件
+  const bundlePath = path.join(serverConfig.output.path, &#39;vue-ssr-budle.json&#39;)
+  bundle = JSON.parse(mfs.readFileSync(bundlePath,&#39;utf-8&#39;))
+  //若指定了模版文件，则 createRenderer 方法进行服务器渲染操作
+  if(template)&#123;
+    cd(bundle,template)
+  &#125;
+&#125;)
+</code></pre>
+<h4 id="3-服务器端渲染方法"><a href="#3-服务器端渲染方法" class="headerlink" title="3.服务器端渲染方法"></a>3.服务器端渲染方法</h4><p>createRenderer 方法代码如下：</p>
+<pre><code class="js">function createRenderer(bundle,template)&#123;
+  //将构建的服务器端bundle包与HTML模版文件一起渲染成最终HTML文件内容
+  return require(&#39;vue-server-renderer&#39;).createBundleRenderer(bundle,&#123;
+    template,
+    cache:require(&#39;lru-cache&#39;)(&#123;max:1000,maxAge:1000 * 60 *15&#125;)
+  &#125;)
+&#125;
+</code></pre>
+<p>​		这里引用了Vue 官方所提供的服务器端渲染工具包vue-sever-renderer.具体使用细节及配置说明可参考官方给出的文档，这里仅梳理流程和处理逻辑，通计createBundleRenderer方法可根据上一步构建生成的Server Bundle和模板配置选项共同生成一个BundleRenderer 实例，该实例包含两个成员方法renderToString 和 renderToStream,它们分别可以将服务器渲染的内容以字符串和可读数据流的形式输出，输出结果即为浏览器请求首屏页面后服务器端返回可供直接渲染的结果。</p>
+<p>​		可以看出该项目并非对所有页面都进行了服务器端渲染，它仅对首屏页面的项部进行了服务器端渲染，下半部分的资源列表采用的是客户端渲染，因此能够根据实际的业务情况去平衡需要客户端渲染与服务器端渲染是十分必要的。</p>
+<p>​		一方面服务器端渲染大部分解决的应当是首屏性能问题，对首屏涉及页面进行服务器端渲染更加符合逻辑和应用场景;另一 方面处理时还需对服务器端与客户端计算能力进行平衡，虽然我们需要合理利用服务器端计算能力，但也不能将客户端计算能力闲置下来。</p>
  
       <!-- reward -->
       
@@ -235,7 +338,7 @@ var _hmt = _hmt || [];
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/03/25/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%89/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mengfeng.github.io/2023/04/03/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88Vue%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -248,19 +351,10 @@ var _hmt = _hmt || [];
    
   <nav class="article-nav">
     
-      <a href="/2023/04/03/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88Vue%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            服务端渲染（Vue中的服务器端渲染）
-          
-        </div>
-      </a>
     
-    
-      <a href="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-nav-link">
+      <a href="/2023/03/25/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%89/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">渲染优化（页面布局与重绘的优化）</div>
+        <div class="article-nav-title">服务端渲染（页面渲染）</div>
       </a>
     
   </nav>

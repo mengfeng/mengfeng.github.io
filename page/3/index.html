@@ -177,6 +177,117 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-uniapp安装及调试"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/"
+    >uniapp安装及调试</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/" class="article-date">
+  <time datetime="2022-12-18T02:50:45.000Z" itemprop="datePublished">2022-12-18</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/uniapp/">uniapp</a> / <a class="article-category-link" href="/categories/uniapp/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/">uniapp安装及调试</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="uniapp安装及调试"><a href="#uniapp安装及调试" class="headerlink" title="uniapp安装及调试"></a>uniapp安装及调试</h1><blockquote>
+<p>我们本篇文章主要讲解uniapp的项目创建</p>
+<p>真机调试、ios模拟器调试、微信小程序调试</p>
+</blockquote>
+<h3 id="一、下载HBuilder-X"><a href="#一、下载HBuilder-X" class="headerlink" title="一、下载HBuilder X"></a>一、下载HBuilder X</h3><p>[HBuilder X]: 	“<a target="_blank" rel="noopener" href="https://www.dcloud.io/hbuilderx.html">https://www.dcloud.io/hbuilderx.html</a> “</p>
+<p>我们可以下载我们需要的版本</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095304650.png"></p>
+<h3 id="二、安装运行并创建项目"><a href="#二、安装运行并创建项目" class="headerlink" title="二、安装运行并创建项目"></a>二、安装运行并创建项目</h3><p>第一次打开HBuilder X，我们可以去定义一下我们的配置，macos是去偏好设置，windows的在工具-&gt;设置</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095514743.png"></p>
+<p>我们可以去新建项目弹出窗口配置我们项目信息，项目名称和vue版本，这里我现在的是vue3，vue3的绑定预设是vite。</p>
+<p>我们也可以去选择不一样的模板。</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218095735225.png"></p>
+<h3 id="三、运行项目"><a href="#三、运行项目" class="headerlink" title="三、运行项目"></a>三、运行项目</h3><p>当我们打开项目的时候，准备运行的时候，我们可以选择将我们的项目运行到哪里，它会提示你安装相对应的插件，如果安装完插件，我们的软件没有识别到我们的插件，那我们可以选择重启我们的软件。</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100111748.png"></p>
+<p>这里先演示一下运行到内置浏览器（第一次运行我们可能要稍等一下）</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100428208.png"></p>
+<h3 id="四、调试"><a href="#四、调试" class="headerlink" title="四、调试"></a>四、调试</h3><h4 id="1-ios模拟器调试"><a href="#1-ios模拟器调试" class="headerlink" title="1.ios模拟器调试"></a>1.ios模拟器调试</h4><blockquote>
+<p>当然，在ios模拟器调试的前提是要是macos环境，并且下载了xcode（提前准备一下哦）因为我没有ios手机🫠</p>
+</blockquote>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218100850001.png"></p>
+<p>我们选择运行到ios模拟器 App基座（loading…）</p>
+<p>选择我们的模拟器手机型号</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218101003209.png"></p>
+<p>现在我就可以看到程序运行到了我们的iPhone 14 Pro Max（香得嘞）</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218101115311.png"></p>
+<p>当我们修改我们的程序代码并保存，就可以看见我们的视图更新了</p>
+<h4 id="2-Android手机真机调试"><a href="#2-Android手机真机调试" class="headerlink" title="2.Android手机真机调试"></a>2.Android手机真机调试</h4><blockquote>
+<p>当然，没有Android手机的也可以借其他同学的（Android模拟器配置有点麻烦，就先不配置了，想配置的同学先自行打开搜索🔍）</p>
+</blockquote>
+<p>手机真机调试的前提是要打开你的手机的开发者模式，不同的手机开启的方式也是不一样的，我的手机是红米K20 pro</p>
+<p>具体打开流程为设置-&gt;我的设备-&gt;全部参数-&gt;点击MIUI版本3下（连击）系统提示进入开发者模式-&gt;返回到更多设置-&gt;开发者选项-&gt;打开usb调试</p>
+<p>当我们选择运行到Android App基座，就会识别你的手机（记得用数据线将手机连接到电脑），点击运行</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218102154748.png"></p>
+<p>第一次运行，手机会让你安装，点击安装就可以了</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/WechatIMG125.jpeg"></p>
+<h4 id="3-微信小程序开发者工具调试"><a href="#3-微信小程序开发者工具调试" class="headerlink" title="3.微信小程序开发者工具调试"></a>3.微信小程序开发者工具调试</h4><blockquote>
+<p>这个调试的方式的前提是要有一个开发者账号，没有的同学要先去注册一个</p>
+<p>[注册]: 	“<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;lang=zh_CN">https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;lang=zh_CN</a> “</p>
+<p>然后利用注册绑定的微信登陆我们的微信公众平台</p>
+<p>没有下载微信开发者工具的同学也要下载一个</p>
+</blockquote>
+<p>然后在我们的开发-&gt;开发管理-&gt;开发设置下面有我们的开发者ID（等会要用）</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218102931643.png"></p>
+<p>当我们点击发行-&gt;小程序-微信的时候，会让你配置你的开发者ID，然后项目就会自动打包</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103403063.png"></p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103530235.png"></p>
+<p>第一次编译的时候，我们可以根据编译完成的项目路径去手动导入我们的微信开发者工具去调试</p>
+<p>注意：不要在微信开发者工具去修改我们的代码，因为下一次发行编译会覆盖掉我们的修改</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218103710649.png"></p>
+<p>当然，我们还有另一种导入方法，那就是自动导入</p>
+<p>首先我们要将微信开发者工具的安全设置的服务端口打开</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104049483.png"></p>
+<p>再到HBuilder X去配置微信开发者工具的路径（这里的路径可以查看自己的安装路径）</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104502864.png"></p>
+<p>到这我们的配置就完成了</p>
+<p>接下来我们再发行微信小程序</p>
+<p>我们就可以看见微信开发者工具自动打开并运行我们的项目了</p>
+<p><img src="/2022/12/18/uniapp%E5%AE%89%E8%A3%85%E5%8F%8A%E8%B0%83%E8%AF%95/image-20221218104719407.png"></p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>到目前为止，我们开发时候的调试就可以轻松掌握了</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/uniapp/" rel="tag">uniapp</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-Vue3api变化"
   class="article article-type-post"
   itemscope
@@ -1996,129 +2107,6 @@ Test.prototype.update = function(dt) &#123;
 <p>这个任务交给你们了，写好评论，给你点大赞👍</p>
 </blockquote>
 <h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[playcanvas初级教程]: 	“<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=fXc-JjH2nNo&amp;list=PLGmYIROty-5ZX-a88X8ztUeYSPeuBj7rG">https://www.youtube.com/watch?v=fXc-JjH2nNo&amp;list=PLGmYIROty-5ZX-a88X8ztUeYSPeuBj7rG</a> “<br>[playcanvas官网API]: 	“<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/en/api/">https://developer.playcanvas.com/en/api/</a> “<br>[playcanvas中文]: 	“<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/zh/">https://developer.playcanvas.com/zh/</a> “</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/playcanvas/" rel="tag">playcanvas</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-playcanvas初识"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/"
-    >playcanvas初识</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/" class="article-date">
-  <time datetime="2022-12-03T08:31:14.000Z" itemprop="datePublished">2022-12-03</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Web3D/">Web3D</a> / <a class="article-category-link" href="/categories/Web3D/playcanvas/">playcanvas</a> / <a class="article-category-link" href="/categories/Web3D/playcanvas/playcanvas%E5%88%9D%E8%AF%86/">playcanvas初识</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="playcanvas（基于WebGL的游戏引擎）"><a href="#playcanvas（基于WebGL的游戏引擎）" class="headerlink" title="playcanvas（基于WebGL的游戏引擎）"></a>playcanvas（基于WebGL的游戏引擎）</h1><p>PlayCanvas 是一款使用 HTML5 和 WebGL 技术运行游戏以及其他 3D 内容的开源游戏引擎，PlayCanvas 以其独特的性能实现了在任何手机移动端和桌面浏览器端均可以流畅运行。</p>
-<p>PlayCanvas 引擎是一款可以基于浏览器的用于制作游戏以及 3D 可视化的开源引擎。除此之外，还开发了<a target="_blank" rel="noopener" href="https://playcanvas.com/">PlayCanvas 开发平台</a>， 为用户提供了可视化编辑器，资源管理，代码编辑，代码托管以及发布等服务。</p>
-<blockquote>
-<p>目前中文的教程很少，所以英语好的同学可以去看一下国外的那些教程，但是还是有<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/zh/">中文文档</a>的。</p>
-</blockquote>
-<p>可视化平台操作上倒是没什么难度，就是和正常的建模操作大同小异，一个可视化的一个操作平台，可以进一步的提高我们工作的效率吧。</p>
-<h3 id="一、注册账户"><a href="#一、注册账户" class="headerlink" title="一、注册账户"></a>一、注册账户</h3><blockquote>
-<p>注册账户的方式很简单，根据提示去注册就可以了</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203152809943.png"></p>
-<h3 id="二、新建项目"><a href="#二、新建项目" class="headerlink" title="二、新建项目"></a>二、新建项目</h3><blockquote>
-<p>1.我们点击NEW，即可创建新项目</p>
-<p>2.点击我们的项目就可以进入项目界面</p>
-<p>3.点击EDITOR就可以进入可视化操作平台，去操作我们的项目</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203153658606.png"></p>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203153755107.png"></p>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203152450815.png"></p>
-<h3 id="三、导出项目"><a href="#三、导出项目" class="headerlink" title="三、导出项目"></a>三、导出项目</h3><blockquote>
-<p>1.导出项目前，我们得先pulish</p>
-<p>2.点击下载 .zip 包</p>
-<p>3.将包用vsCode打开，运行index.html</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203155914469.png"></p>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160109159.png"></p>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160208211.png"></p>
-<h3 id="四、其他界面菜单"><a href="#四、其他界面菜单" class="headerlink" title="四、其他界面菜单"></a>四、其他界面菜单</h3><p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203160737778.png"></p>
-<h4 id="1-工具栏和菜单栏"><a href="#1-工具栏和菜单栏" class="headerlink" title="1.工具栏和菜单栏"></a>1.工具栏和菜单栏</h4><blockquote>
-<p>点击 PLAYCANVAS 图标会显示所有的可用功能，可以使用这些功能编辑场景。如果找不到某个按钮或者快捷键，肯定是能在菜单里找到对应功能的。</p>
-<p>工具栏提供快捷访问的常用功能，其中包含最重要的运行按钮。运行按钮会在一个独立的浏览器窗口中启动游戏并且加载当前的场景，可以立即开始游戏测试。可以从属性编辑栏中看到运行中游戏的实时参数变化。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161229021.png"></p>
-<h4 id="2-层级树"><a href="#2-层级树" class="headerlink" title="2.层级树"></a>2.层级树</h4><blockquote>
-<p>场景是由层级结构的实体组成，场景层级树显示了当前整个场景的树形结构。一个场景永远包含一个根节点实体，位于层级树的最顶端。所有其他的实体都是由开发者逐步加入的。</p>
-<p>层级树面板包含了场景中的全部实体，可以在其中快速定位实体，而不必在场景中搜寻。点击层级树上的实体将会选中它。</p>
-<h2 id="创建和删除实体"><a href="#创建和删除实体" class="headerlink" title="创建和删除实体"></a>创建和删除实体</h2><p>当在层级树中选中一个实体时，用户可以创建一个新的实体或者选出这个所选中的选项。或者使用位于层级树面板左上角的各种按钮，又或者通过点击操作打开内容目录来进行操作。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161304494.png"></p>
-<h4 id="3-检测器"><a href="#3-检测器" class="headerlink" title="3.检测器"></a>3.检测器</h4><blockquote>
-<p>检查器面板会显示当前选定对象的属性值。</p>
-<p>根据选择的不同，会现实不同的检查器面板。目前有</p>
-<ul>
-<li><strong>实体&#x2F;组件检查器</strong></li>
-<li><strong>纹理检查器</strong></li>
-<li><strong>材质检查器</strong></li>
-<li><strong>Cubemap检查器</strong></li>
-</ul>
-<p>修改这些数值用以特制化实体的行为。譬如可以设置 Model 组件所渲染的模型，或灯光的颜色等灯。</p>
-<p>有些参数是简单的文字或数值，通过标准的文字框和滑动条来进行修改。有些值需要特殊的编辑方式，譬如从资源面板中选取一个高亮的资源之类（选取纹理等）。有些值可以通过视口进行可视化编辑，譬如可以直接在视口中用Gizmo平移旋转缩放一个实体的变换属性.</p>
-<p>在应用和编辑器同时运行的情况下，对实体属性的修改将会传递到运行中的应用中。一个绝佳的迭代方式是在应用运行起来之后，并排打开编辑器和应用窗口，实时的对想要的调整的值进行修正。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161602442.png"></p>
-<h4 id="4-视口"><a href="#4-视口" class="headerlink" title="4.视口"></a>4.视口</h4><blockquote>
-<p>视口展示了当前场景的可视化状态。你可以通过移动摄影机在场景中自由漫游。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161643712.png"></p>
-<blockquote>
-<h2 id="摄影机"><a href="#摄影机" class="headerlink" title="摄影机"></a>摄影机</h2><p>初始情况下，编辑器会采用 <strong>透视</strong> 摄影机。这种摄影机如同电影摄影机一般漂浮在场景之中。可以使用摄影机选择菜单选择场景中的不同摄影机。 <strong>正交</strong> 摄影机包含几个确定的机位：顶视图，底视图，前视图，后视图，左视图，右视图。通过这些机位可以无透视的观察场景，特别方便用来调整场景中的实体位置之类。</p>
-<p>在摄影机菜单中选择摄影机的同时，场景中的摄影机实体会被显示为高亮状态。可以利用这个特性精确的设置摄影机位置。</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161804927.png"></p>
-<h4 id="5-资源"><a href="#5-资源" class="headerlink" title="5.资源"></a>5.资源</h4><blockquote>
-<p>资源面板管理了所有的项目中的可用资源。从这个面板可以创建，上传，删除，查看和编辑任何资源</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203161917993.png"></p>
-<h3 id="五、小结"><a href="#五、小结" class="headerlink" title="五、小结"></a>五、小结</h3><blockquote>
-<p>three.js还是比PlayCanvas活跃的，当然，如果感兴趣并且有精力的话，还是建议都了解了解</p>
-<p>毕竟知识是无穷无尽的</p>
-</blockquote>
-<p><img src="/2022/12/03/playcanvas%E5%88%9D%E8%AF%86/image-20221203162850169.png"></p>
-<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p>[playcanvas-github]: 	“<a target="_blank" rel="noopener" href="https://github.com/playcanvas/engine/blob/main/README-zh.md">https://github.com/playcanvas/engine/blob/main/README-zh.md</a> “<br>[playcanvas中文]: 	“<a target="_blank" rel="noopener" href="https://developer.playcanvas.com/zh/">https://developer.playcanvas.com/zh/</a> “</p>
  
       <!-- reward -->
       

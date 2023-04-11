@@ -177,6 +177,614 @@ var _hmt = _hmt || [];
     
     
     <article
+  id="post-服务端渲染（React中的服务器端渲染）"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/"
+    >服务端渲染（React中的服务器端渲染）</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/" class="article-date">
+  <time datetime="2023-04-11T03:32:27.000Z" itemprop="datePublished">2023-04-11</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/">服务端渲染（React中的服务器端渲染）</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="React-中的服务器端渲染"><a href="#React-中的服务器端渲染" class="headerlink" title="React 中的服务器端渲染"></a>React 中的服务器端渲染</h1><blockquote>
+<p>前面章节介绍了服务器端渲染的基本原理，并通过一个基于Vue了其进行服务器端渲染的基本流程，但其仅介绍了处理流程，简略掉了许多处理细节，本节就以一个基于React的服务器端渲染项目为例进行详细介绍。</p>
+</blockquote>
+<h3 id="一、项目搭建"><a href="#一、项目搭建" class="headerlink" title="一、项目搭建"></a>一、项目搭建</h3><p>​		为了更直观清楚地说明服务器端渲染，本节从搭建一个最基本的React项目入手逐一展开，首先所谓服务器端渲染就是当浏览器客户端发起向服务器端的请求后，能够得到一个可供直接渲染的HTML文件，下面我们就来模拟这个过程搭建 一个项目。首先使用express搭建一个 nodejs服务器，代码如下:</p>
+<pre><code class="js">import express from &quot;express&quot;;
+import React from &quot;react&quot;;
+import &#123; renderToString &#125; from &quot;react-dom/server&quot;;
+const app = express();
+//将自定义的Home组件渲染为字符串形式
+const Home = () =&gt; &#123;
+  return &lt;div&gt;Hello React SSR!&lt;/div&gt;;
+&#125;;
+const content = renderToString(&lt;Home /&gt;);
+//当浏览器发起对服务器根路径的请求后，服务器返回以下HTML的字符串
+app.get(&quot;/&quot;, function (req, res) &#123;
+  res.send(`
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;SSR&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    $&#123;content&#125;
+  &lt;/body&gt;
+&lt;/html&gt;
+  `);
+&#125;);
+//服务端启动后监听3000端口
+var server = app.listen(3000);
+</code></pre>
+<p>​		以上代码对有一定React开发经验的读者来说应该不难理解，其中与客户端React追染不同的是，渲染组件使用了react-dom&#x2F;server包中的renderToSring方法，其原理很简单，就是将组件渲染为字符串，而非客户端React渲染为DOM结构。</p>
+<p>​		同样有过nodejs开发经验的读者都知道上述代码是无法直接执行的，因为nodejs是遵循的Commonjs规范引入模块的，而import..from遵循的是esModel 规范，所以需要使用webpack进行构建打包，构建代码如下：</p>
+<pre><code class="js">const path = require(&#39;path&#39;);
+//在服务器端比编译时，可排除额外的模块
+const nodeExternals = require(&#39;webpack-node-externals&#39;);
+module.exports = &#123;
+  target:&#39;node&#39;,//nodejs环境
+  mode:&#39;development&#39;,
+  entry:&#39;./src/index.js&#39;,//构建入口文件
+  output:&#123;
+    //构建结果输出
+    filename:&#39;bundle.js&#39;,
+    path:path.resolve(__dirname,&#39;build&#39;)
+  &#125;,
+  externals:[nodeExternals()],
+  module:&#123;
+    rules:[&#123;
+      //构建规则，以下是对后缀为js的文件的处理方式
+      test:/\.js?$/,
+      loader:&#39;babel-loader&#39;,
+      exclude:/node_modules/,
+      options:&#123;
+        presets:[&#39;react&#39;,&#39;stage-0&#39;,[&#39;env&#39;,&#123;
+          targets:&#123;
+            browsers:[&#39;last 2 versions&#39;]
+          &#125;
+        &#125;]]
+      &#125;
+    &#125;]
+  &#125;
+&#125;
+</code></pre>
+<p>​		至此项目源代码和webpack构建配置已编写完成，可以进行调试并在浏览器上查看运行结果。当修改源代码时，程序的整个运行步骤分成两个阶段，首先使用webpack构建源代码，然后使用node启动服务器，即为package.json所配置的两条命令:</p>
+<pre><code class="js">&quot;scripts&quot;: &#123;
+&quot;dev:start&quot;: &quot;nodemon --watch build --exec node \&quot;./build/bundle.js\&quot;&quot;,
+&quot;dev:build&quot;: &quot;webpack --config webpack.server.js  --watch&quot;
+&#125;，
+</code></pre>
+<p>​		当执行npm run dev:build时，便会使用webpack 构建源代码，–watch 参数表示实时监控构建配置信息的修改，若有异动则重新进行构建。当执行npm run dev:start 时，会通过nodemon工具监控目标路径build,若经过重新构建在build路径下生成了新的编译后文件，则重启服务器。这里为了后面章节迭代调试方便，可引入npm-run-all工具将package.json所配置的两条命令统一为一 条 命令:</p>
+<pre><code class="js">&quot;dev&quot;: &quot;npm-run-all --parallel dev:**&quot;,
+</code></pre>
+<p>至此项目环境搭建告一段落， 接下来逐步丰富该项目框架。</p>
+<h3 id="二、同构"><a href="#二、同构" class="headerlink" title="二、同构"></a>二、同构</h3><p>同构是React项目服务器端渲染非常重要的概念，在讨论它之前，我们继续为本节顶日丰富些功能:将Home组件独立成一个模块， 并在其中添加一个按钮，单击该按钮后alert弹出一条信息，代码如下:</p>
+<pre><code class="react">import React from &#39;react&#39;;
+const Home = () =&gt; &#123;
+  return (
+    &lt;div&gt;
+      &lt;div&gt;
+        Hello React SSR!
+      &lt;/div&gt;
+      &lt;button onClick=&#123;()=&gt;&#123;alert(&#39;click&#39;)&#125;&#125;&gt;click&lt;/button&gt;
+    &lt;/div&gt;
+  )
+&#125;
+export default Home;
+</code></pre>
+<p>​		代码修改完毕保存后，便会自动触发项目文件监控进行重新构建，待服务器重启完毕后刷新浏览器会发现页面中多了一个按钮，但此时单击该按钮并不会弹出alert。</p>
+<p>​		于是我们通过命令行工具查看服务器返回的HTML代码发现:虽然button按钮被渲染出来，但其上所绑定的onClick 事件却丢失了，这是因为服务器端渲染组件的renderToString方法只会谊染出组件的基础内容，而不会将相关事件包括在内。解决这个问题的思路是首先在服务器端谊染出页面内容，然后在浏览器上让页面组件像传统客户端React组件样再执行一遍, 将事件添加进去， 于是就可进行单击操作了。这便引出了同构的概念，原本同构应该来源数学，指数学结构之间定义的一类映射，若两个结构是同构的，那么其中一个结构上的属性或操作对某个命题成立时，则在另一个结构上也应当成立。而前端领域所讲的同构其实更简单直接，即同样的代码在服务器端执行一次， 再在浏览器端执行一次。</p>
+<p>​		添加客户端渲染:由于目前完全由服务器端进行页面谊染，所以在现有代码的基础上，对项目进行同构改造首先需要让渲染的HTML文件能够引用并加载到外部的JavaScript文件，然后执行该JavaScript文件进行客户端准染，为相应的DOM添加事件，为此改造服务器端渲染代码如下。</p>
+<pre><code class="js">const app = express();
+//通过使用中间文件将对静态文件的请求都重定向到站点根路径下的public目录
+app.use(express.static(&quot;public&quot;));
+const context = renderToString(&lt;Home /&gt;);
+//为服务器端渲染的内容添加带有id的标签，以便JavaScript代码准确定位
+//通过script标签引入客户端渲染所需的JavaScript文件
+app.get(&quot;/&quot;, function (req, res) &#123;
+  res.send(`
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;title&gt;ssr&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;div id=&#39;root&#39;&gt;$&#123;content&#125;&lt;/div&gt;
+      &lt;script src=&#39;/index.js&#39;&gt;&lt;/script&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+  `);
+&#125;);
+</code></pre>
+<p>当浏览器加载完上述代码后，便会去请求script标签引用的index.js文件以进行客户端渲染。而客户端渲染的组件内容与服务器端相同，不同的是客户端渲染能将组件中绑定的事件挂载到真实的DOM节点上，代码如下:</p>
+<pre><code class="react">import React from &#39; react&#39;;
+
+import ReactDom from&#39; react-dom&#39; ;
+
+import Home from &#39; . ./containers/Home&#39;;
+
+//将Home组件渲染到id为root的元素上
+
+ReactDom.hydrate (&lt;Home /&gt;，document.getElementById(&#39;root&#39;));
+</code></pre>
+<p>至此，就实现了服务器端渲染的同构过程，接下来的内容将具体讨论在服务器端渲染中如何进行路由、样式、状态管理及数据请求的处理。</p>
+<h3 id="三、服务器端渲染的路由设置"><a href="#三、服务器端渲染的路由设置" class="headerlink" title="三、服务器端渲染的路由设置"></a>三、服务器端渲染的路由设置</h3><p>​		通常在实际项目中，基本都会包含多个页面，这就需要我们把路由机制也引入同构项目中。本节首先回顾客户端浏览器上React 项目关于路由的处理流程，然后讲述服务器端渲染中路由的实现，通过对比能更好地理解二者的区别与联系。</p>
+<h4 id="1-客户端React项目的路由处理"><a href="#1-客户端React项目的路由处理" class="headerlink" title="1.客户端React项目的路由处理"></a>1.客户端React项目的路由处理</h4><p>如图所示，客户端React项目对不同路由内容的访问，都是通过在浏览器所加载的JS文件中进行处理的。</p>
+<p>这里对前端路由和后端路由进行区分:后端路由是浏览器发送给服务器端的请求，服务器端根据请求的URL找到对应的映射函数并执行，最后将执行结果返回给客户端浏览器，执行结果可以是静态资源也可以是从数据库中查询结果后拼装的动态资源;而前端路由是浏览器端执行JavaScript代码根据URL的不同进行一些DOM显示和隐藏的操作，它的实现方式通常有两种: Hash 和History API。</p>
+<p>要在服务器端渲染框架中引入路由设置，就需要对相同的路由进行前后端的同构实现，在React项目中的实现方式很简单，其不同点只在于所使用的组件不同。</p>
+<p><img src="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230410111844951.png" alt="浏览器处理前端路由的流程"></p>
+<p>客户端使用的路由组件是BrowserRouter, 而服务器端使用的路由组件是StaticRouter,接下来通过项目代码来谈谈二者在使用上的差别。</p>
+<h4 id="2-StaticRouter组件的使用"><a href="#2-StaticRouter组件的使用" class="headerlink" title="2.StaticRouter组件的使用"></a>2.StaticRouter组件的使用</h4><p>首先为之前的项目配置两条路由设置，代码如下：</p>
+<pre><code class="react">import React from &#39;react&#39;;
+//引入路由设置组件
+import &#123; Route &#125; from &#39;react-router-dom&#39;;
+//引入两个页面组件，作为不同的路由内容
+import Home from &#39;../containers/Home&#39;;
+import Login from &#39;../containers/Login&#39;;
+export default(
+  &lt;div&gt;
+    &lt;Route path=&#39;/&#39; exact component=&#123;Home&#125;&gt;&lt;/Route&gt;
+    &lt;Route path=&#39;/login&#39; exact component=&#123;Login&#125;&gt;&lt;/Route&gt;
+  &lt;/div&gt;
+)
+</code></pre>
+<p>接着便可修改前面章节中负责客户端渲染的代码，添加BrowserRouter组件以引入路由，代码如下：</p>
+<pre><code class="react">import &#123; BrowserRouter &#125; from &#39;react-router-dom&#39;;
+import Routes from &#39;../Routes&#39;;
+//启动浏览器端路由组件
+const App = () =&gt; &#123;
+  return (
+    &lt;BrowserRouter&gt;
+    &#123;Routes&#125;
+    &lt;/BrowserRouter&gt;
+  )
+&#125;
+ReactDom.hydrate(&lt;App/&gt;,document.getElementById(&#39;root&#39;));
+</code></pre>
+<p>相比于客户端浏览器的路由组件BrowserRouter,服务器端渲染所使用的路由组件StaticRouter无法自动感知浏览器当前的URL,也就无法根据配置的路由信息谊染出相应的内容。为此我们可以根据浏览器请求服务器所传递的内容，来显式地为StaticRouter组件指定路由，修改原有服务器端渲染代码如下:</p>
+<pre><code class="react">import &#123; StaticRouter &#125; from &quot;react-router-dom&quot;;
+import Routes from &quot;../Routes&quot;;
+//传递请求信息参数可以获取到所要渲染的URL路由内容
+const render = (req) =&gt; &#123;
+  const content = renderToString(
+    &lt;StaticRouter location=&#123;req.path&#125;&gt;&#123;Routes&#125;&lt;/StaticRouter&gt;
+  );
+  return `
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;title&gt;SSR&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;div id=&#39;root&#39;&gt;
+        $&#123;content&#125;
+      &lt;/div&gt;
+      &lt;script src=&#39;/index.js&#39;&gt;
+        
+      &lt;/script&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+  `;
+&#125;;
+//使用通配符处理所有路由请求
+app.get(&quot;*&quot;, (req, res) =&gt; &#123;
+  res.send(render(req));
+&#125;);
+</code></pre>
+<p>通过HTTP的请求参数req,可以获取到其中的URL信息，然后将其传遗动StaticRouter组件的location属性，便可经服务器端渲染出相应路由的组件内容。除业之外，根据官方文档说明该组件还需要一个 context属性，用以传递些额外的信息，这里暂时用空对象占位，后面若有涉及再展开介绍。</p>
+<p>需要说明的是，按照上述路由方式配置的React项目，其服务器端渲染都只发生在首屏页面上，当首屏渲染结束后，页面操作便由客户端浏览器上的React代码接管了，之后的路由处理都将是前端路由。</p>
+<h3 id="四、结合Redux进行状态管理"><a href="#四、结合Redux进行状态管理" class="headerlink" title="四、结合Redux进行状态管理"></a>四、结合Redux进行状态管理</h3><p>随着前端项目复杂度的增加，项目内部需要管理的状态必然也增加，这些状态可能包括用户输入、服务器端返回、本地缓存等，所以能够高效且有序地管理这些数据逐渐成为一个迫切需求，于是Redux便应运而生。Redux 是一个基于JavaScript的状态容器，能够提供可预测化的状态管理，本节就来探讨如何在服务器端渲染框架中引入Redux进行状态管理。</p>
+<h4 id="1-同构创建Store"><a href="#1-同构创建Store" class="headerlink" title="1.同构创建Store"></a>1.同构创建Store</h4><p>与设置同构路由机制类似，Redux的引入也需要分别在客户端和服务器端进行配置，接下来我们同样以改造项目代码的方式进行讲述，首先使用Redux的createStore来为项目创建状态管理仓库，这里可将其封装成一个模块，便于在客户端与服务器端调用时减少代码冗余，代码如下:</p>
+<pre><code class="react">//封装创建状态管理仓库 store 的方法
+import &#123; createStore, applyMiddleware, combineReducers &#125; from &quot;redux&quot;;
+//引入 thunk 以帮助在 Redux 应用中实现异步性
+import thunk from &quot;redux-thunk&quot;;
+//引入页面对应的 reducer 方法
+import &#123; reducer as homeReducer &#125; from &quot;../containers/Home/store&quot;;
+//将各自 reducer 函数合并成一个大的 reducer
+const reducer = combineReducers(&#123;
+  home: homeReducer,
+&#125;);
+//将创建状态管理仓库的方法封装成一个函数调用，以避免数据的单例化
+export const getStore = () =&gt; &#123;
+  return createStore(reducer, applyMiddleware(thunk));
+&#125;;
+</code></pre>
+<p>需要注意的是，创建状态管理仓库的方法createStore 被封装在getStore 函数中，这样每次在执行getStore 函数后，便会创建一个 新的状态管理仓库，避免了单例化使所有用户拥有各自独立的仓库。接着便可分别在客户端渲染与服务器端渲染的入口文件中为应用添加所创建的状态管理仓库，下 面以服务器端的配置为例:</p>
+<pre><code class="react">//为应用配置创建的状态管理仓库
+import &#123; Provider &#125; from &quot;react-redux&quot;;
+//引入状态管理仓库创建方法
+import &#123; getStore &#125; from &quot;../store&quot;;
+//创建状态管理仓库实例
+const store = getStore();
+//使用 Provider 组件注入所创建的状态管理仓库，使其在所有子组件中都能访问到该仓库对象
+const content = renderToString((
+  &lt;Provider store=&#123;store&#125;&gt;
+    &lt;StaticRouter location=&#123;req.path&#125; context=&#123;&#123;&#125;&#125;&gt;
+      &#123;routes&#125;
+    &lt;/StaticRouter&gt;
+  &lt;/Provider&gt;
+));
+</code></pre>
+<p>由于同构引入Redux的相似性，在客户端渲染的入口文件中，同样创建状志管理仓库实例并通过Provider组件引入项目后，完成Store的同构创建。</p>
+<h4 id="2-配置组件的状态管理"><a href="#2-配置组件的状态管理" class="headerlink" title="2.配置组件的状态管理"></a>2.配置组件的状态管理</h4><p>在创建了状态仓库后，若要对仓库中的状态值进行管理，则还需要定义相应的事件行为action和状态更新的reducer,此处以实现在Home页面组件中获取并展示一个信息列表的功能来进行说明，首先定义获取信息列表后更新仓库中状态值的reducer方法，该方法应当是一个纯函数，其代码示例如下:</p>
+<pre><code class="react">//定义状态更新的类型值
+const CHANGE_INFO_LIST = &#39;HOME/CHANGE_INFO_LIST&#39;;
+//定义状态对象的默认值
+const defaultState = &#123;
+  infoList:[],
+&#125;
+//定义并以模块的方式导出 reducer 方法，它会根据相应的 action 类型进行状态值的更新
+export default (state = defaultState,action) =&gt;&#123;
+  switch(action.type)&#123;
+    case CHANGE_INFO_LIST:
+    return &#123;
+      ...state,
+      infoList:action.value,
+    &#125;;
+    default:
+      return state;
+  &#125;
+&#125;
+</code></pre>
+<p>有了状态更新的reducer函数后，还需要定义获取信息列表内容的action方法，在该方法中，我们将通过axios去异步请求信息列表数据，然后派发给reducer函数以完成状态的更新，代码示例如下:</p>
+<pre><code class="react">//引入axios工具库进行异步数据获取
+import axios from &#39;axios&#39;;
+//定义派遣 action 对象
+const changeInfoList = (list) =&gt; (&#123;
+  type:CHANGE_INFO_LIST,
+  value:list,
+&#125;)
+//定义获取信息列表数据的 action 方法
+export const getHomeInfoList = () =&gt; &#123;
+  return (dispatch) =&gt; &#123;
+    return axios.get(`http://api.example.com/ssr/api/news.json`)
+    .then((res) =&gt; &#123;
+      const list = res.data;
+      //将数据派发到 reducer 上进行状态更新
+      dispatch(changeInfoList(list))
+    &#125;)
+  &#125;
+&#125;
+</code></pre>
+<p>至此完成了状态仓库Store的创建，事件行为action及状态更新reducer方法的定义，即已将Redux引入进了本项目，接着我们来看如何在页面组件中使用这套状态管理机制，来实现信息列表内容的管理及在页面中的显示。</p>
+<h4 id="3-页面组件使用Redux"><a href="#3-页面组件使用Redux" class="headerlink" title="3.页面组件使用Redux"></a>3.页面组件使用Redux</h4><p>若要完成信息列表内容的展示功能，根据对React 的开发经验，我们需要在Home页面组件的生命周期函数componentDidMount中完成请求数据，这就要求Home组件是一个一般组件而非函数式组件，改写Home组件的代码如下:</p>
+<pre><code class="react">//引入 connect 方法来实现组件与 store 的结合
+import &#123; connect &#125; from &#39;react-redux&#39;;
+//引入上面定义的事件行为 action
+import &#123; getHomeInfoList &#125; from &#39;./store/actions&#39;;
+//Home 组件的一般形式
+class Home extends Component&#123;
+  //渲染信息列表的内容
+  getList() &#123;
+    const &#123; list &#125; = this.props;
+    return list.map(item =&gt; &lt;div key=&#123;item.id&#125;&gt;&#123;item.title&#125;&lt;/div&gt;)
+  &#125;
+  render()&#123;
+    return (
+      &lt;div&gt;
+        &#123;this.getList()&#125;
+        &lt;button onClick=&#123;()=&gt;&#123;alert(&#39;click1&#39;)&#125;&#125;&gt;click&lt;/button&gt;
+      &lt;/div&gt;
+    )
+  &#125;
+  //当组件装载完成后执行组件生命周期
+  componentDidMount()&#123;
+    if(!this.props.list.length)&#123;
+      this.props.getHomeInfoList();
+    &#125;
+  &#125;
+&#125;
+//定义仓库中与组件相关的数据
+const mapStateToProps = state =&gt; (&#123;
+  list:state.home.infoList
+&#125;);
+//定义组件中可使用的数据派遣方法
+const mapDispatchToProps = dispatch =&gt; (&#123;
+  getHomeInfoList () &#123;
+    dispatch(getHomeInfoList ());
+  &#125;
+&#125;)
+//完成状态与组件的结合
+export default connect (mapStateToProps,mapDispatchToProps)(Home);
+</code></pre>
+<p>当该页面组件被装载后，就会调用生命周期函数触发获取信息列表的action事件行为，然后在获取到信息列表数据后通过reducer方法更新仓库状态，一旦状态仓库中的list 值发生改变，组件便会进行重新渲染，这样新的信息列表内容就会展示在页面中。</p>
+<h4 id="4-Redux的同构使用"><a href="#4-Redux的同构使用" class="headerlink" title="4.Redux的同构使用"></a>4.Redux的同构使用</h4><p>虽然页面中展示出了信息列表的内容，但如果我们通过设置Chrome 浏览器禁止JavaScript的执行，便会发现这个列表的内容实际上是客户端渲染出来的，服务器端渲染时并没有获取到该列表内容。</p>
+<p>这是因为组件的生命周期函数并不会在服务器端渲染时执行，那么在componentDidMount函数中请求信息列表内容的事件行为也就不会被派发出去，所以为了在服务器端渲染时能够展示出列表内容，我们需要设置Redux的同构使用。其思路是这样的:为组件对象定义一个loadData方法，该方法的功能类似于当组件加载后执行以获取数据的生命周期函数，然后根据所请求的路由在加载组件时显式地去执行对应的loadData方法。为Home组件定义loadData 方法如下:</p>
+<pre><code class="react">//该方法负责在服务器端渲染之前，派发相应数据加载的事件行为
+Home.loadData = (store) =&gt; &#123;
+  return store.dispatch(getHomeInfoList());
+&#125;
+</code></pre>
+<p>接着若要根据路由信息来执行相应组件的loadData方法，就需要修改原有的路由配置方式，将其修改为对象数组的形式，代码示例如下:</p>
+<pre><code class="react">export default [&#123;
+  path: &#39;/&#39;,
+  component: Home,
+  exact: true,
+  loadData: Home.loadData,
+  key: &#39;home&#39;
+&#125;,&#123;
+  path: &#39;/login&#39;,
+  component: Login,
+  exact: true,
+  key: &#39;login&#39;
+&#125;];
+</code></pre>
+<p>然后在渲染结果中将路由信息的引入改成如下形式：</p>
+<pre><code class="react">import &#123; StaticRouter,Route &#125; from &#39;react-router-dom&#39;;
+import routes from &#39;../Routes&#39;;
+//改写路由引入
+const content = renderToString((
+  &lt;Provider store=&#123;store&#125;&gt;
+      &lt;StaticRouter location=&#123;req.path&#125; context=&#123;&#123;&#125;&#125;&gt;
+        &lt;div&gt;&#123;routes.map(route =&gt; &lt;Route &#123;...route&#125;/&gt;)&#125;&lt;/div&gt;
+      &lt;/StaticRouter&gt;
+  &lt;/Provider&gt;
+));
+</code></pre>
+<p>在完成路由配置的修改后，便可显式地进行loadData的执行，处理过程应该发生在服务器端接收到请求并创建好状态仓库后，执行服务器端渲染方法renderToString之前。在通常情况下，处理的路由可能包含多级路由，也就是说可能涉及多个组件loadData方法的执行，为了不遗漏可以使用react-router-confg 工具包中的matchRoutes方法进行路由匹配。代码示例如下:</p>
+<pre><code class="react">app.get(&#39;*&#39;,function (req,res)&#123;
+  //创建仓库对象
+  const store = getStore();
+  //匹配当前路由路径中包含的全部组件
+  const matchedRoutes = matchRoutes(routes,req.path);
+  //使 matchRoutes 中所有组件对应的 loadData 方法执行一次
+  const promises = [];
+  matchedRoutes.forEach(item =&gt; &#123;
+    if (item.route.loadData)&#123;
+      promises.push(item.route.loadData(store))
+    &#125;
+  &#125;)
+  Promise.all(promises).then(()=&gt;&#123;
+    //将服务器端渲染内容定义一个render方法进行封装
+    res.send(render(store,routes,req));
+  &#125;)
+&#125;);
+</code></pre>
+<p>由于获取数据的方法都是异步的，所以可通过 Promise.all 方法待数据请求完成后在回调中统一进行 服务器端渲染操作。</p>
+<h4 id="5-注水和脱水"><a href="#5-注水和脱水" class="headerlink" title="5.注水和脱水"></a>5.注水和脱水</h4><p>在完成Redux的同构引入及使用后，我们重启服务器并刷新浏览器访问项目页面，此时会发现页面中的信息列表内容在发生一次闪白后才 会被稳定渲染出来。</p>
+<p>整个过程是这样的:当浏览器接收到服务器端响应后，由于进行了数据请求与状态管理的服务器端渲染，所以页面中已经包含了信息列表的数据，而当HTML 中JavaScript代码加载后将会与服务器端同构的客户端渲染，根据目前代码这个渲染过程依然会创建新的状态仓库，在重新请求信息列表数据前，仓库中状态的初始值应为空，这便是刷新页面后发生闪白的原因，待客户端请求到数据后，内容才被稳定渲染出来。显而易见，这种在服务器端与客户端进行的两次相同数据请求，不仅冗余而且页面谊染内容闪白，为了解决这个问题，我们可以将数据挂载到浏览器window 变量上，实现在客户端浏览器上复用服务器端请求到的数据。</p>
+<p>这就是数据注水与脱水，服务器端渲染将数据写入window变量上的过程叫作注水，相应在客户端读取数据的过程叫作脱水。改造项目代码实现数据注水如下:</p>
+<pre><code class="react">//服务器端渲染方法
+render = ( store,routes,req ) =&gt; &#123;
+  const content = renderToString((
+    //...服务器端渲染内容
+  ));
+  return `
+  &lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;ssr&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id = &quot;root&quot;&gt;
+      $&#123;content&#125;
+    &lt;/div&gt;
+    &lt;script&gt;
+      //进行数据注水
+      window.context = &#123;
+        state: $&#123;JSON.stringify(store.getState())&#125;
+      &#125;
+    &lt;/script&gt;
+    &lt;script src=&#39;/index.js&#39;&gt;
+    &lt;/script&gt;
+  &lt;/body&gt;
+ &lt;/html&gt;
+  `;
+&#125;
+</code></pre>
+<p>在完成数据注水后，客户端创建状态仓库实例时应当进行相应的数据脱水操作，即客户端状态仓库实例的创建应包含注水数据，修改创建状态仓库代码如下:</p>
+<pre><code class="react">//服务器端渲染状态仓库创建函数
+export const getStore = () =&gt; &#123;
+  return createStore(reducer, applyMiddleware(thunk));
+&#125;
+//客户端渲染状态仓库创建函数
+export const getClientStore = () =&gt; &#123;
+  //进行数据脱水
+  const defaultState = window.AudioContext.state;
+  return createStore(reducer,defaultState,applyMiddleware(thunk));
+&#125;
+</code></pre>
+<h3 id="五、通过中间层获取数据"><a href="#五、通过中间层获取数据" class="headerlink" title="五、通过中间层获取数据"></a>五、通过中间层获取数据</h3><p>比较简单的Web应用只需处理好浏览器与服务器之间的数据交互即可，但对较大型的项目来说，通常会在浏览器与传统的服务器之间加入node服务器作为中间层，来完成数据获取与服务器端渲染等相关处理，如图所示。</p>
+<p><img src="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230411103901404.png" alt="带node服务器的中间层架构"></p>
+<h4 id="1-使用中间层的优缺点"><a href="#1-使用中间层的优缺点" class="headerlink" title="1.使用中间层的优缺点"></a>1.使用中间层的优缺点</h4><p>使用中间层首先可以让服务器处理分工更加明确，后端服务器主要负责数据的获取和计算，由于其可使用Java&#x2F;C++等相较于JavaScript 更高计算性能的语言来实现，这对于高效计算数据非常有益:而node服务器则专注于服务器端渲染这种数据与组件结合的处理，当服务器端渲染接近当前性能瓶颈时，也可以通过增加node服务器数量来进行缓解。</p>
+<p>使用中间层无疑也会增加系统的复杂度，原本前端工程师只需关注项目代码在浏览器端的运行情况，现在还需关注并保证服务器端渲染及客户端请求代理时，node 服务器的稳定运营。</p>
+<h4 id="2-代理客户端请求"><a href="#2-代理客户端请求" class="headerlink" title="2.代理客户端请求"></a>2.代理客户端请求</h4><p>使用中间层必然提高了项且调试和维护的复杂度，为了避免一些无谓的复杂度，则需要保证浏览器对数据的请求应尽量由node 服务器来代理完成，这样当出现数据请求错误时，定位问题也会更加容易。</p>
+<p>在 四、中代码中客户端浏览器对信息列表内容的请求，是直接发送给后端服务器的，这里我们需要将其改为由node服务器代理给后端服务器，可利用express-http-proxy工具包配置代理路由如下:</p>
+<pre><code class="js">import express from &#39;express&#39;;
+//引入请求代理工具包
+import proxy from &#39;express-http-proxy&#39;;
+const app = express();
+//将向 node 服务器请求的 /api 路由代理到 http://api.example.com 上
+app.use(&#39;./api&#39;,proxy(&#39;http://api.example.com&#39;,&#123;
+  proxyReqPathResolver:function(req)&#123;
+    return &#39;/ssr/api&#39; + req.url;
+  &#125;
+&#125;))
+</code></pre>
+<p>配置好代理后Home页面信息列表数据获取的action方法便可改为如下形式：</p>
+<pre><code class="javascript">export const getHomeInfoList = () =&gt; &#123;
+  return (dispatch,getState) =&gt; &#123;
+    //向 node 服务器发起请求
+    return axios.get(&#39;/api/news.json&#39;)
+    .then((res) =&gt; &#123;
+      const list = res.data;
+      dispatch(changeInfoList(list))
+    &#125;);
+  &#125;
+&#125;
+</code></pre>
+<p>这是对客户端浏览器请求数据的改动，而服务器端渲染本身就发生在node 服务器上，其数据请求直接发送给后端服务器即可。</p>
+<h3 id="六、处理样式"><a href="#六、处理样式" class="headerlink" title="六、处理样式"></a>六、处理样式</h3><p>为了实现完整的服务器端渲染，还需要对引入的CSS样式进行同构处理，与通常客户端渲染的样式引入方式类似，服务器端渲染引入样式也可由webpack来进行构建编译，然后将相应的样式信息插入需要渲染的HTML页面中。</p>
+<p>由于一个页面通常都会包含多个组件，而每个组件又会引入各自的样式文件，若要在服务器端渲染中包含样式信息，就需要在渲染出的首屏页面中将所有组件涉及的样式都引入HTML页面中。这就要用到路由组件的context属性，来收集各自组件中的样式信息，代码示例如下:</p>
+<pre><code class="react">//服务器端渲染方法
+const render = (store,routes,req,context) =&gt; &#123;
+  //定义存储页面中所有子组件的样式信息，并以字符串数组的形式存储
+  const context = &#123; css: []&#125;;
+  //服务器端渲染内容
+  const content = renderToString((
+    &lt;Provider store=&#123;store&#125;&gt;
+      &lt;StaticRouter location=&#123;req.path&#125; context=&#123;context&#125;&gt;
+        &lt;div&gt;
+          &#123;renderRoutes(routes)&#125;
+        &lt;/div&gt;
+      &lt;/StaticRouter&gt;
+    &lt;/Provider&gt;
+  ));
+  //将所有样式信息拼接成一个字符串
+  const cssStr = context.css.length ? context.css.join(&#39;\n&#39;) : &#39;&#39;;
+  //引入相应的 HTML 页面中
+  return `
+  &lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;ssr&lt;/title&gt;
+    &lt;style&gt;
+    $&#123;cssStr&#125;
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    //...省略 body 中的内容
+  &lt;/body&gt;
+&lt;/html&gt;
+  `;
+&#125;
+</code></pre>
+<p>接下来就需要将各个组件中涉及的样式信息，以字符串的方式存储到上述context静态变量中，这将要面对两个问题:首先是如何获取到样式信息的字符串形式，其次是如何统一处理所有 子组件的数据存储。对于第一个问题 可以使用isomorphic-styleloader工具，在webpack构建后的组件代码中，便可通过引入样式文件对象的_getCss()方法获取;第二个问题也很容易，可以通过高阶组件的方式来解决，定义高阶组件代码如下:</p>
+<pre><code class="react">import React,&#123; Component &#125; from &#39;react&#39;;
+//定义一个返回组件的函数，返回的这个组件就叫做高阶组件
+export default ( DecoratedComponent,styles ) =&gt; &#123;
+  return class NewComponent extends Component &#123;
+    componentWillMount() &#123;
+      //仅在服务器端渲染时才执行
+      if(this.props.staticContext)&#123;
+        this.props.staticContext.css.push(styles._getCss());
+      &#125;
+    &#125;
+    render()&#123;
+      return &lt;DecoratedComponent &#123;...this.props&#125;/&gt;
+    &#125;
+  &#125;
+&#125;
+</code></pre>
+<p>最后将高阶组件应用到每个组件上即可，下面以之前介绍的Home组件为例:</p>
+<pre><code class="react">//引入定义的高阶组件
+import withStyle from &#39;../../withStyle&#39;;
+//该组件包含的样式文件
+import styles from &#39;./style.css&#39;;
+class Home extends Component &#123;
+  render() &#123;
+    return (
+      &lt;div className = &#123;styles.container&#125;&gt;
+      //省略。。。
+    &lt;/div&gt;
+    )
+  &#125;
+&#125;
+//调用高阶函数包装本组件
+export default connect() (withStyle(Home,styles));
+</code></pre>
+<h3 id="七、搜索引擎优化相关技巧"><a href="#七、搜索引擎优化相关技巧" class="headerlink" title="七、搜索引擎优化相关技巧"></a>七、搜索引擎优化相关技巧</h3><p>服务器端谊染有利于搜索引擎优化(SEO)，当开发好的网站上线后，都希望有大量的用户来访问网站，提高网站的流量才能让其发挥作用增加收益，一个无人向津的网站是没有价值的。</p>
+<p>那么如何让更多的人知道有这么个网站并进行导流呢? 搜索引擎优化就具个有效的手段，当用户根据自己的需求使用Google 或者百度等搜索引擎进行信息查询后，会得到与之相关的若干网站链接结果。显而易见，排名越靠前的网站相较于靠后的网站将会获得更大的曝光度和访问的可能性。</p>
+<h4 id="1-搜索引擎优化简述"><a href="#1-搜索引擎优化简述" class="headerlink" title="1.搜索引擎优化简述"></a>1.搜索引擎优化简述</h4><p>搜索引擎是如何排名查询结果的呢?当然除了一些收费的竞价排名， 主要还是根据搜索引擎的网络爬虫对网站内容进行分析后，由一系列相关度算法的计算得来的，简单地说就是搜索引擎认为一个网站的内容对搜索关键字来讲越有价值，那么它的排名就会越靠前。</p>
+<p>这就意味着搜索引擎需要知道网站的内容，如果网站内容完全由客户端进行谊染，则在搜索引擎爬虫抓取到的HTML文件中，除了一个供客户端渲染所需的标签容器，不会有多少有用的信息，那么可想而知排名结果不会靠前。因此相比于客户端渲染来说，包含了许多DOM文档信息的服务器端渲染对搜索引擎优化就很有优势。</p>
+<p>通常可能会认为网站head标签中的title 和description能够提供搜索引擎优化的作用，但随着搜索引擎的不断优化，这两个数据项已经无法给目前基于网站全文本匹配分析的搜索引擎提供多大的优化益处了，那么像下面这样的属性还有什么意义呢?</p>
+<pre><code class="html">&lt;head&gt;
+  &lt;meta name=&quot;description&quot; content=&quot;技术博客&quot;/&gt;
+  &lt;title&gt;前端&lt;/title&gt;
+&lt;/head&gt;
+</code></pre>
+<p>目前这两个属性最大的用处是增加搜索结果的转化率，比如使用百度搜索“前端”这个关键词，所得结果如图所示，其中带有“广告”字样的搜索结果属于竞价排名，而其他结果则属于自然排名。title和description 并不能有效地提高排名结果，但它们却是搜索结果的展示内容，如果这两个属性的文案写得比较吸引人，便能在搜索结果中产生不错的访问转化率。</p>
+<p><img src="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230411113047860.png" alt="搜索百度‘前端’结果"></p>
+<h4 id="2-如何进行搜索引擎优化"><a href="#2-如何进行搜索引擎优化" class="headerlink" title="2.如何进行搜索引擎优化"></a>2.如何进行搜索引擎优化</h4><p>若要系统地做好搜索引擎优化，可能会涉及非常广泛的内容，此处考虑到篇幅与主题的因素，就仅站在服务器端渲染的角度来谈谈搜索引擎优化的一些核心思路。对搜索引擎来说，一个网站的内容包含三个部分: 文本内容、网站链接和多媒体(即图片、音视频等)。如果要获得较好的搜索引擎优化效果，就要分别在以下三个方面下功夫:首先文本内容应当尽量原创，若是抄袭的内容则很难在搜索引擎上获得较高的排名权重。</p>
+<p>其次是网站链接的优化，它分为内部链接和外部链接，内部链接是指网站内部打开新网页的链接，它应当具有比较好的相关度，比如在一个教育培训类的网站中，如果包含的链接基本都是诸如体育、影视、游戏等类别的，那么在以教育培训的关键词进行搜索时，该网站就不会获得较高的排名权重。外部链接指的是通过其他网站内部访问本网站的链接，外部链接越多说明本网站的影响力越大，也就会获得更高的排名权重。</p>
+<p>最后是多媒体方面，如果网站包含较多图片及音视频，并且均为原创高清的，那么搜索引擎也会因为更全面的丰富度而提高网站的排名权重。</p>
+<p>将上述建议应用到实际的项目优化中，相信网站的搜索排名一定不会太低， 但这有一个前提就是网站需要采用服务器端渲染。在本章服务器端渲染的角度来看，上述三方面的优化建议其实在框架代码层面并不能做出多少实际努力，不过还是可以通过代码来优化一下 HTML页面的title与description来帮助提高一些访问转化率的。</p>
+<h4 id="3-优化title和description"><a href="#3-优化title和description" class="headerlink" title="3.优化title和description"></a>3.优化title和description</h4><p>这里利用一个react-helmet 第三方包来实现为不同页面指定相应的title 和description,我们为Home页面引入该包进行改造，代码如下:</p>
+<pre><code class="react">import React, &#123; Component,Fragment &#125; from &#39;react&#39;;
+import &#123; Helmet &#125; from &#39;react-helmet&#39;;
+//将 Helmet 组件添加入页面
+class Home extends Component &#123;
+  render () &#123;
+    return (
+      &lt;Fragment&gt;
+        &lt;Helmet&gt;
+            &lt;title&gt;服务端渲染 - 加快首屏加载&lt;/title&gt;
+            &lt;meta name=&quot;description&quot; content=&#39;服务端渲染 - 加快首屏加载&#39;/&gt;
+        &lt;/Helmet&gt;
+        &lt;div&gt;
+          Hello React SSR!
+        &lt;/div&gt;
+        &lt;button onClick=&#123;()=&gt;&#123;alert(&#39;click&#39;)&#125;&#125;&gt;click&lt;/button&gt;
+      &lt;/Fragment&gt;
+    )
+  &#125;
+&#125;
+export default Home;
+</code></pre>
+<p>根据之前所讲到的同构概念可知，如果仅在页面组件中添加包含title和description信息的Helmet组件，则无法将信息挂载到服务器端渲染出的HTML文件中，我们还需要修改服务器端渲染代码以完成信息的挂载，修改代码如下:</p>
+<pre><code class="react">import &#123; Helmet &#125; from &#39;react-helmet&#39;;
+const context = renderToString(&lt; Home/&gt;);
+const helmet = Helmet.renderStatic();
+app.get(&#39;/&#39;,function(req,res)&#123;
+  res.send(`&lt;html&gt;
+  &lt;head&gt;
+    $&#123;helmet.title.toString()&#125;
+    $&#123;helmet.meta.toString()&#125;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&#39;root&#39;&gt;
+      $&#123;content&#125;
+    &lt;/div&gt;
+    &lt;script src=&#39;/index.js&#39;&gt;
+      
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;html/&gt;)`
+);
+&#125;)
+</code></pre>
+<p>如此便可将title和description 信息添加到服务器端渲染出来的页面中，并且不同页面组件可根据需求设置不同的内容。</p>
+<h3 id="本章小结"><a href="#本章小结" class="headerlink" title="本章小结"></a>本章小结</h3><p>本章主要关注服务器端渲染技术对性能优化的作用与实现细节，首先通过对页面渲染过程的开销分析，发现现代前端框架为开发带来便利的同时也增加了首屏谊染时间的问题，于是便引出了服务器端渲染技术对改善首屏渲染的思路和原理。</p>
+<p>接着通过一个基于 Vue的Demo项目，对服务器端渲染的处理流程进行了整体介绍，然后，我们通过React搭建了一 个服务器端渲染框架并详细介绍了其中的诸多技术细节，包括路由设置、状态管理、数据获取及样式处理在服务器端渲染中是如何实现的，这也是本章的重点部分，最后还简要介绍了一些关 于服务器端谊染与搜索引擎优化的内容。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/" rel="tag">服务端渲染</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
   id="post-服务端渲染（Vue中的服务器端渲染）"
   class="article article-type-post"
   itemscope
@@ -1671,119 +2279,6 @@ display: none;
     <footer class="article-footer">
        
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" rel="tag">加载注意事项</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-    
-</article>
-
-    
-    <article
-  id="post-加载优化（视频加载）"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/"
-    >加载优化（视频加载）</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/" class="article-date">
-  <time datetime="2023-02-16T03:09:10.000Z" itemprop="datePublished">2023-02-16</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">前端性能优化</a> / <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/">加载优化（视频加载）</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h2 id="视频加载"><a href="#视频加载" class="headerlink" title="视频加载"></a>视频加载</h2><blockquote>
-<p>与延迟加载图像资源类似，通过视频标签引入的视频资源也可进行延迟加载，但通常都会根据需求场景进行具体的处理，下面就来探讨一 些关于 视频加载的优化内容。</p>
-</blockquote>
-<h3 id="一、不需要自动播放"><a href="#一、不需要自动播放" class="headerlink" title="一、不需要自动播放"></a>一、不需要自动播放</h3><p>​		由于Chrome等一些浏览器会对视频资源进行预加载，即在HTML完成加载和解析时触发DOMContentLoaded 事件开始请求视频资源，当请求完成后触发window. onload事件开始页面渲染，过程如图所示。</p>
-<p><img src="/2023/02/16/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD%EF%BC%89/image-20230216103841965.png" alt="视频资源的加载"></p>
-<p>为了使页面更快地加载并渲染出来，可以阻止不需要自动播放的视频的预加载:其方法是通过视频标签的preload进行控制:</p>
-<pre><code class="html">&lt;video controls preload-&quot;none&quot; poster=&quot;default.1po9&quot;&gt;
-        &lt;source src=&quot;simply.webm&quot; type-&quot;video/webm&quot;&gt;
-        &lt;source src=&quot;simply.mp4&quot; tye-&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
-</code></pre>
-<p>标签的preload属性通常的默认值为auto，表示无论用户是否希望，所有视频文件都会被自动下载，这里将其设置为none，来阻止视频的自动加载。同时这里还通过poster属性为视频提供占位符图片，它的作用是当视频未加载出来时，不至于在页面中呈现一块让用户未知的空白。考虑类似边缘异常场最是必要的，因为浏览器对视烦的加载行为可能存在较大差别。</p>
-<ul>
-<li>Chrome之前的版本中，preload的默认值是auto,从64版本以后其默人值改为了metadata, 表示仅加载视频的元数据，Firefox、 IE11和Edge等浏览器的行为类似。</li>
-<li>Safari 11.0的Mac版会默认进行部分视频资源预加载，11.2的Mac版后仅可预加载元数据，但ios的Safari不会对视频预加载。</li>
-<li>若浏览器开启了流量节省模式后，preload 将默认设置为none.</li>
-</ul>
-<p>​		当浏览器支持preload的metadata属性值后，这将会是一种兼顾了 性能与体验后更优的方式，因为从体验上讲，对于不自动播放的视频场景，在单击播放之前，若能提前告知视频的播放时长、播放列表等元数据，便能带给用户更好的可控感，同时又不至于提前加载了过多资源而阻塞页面渲染。</p>
-<p>另外， 如果你的站点中包含了同一域名下的多个视频资源，那么推荐最好将preload属性设置为metadata,或者定义poster属性值时将preload设置为none,这样能很好地避免HTTP的最大连接数，因为通常HTTP 1.1协议规定同一城名下的最大连接数为6,如果同时有超过此数量的资源请求连接，那么多余的连接便会被挂起，这无疑也会对性能造成负面影响。</p>
-<h3 id="二、视频代替GIF动画"><a href="#二、视频代替GIF动画" class="headerlink" title="二、视频代替GIF动画"></a>二、视频代替GIF动画</h3><p>​		另一种视频的使用场最是在前面章节讲到的:应当尽量用视频代替尺寸过大的GIF动画，虽然GIF动画的应用历史和范围都很广泛，但其在输出文件大小、图像色彩质量等许多方面的表现均不如视频。GIF动画相对于视频具有三个附加的特性:没有音轨、连续循环播放、加载完自动播放，替换成视频后类似于:</p>
-<pre><code class="html">&lt;video autoplay muted loop playsinline&gt;
-        &lt;source src-&quot;video.webm&quot; type-&quot;video/webm&quot;&gt;
-        &lt;source srC-&quot;video .mp4&quot;type-&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
-</code></pre>
-<p>​		其中在视频标签中附加的属性含义分别为:autoplay自动播放、muted 静音播放及loop循环播放，而playsinline属性则是用于在ios中指定自动播放的。虽然有了GIF图像的替代方案，但并非所有浏览器都像Chrome一样， 能自动进行延迟加载。接下来就需要进行一些配置开发， 使该场最的视频也能延迟加载。首先修改HTML标签如下:</p>
-<pre><code class="html">&lt;video autoplay muted loop playsinline width=&quot;610&quot; height=&quot;254&quot; poster=&quot;video-poster.jpg&quot;&gt;
-        &lt;source data-src=&quot;video. webm&quot; type=&quot;video/webm&quot;&gt;
-        &lt;source data-src=&quot;video .mp4&quot; type=&quot;video/mp4&quot;&gt;
-&lt;/video&gt;
-</code></pre>
-<p>​		这里进行了两处修改:首先是为视频标签添加了poster 属性，意为使用poster中指定的图片作为视频延迟加载出现前的占位;其次是使用了类似应对图像延迟加载的方式，将真实视频资源的URL放在data-src属性中，然后基于Intersection Observer用JavaScript实现对延迟加载的控制:</p>
-<pre><code class="js">Document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; &#123;
-  const lazyVideos = [].slice.call(document.querySelectorAll(&quot;video.lazy&quot;));
-  if (&quot;IntersectionObserver&quot; in window) &#123;
-    const lazyVideoObserver = new IntersectionObserver((entries, observer) =&gt; &#123;
-      entries.forEach((video) =&gt; &#123;
-        if (video.isIntersecting) &#123;
-          for (const source in video.target.children) &#123;
-            const videoSrc = video.target.children[source];
-            if (
-              typeof videoSrc.tagName === &quot;string&quot; &amp;&amp;
-              videoSrc.tagName === &quot;source&quot;
-            ) &#123;
-              videoSrc.src = videoSrc.dataset.src;
-            &#125;
-          &#125;
-          video.target.load();
-          video.target.classList.remove(&quot;lazy&quot;);
-          lazyVideoObserver.unobserve(video.target);
-        &#125;
-      &#125;);
-    &#125;);
-
-    lazyVideos.forEach((lazyVideo) =&gt; &#123;
-      lazyVideoObserver.observe(lazyVideo);
-    &#125;);
-  &#125;
-&#125;);
-</code></pre>
-<p>​		对视频标签的延迟加载有点类似<picture>,需要对所有<source> 子元素进行选代解析，将data-src上的属性值迁移到src属性上。不同的是，需要额外显示调用元素的load方法来触发加载，然后视频才会根据autoplay属性开始进行自动播放。如此便可使用低于GIF动画的流量消耗，进行资源的延迟加载。</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%A7%86%E9%A2%91%E5%8A%A0%E8%BD%BD/" rel="tag">视频加载</a></li></ul>
 
     </footer>
   </div>

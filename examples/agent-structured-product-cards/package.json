@@ -1,0 +1,13 @@
+{
+  "name": "agent-product-card-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node build.mjs --test"
+  },
+  "dependencies": { "vue": "3.5.43" },
+  "devDependencies": { "esbuild": "0.28.2", "typescript": "5.7.2" }
+}

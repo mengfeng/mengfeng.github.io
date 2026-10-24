@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+<title>让 Agent 返回页面能直接渲染的结果：从一句话到商品卡片 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+<!-- mermaid -->
+<style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml">
+</link><meta content="用 Vue 3 与 TypeScript 完成一个商品推荐演示：只读工具提供名称和价格，模型返回商品 ID 与理由，前端校验后渲染固定卡片，并处理未知商品、缺价和重试。" name="description"/><link href="https://mengfeng.github.io/2026/10/24/agent-structured-product-cards/" rel="canonical"/><meta content="让 Agent 返回页面能直接渲染的结果：从一句话到商品卡片" property="og:title"/><meta content="用 Vue 3 与 TypeScript 完成一个商品推荐演示：只读工具提供名称和价格，模型返回商品 ID 与理由，前端校验后渲染固定卡片，并处理未知商品、缺价和重试。" property="og:description"/><meta content="https://mengfeng.github.io/2026/10/24/agent-structured-product-cards/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-structured-product-cards/cover.webp" property="og:image"/></head>
+</html>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-10-24-agent-structured-product-cards" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">让 Agent 返回页面能直接渲染的结果：从一句话到商品卡片</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/10/24/agent-structured-product-cards/"><time datetime="2026-10-24T12:11:03.661789Z" itemprop="datePublished">2026-10-24</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><p>用户在商城里输入：“预算 500 元，推荐两款通勤双肩包。”</p>
+<p>聊天助手很容易回一段推荐文案。但放到真实页面里，前端还需要商品名称、价格、卡片列表和异常提示。如果答案里只有一段 Markdown，页面就得猜哪一行是商品、哪一个数字是价格，后续的点击、对比和状态更新也很难维护。</p>
+<p>这一篇从一个具体交互开始：<strong>让 Agent 查询商品，再把结果交给固定的 Vue 组件展示。</strong> 推荐理由可以由模型组织，商品身份和价格必须来自查询结果。</p>
+<blockquote>
+<p>本文是可复现的离线工程演示：商品为虚构数据，模型响应使用固定夹具，工具在浏览器本地执行。没有调用真实模型，没有连接真实商城，也没有下单功能。验证覆盖的是工具与页面之间的数据边界。</p>
+</blockquote>
+<figure class="tech-figure"><img alt="机器人把查询结果送入校验关卡，合格结果成为商品卡片，异常结果被拦下。" height="1024" src="/images/agent-structured-product-cards/cover.webp" width="1536"/></figure>
+<h2 id="section-1"><a class="headerlink" href="#section-1" title="一、先约定页面真正需要什么"></a><span aria-hidden="true" class="tech-section-number">01</span>先约定页面真正需要什么</h2>
+<p>商品卡片可以先收敛到四个字段：<code>id</code>、<code>name</code>、<code>priceCents</code>、<code>reason</code>。金额统一用整数分保存，显示时才转成元，避免把“299 元”“￥299”“29900”混成一种数据。</p>
+<p>其中，前三个字段属于商品事实；<code>reason</code> 是模型给出的推荐解释。把它们分开，接口就容易设计了：工具返回商品事实，模型最终只返回 <code>productId</code> 和 <code>reason</code>，应用程序再按 ID 合并。</p>
+<div class="tech-code"><div class="tech-code-label">json</div><pre><code class="language-json"><span class="p">{</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"product_cards"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"productId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bag-01"</span><span class="p">,</span><span class="w"> </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"重量轻，适合日常通勤。"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"productId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bag-02"</span><span class="p">,</span><span class="w"> </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"防泼水面料，适合雨天通勤。"</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>这份最终结果不接受模型提供的名称或价格。即使模型试图附加一个 <code>priceCents: 1</code>，卡片校验也会失败。这样可以把“表达是否流畅”和“商品事实是否可信”拆成两个可检查的问题。</p>
+<p>还要加一条业务约束：<strong>模型只能引用本次工具返回的商品。</strong> 商品 ID 在全站存在，并不代表它符合这次的预算和筛选条件。仅查询全局商品表会把这个限制绕过去。</p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="二、把一次交互拆成四步"></a><span aria-hidden="true" class="tech-section-number">02</span>把一次交互拆成四步</h2>
+<p>演示页面展示完整轨迹，方便对照数据从哪里来：</p>
+<ol>
+<li>模拟模型返回 <code>search_products</code> 调用，参数是通勤双肩包和预算 50000 分。</li>
+<li>应用程序校验参数，执行只读工具，并校验工具返回的商品数据。</li>
+<li>模拟模型读取商品结果，生成上面的最终 JSON。</li>
+<li>前端解析结果、检查商品 ID 和字段，再交给固定卡片组件。</li>
+</ol>
+<p>这里的 <code>function_call</code> 和 <code>function_call_output</code> 用来说明调用与结果的关联，演示保留同一个 <code>call_id</code>。它们都是本地夹具，不能把轨迹面板里的 JSON 当成真实模型服务的运行记录。</p>
+<p>为了让读者集中观察数据边界，查询语句和预算被固定在代码里。这个版本没有自然语言理解能力，也没有多轮规划；接入真实模型时，需要替换模拟响应，再增加拒答、超时、调用次数上限等处理。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="三、先检查工具数据，再生成卡片"></a><span aria-hidden="true" class="tech-section-number">03</span>先检查工具数据，再生成卡片</h2>
+<p>假设工具返回：</p>
+<div class="tech-code"><div class="tech-code-label">json</div><pre><code class="language-json"><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bag-01"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"轻量通勤双肩包"</span><span class="p">,</span><span class="w"> </span><span class="nt">"priceCents"</span><span class="p">:</span><span class="w"> </span><span class="mi">29900</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bag-02"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"防泼水通勤双肩包"</span><span class="p">,</span><span class="w"> </span><span class="nt">"priceCents"</span><span class="p">:</span><span class="w"> </span><span class="mi">42900</span><span class="w"> </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>“这是我们的工具”也不等于数据永远正确。接口迁移、字段重命名或上游异常，都可能让 <code>priceCents</code> 消失。因此示例在工具结果进入后续步骤前，检查数组长度、ID、名称、价格及重复 ID；价格必须是非负的安全整数。</p>
+<p>如果一件商品缺价格，本例停止整批展示并提示错误，不用零元兜底，也不让模型补齐。整批停止是一种明确的简化策略。如果业务允许部分结果，接口需要额外说明哪些商品失败，以及为什么缺失，不能静默丢掉。</p>
+<p>价格通过校验，只代表它来自这次演示查询且格式有效。真实商城仍然需要服务端的价格、库存与结算校验，浏览器里的数据不能作为交易依据。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="四、从 unknown 开始接收模型结果"></a><span aria-hidden="true" class="tech-section-number">04</span>从 unknown 开始接收模型结果</h2>
+<p>下面这行写法没有提供运行时保护：</p>
+<div class="tech-code"><div class="tech-code-label">typescript</div><pre><code class="language-typescript"><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">raw</span><span class="p">)</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">ProductCards</span><span class="p">;</span>
+</code></pre></div>
+<p>TypeScript 的类型断言会在编译后移除，不能替你检查外部 JSON。这个边界应从 <code>unknown</code> 开始，逐步确认它的结构，再生成页面内部使用的 <code>Card[]</code>。<a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions">TypeScript 类型断言说明</a>、<a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">类型收窄说明</a></p>
+<p>完整校验函数保存在示例的 <code>src/core.ts</code> 中，关键合并逻辑如下：</p>
+<div class="tech-code"><div class="tech-code-label">typescript</div><pre><code class="language-typescript"><span class="kd">const</span><span class="w"> </span><span class="nx">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">products</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">candidate</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">candidate</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">productId</span>
+<span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">product</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span>
+<span class="w">    </span><span class="sb">`模型引用了本次工具结果中不存在的商品：</span><span class="si">${</span><span class="nx">item</span><span class="p">.</span><span class="nx">productId</span><span class="si">}</span><span class="sb">`</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">product</span><span class="p">,</span><span class="w"> </span><span class="nx">reason</span><span class="o">:</span><span class="w"> </span><span class="kt">item.reason</span><span class="w"> </span><span class="p">};</span>
+</code></pre></div>
+<p>这段逻辑运行前，函数还会限制原始 JSON 长度、卡片数量和推荐理由长度，拒绝重复商品，以及卡片上除 <code>productId</code>、<code>reason</code> 之外的字段。JSON 能解析只是第一关，字段正确也不代表商品引用有效。</p>
+<p>示例最多接受三张卡片、每条理由最多 180 个字符。这样的限制让异常结果更容易处理，也能避免一段超长输出把移动端页面撑得难以使用。实际项目应根据业务确定上限，并在服务端同步执行。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="五、固定组件渲染，文本只作为文本"></a><span aria-hidden="true" class="tech-section-number">05</span>固定组件渲染，文本只作为文本</h2>
+<p>卡片布局由前端代码定义。推荐理由通过 Vue 文本节点展示，商品价格从校验后的整数分格式化。示例使用 Vue 渲染函数；换成模板，核心写法也是 <code>{{ card.reason }}</code>。</p>
+<p>不要把模型输出拼成 Vue 模板，也不要直接放进 <code>v-html</code>。Vue 会转义普通文本节点，但主动解释 HTML 会改变这个安全边界；动态 URL 也需要单独校验，不能因为它出现在 JSON 中就直接信任。<a href="https://vuejs.org/guide/best-practices/security.html">Vue 安全说明</a></p>
+<p>演示专门准备了包含 <code>&lt;img src=x onerror="alert(1)"&gt;</code> 的推荐理由。预期是页面原样显示这些字符，不生成图片元素、不执行事件。这只能验证当前文本渲染路径，不能推导出整个 Agent 已具备完备的注入防御。</p>
+<p>页面同样需要清楚的状态：初始态等待用户运行；执行时禁用重复提交；成功时展示卡片；失败时清空旧结果，显示原因和恢复入口。旧卡片如果一直留着，用户很容易把上一次成功结果误认为本次查询的结果。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="六、把失败场景做成可以点击的开关"></a><span aria-hidden="true" class="tech-section-number">06</span>把失败场景做成可以点击的开关</h2>
+<p>只看两张正常卡片，很难知道工程边界是否生效。演示页提供以下场景，可以直接切换并观察轨迹：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>预期行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正常结果</td>
+<td>展示 299 元、429 元两张商品卡片</td>
+</tr>
+<tr>
+<td>未知商品 ID</td>
+<td>拒绝展示，不补造商品</td>
+</tr>
+<tr>
+<td>工具缺少价格</td>
+<td>停止流程，不显示零元卡片</td>
+</tr>
+<tr>
+<td>非法 JSON</td>
+<td>显示结果格式错误，保留恢复入口</td>
+</tr>
+<tr>
+<td>推荐理由包含 HTML</td>
+<td>按普通文本显示，不创建 HTML 元素</td>
+</tr>
+<tr>
+<td>工具首次失败</td>
+<td>显示错误；用户重试后重新执行只读查询</td>
+</tr>
+</tbody>
+</table>
+<p>“重试”在这里有严格的适用范围：工具只有查询，不修改数据。不要把这个重试按钮原样复制到退款、提交订单等操作上。真实写操作超时后，应先核对状态并配合服务端幂等机制，不能仅凭页面报错判断没有执行。</p>
+<h2 id="section-7"><a class="headerlink" href="#section-7" title="七、运行示例与核对结果"></a><span aria-hidden="true" class="tech-section-number">07</span>运行示例与核对结果</h2>
+<p><a href="/examples/agent-structured-product-cards/index.html">打开离线交互演示</a> · <a href="/examples/agent-structured-product-cards/source.zip">下载完整源码与预构建页面</a></p>
+<p>下载解压后，直接打开 <code>index.html</code> 即可操作；Vue 已包含在本地构建产物中，不需要密钥或 CDN。也可以在解压目录启动一个静态服务：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+</code></pre></div>
+<p>然后访问 <code>http://localhost:8000</code>。若要修改 TypeScript 源码并重新构建，请按包内 README 安装依赖，运行类型检查、测试和构建命令。</p>
+<p>本次类型检查通过，7 个核心离线测试通过；浏览器实际操作了六个场景，工具失败后重试恢复，HTML 文本没有生成图片元素或触发弹窗。1440 像素桌面与 390 像素手机视口均未出现横向溢出，演示页没有发出外部网络请求。具体结果保存在源码包的验证说明中。<strong>这些检查不包含真实模型调用、真实商品服务或生产业务收益。</strong></p>
+<h2 id="section-8"><a class="headerlink" href="#section-8" title="八、接到业务里，下一步改哪里"></a><span aria-hidden="true" class="tech-section-number">08</span>接到业务里，下一步改哪里</h2>
+<p>先在服务端接入模型和商品服务，保留“工具事实 → 模型选择与解释 → 校验 → 组件渲染”的数据路径。服务端负责工具允许列表、参数校验、账号权限、调用上限和结果约束；前端继续负责结果校验、状态展示与恢复交互。</p>
+<p>推荐理由仍然可能包含缺乏依据的描述。这里的“轻量”“防泼水”来自固定演示文案，没有实现属性证据校验。接入真实模型后，可以把可引用属性一起放进工具结果，并要求理由关联这些属性；需要合规承诺的描述还应使用受控字段或人工审核。</p>
+<p>完成这一步，前端就有了一条可维护的接入路径：工具提供商品事实，模型给出选择与解释，应用程序检查两者的关联，组件负责稳定展示。下次再加对比表或追问选项时，可以继续定义新的结果类型和固定组件。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F10%2F24%2Fagent-structured-product-cards%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/10/23/minimal-tool-calling-agent/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">从一个工具调用开始，做出最小可用 Agent</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2023
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span>
+<span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
+<span class="division">|</span>
+<span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<a class="nav-item-link nav-item-search" title="Search">
+<i class="ri-search-line"></i>
+</a>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input class="local-search-input" id="local-search-input" placeholder="Search..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet">
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>

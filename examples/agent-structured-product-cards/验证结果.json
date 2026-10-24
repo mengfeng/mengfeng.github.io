@@ -1,0 +1,16 @@
+{
+  "scenarios": 6,
+  "retryRecovered": true,
+  "htmlStayedText": true,
+  "dialogs": 0,
+  "errors": [],
+  "externalRequests": [],
+  "desktopOverflow": false,
+  "mobileOverflow": false,
+  "typecheck": "passed",
+  "core_tests_passed": 7,
+  "production_bundle": "built",
+  "model_calls": "mock fixtures only",
+  "real_product_service": false,
+  "app_sha256": "7b02f49c10dd28b1277041129383d385804954850b3705c1b32932276af7b090"
+}

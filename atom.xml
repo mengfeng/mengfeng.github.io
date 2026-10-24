@@ -6,7 +6,7 @@
   <link href="https://mengfeng.github.io/atom.xml" rel="self"/>
   
   <link href="https://mengfeng.github.io/"/>
-  <updated>2023-04-11T03:34:39.035Z</updated>
+  <updated>2026-10-23T14:50:00.000Z</updated>
   <id>https://mengfeng.github.io/</id>
   
   <author>
@@ -16,6 +16,10 @@
   
   <generator uri="https://hexo.io/">Hexo</generator>
   
+  <entry><title>从一个工具调用开始，做出最小可用 Agent</title><link href="https://mengfeng.github.io/2026/10/23/minimal-tool-calling-agent/"/>
+<id>https://mengfeng.github.io/2026/10/23/minimal-tool-calling-agent/</id><published>2026-10-23T14:50:00.000Z</published><updated>2026-10-23T14:50:00.000Z</updated>
+<summary type="html">从查询一笔演示订单开始，用 Python 跑通模型决策、工具执行、结果回传和最终回答，理解一个最小 Agent 的工作过程。</summary>
+<category term="AI Agent" scheme="https://mengfeng.github.io/categories/AI-Agent/"/></entry>
   <entry>
     <title>服务端渲染（React中的服务器端渲染）</title>
     <link href="https://mengfeng.github.io/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/"/>

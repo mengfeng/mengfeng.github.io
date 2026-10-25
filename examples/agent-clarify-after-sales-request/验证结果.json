@@ -1,0 +1,20 @@
+{
+  "scenarios": 6,
+  "orderChangeInvalidates": true,
+  "missingSlotsNeverCallTool": true,
+  "prematureReadyBlocked": true,
+  "retryRecovered": true,
+  "localEntryOnly": true,
+  "htmlStayedText": true,
+  "dialogs": 0,
+  "errors": [],
+  "externalRequests": [],
+  "desktopOverflow": false,
+  "mobileOverflow": false,
+  "typecheck": "passed",
+  "core_tests_passed": 8,
+  "production_bundle": "built",
+  "model_calls": "fixed mock decisions only",
+  "real_after_sales_service": false,
+  "app_sha256": "81d39fa4776bbfcfda3f85ba362afbfad8e1c4012beacab7b25ec7f8d41201db"
+}

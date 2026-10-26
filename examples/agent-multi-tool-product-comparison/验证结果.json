@@ -1,0 +1,21 @@
+{
+  "scenarios": 6,
+  "threeRowsPreserved": true,
+  "unknownNotZero": true,
+  "unknownIdBlocked": true,
+  "tableHeaders": true,
+  "localTableScroll": true,
+  "resetClearsResults": true,
+  "htmlStayedText": true,
+  "dialogs": 0,
+  "errors": [],
+  "externalRequests": [],
+  "desktopOverflow": false,
+  "mobileOverflow": false,
+  "typecheck": "passed",
+  "core_tests_passed": 9,
+  "production_bundle": "built",
+  "model_calls": "fixed mock plan and explanations only",
+  "real_stock_service": false,
+  "app_sha256": "49e8f8a63203c9cb7f496e56937e4b75c3664a502f04b5a24f7f403a94b2f1a7"
+}

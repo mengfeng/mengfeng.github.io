@@ -1,0 +1,23 @@
+{
+  "offlineScenarios": 6,
+  "httpScenarios": 6,
+  "httpProgressBeforeResult": true,
+  "eventIdsDeduplicated": true,
+  "truncationNotSuccess": true,
+  "errorStepFailed": true,
+  "resetClearsResults": true,
+  "offlineExternalRequests": 0,
+  "httpOnlyLoopback": true,
+  "errors": [],
+  "desktopOverflow": false,
+  "mobileOverflow": false,
+  "typecheck": "passed",
+  "core_tests_passed": 10,
+  "http_integration_tests_passed": 1,
+  "http_integration_scenarios": 6,
+  "production_bundle": "built",
+  "model_calls": "fixed mock decisions only",
+  "token_streaming": false,
+  "public_demo_mode": "offline replay",
+  "app_sha256": "d11af9749664bff4430294e3e32a15616138b6d2990dd635a86c9a1c897aab3e"
+}

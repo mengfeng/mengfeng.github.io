@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 from html.parser import HTMLParser
@@ -11,9 +12,11 @@ from urllib.parse import unquote, urljoin, urlsplit
 from xml.etree import ElementTree as ET
 
 from build_sitemap import ROOT, SITE_URL, build, page_url
+from compact_search import MAX_CONTENT_CHARS
+from update_ga4_stats import validate_snapshot
 
 
-SEARCH_SIZE_WARN_BYTES = 1_000_000
+SEARCH_SIZE_MAX_BYTES = 350_000
 
 
 class PageParser(HTMLParser):
@@ -156,13 +159,29 @@ def main() -> int:
     else:
         size = search.stat().st_size
         try:
-            entries = len(ET.parse(search).getroot().findall("entry"))
+            search_entries = ET.parse(search).getroot().findall("entry")
+            entries = len(search_entries)
+            oversized = sum(len(entry.findtext("content", "")) > MAX_CONTENT_CHARS for entry in search_entries)
+            if oversized:
+                errors.append(f"search.xml has {oversized} entries with more than {MAX_CONTENT_CHARS} content characters")
+            unprocessed = sum(entry.find("content") is None or entry.find("content").get("format") != "plain" for entry in search_entries)
+            if unprocessed:
+                errors.append(f"search.xml has {unprocessed} entries not processed for compact search")
         except ET.ParseError as exc:
             errors.append(f"search.xml is invalid XML: {exc}")
             entries = 0
         print(f"Search index: {size:,} bytes, {entries} entries")
-        if size > SEARCH_SIZE_WARN_BYTES:
-            warnings.append(f"search.xml is over {SEARCH_SIZE_WARN_BYTES:,} bytes; keep loading it on demand")
+        if size > SEARCH_SIZE_MAX_BYTES:
+            errors.append(f"search.xml is over {SEARCH_SIZE_MAX_BYTES:,} bytes; run python3 scripts/compact_search.py")
+
+    analytics = ROOT / "data/analytics.json"
+    if not analytics.is_file():
+        errors.append("data/analytics.json is missing")
+    else:
+        try:
+            validate_snapshot(json.loads(analytics.read_text(encoding="utf-8")))
+        except (json.JSONDecodeError, ValueError) as exc:
+            errors.append(f"data/analytics.json is invalid: {exc}")
 
     print(f"Checked {len(pages)} key pages and their local references")
     for warning in warnings:

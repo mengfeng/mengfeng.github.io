@@ -140,7 +140,7 @@ var searchFunc = function (path, searchId, contentId) {
     });
 
     if (!count) {
-      showMessage('没有找到内容，换个关键词试试。', false);
+      showMessage('标题或文章开头没有匹配，换个关键词试试。', false);
       return;
     }
     var clear = document.createElement('button');
@@ -160,7 +160,10 @@ var searchFunc = function (path, searchId, contentId) {
       success: function (xml) {
         entries = $('entry', xml).map(function () {
           var title = $('title', this).text().trim() || '未命名文章';
-          var content = plainText($('content', this).text());
+          var contentNode = $('content', this);
+          var content = contentNode.attr('format') === 'plain'
+            ? contentNode.text().replace(/\s+/g, ' ').trim()
+            : plainText(contentNode.text());
           return {
             title: title,
             titleLower: title.toLowerCase(),

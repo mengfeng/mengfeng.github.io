@@ -18,110 +18,178 @@
 // 02110-1301 USA
 // 
 
-var searchFunc = function (path, search_id, content_id) {
+var searchFunc = function (path, searchId, contentId) {
   'use strict';
-  var BTN = "<button type='button' class='local-search-close' id='local-search-close'></button>";
-  $.ajax({
-    url: path,
-    dataType: "xml",
-    success: function (xmlResponse) {
-      // get the contents from search data
-      var datas = $("entry", xmlResponse).map(function () {
-        return {
-          title: $("title", this).text(),
-          content: $("content", this).text(),
-          url: $("url", this).text()
-        };
-      }).get();
 
-      var $input = document.getElementById(search_id);
-      var $resultContent = document.getElementById(content_id);
+  var input = document.getElementById(searchId);
+  var result = document.getElementById(contentId);
+  if (!input || !result) {
+    return;
+  }
 
-      $input.addEventListener('input', function () {
-        var str = '<ul class="search-result-list">';
-        var keywords = this.value.trim().toLowerCase().split(/[\s]+/);
-        $resultContent.innerHTML = "";
-        if (this.value.trim().length <= 0) {
-          return;
+  var entries = [];
+
+  function showMessage(message, canRetry) {
+    result.replaceChildren();
+    var messageNode = document.createElement('p');
+    messageNode.className = 'search-result-empty';
+    messageNode.textContent = message;
+    result.appendChild(messageNode);
+    if (canRetry) {
+      var retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'local-search-retry';
+      retry.textContent = '重试搜索';
+      retry.addEventListener('click', loadIndex, { once: true });
+      result.appendChild(retry);
+    }
+  }
+
+  function plainText(markup) {
+    return markup.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function appendHighlighted(parent, value, keywords) {
+    var lower = value.toLowerCase();
+    var offset = 0;
+    while (offset < value.length) {
+      var next = value.length;
+      var matched = '';
+      keywords.forEach(function (keyword) {
+        var position = lower.indexOf(keyword, offset);
+        if (position >= 0 && position < next) {
+          next = position;
+          matched = keyword;
         }
-        // perform local searching
-        datas.forEach(function (data) {
-          var isMatch = true;
-          // var content_index = [];
-          if (!data.title || data.title.trim() === '') {
-            data.title = "Untitled";
-          }
-          var data_title = data.title.trim().toLowerCase();
-          var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
-          var data_url = data.url;
-          var index_title = -1;
-          var index_content = -1;
-          var first_occur = -1;
-          // only match artiles with not empty contents
-          if (data_content !== '') {
-            keywords.forEach(function (keyword, i) {
-              index_title = data_title.indexOf(keyword);
-              index_content = data_content.indexOf(keyword);
-
-              if (index_title < 0 && index_content < 0) {
-                isMatch = false;
-              } else {
-                if (index_content < 0) {
-                  index_content = 0;
-                }
-                if (i == 0) {
-                  first_occur = index_content;
-                }
-                // content_index.push({index_content:index_content, keyword_len:keyword_len});
-              }
-            });
-          } else {
-            isMatch = false;
-          }
-          // show search results
-          if (isMatch) {
-            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
-            var content = data.content.trim().replace(/<[^>]+>/g, "");
-            if (first_occur >= 0) {
-              // cut out 100 characters
-              var start = first_occur - 20;
-              var end = first_occur + 80;
-
-              if (start < 0) {
-                start = 0;
-              }
-
-              if (start == 0) {
-                end = 100;
-              }
-
-              if (end > content.length) {
-                end = content.length;
-              }
-
-              var match_content = content.substr(start, end);
-
-              // highlight all keywords
-              keywords.forEach(function (keyword) {
-                var regS = new RegExp(keyword, "gi");
-                match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
-              });
-
-              str += "<p class=\"search-result\">" + match_content + "...</p>"
-            }
-            str += "</li>";
-          }
-        });
-        str += "</ul>";
-        if (str.indexOf('<li>') === -1) {
-          return $resultContent.innerHTML = BTN + "<div class=\"search-result-empty\"><p><i class=\"fe fe-tired\"></i> 没有找到内容，更换下搜索词试试吧~<p></div>";
-        }
-        $resultContent.innerHTML = BTN + str;
       });
+      if (next > offset) {
+        parent.appendChild(document.createTextNode(value.slice(offset, next)));
+      }
+      if (!matched) {
+        break;
+      }
+      var emphasis = document.createElement('em');
+      emphasis.className = 'search-keyword';
+      emphasis.textContent = value.slice(next, next + matched.length);
+      parent.appendChild(emphasis);
+      offset = next + matched.length;
+    }
+  }
+
+  function safeUrl(value) {
+    try {
+      var url = new URL(value, window.location.origin);
+      return url.origin === window.location.origin && /^https?:$/.test(url.protocol) ? url.href : '';
+    } catch (error) {
+      return '';
+    }
+  }
+
+  function render() {
+    var query = input.value.trim();
+    result.replaceChildren();
+    if (!query) {
+      return;
+    }
+    if (query.length > 100) {
+      showMessage('关键词过长，请缩短后再搜索。', false);
+      return;
+    }
+    var keywords = query.toLowerCase().split(/\s+/).filter(Boolean);
+    var list = document.createElement('ul');
+    list.className = 'search-result-list';
+    var count = 0;
+    entries.forEach(function (entry) {
+      if (count >= 30 || !keywords.every(function (keyword) {
+        return entry.titleLower.includes(keyword) || entry.contentLower.includes(keyword);
+      })) {
+        return;
+      }
+      var url = safeUrl(entry.url);
+      if (!url) {
+        return;
+      }
+      var item = document.createElement('li');
+      var title = document.createElement('a');
+      title.className = 'search-result-title';
+      title.href = url;
+      appendHighlighted(title, entry.title, keywords);
+      item.appendChild(title);
+
+      var matchPosition = -1;
+      keywords.forEach(function (keyword) {
+        var position = entry.contentLower.indexOf(keyword);
+        if (position >= 0 && (matchPosition < 0 || position < matchPosition)) {
+          matchPosition = position;
+        }
+      });
+      var start = Math.max(0, matchPosition - 24);
+      var excerpt = entry.content.slice(start, start + 120);
+      var summary = document.createElement('p');
+      summary.className = 'search-result';
+      if (start > 0) {
+        summary.appendChild(document.createTextNode('…'));
+      }
+      appendHighlighted(summary, excerpt, keywords);
+      if (start + excerpt.length < entry.content.length) {
+        summary.appendChild(document.createTextNode('…'));
+      }
+      item.appendChild(summary);
+      list.appendChild(item);
+      count += 1;
+    });
+
+    if (!count) {
+      showMessage('没有找到内容，换个关键词试试。', false);
+      return;
+    }
+    var clear = document.createElement('button');
+    clear.type = 'button';
+    clear.className = 'local-search-close';
+    clear.id = 'local-search-close';
+    clear.setAttribute('aria-label', '清空搜索结果');
+    result.appendChild(clear);
+    result.appendChild(list);
+  }
+
+  function loadIndex() {
+    showMessage('正在加载搜索索引…', false);
+    $.ajax({
+      url: path,
+      dataType: 'xml',
+      success: function (xml) {
+        entries = $('entry', xml).map(function () {
+          var title = $('title', this).text().trim() || '未命名文章';
+          var content = plainText($('content', this).text());
+          return {
+            title: title,
+            titleLower: title.toLowerCase(),
+            content: content,
+            contentLower: content.toLowerCase(),
+            url: $('url', this).text().trim()
+          };
+        }).get();
+        if (input.value.trim()) {
+          render();
+        } else {
+          result.replaceChildren();
+        }
+      },
+      error: function () {
+        showMessage('搜索索引加载失败，请检查网络后重试。', true);
+      }
+    });
+  }
+
+  input.addEventListener('input', function () {
+    if (entries.length) {
+      render();
     }
   });
   $(document).on('click', '#local-search-close', function () {
-    $('#local-search-input').val('');
-    $('#local-search-result').html('');
+    input.value = '';
+    result.replaceChildren();
+    input.focus();
   });
+  loadIndex();
 };

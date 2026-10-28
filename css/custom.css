@@ -14,6 +14,161 @@
 .search-form-wrap {
   right: 8rem;
 }
+.navbar-bottom .nav-item-search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.navbar-bottom .nav-item-search:focus-visible {
+  outline: 2px solid #83c9ee;
+  outline-offset: -4px;
+}
+.home-page .cover,
+.home-page .cover-frame {
+  height: clamp(320px, 52vh, 520px);
+}
+.home-page .cover {
+  margin-bottom: 0;
+}
+.home-page .cover-frame .bg-box > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 48%;
+}
+.home-page .cover-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(4, 22, 29, .24), rgba(4, 22, 29, .12));
+  pointer-events: none;
+}
+.home-page .cover-inner {
+  z-index: 1;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  padding: 0 2rem;
+}
+.home-page .cover-inner h1 {
+  font-size: clamp(3.6rem, 5vw, 5.6rem);
+}
+.home-page .cover-inner #subtitle-box {
+  font-size: clamp(1.6rem, 2vw, 2.2rem);
+}
+.home-page .cover-learn-more {
+  bottom: 1.6rem;
+}
+.home-page .cover-learn-more a {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .5rem 1.4rem;
+  border-radius: 4px;
+  color: #fff;
+  background: rgba(3, 22, 28, .55);
+  font-size: 1.4rem;
+  text-decoration: none;
+}
+.home-page .cover-learn-more a:hover,
+.home-page .cover-learn-more a:focus-visible {
+  background: rgba(3, 22, 28, .82);
+}
+.home-page .cover-learn-more a:focus-visible,
+.home-page .home-intro a:focus-visible,
+.home-page .home-history a:focus-visible {
+  outline: 2px solid #4ca4d4;
+  outline-offset: 3px;
+}
+.home-page .cover-learn-more a > i {
+  font-size: 1.8rem;
+}
+.home-intro {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin: 2rem 0 .5rem;
+  padding: 1.6rem 0 2rem;
+  border-bottom: 1px solid #dce5e9;
+}
+.home-intro h2,
+.home-history h2 {
+  margin: 0 0 .4rem;
+  color: #253748;
+  font-size: 2.8rem;
+  line-height: 1.25;
+}
+.home-intro p,
+.home-history p {
+  margin: 0;
+  color: #52636b;
+  line-height: 1.6;
+}
+.home-intro-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.6rem;
+  padding-bottom: .2rem;
+}
+.home-intro-links a,
+.home-history a {
+  color: #075f9e;
+  font-weight: 600;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .25em;
+  white-space: nowrap;
+}
+.home-page .articles > .article {
+  padding: 3rem 0 2rem;
+}
+.home-page .articles > .article:first-of-type {
+  padding-top: 1rem;
+}
+.home-page .articles > .article .article-entry > a > img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}
+.home-page .articles > .article:first-of-type .article-entry > a > img {
+  max-height: 380px;
+}
+.home-history {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .5rem 1.6rem;
+  margin-top: 4rem;
+  padding: 2rem 0 .5rem;
+  border-top: 1px solid #dce5e9;
+}
+.home-history a {
+  margin-left: auto;
+}
+.home-history ~ .article .article-entry {
+  max-width: 75ch;
+}
+.home-page .home-history ~ .article {
+  padding: 2.2rem 0 1.2rem;
+}
+.home-history ~ .article .article-header h2 {
+  font-size: 2.5rem;
+  line-height: 1.4;
+}
+.home-history ~ .article .article-entry p {
+  margin: .8rem 0;
+}
+body.darkmode .home-intro,
+body.darkmode .home-history {
+  border-color: rgba(255, 255, 255, .25);
+}
 @media (min-width: 768px) {
   .outer,
   .wrap {
@@ -21,6 +176,23 @@
   }
 }
 @media (max-width: 768px) {
+  .home-page .cover,
+  .home-page .cover-frame {
+    height: clamp(280px, 42vh, 390px);
+  }
+  .home-page .cover-inner {
+    top: 46%;
+  }
+  .home-intro {
+    display: block;
+    margin-top: 1rem;
+  }
+  .home-intro-links {
+    margin-top: 1rem;
+  }
+  .home-history a {
+    margin-left: 0;
+  }
   .tocbot {
     display: none !important;
   }
@@ -35,5 +207,10 @@
   }
   .content.on {
     transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-page .cover-learn-more a > i {
+    animation: none;
   }
 }

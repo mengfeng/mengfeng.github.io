@@ -51,15 +51,7 @@ def parse_report(report: dict) -> tuple[int, int]:
     return int(values[0]), int(values[1])
 
 
-def request_report(credentials_json: str, end_date: str) -> dict:
-    from google.auth.transport.requests import Request as AuthRequest
-    from google.oauth2.service_account import Credentials
-
-    credentials = Credentials.from_service_account_info(
-        json.loads(credentials_json),
-        scopes=["https://www.googleapis.com/auth/analytics.readonly"],
-    )
-    credentials.refresh(AuthRequest())
+def request_report(access_token: str, end_date: str) -> dict:
     payload = {
         "dateRanges": [{"startDate": START_DATE, "endDate": end_date}],
         "metrics": [{"name": name} for name in METRICS],
@@ -68,7 +60,7 @@ def request_report(credentials_json: str, end_date: str) -> dict:
         f"https://analyticsdata.googleapis.com/v1beta/properties/{PROPERTY_ID}:runReport",
         data=json.dumps(payload).encode("utf-8"),
         headers={
-            "Authorization": f"Bearer {credentials.token}",
+            "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
         },
         method="POST",
@@ -89,10 +81,10 @@ def main() -> int:
     if end_date <= current["endDate"]:
         print(f"GA4 snapshot already covers {current['endDate']}")
         return 0
-    credentials_json = os.environ.get("GA4_SERVICE_ACCOUNT_JSON")
-    if not credentials_json:
-        raise RuntimeError("GA4_SERVICE_ACCOUNT_JSON is not configured")
-    active_users, views = parse_report(request_report(credentials_json, end_date))
+    access_token = os.environ.get("GA4_ACCESS_TOKEN")
+    if not access_token:
+        raise RuntimeError("GA4_ACCESS_TOKEN is not configured")
+    active_users, views = parse_report(request_report(access_token, end_date))
     if current["views"] and views < current["views"] * 0.9:
         raise ValueError("GA4 views fell sharply; review property and date range before publishing")
     updated = {

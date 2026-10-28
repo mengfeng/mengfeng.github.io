@@ -214,3 +214,59 @@ body.darkmode .home-history {
     animation: none;
   }
 }
+
+.footer .site-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .25rem 1.6rem;
+  margin: 0;
+}
+.footer .site-stats .site-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .4rem;
+  margin: 0;
+  white-space: nowrap;
+}
+.footer .site-stats .site-stat i {
+  color: #52636b;
+}
+.footer .site-stats .site-stat-label {
+  color: #52636b;
+  margin: 0;
+}
+.footer .site-stats .site-stat-value {
+  display: inline-block;
+  min-width: 2ch;
+  color: #253e48;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  margin: 0;
+  text-align: right;
+}
+.footer .site-stats .site-stats-status {
+  display: none;
+  flex-basis: 100%;
+  color: #52636b;
+  font-size: .85em;
+  margin: 0;
+  text-align: center;
+}
+.footer .site-stats[data-state="loading"] .site-stats-status,
+.footer .site-stats[data-state="error"] .site-stats-status,
+.footer .site-stats[data-state="preview"] .site-stats-status {
+  display: block;
+}
+body.darkmode .footer .site-stats .site-stat i,
+body.darkmode .footer .site-stats .site-stat-label,
+body.darkmode .footer .site-stats .site-stat-value,
+body.darkmode .footer .site-stats .site-stats-status {
+  color: #e2edf0;
+}
+@media (max-width: 768px) {
+  .footer {
+    padding-bottom: 8rem;
+  }
+}

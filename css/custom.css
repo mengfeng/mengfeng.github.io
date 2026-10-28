@@ -256,6 +256,7 @@ body.darkmode .home-history {
 }
 .footer .site-stats[data-state="loading"] .site-stats-status,
 .footer .site-stats[data-state="error"] .site-stats-status,
+.footer .site-stats[data-state="snapshot"] .site-stats-status,
 .footer .site-stats[data-state="preview"] .site-stats-status {
   display: block;
 }

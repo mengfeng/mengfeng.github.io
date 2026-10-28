@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mengfeng.github.io/sitemap.xml

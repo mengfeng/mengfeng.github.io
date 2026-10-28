@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en">
+<html lang="zh-CN">
   
 
     <head>
@@ -9,9 +9,15 @@
         
       <meta
         name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1"
+        content="width=device-width, initial-scale=1"
       />
-      <title> 艺术码畜</title>
+      <title>艺术码畜｜前端与 AI Agent 实践</title>
+  <meta name="description" content="记录前端开发、AI Agent 实践与生活笔记，提供技术文章、演示与归档。">
+  <link rel="canonical" href="https://mengfeng.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="艺术码畜｜前端与 AI Agent 实践">
+  <meta property="og:description" content="记录前端开发、AI Agent 实践与生活笔记，提供技术文章、演示与归档。">
+  <meta property="og:url" content="https://mengfeng.github.io/">
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -62,10 +68,6 @@ var _hmt = _hmt || [];
       </style>
     <link rel="alternate" href="/atom.xml" title="艺术码畜" type="application/atom+xml">
 </head>
-  </html>
-</html>
-
-
 <body>
   <div id="app">
     
@@ -81,18 +83,18 @@ var _hmt = _hmt || [];
       </style>
       
       
-    <main class="content on">
+    <main class="content on home-page">
       
 <section class="cover">
     
       
-      <a class="forkMe" href="https://github.com/mengfeng/mengfeng.github.io.git"
-        target="_blank"><img width="149" height="149" src="/images/forkme.png"
+      <a class="forkMe" href="https://github.com/mengfeng/mengfeng.github.io"
+        target="_blank" rel="noopener noreferrer"><img width="149" height="149" src="/images/forkme.png"
           class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
     
   <div class="cover-frame">
     <div class="bg-box">
-      <img src="/images/cover1.jpg" alt="image frame" />
+      <img src="/images/cover1.jpg" alt="海浪拍向沙滩的博客首页背景" />
     </div>
     <div class="cover-inner text-center text-white">
       <h1><a href="/">艺术码畜</a></h1>
@@ -107,7 +109,7 @@ var _hmt = _hmt || [];
     </div>
   </div>
   <div class="cover-learn-more">
-    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
+    <a href="#main" class="anchor"><span>看最新文章</span><i class="ri-arrow-down-line" aria-hidden="true"></i></a>
   </div>
 </section>
 
@@ -138,38 +140,16 @@ var _hmt = _hmt || [];
   
   
   
-<div class="notice" style="margin-top:50px">
-    <i class="ri-heart-fill"></i>
-    <div class="notice-content">艺术码畜的生活瞬间</div>
-</div>
-
-
-<style>
-    .notice {
-        padding: 20px;
-        border: 1px dashed #e6e6e6;
-        color: #969696;
-        position: relative;
-        display: inline-block;
-        width: 100%;
-        background: #fbfbfb50;
-        border-radius: 10px;
-    }
-
-    .notice i {
-        float: left;
-        color: #999;
-        font-size: 16px;
-        padding-right: 10px;
-        vertical-align: middle;
-        margin-top: -2px;
-    }
-
-    .notice-content {
-        display: initial;
-        vertical-align: middle;
-    }
-</style>
+<section class="home-intro" aria-labelledby="home-intro-title">
+  <div>
+    <h2 id="home-intro-title">最新文章</h2>
+    <p>最近在写 AI Agent 的前端实践，也保留前端技术与生活笔记。</p>
+  </div>
+  <div class="home-intro-links">
+    <a href="/categories/AI-Agent/">看 AI Agent 专题</a>
+    <a href="/archives/">浏览全部归档</a>
+  </div>
+</section>
   
   <article class="articles">
 <article class="article article-type-post" id="post-2026-10-27-agent-tool-progress-sse-ui" itemprop="blogPost" itemscope><div class="article-inner"><header class="article-header"><h2 itemprop="name"><a class="article-title" href="/2026/10/27/agent-tool-progress-sse-ui/">Agent 正在做什么：把工具调用过程展示成可理解的进度</a></h2></header><div class="article-meta"><a class="article-date" href="/2026/10/27/agent-tool-progress-sse-ui/"><time datetime="2026-10-27T12:11:31.294449Z" itemprop="datePublished">2026-10-27</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div><div class="article-entry" itemprop="articleBody"><a href="/2026/10/27/agent-tool-progress-sse-ui/"><img src="/images/agent-tool-progress-sse-ui/cover.webp" alt="Agent 正在做什么：把工具调用过程展示成可理解的进度" loading="lazy" width="1536" height="1024"></a><p>用 Vue 3、TypeScript 和本地 Node SSE 服务展示工具进度，正确处理事件拆分、合并、重复和断流。公开页提供字节回放，源码包含可运行的真实本地 HTTP 示例；不涉及模型 token 流式输出。</p><p><a href="/2026/10/27/agent-tool-progress-sse-ui/">阅读全文</a></p></div><footer class="article-footer"><ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li></ul></footer></div></article>
@@ -182,7 +162,7 @@ var _hmt = _hmt || [];
 <a class="article-date" href="/2026/10/23/minimal-tool-calling-agent/"><time datetime="2026-10-23T14:50:00.000Z" itemprop="datePublished">2026-10-23</time></a>
 <div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div>
 </div>
-<div class="article-entry" itemprop="articleBody"><a href="/2026/10/23/minimal-tool-calling-agent/"><img alt="小机器人从一个订单查询工具开始搭建 Agent" height="1024" loading="lazy" src="/images/minimal-agent/agent-cover.webp" width="1536"/></a><blockquote><p>从查询一笔演示订单开始，用 Python 跑通模型决策、工具执行、结果回传和最终回答，理解一个最小 Agent 的工作过程。</p></blockquote>
+<div class="article-entry" itemprop="articleBody"><a href="/2026/10/23/minimal-tool-calling-agent/"><img alt="小机器人从一个订单查询工具开始搭建 Agent" height="1024" loading="lazy" src="/images/minimal-agent/agent-cover.webp" width="1536"/></a>
 <p>从一笔演示订单开始，写出一个能选择工具、执行查询并根据结果回答的最小 Agent。附完整代码与离线检查。</p>
 <p><a class="article-more-link" href="/2026/10/23/minimal-tool-calling-agent/">阅读全文</a></p></div>
 <footer class="article-footer"><ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" rel="tag">工具调用</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul></footer></div></article>
@@ -190,6 +170,12 @@ var _hmt = _hmt || [];
     
     
     
+<section class="home-history" aria-labelledby="home-history-title">
+  <h2 id="home-history-title">历史文章</h2>
+  <p>继续阅读早期的前端技术笔记，或从归档按时间查找。</p>
+  <a href="/archives/">查看完整归档</a>
+</section>
+
     <article
   id="post-服务端渲染（React中的服务器端渲染）"
   class="article article-type-post"
@@ -221,563 +207,8 @@ var _hmt = _hmt || [];
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="React-中的服务器端渲染"><a href="#React-中的服务器端渲染" class="headerlink" title="React 中的服务器端渲染"></a>React 中的服务器端渲染</h1><blockquote>
-<p>前面章节介绍了服务器端渲染的基本原理，并通过一个基于Vue了其进行服务器端渲染的基本流程，但其仅介绍了处理流程，简略掉了许多处理细节，本节就以一个基于React的服务器端渲染项目为例进行详细介绍。</p>
-</blockquote>
-<h3 id="一、项目搭建"><a href="#一、项目搭建" class="headerlink" title="一、项目搭建"></a>一、项目搭建</h3><p>​		为了更直观清楚地说明服务器端渲染，本节从搭建一个最基本的React项目入手逐一展开，首先所谓服务器端渲染就是当浏览器客户端发起向服务器端的请求后，能够得到一个可供直接渲染的HTML文件，下面我们就来模拟这个过程搭建 一个项目。首先使用express搭建一个 nodejs服务器，代码如下:</p>
-<pre><code class="js">import express from &quot;express&quot;;
-import React from &quot;react&quot;;
-import &#123; renderToString &#125; from &quot;react-dom/server&quot;;
-const app = express();
-//将自定义的Home组件渲染为字符串形式
-const Home = () =&gt; &#123;
-  return &lt;div&gt;Hello React SSR!&lt;/div&gt;;
-&#125;;
-const content = renderToString(&lt;Home /&gt;);
-//当浏览器发起对服务器根路径的请求后，服务器返回以下HTML的字符串
-app.get(&quot;/&quot;, function (req, res) &#123;
-  res.send(`
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;SSR&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    $&#123;content&#125;
-  &lt;/body&gt;
-&lt;/html&gt;
-  `);
-&#125;);
-//服务端启动后监听3000端口
-var server = app.listen(3000);
-</code></pre>
-<p>​		以上代码对有一定React开发经验的读者来说应该不难理解，其中与客户端React追染不同的是，渲染组件使用了react-dom&#x2F;server包中的renderToSring方法，其原理很简单，就是将组件渲染为字符串，而非客户端React渲染为DOM结构。</p>
-<p>​		同样有过nodejs开发经验的读者都知道上述代码是无法直接执行的，因为nodejs是遵循的Commonjs规范引入模块的，而import..from遵循的是esModel 规范，所以需要使用webpack进行构建打包，构建代码如下：</p>
-<pre><code class="js">const path = require(&#39;path&#39;);
-//在服务器端比编译时，可排除额外的模块
-const nodeExternals = require(&#39;webpack-node-externals&#39;);
-module.exports = &#123;
-  target:&#39;node&#39;,//nodejs环境
-  mode:&#39;development&#39;,
-  entry:&#39;./src/index.js&#39;,//构建入口文件
-  output:&#123;
-    //构建结果输出
-    filename:&#39;bundle.js&#39;,
-    path:path.resolve(__dirname,&#39;build&#39;)
-  &#125;,
-  externals:[nodeExternals()],
-  module:&#123;
-    rules:[&#123;
-      //构建规则，以下是对后缀为js的文件的处理方式
-      test:/\.js?$/,
-      loader:&#39;babel-loader&#39;,
-      exclude:/node_modules/,
-      options:&#123;
-        presets:[&#39;react&#39;,&#39;stage-0&#39;,[&#39;env&#39;,&#123;
-          targets:&#123;
-            browsers:[&#39;last 2 versions&#39;]
-          &#125;
-        &#125;]]
-      &#125;
-    &#125;]
-  &#125;
-&#125;
-</code></pre>
-<p>​		至此项目源代码和webpack构建配置已编写完成，可以进行调试并在浏览器上查看运行结果。当修改源代码时，程序的整个运行步骤分成两个阶段，首先使用webpack构建源代码，然后使用node启动服务器，即为package.json所配置的两条命令:</p>
-<pre><code class="js">&quot;scripts&quot;: &#123;
-&quot;dev:start&quot;: &quot;nodemon --watch build --exec node \&quot;./build/bundle.js\&quot;&quot;,
-&quot;dev:build&quot;: &quot;webpack --config webpack.server.js  --watch&quot;
-&#125;，
-</code></pre>
-<p>​		当执行npm run dev:build时，便会使用webpack 构建源代码，–watch 参数表示实时监控构建配置信息的修改，若有异动则重新进行构建。当执行npm run dev:start 时，会通过nodemon工具监控目标路径build,若经过重新构建在build路径下生成了新的编译后文件，则重启服务器。这里为了后面章节迭代调试方便，可引入npm-run-all工具将package.json所配置的两条命令统一为一 条 命令:</p>
-<pre><code class="js">&quot;dev&quot;: &quot;npm-run-all --parallel dev:**&quot;,
-</code></pre>
-<p>至此项目环境搭建告一段落， 接下来逐步丰富该项目框架。</p>
-<h3 id="二、同构"><a href="#二、同构" class="headerlink" title="二、同构"></a>二、同构</h3><p>同构是React项目服务器端渲染非常重要的概念，在讨论它之前，我们继续为本节顶日丰富些功能:将Home组件独立成一个模块， 并在其中添加一个按钮，单击该按钮后alert弹出一条信息，代码如下:</p>
-<pre><code class="react">import React from &#39;react&#39;;
-const Home = () =&gt; &#123;
-  return (
-    &lt;div&gt;
-      &lt;div&gt;
-        Hello React SSR!
-      &lt;/div&gt;
-      &lt;button onClick=&#123;()=&gt;&#123;alert(&#39;click&#39;)&#125;&#125;&gt;click&lt;/button&gt;
-    &lt;/div&gt;
-  )
-&#125;
-export default Home;
-</code></pre>
-<p>​		代码修改完毕保存后，便会自动触发项目文件监控进行重新构建，待服务器重启完毕后刷新浏览器会发现页面中多了一个按钮，但此时单击该按钮并不会弹出alert。</p>
-<p>​		于是我们通过命令行工具查看服务器返回的HTML代码发现:虽然button按钮被渲染出来，但其上所绑定的onClick 事件却丢失了，这是因为服务器端渲染组件的renderToString方法只会谊染出组件的基础内容，而不会将相关事件包括在内。解决这个问题的思路是首先在服务器端谊染出页面内容，然后在浏览器上让页面组件像传统客户端React组件样再执行一遍, 将事件添加进去， 于是就可进行单击操作了。这便引出了同构的概念，原本同构应该来源数学，指数学结构之间定义的一类映射，若两个结构是同构的，那么其中一个结构上的属性或操作对某个命题成立时，则在另一个结构上也应当成立。而前端领域所讲的同构其实更简单直接，即同样的代码在服务器端执行一次， 再在浏览器端执行一次。</p>
-<p>​		添加客户端渲染:由于目前完全由服务器端进行页面谊染，所以在现有代码的基础上，对项目进行同构改造首先需要让渲染的HTML文件能够引用并加载到外部的JavaScript文件，然后执行该JavaScript文件进行客户端准染，为相应的DOM添加事件，为此改造服务器端渲染代码如下。</p>
-<pre><code class="js">const app = express();
-//通过使用中间文件将对静态文件的请求都重定向到站点根路径下的public目录
-app.use(express.static(&quot;public&quot;));
-const context = renderToString(&lt;Home /&gt;);
-//为服务器端渲染的内容添加带有id的标签，以便JavaScript代码准确定位
-//通过script标签引入客户端渲染所需的JavaScript文件
-app.get(&quot;/&quot;, function (req, res) &#123;
-  res.send(`
-  &lt;html&gt;
-    &lt;head&gt;
-      &lt;title&gt;ssr&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-      &lt;div id=&#39;root&#39;&gt;$&#123;content&#125;&lt;/div&gt;
-      &lt;script src=&#39;/index.js&#39;&gt;&lt;/script&gt;
-    &lt;/body&gt;
-  &lt;/html&gt;
-  `);
-&#125;);
-</code></pre>
-<p>当浏览器加载完上述代码后，便会去请求script标签引用的index.js文件以进行客户端渲染。而客户端渲染的组件内容与服务器端相同，不同的是客户端渲染能将组件中绑定的事件挂载到真实的DOM节点上，代码如下:</p>
-<pre><code class="react">import React from &#39; react&#39;;
-
-import ReactDom from&#39; react-dom&#39; ;
-
-import Home from &#39; . ./containers/Home&#39;;
-
-//将Home组件渲染到id为root的元素上
-
-ReactDom.hydrate (&lt;Home /&gt;，document.getElementById(&#39;root&#39;));
-</code></pre>
-<p>至此，就实现了服务器端渲染的同构过程，接下来的内容将具体讨论在服务器端渲染中如何进行路由、样式、状态管理及数据请求的处理。</p>
-<h3 id="三、服务器端渲染的路由设置"><a href="#三、服务器端渲染的路由设置" class="headerlink" title="三、服务器端渲染的路由设置"></a>三、服务器端渲染的路由设置</h3><p>​		通常在实际项目中，基本都会包含多个页面，这就需要我们把路由机制也引入同构项目中。本节首先回顾客户端浏览器上React 项目关于路由的处理流程，然后讲述服务器端渲染中路由的实现，通过对比能更好地理解二者的区别与联系。</p>
-<h4 id="1-客户端React项目的路由处理"><a href="#1-客户端React项目的路由处理" class="headerlink" title="1.客户端React项目的路由处理"></a>1.客户端React项目的路由处理</h4><p>如图所示，客户端React项目对不同路由内容的访问，都是通过在浏览器所加载的JS文件中进行处理的。</p>
-<p>这里对前端路由和后端路由进行区分:后端路由是浏览器发送给服务器端的请求，服务器端根据请求的URL找到对应的映射函数并执行，最后将执行结果返回给客户端浏览器，执行结果可以是静态资源也可以是从数据库中查询结果后拼装的动态资源;而前端路由是浏览器端执行JavaScript代码根据URL的不同进行一些DOM显示和隐藏的操作，它的实现方式通常有两种: Hash 和History API。</p>
-<p>要在服务器端渲染框架中引入路由设置，就需要对相同的路由进行前后端的同构实现，在React项目中的实现方式很简单，其不同点只在于所使用的组件不同。</p>
-<p><img src="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230410111844951.png" alt="浏览器处理前端路由的流程"></p>
-<p>客户端使用的路由组件是BrowserRouter, 而服务器端使用的路由组件是StaticRouter,接下来通过项目代码来谈谈二者在使用上的差别。</p>
-<h4 id="2-StaticRouter组件的使用"><a href="#2-StaticRouter组件的使用" class="headerlink" title="2.StaticRouter组件的使用"></a>2.StaticRouter组件的使用</h4><p>首先为之前的项目配置两条路由设置，代码如下：</p>
-<pre><code class="react">import React from &#39;react&#39;;
-//引入路由设置组件
-import &#123; Route &#125; from &#39;react-router-dom&#39;;
-//引入两个页面组件，作为不同的路由内容
-import Home from &#39;../containers/Home&#39;;
-import Login from &#39;../containers/Login&#39;;
-export default(
-  &lt;div&gt;
-    &lt;Route path=&#39;/&#39; exact component=&#123;Home&#125;&gt;&lt;/Route&gt;
-    &lt;Route path=&#39;/login&#39; exact component=&#123;Login&#125;&gt;&lt;/Route&gt;
-  &lt;/div&gt;
-)
-</code></pre>
-<p>接着便可修改前面章节中负责客户端渲染的代码，添加BrowserRouter组件以引入路由，代码如下：</p>
-<pre><code class="react">import &#123; BrowserRouter &#125; from &#39;react-router-dom&#39;;
-import Routes from &#39;../Routes&#39;;
-//启动浏览器端路由组件
-const App = () =&gt; &#123;
-  return (
-    &lt;BrowserRouter&gt;
-    &#123;Routes&#125;
-    &lt;/BrowserRouter&gt;
-  )
-&#125;
-ReactDom.hydrate(&lt;App/&gt;,document.getElementById(&#39;root&#39;));
-</code></pre>
-<p>相比于客户端浏览器的路由组件BrowserRouter,服务器端渲染所使用的路由组件StaticRouter无法自动感知浏览器当前的URL,也就无法根据配置的路由信息谊染出相应的内容。为此我们可以根据浏览器请求服务器所传递的内容，来显式地为StaticRouter组件指定路由，修改原有服务器端渲染代码如下:</p>
-<pre><code class="react">import &#123; StaticRouter &#125; from &quot;react-router-dom&quot;;
-import Routes from &quot;../Routes&quot;;
-//传递请求信息参数可以获取到所要渲染的URL路由内容
-const render = (req) =&gt; &#123;
-  const content = renderToString(
-    &lt;StaticRouter location=&#123;req.path&#125;&gt;&#123;Routes&#125;&lt;/StaticRouter&gt;
-  );
-  return `
-  &lt;html&gt;
-    &lt;head&gt;
-      &lt;title&gt;SSR&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-      &lt;div id=&#39;root&#39;&gt;
-        $&#123;content&#125;
-      &lt;/div&gt;
-      &lt;script src=&#39;/index.js&#39;&gt;
-        
-      &lt;/script&gt;
-    &lt;/body&gt;
-  &lt;/html&gt;
-  `;
-&#125;;
-//使用通配符处理所有路由请求
-app.get(&quot;*&quot;, (req, res) =&gt; &#123;
-  res.send(render(req));
-&#125;);
-</code></pre>
-<p>通过HTTP的请求参数req,可以获取到其中的URL信息，然后将其传遗动StaticRouter组件的location属性，便可经服务器端渲染出相应路由的组件内容。除业之外，根据官方文档说明该组件还需要一个 context属性，用以传递些额外的信息，这里暂时用空对象占位，后面若有涉及再展开介绍。</p>
-<p>需要说明的是，按照上述路由方式配置的React项目，其服务器端渲染都只发生在首屏页面上，当首屏渲染结束后，页面操作便由客户端浏览器上的React代码接管了，之后的路由处理都将是前端路由。</p>
-<h3 id="四、结合Redux进行状态管理"><a href="#四、结合Redux进行状态管理" class="headerlink" title="四、结合Redux进行状态管理"></a>四、结合Redux进行状态管理</h3><p>随着前端项目复杂度的增加，项目内部需要管理的状态必然也增加，这些状态可能包括用户输入、服务器端返回、本地缓存等，所以能够高效且有序地管理这些数据逐渐成为一个迫切需求，于是Redux便应运而生。Redux 是一个基于JavaScript的状态容器，能够提供可预测化的状态管理，本节就来探讨如何在服务器端渲染框架中引入Redux进行状态管理。</p>
-<h4 id="1-同构创建Store"><a href="#1-同构创建Store" class="headerlink" title="1.同构创建Store"></a>1.同构创建Store</h4><p>与设置同构路由机制类似，Redux的引入也需要分别在客户端和服务器端进行配置，接下来我们同样以改造项目代码的方式进行讲述，首先使用Redux的createStore来为项目创建状态管理仓库，这里可将其封装成一个模块，便于在客户端与服务器端调用时减少代码冗余，代码如下:</p>
-<pre><code class="react">//封装创建状态管理仓库 store 的方法
-import &#123; createStore, applyMiddleware, combineReducers &#125; from &quot;redux&quot;;
-//引入 thunk 以帮助在 Redux 应用中实现异步性
-import thunk from &quot;redux-thunk&quot;;
-//引入页面对应的 reducer 方法
-import &#123; reducer as homeReducer &#125; from &quot;../containers/Home/store&quot;;
-//将各自 reducer 函数合并成一个大的 reducer
-const reducer = combineReducers(&#123;
-  home: homeReducer,
-&#125;);
-//将创建状态管理仓库的方法封装成一个函数调用，以避免数据的单例化
-export const getStore = () =&gt; &#123;
-  return createStore(reducer, applyMiddleware(thunk));
-&#125;;
-</code></pre>
-<p>需要注意的是，创建状态管理仓库的方法createStore 被封装在getStore 函数中，这样每次在执行getStore 函数后，便会创建一个 新的状态管理仓库，避免了单例化使所有用户拥有各自独立的仓库。接着便可分别在客户端渲染与服务器端渲染的入口文件中为应用添加所创建的状态管理仓库，下 面以服务器端的配置为例:</p>
-<pre><code class="react">//为应用配置创建的状态管理仓库
-import &#123; Provider &#125; from &quot;react-redux&quot;;
-//引入状态管理仓库创建方法
-import &#123; getStore &#125; from &quot;../store&quot;;
-//创建状态管理仓库实例
-const store = getStore();
-//使用 Provider 组件注入所创建的状态管理仓库，使其在所有子组件中都能访问到该仓库对象
-const content = renderToString((
-  &lt;Provider store=&#123;store&#125;&gt;
-    &lt;StaticRouter location=&#123;req.path&#125; context=&#123;&#123;&#125;&#125;&gt;
-      &#123;routes&#125;
-    &lt;/StaticRouter&gt;
-  &lt;/Provider&gt;
-));
-</code></pre>
-<p>由于同构引入Redux的相似性，在客户端渲染的入口文件中，同样创建状志管理仓库实例并通过Provider组件引入项目后，完成Store的同构创建。</p>
-<h4 id="2-配置组件的状态管理"><a href="#2-配置组件的状态管理" class="headerlink" title="2.配置组件的状态管理"></a>2.配置组件的状态管理</h4><p>在创建了状态仓库后，若要对仓库中的状态值进行管理，则还需要定义相应的事件行为action和状态更新的reducer,此处以实现在Home页面组件中获取并展示一个信息列表的功能来进行说明，首先定义获取信息列表后更新仓库中状态值的reducer方法，该方法应当是一个纯函数，其代码示例如下:</p>
-<pre><code class="react">//定义状态更新的类型值
-const CHANGE_INFO_LIST = &#39;HOME/CHANGE_INFO_LIST&#39;;
-//定义状态对象的默认值
-const defaultState = &#123;
-  infoList:[],
-&#125;
-//定义并以模块的方式导出 reducer 方法，它会根据相应的 action 类型进行状态值的更新
-export default (state = defaultState,action) =&gt;&#123;
-  switch(action.type)&#123;
-    case CHANGE_INFO_LIST:
-    return &#123;
-      ...state,
-      infoList:action.value,
-    &#125;;
-    default:
-      return state;
-  &#125;
-&#125;
-</code></pre>
-<p>有了状态更新的reducer函数后，还需要定义获取信息列表内容的action方法，在该方法中，我们将通过axios去异步请求信息列表数据，然后派发给reducer函数以完成状态的更新，代码示例如下:</p>
-<pre><code class="react">//引入axios工具库进行异步数据获取
-import axios from &#39;axios&#39;;
-//定义派遣 action 对象
-const changeInfoList = (list) =&gt; (&#123;
-  type:CHANGE_INFO_LIST,
-  value:list,
-&#125;)
-//定义获取信息列表数据的 action 方法
-export const getHomeInfoList = () =&gt; &#123;
-  return (dispatch) =&gt; &#123;
-    return axios.get(`http://api.example.com/ssr/api/news.json`)
-    .then((res) =&gt; &#123;
-      const list = res.data;
-      //将数据派发到 reducer 上进行状态更新
-      dispatch(changeInfoList(list))
-    &#125;)
-  &#125;
-&#125;
-</code></pre>
-<p>至此完成了状态仓库Store的创建，事件行为action及状态更新reducer方法的定义，即已将Redux引入进了本项目，接着我们来看如何在页面组件中使用这套状态管理机制，来实现信息列表内容的管理及在页面中的显示。</p>
-<h4 id="3-页面组件使用Redux"><a href="#3-页面组件使用Redux" class="headerlink" title="3.页面组件使用Redux"></a>3.页面组件使用Redux</h4><p>若要完成信息列表内容的展示功能，根据对React 的开发经验，我们需要在Home页面组件的生命周期函数componentDidMount中完成请求数据，这就要求Home组件是一个一般组件而非函数式组件，改写Home组件的代码如下:</p>
-<pre><code class="react">//引入 connect 方法来实现组件与 store 的结合
-import &#123; connect &#125; from &#39;react-redux&#39;;
-//引入上面定义的事件行为 action
-import &#123; getHomeInfoList &#125; from &#39;./store/actions&#39;;
-//Home 组件的一般形式
-class Home extends Component&#123;
-  //渲染信息列表的内容
-  getList() &#123;
-    const &#123; list &#125; = this.props;
-    return list.map(item =&gt; &lt;div key=&#123;item.id&#125;&gt;&#123;item.title&#125;&lt;/div&gt;)
-  &#125;
-  render()&#123;
-    return (
-      &lt;div&gt;
-        &#123;this.getList()&#125;
-        &lt;button onClick=&#123;()=&gt;&#123;alert(&#39;click1&#39;)&#125;&#125;&gt;click&lt;/button&gt;
-      &lt;/div&gt;
-    )
-  &#125;
-  //当组件装载完成后执行组件生命周期
-  componentDidMount()&#123;
-    if(!this.props.list.length)&#123;
-      this.props.getHomeInfoList();
-    &#125;
-  &#125;
-&#125;
-//定义仓库中与组件相关的数据
-const mapStateToProps = state =&gt; (&#123;
-  list:state.home.infoList
-&#125;);
-//定义组件中可使用的数据派遣方法
-const mapDispatchToProps = dispatch =&gt; (&#123;
-  getHomeInfoList () &#123;
-    dispatch(getHomeInfoList ());
-  &#125;
-&#125;)
-//完成状态与组件的结合
-export default connect (mapStateToProps,mapDispatchToProps)(Home);
-</code></pre>
-<p>当该页面组件被装载后，就会调用生命周期函数触发获取信息列表的action事件行为，然后在获取到信息列表数据后通过reducer方法更新仓库状态，一旦状态仓库中的list 值发生改变，组件便会进行重新渲染，这样新的信息列表内容就会展示在页面中。</p>
-<h4 id="4-Redux的同构使用"><a href="#4-Redux的同构使用" class="headerlink" title="4.Redux的同构使用"></a>4.Redux的同构使用</h4><p>虽然页面中展示出了信息列表的内容，但如果我们通过设置Chrome 浏览器禁止JavaScript的执行，便会发现这个列表的内容实际上是客户端渲染出来的，服务器端渲染时并没有获取到该列表内容。</p>
-<p>这是因为组件的生命周期函数并不会在服务器端渲染时执行，那么在componentDidMount函数中请求信息列表内容的事件行为也就不会被派发出去，所以为了在服务器端渲染时能够展示出列表内容，我们需要设置Redux的同构使用。其思路是这样的:为组件对象定义一个loadData方法，该方法的功能类似于当组件加载后执行以获取数据的生命周期函数，然后根据所请求的路由在加载组件时显式地去执行对应的loadData方法。为Home组件定义loadData 方法如下:</p>
-<pre><code class="react">//该方法负责在服务器端渲染之前，派发相应数据加载的事件行为
-Home.loadData = (store) =&gt; &#123;
-  return store.dispatch(getHomeInfoList());
-&#125;
-</code></pre>
-<p>接着若要根据路由信息来执行相应组件的loadData方法，就需要修改原有的路由配置方式，将其修改为对象数组的形式，代码示例如下:</p>
-<pre><code class="react">export default [&#123;
-  path: &#39;/&#39;,
-  component: Home,
-  exact: true,
-  loadData: Home.loadData,
-  key: &#39;home&#39;
-&#125;,&#123;
-  path: &#39;/login&#39;,
-  component: Login,
-  exact: true,
-  key: &#39;login&#39;
-&#125;];
-</code></pre>
-<p>然后在渲染结果中将路由信息的引入改成如下形式：</p>
-<pre><code class="react">import &#123; StaticRouter,Route &#125; from &#39;react-router-dom&#39;;
-import routes from &#39;../Routes&#39;;
-//改写路由引入
-const content = renderToString((
-  &lt;Provider store=&#123;store&#125;&gt;
-      &lt;StaticRouter location=&#123;req.path&#125; context=&#123;&#123;&#125;&#125;&gt;
-        &lt;div&gt;&#123;routes.map(route =&gt; &lt;Route &#123;...route&#125;/&gt;)&#125;&lt;/div&gt;
-      &lt;/StaticRouter&gt;
-  &lt;/Provider&gt;
-));
-</code></pre>
-<p>在完成路由配置的修改后，便可显式地进行loadData的执行，处理过程应该发生在服务器端接收到请求并创建好状态仓库后，执行服务器端渲染方法renderToString之前。在通常情况下，处理的路由可能包含多级路由，也就是说可能涉及多个组件loadData方法的执行，为了不遗漏可以使用react-router-confg 工具包中的matchRoutes方法进行路由匹配。代码示例如下:</p>
-<pre><code class="react">app.get(&#39;*&#39;,function (req,res)&#123;
-  //创建仓库对象
-  const store = getStore();
-  //匹配当前路由路径中包含的全部组件
-  const matchedRoutes = matchRoutes(routes,req.path);
-  //使 matchRoutes 中所有组件对应的 loadData 方法执行一次
-  const promises = [];
-  matchedRoutes.forEach(item =&gt; &#123;
-    if (item.route.loadData)&#123;
-      promises.push(item.route.loadData(store))
-    &#125;
-  &#125;)
-  Promise.all(promises).then(()=&gt;&#123;
-    //将服务器端渲染内容定义一个render方法进行封装
-    res.send(render(store,routes,req));
-  &#125;)
-&#125;);
-</code></pre>
-<p>由于获取数据的方法都是异步的，所以可通过 Promise.all 方法待数据请求完成后在回调中统一进行 服务器端渲染操作。</p>
-<h4 id="5-注水和脱水"><a href="#5-注水和脱水" class="headerlink" title="5.注水和脱水"></a>5.注水和脱水</h4><p>在完成Redux的同构引入及使用后，我们重启服务器并刷新浏览器访问项目页面，此时会发现页面中的信息列表内容在发生一次闪白后才 会被稳定渲染出来。</p>
-<p>整个过程是这样的:当浏览器接收到服务器端响应后，由于进行了数据请求与状态管理的服务器端渲染，所以页面中已经包含了信息列表的数据，而当HTML 中JavaScript代码加载后将会与服务器端同构的客户端渲染，根据目前代码这个渲染过程依然会创建新的状态仓库，在重新请求信息列表数据前，仓库中状态的初始值应为空，这便是刷新页面后发生闪白的原因，待客户端请求到数据后，内容才被稳定渲染出来。显而易见，这种在服务器端与客户端进行的两次相同数据请求，不仅冗余而且页面谊染内容闪白，为了解决这个问题，我们可以将数据挂载到浏览器window 变量上，实现在客户端浏览器上复用服务器端请求到的数据。</p>
-<p>这就是数据注水与脱水，服务器端渲染将数据写入window变量上的过程叫作注水，相应在客户端读取数据的过程叫作脱水。改造项目代码实现数据注水如下:</p>
-<pre><code class="react">//服务器端渲染方法
-render = ( store,routes,req ) =&gt; &#123;
-  const content = renderToString((
-    //...服务器端渲染内容
-  ));
-  return `
-  &lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;ssr&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;div id = &quot;root&quot;&gt;
-      $&#123;content&#125;
-    &lt;/div&gt;
-    &lt;script&gt;
-      //进行数据注水
-      window.context = &#123;
-        state: $&#123;JSON.stringify(store.getState())&#125;
-      &#125;
-    &lt;/script&gt;
-    &lt;script src=&#39;/index.js&#39;&gt;
-    &lt;/script&gt;
-  &lt;/body&gt;
- &lt;/html&gt;
-  `;
-&#125;
-</code></pre>
-<p>在完成数据注水后，客户端创建状态仓库实例时应当进行相应的数据脱水操作，即客户端状态仓库实例的创建应包含注水数据，修改创建状态仓库代码如下:</p>
-<pre><code class="react">//服务器端渲染状态仓库创建函数
-export const getStore = () =&gt; &#123;
-  return createStore(reducer, applyMiddleware(thunk));
-&#125;
-//客户端渲染状态仓库创建函数
-export const getClientStore = () =&gt; &#123;
-  //进行数据脱水
-  const defaultState = window.AudioContext.state;
-  return createStore(reducer,defaultState,applyMiddleware(thunk));
-&#125;
-</code></pre>
-<h3 id="五、通过中间层获取数据"><a href="#五、通过中间层获取数据" class="headerlink" title="五、通过中间层获取数据"></a>五、通过中间层获取数据</h3><p>比较简单的Web应用只需处理好浏览器与服务器之间的数据交互即可，但对较大型的项目来说，通常会在浏览器与传统的服务器之间加入node服务器作为中间层，来完成数据获取与服务器端渲染等相关处理，如图所示。</p>
-<p><img src="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230411103901404.png" alt="带node服务器的中间层架构"></p>
-<h4 id="1-使用中间层的优缺点"><a href="#1-使用中间层的优缺点" class="headerlink" title="1.使用中间层的优缺点"></a>1.使用中间层的优缺点</h4><p>使用中间层首先可以让服务器处理分工更加明确，后端服务器主要负责数据的获取和计算，由于其可使用Java&#x2F;C++等相较于JavaScript 更高计算性能的语言来实现，这对于高效计算数据非常有益:而node服务器则专注于服务器端渲染这种数据与组件结合的处理，当服务器端渲染接近当前性能瓶颈时，也可以通过增加node服务器数量来进行缓解。</p>
-<p>使用中间层无疑也会增加系统的复杂度，原本前端工程师只需关注项目代码在浏览器端的运行情况，现在还需关注并保证服务器端渲染及客户端请求代理时，node 服务器的稳定运营。</p>
-<h4 id="2-代理客户端请求"><a href="#2-代理客户端请求" class="headerlink" title="2.代理客户端请求"></a>2.代理客户端请求</h4><p>使用中间层必然提高了项且调试和维护的复杂度，为了避免一些无谓的复杂度，则需要保证浏览器对数据的请求应尽量由node 服务器来代理完成，这样当出现数据请求错误时，定位问题也会更加容易。</p>
-<p>在 四、中代码中客户端浏览器对信息列表内容的请求，是直接发送给后端服务器的，这里我们需要将其改为由node服务器代理给后端服务器，可利用express-http-proxy工具包配置代理路由如下:</p>
-<pre><code class="js">import express from &#39;express&#39;;
-//引入请求代理工具包
-import proxy from &#39;express-http-proxy&#39;;
-const app = express();
-//将向 node 服务器请求的 /api 路由代理到 http://api.example.com 上
-app.use(&#39;./api&#39;,proxy(&#39;http://api.example.com&#39;,&#123;
-  proxyReqPathResolver:function(req)&#123;
-    return &#39;/ssr/api&#39; + req.url;
-  &#125;
-&#125;))
-</code></pre>
-<p>配置好代理后Home页面信息列表数据获取的action方法便可改为如下形式：</p>
-<pre><code class="javascript">export const getHomeInfoList = () =&gt; &#123;
-  return (dispatch,getState) =&gt; &#123;
-    //向 node 服务器发起请求
-    return axios.get(&#39;/api/news.json&#39;)
-    .then((res) =&gt; &#123;
-      const list = res.data;
-      dispatch(changeInfoList(list))
-    &#125;);
-  &#125;
-&#125;
-</code></pre>
-<p>这是对客户端浏览器请求数据的改动，而服务器端渲染本身就发生在node 服务器上，其数据请求直接发送给后端服务器即可。</p>
-<h3 id="六、处理样式"><a href="#六、处理样式" class="headerlink" title="六、处理样式"></a>六、处理样式</h3><p>为了实现完整的服务器端渲染，还需要对引入的CSS样式进行同构处理，与通常客户端渲染的样式引入方式类似，服务器端渲染引入样式也可由webpack来进行构建编译，然后将相应的样式信息插入需要渲染的HTML页面中。</p>
-<p>由于一个页面通常都会包含多个组件，而每个组件又会引入各自的样式文件，若要在服务器端渲染中包含样式信息，就需要在渲染出的首屏页面中将所有组件涉及的样式都引入HTML页面中。这就要用到路由组件的context属性，来收集各自组件中的样式信息，代码示例如下:</p>
-<pre><code class="react">//服务器端渲染方法
-const render = (store,routes,req,context) =&gt; &#123;
-  //定义存储页面中所有子组件的样式信息，并以字符串数组的形式存储
-  const context = &#123; css: []&#125;;
-  //服务器端渲染内容
-  const content = renderToString((
-    &lt;Provider store=&#123;store&#125;&gt;
-      &lt;StaticRouter location=&#123;req.path&#125; context=&#123;context&#125;&gt;
-        &lt;div&gt;
-          &#123;renderRoutes(routes)&#125;
-        &lt;/div&gt;
-      &lt;/StaticRouter&gt;
-    &lt;/Provider&gt;
-  ));
-  //将所有样式信息拼接成一个字符串
-  const cssStr = context.css.length ? context.css.join(&#39;\n&#39;) : &#39;&#39;;
-  //引入相应的 HTML 页面中
-  return `
-  &lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;ssr&lt;/title&gt;
-    &lt;style&gt;
-    $&#123;cssStr&#125;
-    &lt;/style&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    //...省略 body 中的内容
-  &lt;/body&gt;
-&lt;/html&gt;
-  `;
-&#125;
-</code></pre>
-<p>接下来就需要将各个组件中涉及的样式信息，以字符串的方式存储到上述context静态变量中，这将要面对两个问题:首先是如何获取到样式信息的字符串形式，其次是如何统一处理所有 子组件的数据存储。对于第一个问题 可以使用isomorphic-styleloader工具，在webpack构建后的组件代码中，便可通过引入样式文件对象的_getCss()方法获取;第二个问题也很容易，可以通过高阶组件的方式来解决，定义高阶组件代码如下:</p>
-<pre><code class="react">import React,&#123; Component &#125; from &#39;react&#39;;
-//定义一个返回组件的函数，返回的这个组件就叫做高阶组件
-export default ( DecoratedComponent,styles ) =&gt; &#123;
-  return class NewComponent extends Component &#123;
-    componentWillMount() &#123;
-      //仅在服务器端渲染时才执行
-      if(this.props.staticContext)&#123;
-        this.props.staticContext.css.push(styles._getCss());
-      &#125;
-    &#125;
-    render()&#123;
-      return &lt;DecoratedComponent &#123;...this.props&#125;/&gt;
-    &#125;
-  &#125;
-&#125;
-</code></pre>
-<p>最后将高阶组件应用到每个组件上即可，下面以之前介绍的Home组件为例:</p>
-<pre><code class="react">//引入定义的高阶组件
-import withStyle from &#39;../../withStyle&#39;;
-//该组件包含的样式文件
-import styles from &#39;./style.css&#39;;
-class Home extends Component &#123;
-  render() &#123;
-    return (
-      &lt;div className = &#123;styles.container&#125;&gt;
-      //省略。。。
-    &lt;/div&gt;
-    )
-  &#125;
-&#125;
-//调用高阶函数包装本组件
-export default connect() (withStyle(Home,styles));
-</code></pre>
-<h3 id="七、搜索引擎优化相关技巧"><a href="#七、搜索引擎优化相关技巧" class="headerlink" title="七、搜索引擎优化相关技巧"></a>七、搜索引擎优化相关技巧</h3><p>服务器端谊染有利于搜索引擎优化(SEO)，当开发好的网站上线后，都希望有大量的用户来访问网站，提高网站的流量才能让其发挥作用增加收益，一个无人向津的网站是没有价值的。</p>
-<p>那么如何让更多的人知道有这么个网站并进行导流呢? 搜索引擎优化就具个有效的手段，当用户根据自己的需求使用Google 或者百度等搜索引擎进行信息查询后，会得到与之相关的若干网站链接结果。显而易见，排名越靠前的网站相较于靠后的网站将会获得更大的曝光度和访问的可能性。</p>
-<h4 id="1-搜索引擎优化简述"><a href="#1-搜索引擎优化简述" class="headerlink" title="1.搜索引擎优化简述"></a>1.搜索引擎优化简述</h4><p>搜索引擎是如何排名查询结果的呢?当然除了一些收费的竞价排名， 主要还是根据搜索引擎的网络爬虫对网站内容进行分析后，由一系列相关度算法的计算得来的，简单地说就是搜索引擎认为一个网站的内容对搜索关键字来讲越有价值，那么它的排名就会越靠前。</p>
-<p>这就意味着搜索引擎需要知道网站的内容，如果网站内容完全由客户端进行谊染，则在搜索引擎爬虫抓取到的HTML文件中，除了一个供客户端渲染所需的标签容器，不会有多少有用的信息，那么可想而知排名结果不会靠前。因此相比于客户端渲染来说，包含了许多DOM文档信息的服务器端渲染对搜索引擎优化就很有优势。</p>
-<p>通常可能会认为网站head标签中的title 和description能够提供搜索引擎优化的作用，但随着搜索引擎的不断优化，这两个数据项已经无法给目前基于网站全文本匹配分析的搜索引擎提供多大的优化益处了，那么像下面这样的属性还有什么意义呢?</p>
-<pre><code class="html">&lt;head&gt;
-  &lt;meta name=&quot;description&quot; content=&quot;技术博客&quot;/&gt;
-  &lt;title&gt;前端&lt;/title&gt;
-&lt;/head&gt;
-</code></pre>
-<p>目前这两个属性最大的用处是增加搜索结果的转化率，比如使用百度搜索“前端”这个关键词，所得结果如图所示，其中带有“广告”字样的搜索结果属于竞价排名，而其他结果则属于自然排名。title和description 并不能有效地提高排名结果，但它们却是搜索结果的展示内容，如果这两个属性的文案写得比较吸引人，便能在搜索结果中产生不错的访问转化率。</p>
-<p><img src="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230411113047860.png" alt="搜索百度‘前端’结果"></p>
-<h4 id="2-如何进行搜索引擎优化"><a href="#2-如何进行搜索引擎优化" class="headerlink" title="2.如何进行搜索引擎优化"></a>2.如何进行搜索引擎优化</h4><p>若要系统地做好搜索引擎优化，可能会涉及非常广泛的内容，此处考虑到篇幅与主题的因素，就仅站在服务器端渲染的角度来谈谈搜索引擎优化的一些核心思路。对搜索引擎来说，一个网站的内容包含三个部分: 文本内容、网站链接和多媒体(即图片、音视频等)。如果要获得较好的搜索引擎优化效果，就要分别在以下三个方面下功夫:首先文本内容应当尽量原创，若是抄袭的内容则很难在搜索引擎上获得较高的排名权重。</p>
-<p>其次是网站链接的优化，它分为内部链接和外部链接，内部链接是指网站内部打开新网页的链接，它应当具有比较好的相关度，比如在一个教育培训类的网站中，如果包含的链接基本都是诸如体育、影视、游戏等类别的，那么在以教育培训的关键词进行搜索时，该网站就不会获得较高的排名权重。外部链接指的是通过其他网站内部访问本网站的链接，外部链接越多说明本网站的影响力越大，也就会获得更高的排名权重。</p>
-<p>最后是多媒体方面，如果网站包含较多图片及音视频，并且均为原创高清的，那么搜索引擎也会因为更全面的丰富度而提高网站的排名权重。</p>
-<p>将上述建议应用到实际的项目优化中，相信网站的搜索排名一定不会太低， 但这有一个前提就是网站需要采用服务器端渲染。在本章服务器端渲染的角度来看，上述三方面的优化建议其实在框架代码层面并不能做出多少实际努力，不过还是可以通过代码来优化一下 HTML页面的title与description来帮助提高一些访问转化率的。</p>
-<h4 id="3-优化title和description"><a href="#3-优化title和description" class="headerlink" title="3.优化title和description"></a>3.优化title和description</h4><p>这里利用一个react-helmet 第三方包来实现为不同页面指定相应的title 和description,我们为Home页面引入该包进行改造，代码如下:</p>
-<pre><code class="react">import React, &#123; Component,Fragment &#125; from &#39;react&#39;;
-import &#123; Helmet &#125; from &#39;react-helmet&#39;;
-//将 Helmet 组件添加入页面
-class Home extends Component &#123;
-  render () &#123;
-    return (
-      &lt;Fragment&gt;
-        &lt;Helmet&gt;
-            &lt;title&gt;服务端渲染 - 加快首屏加载&lt;/title&gt;
-            &lt;meta name=&quot;description&quot; content=&#39;服务端渲染 - 加快首屏加载&#39;/&gt;
-        &lt;/Helmet&gt;
-        &lt;div&gt;
-          Hello React SSR!
-        &lt;/div&gt;
-        &lt;button onClick=&#123;()=&gt;&#123;alert(&#39;click&#39;)&#125;&#125;&gt;click&lt;/button&gt;
-      &lt;/Fragment&gt;
-    )
-  &#125;
-&#125;
-export default Home;
-</code></pre>
-<p>根据之前所讲到的同构概念可知，如果仅在页面组件中添加包含title和description信息的Helmet组件，则无法将信息挂载到服务器端渲染出的HTML文件中，我们还需要修改服务器端渲染代码以完成信息的挂载，修改代码如下:</p>
-<pre><code class="react">import &#123; Helmet &#125; from &#39;react-helmet&#39;;
-const context = renderToString(&lt; Home/&gt;);
-const helmet = Helmet.renderStatic();
-app.get(&#39;/&#39;,function(req,res)&#123;
-  res.send(`&lt;html&gt;
-  &lt;head&gt;
-    $&#123;helmet.title.toString()&#125;
-    $&#123;helmet.meta.toString()&#125;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;div id=&#39;root&#39;&gt;
-      $&#123;content&#125;
-    &lt;/div&gt;
-    &lt;script src=&#39;/index.js&#39;&gt;
-      
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;html/&gt;)`
-);
-&#125;)
-</code></pre>
-<p>如此便可将title和description 信息添加到服务器端渲染出来的页面中，并且不同页面组件可根据需求设置不同的内容。</p>
-<h3 id="本章小结"><a href="#本章小结" class="headerlink" title="本章小结"></a>本章小结</h3><p>本章主要关注服务器端渲染技术对性能优化的作用与实现细节，首先通过对页面渲染过程的开销分析，发现现代前端框架为开发带来便利的同时也增加了首屏谊染时间的问题，于是便引出了服务器端渲染技术对改善首屏渲染的思路和原理。</p>
-<p>接着通过一个基于 Vue的Demo项目，对服务器端渲染的处理流程进行了整体介绍，然后，我们通过React搭建了一 个服务器端渲染框架并详细介绍了其中的诸多技术细节，包括路由设置、状态管理、数据获取及样式处理在服务器端渲染中是如何实现的，这也是本章的重点部分，最后还简要介绍了一些关 于服务器端谊染与搜索引擎优化的内容。</p>
+      <p class="home-excerpt">以 React 项目为例，梳理服务端渲染的流程及路由、状态管理和数据获取等实现细节。</p>
+      <p><a class="article-more-link" href="/2023/04/11/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88React%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/" aria-label="阅读全文：服务端渲染（React中的服务器端渲染）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -829,136 +260,8 @@ app.get(&#39;/&#39;,function(req,res)&#123;
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="Vue中的服务器端渲染"><a href="#Vue中的服务器端渲染" class="headerlink" title="Vue中的服务器端渲染"></a>Vue中的服务器端渲染</h1><blockquote>
-<p>本节以Vue的服务器端渲染为例，首先介绍基本流程，然后通过一个代码实例探讨其中的若干细节，并从中带领读者体会服务器端渲染是如何解决首屏性能问题的。</p>
-</blockquote>
-<h3 id="一、Vue-的SSR基本流程"><a href="#一、Vue-的SSR基本流程" class="headerlink" title="一、Vue 的SSR基本流程"></a>一、Vue 的SSR基本流程</h3><p>​		如图所示，描述了Vue服务器端渲染的整体流程，左边的是通用业务代码，可以看出无论是服务器端还是浏览器客户端，二者使用的是同套代码。 由于Vue组件生命周期在服务器端和在客户端上不一致，因此需要针对服务器端渲染编写相应的组件代码。</p>
-<p>​		比如Vue组件在进行服务器端渲染的时候，不存在真实DOM节点渲染的情况，所以并不存在mounted这个生命周期函数，那么原本在客户端编写的组件，就需要将mounted中的业务逻辑迁移到组件的其他位置上。</p>
-<p><img src="/2023/04/03/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88Vue%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230403163517264.png" alt="Vue服务器端渲染"></p>
-<p>​		接着往右看，业务源代码从 app.js 处分出了两个构建入口，webpack 会根据不同的入口配置，分别生成用于服务器端谊染所需的Sever Bundle 和客户端准染所需的Client Bundle其中Server Bundle会在所定义的包渲染器中，被编译生成可以在浏览器端直接进行渲染的HTML文件。</p>
-<p>​		这里还存在一个小问题: 由于这份服务器端渲染所得的HTML文件，也是由Vue组件和相应的数据生成的，其包含的数据到了客户端之后，还是需要通过浏览器端的Vue框架进行管理的。</p>
-<p>​		那么客户端的Vue框架如何知道服务器渲染出的页面中，哪些数据与客户端代码中的相应组件存在关联呢?所以在浏览器的客户端部分就需要存在一个混入处理的阶段，将二者有效关联起来。这样在客户端中发生相应数据的改变后，服务器端渲染生成的页面也能够有响应式的联动变化。</p>
-<h3 id="二、Vue-的SSR项目实例"><a href="#二、Vue-的SSR项目实例" class="headerlink" title="二、Vue 的SSR项目实例"></a>二、Vue 的SSR项目实例</h3><p>​		为了更清楚地介绍Vue服务器端溶染的处理过程，下面借助 GitHub上的Demo项目源代码进行说明，其目录结构如下所示:</p>
-<pre><code class="ins">bulid/
-|-- webpack.base.config.js
-|-- webpack.client.config.js
-|-- webpack.server.config.js
-|-- vue-loader.config.js
-|-- setup-dev-server.js
-dist/
-public/
-src/
-|-- components/
-| |-- movieComment.vue
-| |-- moviesTag.vue
-| |-- searchTag.vue
-|-- router/
-| |-- index.js
-|-- store/
-| |-- moving/
-| |-- index.js
-|-- style/
-| |-- base.css
-|-- views/
-| |-- userView.vue
-| |-- moviesDetail.vue
-|-- App.vue
-|-- app.js
-|-- entry-client.js
-|-- entry-server.js
-|-- index.template.html
-server.js
-</code></pre>
-<p>​		build下存放与项目构建相关的配置文件，public 中存放着项目中用到的一些静态资源文件，dist存放着工程构建打包的输出文件，src目录下为项目的主要源代码文件，可以看出这是一个基于Vue的典型前端项目。</p>
-<p>​		其中包含了组建目录components、路由设置router、基于Vuex状态管理的store、页面视图views及相应的入口文件。接下来将对该Vue项目的服务器端渲染过程进行简要介绍。</p>
-<h4 id="1-服务器端渲染所返回的HTML文件"><a href="#1-服务器端渲染所返回的HTML文件" class="headerlink" title="1.服务器端渲染所返回的HTML文件"></a>1.服务器端渲染所返回的HTML文件</h4><p>​		服务器端渲染的目的是为浏览器返回一个可供直接进行绘制的HTML文件，从而减少首屏出现的时间，在该项目中文件 index.template.html 即为最终所要生成的服务器端渲染结果的模板文件，其内容如下:</p>
-<pre><code class="html">&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-  &lt;head&gt;
-    &lt;title&gt;&#123;&#123;title&#125;&#125;&lt;/title&gt;
-    &lt;meta charset=&quot;UTF-8&quot; /&gt;
-    &lt;meta name=&quot;mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;
-    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui&quot; /&gt;
-    &lt;link rel=&quot;shortcut icon&quot; sizes=&quot;48x48&quot; href=&quot;/public/logo-48.png&quot;&gt;
-    &lt;meta name=&quot;theme-color&quot; content=&quot;#f60&quot;&gt;
-    &lt;link rel=&quot;manifest&quot; href=&quot;/manifest.json&quot;&gt;
-    &lt;% for (var chunk of chunk.files)&#123;
-      for (var file of chunk.files)&#123;
-        if (file.match(/\.(js|css)$/))&#123;
-          %&gt;
-    &lt;link rel=&quot;&lt;%= chunk.initial?&#39;preload&#39;:&#39;prefetch&#39; %&gt;&quot; href=&quot;&lt;%=htmlWebpackPlugin.files.publicPath + file %&gt;&quot; as=&quot;&lt;%= file.match(/\.css$/)?&#39;style&#39;:&#39;script&#39; %&gt;&quot;&gt;&lt;%&#125;&#125;&#125;%&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;!--vue-ssr-outlet--&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<p>​		在head标签中包含了title、 显示设置、样式文件及一些预加载和预获取的文件配置，而在body标签中则通过注释的方式(vue-ssr-oulet) 标定出了服务器端渲染DOM所要注入的节点位置。</p>
-<h4 id="2-输出HTML文件的编译过程"><a href="#2-输出HTML文件的编译过程" class="headerlink" title="2.输出HTML文件的编译过程"></a>2.输出HTML文件的编译过程</h4><p>​	明确了模板文件 index.template.html的作用后，接下来我们分析该模板文件如何处理并最终生成给浏览器直接渲染的HTML文件，这个过程必定是通过webpack构建完成的，可在配置文件中搜索模板文件的文件名，在webpack.client.config.js 中查到如下配置信息:</p>
-<pre><code class="js">const config = merge(base,&#123;
-  plugins:[
-    //...其他配置
-    new HTML.Plugin(&#123;
-      template:&#39;src/index.template.html&#39;
-    &#125;)
-  ]
-&#125;)
-</code></pre>
-<p>​		该配置插件HTMLPlugin的作用是编译入参中指定的模板文件，并在dist目录下生成最终所需的index.html文件。要追溯编译构建过程，可从启动项目的命令npm run dev开始查询服务器启动代码server.js,代码如下:</p>
-<pre><code class="js">//定义服务器渲染结果字符串
-let renderer
-//若为生产环境
-if (!isprod)&#123;
-  //在生产环境下，使用Server bundle 和 index.template.html 模版生产渲染内容的字符串
-  //通过 vue-ssr-webpack-plugin生产所需的 Server bundle
-  const bundle = require(&#39;./dist/vue-ssr-bundle.json&#39;)
-  //同步读取预编译好的HTML文件
-  const template = fs.readFileSync(resolve(&#39;./dist/index.html&#39;),&#39;utf-8&#39;)
-  renderer = createRenderer(bundle,template)
-&#125;else&#123;
-  //在开发环境下，调用setup-dev-server 启动一个开发服务器监控项目文件修改并进行热加载
-  require(&#39;./build/setup-dev-server&#39;)(app,(bundle,template) =&gt; &#123;
-    renderer = createRenderer(bundle,template)
-  &#125;)
-&#125;
-</code></pre>
-<p>​		这里是服务器启动处理的一个中间环节，一方面开发环境下更具体的处理流程在 &#x2F;build&#x2F;setup-dev-server.js文件中进行，在其中会启动一个开发调试用的服务器:另一方面当文件修改发生后，会调用createRenderer方法生成服务器返回给浏览器的HTML文件中的内容字符串。</p>
-<p>​		在服务器启动环节中的主要操作分别根据 webpack.client.config.js 和 webpack.server.config.js的配置文件构建打包出Client Bundle和Server Bundle,其中处理Server Bundle的代码如下:</p>
-<pre><code class="js">//引入服务器端代码构建配置
-const serverConfig = require(&#39;./webpack.server.config&#39;)
-//引入内存文件系统
-const MFS = require(&#39;memory-fs&#39;)
-const serverCompiler = webpack(serverConfig)
-const mfs = new MFS()
-serverCompiler.outputFileSystem = mfs
-//监控文件修改时的处理
-serverCompiler.watch(&#123;&#125;,(err,stats) =&gt; &#123;
-  if(err) throw err
-  stats = stats.toJson()
-  stats.errors.forEach(err =&gt; console.error(err))
-  stats.warnings.forEach(err =&gt; console.warn(err))
-  //若构建无误则输出 Bundle 文件
-  const bundlePath = path.join(serverConfig.output.path, &#39;vue-ssr-budle.json&#39;)
-  bundle = JSON.parse(mfs.readFileSync(bundlePath,&#39;utf-8&#39;))
-  //若指定了模版文件，则 createRenderer 方法进行服务器渲染操作
-  if(template)&#123;
-    cd(bundle,template)
-  &#125;
-&#125;)
-</code></pre>
-<h4 id="3-服务器端渲染方法"><a href="#3-服务器端渲染方法" class="headerlink" title="3.服务器端渲染方法"></a>3.服务器端渲染方法</h4><p>createRenderer 方法代码如下：</p>
-<pre><code class="js">function createRenderer(bundle,template)&#123;
-  //将构建的服务器端bundle包与HTML模版文件一起渲染成最终HTML文件内容
-  return require(&#39;vue-server-renderer&#39;).createBundleRenderer(bundle,&#123;
-    template,
-    cache:require(&#39;lru-cache&#39;)(&#123;max:1000,maxAge:1000 * 60 *15&#125;)
-  &#125;)
-&#125;
-</code></pre>
-<p>​		这里引用了Vue 官方所提供的服务器端渲染工具包vue-sever-renderer.具体使用细节及配置说明可参考官方给出的文档，这里仅梳理流程和处理逻辑，通计createBundleRenderer方法可根据上一步构建生成的Server Bundle和模板配置选项共同生成一个BundleRenderer 实例，该实例包含两个成员方法renderToString 和 renderToStream,它们分别可以将服务器渲染的内容以字符串和可读数据流的形式输出，输出结果即为浏览器请求首屏页面后服务器端返回可供直接渲染的结果。</p>
-<p>​		可以看出该项目并非对所有页面都进行了服务器端渲染，它仅对首屏页面的项部进行了服务器端渲染，下半部分的资源列表采用的是客户端渲染，因此能够根据实际的业务情况去平衡需要客户端渲染与服务器端渲染是十分必要的。</p>
-<p>​		一方面服务器端渲染大部分解决的应当是首屏性能问题，对首屏涉及页面进行服务器端渲染更加符合逻辑和应用场景;另一 方面处理时还需对服务器端与客户端计算能力进行平衡，虽然我们需要合理利用服务器端计算能力，但也不能将客户端计算能力闲置下来。</p>
+      <p class="home-excerpt">本节以Vue的服务器端渲染为例，首先介绍基本流程，然后通过一个代码实例探讨其中的若干细节，并从中带领读者体会服务器端渲染是如何解决首屏性能问题的。</p>
+      <p><a class="article-more-link" href="/2023/04/03/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88Vue%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%89/" aria-label="阅读全文：服务端渲染（Vue中的服务器端渲染）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -1010,33 +313,8 @@ serverCompiler.watch(&#123;&#125;,(err,stats) =&gt; &#123;
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <p>前端工程师的工作范畴其实不仅仅局限在客户端浏览器，特别是在处理性能优化问题时，往往需要站在全栈的角度去审视系统的每个细节。</p>
-<p>​		本章首先介绍前端页面渲染技术演进背后所隐藏的一个性能隐患，以及如何使用服务器端计算能力来对其进行改进,从而诞生服务器端渲染技术:然后分别以基于Vue和React两个现代前端框架的项目实例，对服务器端渲染的实现技术和细节进行梳理和探讨。通过本章的学习，能够对服务器端渲染的全貌和相关技巧都有所理解。</p>
-<h1 id="页面渲染"><a href="#页面渲染" class="headerlink" title="页面渲染"></a>页面渲染</h1><blockquote>
-<p>随着前端技术战的演进，Vue. React等现代前端框架的出现，不但让大型项目的开发越来越简单高效，而且其合理的的代码组织结构也让项目的维护成本得到显著降低。</p>
-<p>如果深入去探讨这些现代前端框架的首屏值染过程，就会发现其优势特性的背后隐藏着个明显的性能缺陷。 本节首先对此缺陷的产生原理进行分析，然后引出相应的优化解决方案一服务器端渲染。</p>
-</blockquote>
-<h3 id="一、页面渲染的发展"><a href="#一、页面渲染的发展" class="headerlink" title="一、页面渲染的发展"></a>一、页面渲染的发展</h3><p>​		在早些年还没有Vue和React这些前端框架的时候，做网站开发的主要技术栈基本就是JSP和PHP,而渲染所需的HTML页面都是先在服务器端进行动态的数据填充，然后当客户端向服务器端发出请求后，客户端将响应收到的HTML文件直接在浏览器端渲染出来。</p>
-<p>​		随着前端复杂度的增加与技术发展的迭代，若将所有逻辑都放在后端处理，则其开发效率和交互性能都会受到限制，所以这样的方式便被逐渐淘汰掉了。</p>
-<p>​			现代前端框架出现后，基于MVVM及组件化的开发模式逐渐取代了原有MVC的开发模式，这使得代码开发效率得到提高并且代码维护成本大幅降低，于是前端工程师的关注点可以更多地放在业务需求的实现上，用户与页面的更改交由框架以数据驱动的方式去完成，如图所示是MVVM模式框架实现数据更新的逻辑视图。</p>
-<p><img src="/2023/03/25/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%89/image-20230325092841407.png" alt="MVVM框架的数据更新方式"></p>
-<p>​		除此之外，框架还提供了许多额外的便利，比如虚拟DOM、前端路由、组件化等特性，这些特性所带来便利的背后也隐藏着一个明显的问题，就是基于这些框架开发出的业务代码依赖于框架代码，运行业务代码之前，首先需要等待框架的代码加载完成，接着执行框架将业务代码编译成最终所要展示的HTML文件后，才能进行页面谊染。</p>
-<p>​		框架包含的特性越多，其代码包尺寸就会越大，这无疑会增加打开网站到渲染出页面之间的等待时间，如果所有前端页面都依赖于框架代码，那么等待期间的网站页面便会直处于空白状态， 这样的首屏用户体验是非常糟糕的。</p>
-<p>​		前端技术栈的发展其实也非常类似于计算机语言的发展过程:最早给计算机编程使用的是机器语言，利用穿孔打印机进行输入，这对于计算机的执行效率来说是非常高的，因为它不需要任何编译或者解释操作，但其缺点是对程序开发人员来说几乎不具有任何可读性，如果原有的程序逻辑需要调整，那么修改机器语言的程序将会非常烦琐。</p>
-<p>​		为了让计算机程序开发人员能够更高效地编写程序，于是从计算机底层向上层逐渐发展出了汇编语言、C语言、Java语言及前端最常用的JavaSript语言。</p>
-<p>​		越靠近用户端的语言在执行效事及性能上，都明显不及底层语言，但对开发者来说却非常友好，让开发者能够更方便地编写出更复杂的业务逻辑。所以在面对高性能与易维护扩展两方面时，就需要做一个权衡取合，而好的优化方案通常都是兼顾折中的。</p>
-<p>​		前端在面对页面渲染性能上与代码开发方式时，也需要进行类似的权衡，我们不可能仅为了更快的页面渲染就退回过去JSP&#x2F;PHP的开发方式。那样虽然能加快首屏渲染，但与现代前端框架相比，其不仅开发效率低而且代码维护成本高。</p>
-<p>​		因此我们应当去思考，如何在现代前端框架内部去有效地改善首屏渲染，既兼顾性能体验又保证开发效率。接下来就以Vue框架为例，来讨论一个多层次的优化方案。</p>
-<h3 id="二、多层次优化方案"><a href="#二、多层次优化方案" class="headerlink" title="二、多层次优化方案"></a>二、多层次优化方案</h3><p>多层次优化方案大体可分为三个层次的优化:构建层模板编译、预渲染数据无关的页面及服务器渲染。</p>
-<h4 id="1-构建层模板编译"><a href="#1-构建层模板编译" class="headerlink" title="1.构建层模板编译"></a>1.构建层模板编译</h4><p>​		从Vue 2.0开始其核心代码就已经拆成了两个部分: 一部分负责框架模板编译，另部分负责运行时执行。这就给我们提供了一个优化方案，可以将模板编译从浏览器执行阶段提前到webpack构建阶段。</p>
-<p>​		我们知道通过Vue编写的页面文件通常包括三部分: CSS样式、JavaScript 代码及Template页面模板，该页面文件是无法直接被浏览器解释执行的，它需要依赖Vue的核心代码进行编译后才能执行，如果将编译的耗时提前到webpack的构建阶段完成，那么当浏览器请求到数据后就可以直接运行编译结果显示页面。</p>
-<h4 id="2-预渲染数据无关的页面"><a href="#2-预渲染数据无关的页面" class="headerlink" title="2.预渲染数据无关的页面"></a>2.预渲染数据无关的页面</h4><p>​		在通常情况下，页面都是数据相关的，比如用Vue开发了一个用户中心， 那么其中肯定包含了些用户相关的个性化数据，每个用户进入该页面所获取的数据是不一样的，这种场景不适用预渲染进行优化。</p>
-<p>​		如果是一个营销活动页面，所有用户进来看到的内容基本都一样， 那么就可以在构建层直接执行Vue核心代码，将相应的页面生成最终可直接渲染的HTML文件，然后通过该HTML文件去访问相应的Vue页面。这样将Vue的模板编译和执行都放在构建层去完成，就可以省去浏览器端的运行开销。</p>
-<h4 id="3-服务器端渲染"><a href="#3-服务器端渲染" class="headerlink" title="3.服务器端渲染"></a>3.服务器端渲染</h4><p>​		在大多数网站中，数据无关的页面其实并不多。对于数据相关的页面，比如用户中心的例子，需要获取到与用户相关的数据后再去进行编译和渲染，对此可以考虑将这些步骤放在服务器端去执行。</p>
-<p>​		能这么做的原因是，首先数据获取本身就需要向服务器端发起请求，这一步服务器端具有天然的优势，其次服务器端的nodejs与浏览器同样都使用JavaScript语言，这就使得服务器端能在获取到数据后，就去执行Vue 核心代码进行编译及渲染，从而生成可在浏览器端直接渲染的HTML文件。当然这个HTML文件最终还需要在浏览器端与Vue框架进行混入，让Vue框架来管理相应的数据。</p>
-<p>​		这就是所谓的服务器端渲染，简单说就是将原本在客户端执行的与首屏谊染相关JavaScript处理逻辑，移到服务器端进行处理。</p>
-<p>​		这样做虽然可以减少等待Vue框架加载与执行的时间，但会增加服务器的算力压力，同时也有可能面临服务器端内存泄漏的风险。可是考虑到服务器端集群的运算能力，肯定会高于用户端单个手机或电脑等设备上浏览器的运算能力，所以在有限的页面上，采取服务器端渲染能够明显提升首屏页面的渲染速度，同时在具体使用的页面范围上，也应当参考运算能力平衡考虑。</p>
+      <p class="home-excerpt">前端工程师的工作范畴其实不仅仅局限在客户端浏览器，特别是在处理性能优化问题时，往往需要站在全栈的角度去审视系统的每个细节。</p>
+      <p><a class="article-more-link" href="/2023/03/25/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%89/" aria-label="阅读全文：服务端渲染（页面渲染）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -1088,139 +366,8 @@ serverCompiler.watch(&#123;&#125;,(err,stats) =&gt; &#123;
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="页面布局与重绘的优化"><a href="#页面布局与重绘的优化" class="headerlink" title="页面布局与重绘的优化"></a>页面布局与重绘的优化</h1><blockquote>
-<p>页面布局也叫作重排和回流，指的是浏览器对页面元素的几何属性进行计算并将最终结果绘制出来的过程。凡是元素的宽高尺寸、在页面中的位置及隐藏或显示等信息发生改变时，都会触发页面的重新布局。</p>
-<p>通常页面布局的作用范围会涉及整个文档，所以这个环节会带来大量的性能开销，我们在开发过程中，应当从代码层面出发，尽量避免页面布局或最小化其处理次数。如果仅修改了DOM元素的样式，而未影响其几何属性时，则浏览器会跳过页面布局的计算环节，直接进入重绘阶段。</p>
-<p>虽然重绘的性能开销不及页面布局高，但为了更高的性能体验，也应当降低重绘发生的频率和复杂度。本节接下来便针对这两个环节的性能优化给出一些实用性的建议。</p>
-</blockquote>
-<h3 id="一、触发页面布局与重绘的操作"><a href="#一、触发页面布局与重绘的操作" class="headerlink" title="一、触发页面布局与重绘的操作"></a>一、触发页面布局与重绘的操作</h3><p>​		要想避免或减少页面布局与重绘的发生，首先就是需要知道有哪些操作能够触发浏览器的页面布局与重绘的操作，然后在开发过程中尽量去避免。</p>
-<p>​		这些操作大致可以分为三类:首先就是对DOM元素几何属性的修改，这些属性包括width、height、 padding、 margin、 left、 top 等，某元素的这些属性发生变化时，便会波及与它相关的所有节点元素进行几何属性的重新计算，这会带来巨大的计算量;其次是更改DOM树的结构，浏览器进行页面布局时的计算顺序，可类比树的前序遍历，即从上向下、从左向右。</p>
-<p>​		这里对DOM树节点的增、删、移动等操作，只会影响当前节点后的所有节点元素，而不会再次影响前面已经遍历过的元素；最后一类是获取某些特定的属性值操作，比如页面可见区域宽高offsetWidth offsetHeight， 页面视窗中元素与视窗边界的距离offsetTop,offsetLeft,类似的属性值还有scrollTop、scrollLeft、scrollWidth、scrollHeight、clientTop、clientWidth、clientHeight及调用window.getComputedStyle方法。</p>
-<p>​		这些属性和方法有一个共性，就是需要通过即时计算得到，所以浏览器就需要重新进行页面布局计算。</p>
-<h3 id="二、避免对样式的频繁改动"><a href="#二、避免对样式的频繁改动" class="headerlink" title="二、避免对样式的频繁改动"></a>二、避免对样式的频繁改动</h3><p>​		在通常情况下，页面的一帧内容被渲染到屏幕上会按照如下顺序依次进行,首先执行JavaScript代码，然后依次是样式计算、页面布局、绘制与合成。如果在JavaScript运行阶段涉及上述三类操作，浏览器就会强制提前页面布局的执行，为了尽量降低页面布局计算带来的性能损耗，我们应当避免使用JavaScript对样式进行频繁的修改，如果一定要修改样式，则可通过以下几种方式来降低触发重排或回流的频次。</p>
-<h4 id="1-使用类名对样式逐条修改"><a href="#1-使用类名对样式逐条修改" class="headerlink" title="1.使用类名对样式逐条修改"></a>1.使用类名对样式逐条修改</h4><p>​		在JavaScript代码中逐行执行对元素样式的修改，是种糟糕的编码方式，对未形成编码规范的前端初学者来说经常会出现这类的问题。错误代码示范如下:</p>
-<pre><code class="css">//获取DOM元素逐行修改样式
-const div = document .getElementById(&#39;mydiv&#39;);
-div.style.height = &#39;100px&#39;;
-div.style.width = &#39;100px&#39;;
-div.style.border = &#39;2px solid blue&#39;
-</code></pre>
-<p>​		上述代码对样式逐行修改，每行都会触发一次对渲染树的更改， 于是会导致页面布局重新计算而带来巨大的性能开销。合理的做法是，将多行的样式修改合并到一个类名中，仅在JavaScript脚本中添加或更改类名即可。CSS 类名可预先定义:</p>
-<pre><code class="css">.my-div&#123;
-    height: 100px;
-    border: 2px solid blue;
-    width: 100px; 
-&#125;
-</code></pre>
-<p>然后统一在JavaScript中通过给指定元素添加类的方式一次完成，这样便可避免触发多次对页面布局的重新计算:</p>
-<pre><code class="css">const div = document.getElementById(&#39;mydiv&#39;);
-mydiv.classList.add(&#39;my-div&#39;);
-</code></pre>
-<h4 id="2-缓存对敏感属性值的计算"><a href="#2-缓存对敏感属性值的计算" class="headerlink" title="2.缓存对敏感属性值的计算"></a>2.缓存对敏感属性值的计算</h4><p>​		有些场景我们想要通过多次计算来获得某个元素在页面中的布局位置，比如:</p>
-<pre><code class="js">const list = document.getElementById(&#39;list&#39;);
-for (let i =0; i&lt;10; i++) &#123;
-list.style.top = &#39;$&#123;list.offsetTop + 10&#125;px&#39;;
-list.style.left = &#39;$&#123;list.offsetLeft + 10&#125;px&#39;;
-&#125;
-</code></pre>
-<p>​		这不但在赋值环节会触发页面布局的重新计算，而且取值涉及即时敏感属性的获取，如offsetTop和offsetLeft,也会触发页面布局的重新计算。这样的性能是非常糟糕的，作为优化我们可以将敏感属性通过变量的形式缓存起来，等计算完成后再统一进行赋值触发布局重排。</p>
-<pre><code class="js">const list = document.getElementById(&#39;list&#39;);
-//将敏感属性缓存起来
-let offsetTop = list.offsetTop, offsetLeft = list.offsetLeft;
-for(let i=0;i&lt;10;i++)&#123;
-offsetTop += 10;
-offsetLeft += 10;
-&#125;
-//计算完成后统一赋值触发重排
-list.sty1e.left = offsetLeft;
-list.sty1e.top = offsetTop;
-</code></pre>
-<h4 id="3-使用requestAnimationFrame方法控制渲染帧"><a href="#3-使用requestAnimationFrame方法控制渲染帧" class="headerlink" title="3.使用requestAnimationFrame方法控制渲染帧"></a>3.使用requestAnimationFrame方法控制渲染帧</h4><p>前面讲JavaScript动画时，提到了requestAnimationFrame方法可以控制回调在两个植染帧之间仅触发一次， 如果在其回调函数中一开始就取值 到即时敏感属性，其实获取的是上一帧旧布局的值，并不会触发页面布局的重新计算。</p>
-<pre><code class="js">//在帧开始时触发回调
-requestAnimationFrame (queryDivHeight);
-function queryDivHeight() &#123;
-const div = document.getElementById(&#39;div&#39;)
-//获取并在命令行中打印出指定div元素的高
-console.log (div.offsetHeight)
-&#125;
-</code></pre>
-<p>如果在请求此元素高度之前更改其样式，浏览器就无法直接使用上一帧的旧有属性值，而需要先应用更改的样式，再运行页面布局计算后，才能返回所需的正确高度值。这样多余的开销显然是没有必要的。因此考虑到性能因素，在requestAnimationFrame方法的回调函数中，应始终优先样式的读取，然后再执行相应的写操作:</p>
-<pre><code class="js">//requestAnimationFrame方法的回调函数
-function queryDivHeight () &#123;
-const div = document .getElementById(&#39;div&#39;)
-//获取并在命令行中打印出指定div元素的高
-console.log (div.offsetHeight)
-//样式的写操作应放在读取操作后进行
-div.classList.add(&#39;my-div&#39;)
-&#125;
-</code></pre>
-<h3 id="三、通过工具对绘制进行评估"><a href="#三、通过工具对绘制进行评估" class="headerlink" title="三、通过工具对绘制进行评估"></a>三、通过工具对绘制进行评估</h3><p>除了通过经验去绕过一些明显的性能缺陷，使用工具对网站页面性能进行评估和实时分析也是发现问题的有效手段。这里介绍一 些基于Chrome开发者工具的分析方法，来辅助我们发现渲染阶段可能存在的性能问题。</p>
-<h4 id="1-监控渲染信息"><a href="#1-监控渲染信息" class="headerlink" title="1.监控渲染信息"></a>1.监控渲染信息</h4><p>打开Chrome的开发者工具，可以在“设置”→“更多工具”中，发现许多很实用的性能辅助小工具，比如监控渲染的Rendering工具，如图所示。</p>
-<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313105005172.png"></p>
-<p>​		打开Rendering 的工具面板后，会发现许多功能开关与选择器，下面举例介绍其中若干常用功能项。首先是Paint flashing, 当我们开启该功能后，操作页面发生重新渲染，Chrome会让重绘区域进行一次绿色闪动。</p>
-<p>​		这样就可以通过观察闪动区域来判断是否存在多余的绘制开销，比如若仅单击Select组件弹出下拉列表框，却发现整个屏幕区域都发生了闪动，或与此操作组件的无关区域发生了闪动，这都意味着有多余的绘制开销存在，需要进一步研究和优化。</p>
-<p>​		Layer borders功能开启后，会在页面上显示出绘制的图层边界。</p>
-<p>​		FPS meter功能开启后，会在当前页面的左上角显示实时的帧率情况，GPU 功能是否开启及GPU内存占用情况，如图所示。</p>
-<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313105326423.png"></p>
-<h4 id="2-查看图层详情"><a href="#2-查看图层详情" class="headerlink" title="2.查看图层详情"></a>2.查看图层详情</h4><p>​		当我们通过Rendering工具发现存在有多余的图层渲染时，由于闪动是难于捕捉的，所以还需要工具辅助显示出各个图层的详细信息，这便需要用到Layers图层工具，如图所示。</p>
-<p><img src="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/image-20230313110038852.png"></p>
-<p>​		如图所示工具界面大体分为三部分，①号矩形框区域为当前页面的图层列表:②号矩形框区域为页面带有图层边框的视图:③号矩形框区域为选中图层的详细信息，包括页面尺寸、内存占用、绘制次数等。</p>
-<p>​		通过这些信息能够帮助我们快速定位到所要查看的图层信息。当我们使用Rendering工具监控页面交互过程中有不恰当的图层存在时，便可使用Layers 工具进行问题复现:首先打开目标页面，然后从左 侧图层列表中依次查找出问题图层，接着分析引起该图层发生重绘的原因。</p>
-<h3 id="四、降低绘制复杂度"><a href="#四、降低绘制复杂度" class="headerlink" title="四、降低绘制复杂度"></a>四、降低绘制复杂度</h3><p>​		如前所述，绘制是在页面布局确定后，将元素的可视内容绘制到屏幕上的过程。虽然不同的CSS绘制样式看不出性能上明显的不同，但并非所有属性都有同样的性能开销。例如，绘制带有阴影效果的元素内容，就会比仅绘制单色边框所耗费的时间要长，因为涉及模糊就意味着更高的复杂度。CSS属性如下:</p>
-<pre><code class="css">// 绘制时间相对较短的边枢颜色
-border-color: red;
-//绘制时间更长的阴影内容
-box-shadow: 0, 8px, rgba(255,0,0,0.5);
-</code></pre>
-<p>​		当我们使用之前介绍过的渲染性能分析工具，发现了有明显性能瓶颈需要优化时，需要确认是否存在高复杂度的绘制内容，可以使用其他实现方式来替换以降低绘制的复杂度。比如位图的阴影效果，可以考虑使用Photoshop 等图像处理工具直接为图片本身添加阴影效果，而非全交给CSS样式去处理。</p>
-<p>​		除此之外，还要注意对绘制区域的控制，对不需要重新绘制的区域应尽量避免重绘。例如，页面的顶部有一个固定区域的header标头，若它与页面其他位置的某个区域位于同一图层，当后者发生重绘时，就有可能触发包括固定标头区域在内的整个页面的重绘。对于固定不变不期望发生重绘的区域，建议可将其提升为独立的绘图层，避免被其他区域的重绘连带着触发重绘。</p>
-<h3 id="五、合成处理"><a href="#五、合成处理" class="headerlink" title="五、合成处理"></a>五、合成处理</h3><p>​		合成处理是将已绘制的不同图层放在一起， 最终在屏幕上渲染出来的过程。在这个环节中，有两个因素可能会影响页面性能:一个是所需合成的图层数量，另一个是实现动画的相关属性。</p>
-<h4 id="1-新增图层"><a href="#1-新增图层" class="headerlink" title="1.新增图层"></a>1.新增图层</h4><p>在降低绘制复杂度小节中讲到，可通过将固定区域和动画区域拆分到不同图层上进行绘制，来达到绘制区域最小化的目的。接下来我们就来探讨如何创建新的图层，最佳方式便是使用CSS属性will-change来创建:</p>
-<pre><code class="css">.new-layer&#123;
- will-change: transform; 
-&#125;
-</code></pre>
-<p>该方法在Chrome、Firefox 及Opera上均有效，而对于Safari等不支持will-change属性的浏览器，则可以使用3D变换来强制创建:</p>
-<pre><code class="css">.new-layer&#123;
- transform: translate(0); 
-&#125;
-</code></pre>
-<p>​		虽然创建新的图层能够在定程度 上减少绘制区域，但也应 当注意不能创建太多的图层，因为每个图层都需要浏览器为其分配内存及管理开销。如果已经将个一元素提升到所创建的新图层上，也最好使用Chrome开发者工具中的Layers对图层详情进行评估，确定是否真的带来了性能提升，切忌在未经分析评估前就盲目地进行图层创建。</p>
-<h4 id="2-仅与合成相关的动画属性"><a href="#2-仅与合成相关的动画属性" class="headerlink" title="2.仅与合成相关的动画属性"></a>2.仅与合成相关的动画属性</h4><p>在了解了谊染过程各部分的功能和作用后，我们知道如果个动画的实现不经过页面布局和重绘环节，仅在合成处理阶段就能完成，则将会节省大量的性能开销。目前能够符合这一要求的动画属性只有两个:透明度opacity 和图层变换transform. 它们所能实现的动画效果如表所示，其中用n来表示数字。</p>
-<table>
-<thead>
-<tr>
-<th align="center">动画效果</th>
-<th align="center">实现方式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">位移</td>
-<td align="center">transform:translate(npx,npx);</td>
-</tr>
-<tr>
-<td align="center">缩放</td>
-<td align="center">transform:scale(n);</td>
-</tr>
-<tr>
-<td align="center">旋转</td>
-<td align="center">transform:rotate(ndeg)</td>
-</tr>
-<tr>
-<td align="center">倾斜</td>
-<td align="center">transform:skew(X|Y)(ndeg);</td>
-</tr>
-<tr>
-<td align="center">矩阵变换</td>
-<td align="center">transform:matrix(3d)(&#x2F;<em>矩阵变换</em>&#x2F;)</td>
-</tr>
-<tr>
-<td align="center">透明度</td>
-<td align="center">opacity:0…1</td>
-</tr>
-</tbody></table>
-<p>​		在使用opacity和transform实现相应的动画效果时，需要注意动画元素应当位于独立的绘图层上，以避免影响其他绘制区域。这就需要将动画元素提升至一个新的绘图层。</p>
+      <p class="home-excerpt">页面布局也叫作重排和回流，指的是浏览器对页面元素的几何属性进行计算并将最终结果绘制出来的过程。凡是元素的宽高尺寸、在页面中的位置及隐藏或显示等信息发生改变时，都会触发页面的重新布局。</p>
+      <p><a class="article-more-link" href="/2023/03/13/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80%E4%B8%8E%E9%87%8D%E7%BB%98%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%89/" aria-label="阅读全文：渲染优化（页面布局与重绘的优化）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -1272,68 +419,8 @@ box-shadow: 0, 8px, rgba(255,0,0,0.5);
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="计算样式优化"><a href="#计算样式优化" class="headerlink" title="计算样式优化"></a>计算样式优化</h1><blockquote>
-<p>在JavaScript处理过后，若发生了添加和删除元素，对样式属性和类进行了修改，就都会导致浏览器重新计算所涉及元素的样式，某些修改还可能会引起页面布局的更改和浏览器的重新绘制，本节就着眼于样式相关的优化点，来看看如何提升前端渲染性能。</p>
-</blockquote>
-<h3 id="一、减少要计算样式的元素数量"><a href="#一、减少要计算样式的元素数量" class="headerlink" title="一、减少要计算样式的元素数量"></a>一、减少要计算样式的元素数量</h3><p>​		首先我们需要知道与计算样式相关的一条重要机制: CSS 引擎在查找样式表时，对每条规则的匹配顺序是从右向左的，这与我们通常从左向右的书写习惯相反。举个例子，如下CSS规则:</p>
-<pre><code class="css">.product-list li &#123;&#125;
-</code></pre>
-<p>​		如果不知道样式规则查找顺序，则推测这个选择器规则应该不会太费力，首先类选择器product-list的数量有限应该很快就能查找到，然后缩小范围再查找其下的 li 标签就顺理成章。</p>
-<p>​		但CSS选择器的匹配规则实际上是从右向左的，这样再回看上面的规则匹配，其实开销相当高，因为CSS引擎需要首先遍历页面上的所有 li 标签元素，然后确认每个 li 标签有包含类名为product-list的父元素才是目标元素，所以为了提高页面的渲染性能，计算样式阶段应当尽量减少参与样式计算的元素数量，这里总结了如下几点实战建议:</p>
-<p>​		使用类选择器替代标签选择器，对于上面 li 标签的错误示范，如果想对类名为product-list下的 li 标签添加样式规则，可直接为相应的 li 标签定义名为product-list_li的类选择器规则，这样做的好处是在计算样式时，减少了从整个页面中查找标签元素的范围，毕竟在CSS选择器中，标签选择器的区分度是最低的。</p>
-<p>​		避免使用通配符做选择器，对于刚入门前端的小伙伴，通常在编写CsS样式之前都会有使用通配符去清楚默认样式的习惯，如下所示:</p>
-<pre><code class="css">* &#123;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-&#125;
-</code></pre>
-<p>​		这种操作在标签规模较小的demo项目中，几乎看不出有任何性能差异。但对实际的工程项目来说，使用通配符就意味着在计算样式时，浏览器需要去遍历页面中的每一个元素，这样的性能开销很大，应当避免使用。</p>
-<h3 id="二、降低选择器的复杂性"><a href="#二、降低选择器的复杂性" class="headerlink" title="二、降低选择器的复杂性"></a>二、降低选择器的复杂性</h3><p>​		随着项目不断迭代，复杂性会越来越高，或许刚开始仅有一个名为content的类选择元素，但慢慢地单个元素可能会并列出列表，列表又会包裹在某个容容元素下，甚至该列表中的部分元素的样式又写其他兄弟元素有所差异，这样原本的个类选择器就会被扩展成如下形式:</p>
-<pre><code class="css">.container:nth-child(-n+1) .content&#123;/*样式属性*/&#125;
-</code></pre>
-<p>​		浏览器在计算上述样式时，首先就需要查询有哪些应用了content 类的元素，并且其父元素怡好带有container类的倒数第n+1个元素，这个计算过程可能就会花费许多时间，如果仅对确定的元素使用单一的类名选择器，那么浏览器的计算开销就会大幅度降低。</p>
-<p>​		比如使用名为final-container-content 的类选择替代上述的复杂样式计算，直接漆加到目标元素上。而且复杂的匹配规则，可能也会存在考虑不周从而导致画蛇添足的情况，例如，通过id选择器已经可以唯一确定 目标元素了，就无须再附加其他多余的选择器:</p>
-<pre><code class="css">/*错误示范*/
-.content #my-content
-/*正确方式*/
-#my-content
-</code></pre>
-<p>​		由于id选择器本身就是唯一存在的， 定位到目标元素数后再去查找名为content的类选择器元素就多此一举。当然在实际项目中的情况会复杂得多，但若能做故到尽量降低选择器的复杂性，则类似的问题也会容易避免。</p>
-<h3 id="三、使用BEM规范"><a href="#三、使用BEM规范" class="headerlink" title="三、使用BEM规范"></a>三、使用BEM规范</h3><p>​		BEM是一种CSS的书写规范，它的名称是由三个单词的首字母组成的，分别是块(Block)、元素(Element)和修饰符(Modifier)。理论上它希望每行CSS代码只有一个选择器，这就是为了降低选择器的复杂性，对对选择器的命名要求通过以下三个符号的组合来实现。</p>
-<ul>
-<li>中画线( - ): 仅作为连字符使用，表示某个块或子元素的多个单词之间的连接行。</li>
-<li>单下画线( _ ):作为描述一个块或其子元素的种状态。</li>
-<li>双下画线( _ _ );作为连接块与块的子元素。</li>
-</ul>
-<p>接下来首先给出一个基于BEM的选择器命名形式，然后再分别看块、元素与修饰符的含义和使用示例:</p>
-<pre><code class="css">/* BEM命名示例*/
-type-block__element_modifier
-</code></pre>
-<h4 id="1-块"><a href="#1-块" class="headerlink" title="1.块"></a>1.块</h4><p>通常来说，凡是独立的页面元素，无论简单或是复杂都可以被视作一个块，在HTML文档中会用一个唯一的类名来表示这个块。具体的命名规则包括三个:只能使用类选择器，而不使用ID选择器;每个块应定义一个前缀用来表示命名空间;每条样式规则必须属于一个块。比如一个自定义列表就可视作为一个块， 其类名匹配规则可写为:</p>
-<pre><code class="css">.mylist&#123;&#125;
-</code></pre>
-<h4 id="2-元素"><a href="#2-元素" class="headerlink" title="2.元素"></a>2.元素</h4><p>元素即指块中的子元素，且子元素也被视作块的直接子元素，其类名需要使用块的名称作为前缀。以上面自定义列表中的子元素类名写法为例，与常规写法对比如下:</p>
-<pre><code class="css">//常规写法
-.mylist &#123;&#125;
-.mylist .item &#123;&#125;
-//BEM写法
-.mylist &#123;&#125;
-.mylist__item &#123;&#125;
-</code></pre>
-<h4 id="3-修饰符"><a href="#3-修饰符" class="headerlink" title="3.修饰符"></a>3.修饰符</h4><p>修饰符可以看作是块或元素的某个特定状态，以按钮为例，它可能包含大、中、小三种默认尺寸及自定义尺寸，对此可使用small、normal、 big 或size-N来修饰具体按钮的选择器类名，示例如下:</p>
-<pre><code class="css">//自定又列表下子元素大、中、小三种尺寸的类选择器
-.mylist__item_big &#123;&#125;
-.mylist__item_normal &#123;&#125;
-.mylist__item_small &#123;&#125;
-//带自定义尺寸修饰符的类选择器
-.mylist__item_size-10
-</code></pre>
-<p>​		BEM样式编码规范建议所有元素都被单一的类选择器修饰，从CSS代码结构角度来说这样不但更加清晰，而且由于样式查找得到了简化，谊染阶段的样式计算性能也会得到提升。</p>
+      <p class="home-excerpt">在JavaScript处理过后，若发生了添加和删除元素，对样式属性和类进行了修改，就都会导致浏览器重新计算所涉及元素的样式，某些修改还可能会引起页面布局的更改和浏览器的重新绘制，本节就着眼于样式相关的优化点，来看看如何提升前端渲染性能。</p>
+      <p><a class="article-more-link" href="/2023/03/09/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E8%AE%A1%E7%AE%97%E6%A0%B7%E5%BC%8F%E4%BC%98%E5%8C%96%EF%BC%89/" aria-label="阅读全文：渲染优化（计算样式优化）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -1385,162 +472,8 @@ type-block__element_modifier
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="JavaScript-执行优化"><a href="#JavaScript-执行优化" class="headerlink" title="JavaScript 执行优化"></a>JavaScript 执行优化</h1><blockquote>
-<p>本节侧重优化JavaScript 的执行来改善用户在渲染方面的性能体验。</p>
-</blockquote>
-<h3 id="一、实现动画效果"><a href="#一、实现动画效果" class="headerlink" title="一、实现动画效果"></a>一、实现动画效果</h3><p>​		前端实现动画效果的方法有很多，比如在CSS中可以通过transition和animation来实现，在HTML中可以通过canvas 来实现，而利用JavaScript 通常最容易想到的方式是利用定时器seTimeout或setInterval来实现，即通过设置个间隔时间来不断地改变目标图像的位置来达到视觉变化的效果。</p>
-<p>​		实践经验告诉我们，使用定时器实现的动画会在一些低端 机器上出现抖动或者卡顿的现象，这主要是因为浏览器无法确定定时器的回调函数的执行时机。以setInterval为例，其创建后回调任务会被放入异步队列，只有当主线程上的任务执行完成后，浏览器才会去检查队列中是否有等待需要执行的任务，如果有就从任务队列中取出执行，这样会使任务的实际执行时机比所设定的延迟时间要晚一些。</p>
-<p>其改屏幕分辨率和尺寸也会影响刷新频率，不同设备的屏幕绘制频率可能会有所不同，而setInterval只能设置某个固定的时间间隔，这个间隔时间不一定与所有屏幕的刷新时间同步，那么导致动画出现随机丢帧也在所难免，如图所示。</p>
-<p><img src="/2023/03/05/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/image-20230305105053986.png" alt="定时器触发阻塞渲染帧"></p>
-<p>​		为了避免这种动画实现方案中因丢帧而造成的卡顿现象，我们推荐使用window中的requestAnimationFrame方法。与setInterval方法相比，其最大的优势是将回调函数的执行时机交由系统来决定，即如果屏幕刷新频率是60Hz,则它的回调函数大约会每16.7ms执行一次， 如果屏幕的刷新频率是75Hz,则它回调函数大约会每13.3ms执行一次，就是说requestAnimationFrame方法的执行时机会与系统的刷新频率同步。这样就能保证回调函数在屏幕的每次刷新间隔中只被执行一次，从而避免因随机丢帧而造成的卡顿现象。</p>
-<p>​		其使用方法也十分简单，仅接受一个回调函数作为入参，即下次重绘之前更新动画帧所调用的函数。返回值为一个long型整数，作为回调任务队列中的唯标识， 可将该值传给window.cancelAnimationFrame来取消回调，以某个目标元素的平移动画为例:</p>
-<pre><code class="js">let start;
-//定义目标动画元素
-const element = document.getElementById(&#39;MyAnimate&#39;);
-element.style.position = &#39;absolute&#39;
-//定义动画回调函数
-function updatedScreen(timestamp) &#123;
-    if(!start) start = timestamp;
-    //根据时间戳计算每次动画位移
-    const progress = timestamp - start;
-    element.style.left = `$&#123;Math.min(progress / 10,200)&#125;px`
-    if(progress &lt; 2000) window.requestAnimationFrame(updatedScreen)
-&#125;
-//启动动画回调函数
-window.requestAnimationFrame(updatedScreen)
-</code></pre>
-<p>​		除了通过让回调函数的触发时机与系统刷新频率同步来消除动画的丢帧卡顿，requestAnimationFrame方法还能通过节流不必要的函数执行，来帮助CPU的节能。</p>
-<p>​		具体而言，对于CPU节能方面，考虑当浏览器页面最小化或者被隐藏起来时，动画对用户来说是不可见的，那么刷新动画所带来的页面渲染就是对CPU资源的浪费，完全没有意义。</p>
-<p>​		当创建setInterval定时器后，除非显式地调用clearInterval去销毁该定时器，不然在后台的动画任务会被不断执行，而requestAnimationFrame方法则完全不同，当页面未被激活时，屏幕刷新任务会被系统暂停，只有当页面被激活时，动画任务才会被激活并从上次暂停的地方继续执行，所以能有效地节省CPU开销。</p>
-<p>​		在页面的一些高频事件中，比如页面滚动的scroll、页面尺寸更改的resize,需要防止在一个刷新时间间隔内发生多次函数执行，也就是所谓的函数节流。对60Hz的显示器来说，差不多每16.7ms 刷新一次， 多次绘制并不会在屏幕上体现出来，所以requestAnimationFrame方法仅在每个刷新周期中执行一次函数调用， 既能保证动画的流畅性又能很好地节省函数执行的冗余开销 。</p>
-<h3 id="二、恰当使用Web-Worker"><a href="#二、恰当使用Web-Worker" class="headerlink" title="二、恰当使用Web Worker"></a>二、恰当使用Web Worker</h3><p>​		众所周知JavaScript 是单线程执行的，所有任务放在一个线程上执行，只有当前一个任务执行完才能处理后 一个任务，不然后面的任务只能等待，这就限制了多核计算机充分发挥它的计算能力。同时在浏览器上, JavaScript 的执行通常位于主线程，这恰好与样式计算、页面布局及绘制一起，如果JavaScript运行时间过长，必然就会导致其他工作任务的阻塞而造成丢帧。</p>
-<p>​		为此可将一些纯计算 的工作迁移到Web Worker上处理，它为JavaScript的执行提供了多线程环境，主线程通过创建出Worker子线程，可以分担一部分 自己的任务执行压力。在Worker子线程上执行的任务不会干扰主线程，待其上的任务执行完成后，会把结果返回给主线程，这样的好处是让主线程可以更专注地处理UI交互保证页面的使用体验流程。需要注意的是，Worker 子线程一旦创建成功就会始终执行，不会被主线程上的事件所打断，这就意味着Worker会比较耗费资源，所以不应当过度使用，一旦任务执行完毕就应及时关闭。 除此之外，在使用中还有以下几点应当注意。</p>
-<ul>
-<li>DOM限制: Worker 无法读取主线程所处理网页的DOM对象，也就无法使用document、window和parent等对象，只能访问navigator和location对象。</li>
-<li>文件读取限制: Worker 子线程无法访问本地文件系统，这就要求所加载的脚本来自网络。</li>
-<li>通信限制:主线程和Worker子线程不在同一个上下文内，所以它们无法直接进行通信，只能通过消息来完成。</li>
-<li>脚本执行限制:虽然Worker可以通过XMLHTTPRequest对象发起ajax请求，但不能使用alert()方法和confirm()方法在页面弹出提示。</li>
-<li>同源限制: Worker子线程执行的代码文件需要与主线程的代码文件同源。</li>
-</ul>
-<p>​		Web Worker的使用方法非常简单，在主线程中通过new Worker()万方法来创建一个Worker子线程，构造函数的入参是子线程执行的脚本路径，由于代码文件必须来自网络，所以如果代码文件没能下载成功，Worker 就会失败。代码示例如下:</p>
-<pre><code class="js">//创建子线程
-const worker = new Worker(&#39;demo_worker.js&#39;);
-//主线程向子线程发送消息
-const dataToWorker = &#123;/* 要传给子线程的数据 */&#125;;
-worker.postMessage(dataToWorker);
-//接下来主线程就可以继续其他工作，只需通过监听子线程返回的消息再进行相应处理
-worker.addEventListener(&#39;message&#39;,(event) =&gt; &#123;
-    //子线程处理后的数据
-    const workerData = event.data;
-    //数据更新到屏幕上
-&#125;)
-</code></pre>
-<p>​		在子线程处理完相关任务后，需要及时关闭Worker子线程以节省系统资源，关闭的方式有两种:在主线程中通过调用worker.terminate()方法来关闭; 在子线程中通过调用自身全局对象中的self.close()方法来关闭。</p>
-<p>​		考虑到上述关于Web Worker使用中的限制，并非所有任务都适合采用这种方式来提升性能。如果所要处理的任务必须要放在主线程上完成，则应当考虑将一个大型任务拆分为多个微任务，每个微任务处理的耗时最好在几毫秒之内，能在每帧的requestAnimationFrame更新方法中处理完成，代码示例如下:</p>
-<pre><code class="js">//将一个大型任务拆成分为多个微任务
-const taskList = splitTask(BigTask);
-//微任务处理逻辑，入参为每次任务的起始戳
-function processTaskList(taskStartTime)&#123;
-    let taskFinishTime;
-    do &#123;
-        //从任务堆栈中推出下一个任务
-        const nextTask = taskList.pop();
-        //处理下一个任务
-        processTask(nextTask);
-        //获取任务执行完成的时间，如果时间够 3ms 就继续执行
-        taskFinishTime = window.performance.now();
-    &#125; while(taskFinishTime - taskStartTime &lt; 3);
-    //如果任务堆栈不为空则继续
-    if(taskList.length &gt; 0)&#123;
-        requestAnimationFrame(processTaskList);
-    &#125;
-&#125;
-requestAnimationFrame(processTaskList);
-</code></pre>
-<h3 id="三、事件节流和事件防抖"><a href="#三、事件节流和事件防抖" class="headerlink" title="三、事件节流和事件防抖"></a>三、事件节流和事件防抖</h3><p>​		本章所介绍的动画触发方式就用到了事件节流的思想，即当用户在与Web应用发生交互的过程中，势必有一些操作会 被频繁触发，如滚动页面触发的scroll事件，页面缩放触发的resize事件，鼠标涉及的mousemove、mouscover等事件，以及键盘涉及的keyup、keydown 等事件。</p>
-<p>​		频繁地触发这些事件会 导致相应回调函数的大量计算，进而引发页面抖动甚至卡顿，为了控制相关事件的触发频率，就有了接下来要介绍的事件节流与事件防抖操作。所谓事件节流，简单来说就是在某段时间内，无论触发多少次回调，在计时结束后都只响应第一次的触发。 以scroll事件为例，当用户滚动页面触发了一次scroll 事件后，就为这个触发操作开启一个固定时间的计时器。在这个计时器持续时间内，限制后续发生的所有scroll 事件对回调函数的触发，当计时器计时结束后，响应执行第一次触发scroll 事件的回调函数。代码示例如下:</p>
-<pre><code class="js">/**
-* 事件节流回调函数
-* @params: time事件节流时间间隔
-* @params: callback事件回调函数
-**/
-function throttle(time,callback)&#123;
-    //上次触发回调的时间
-    let last = 0;
-    //事件节流操作的闭包返回
-    return (params) =&gt; &#123;
-        //记录本次回调触发的时间
-        let now = Number(new Date())
-        //判断事件触发事件是否超出节流时间间隔
-        if(now - last &gt;= time)&#123;
-            //如果超出节流时间间隔，则触发响应回调函数
-            callback(params)
-        &#125;
-    &#125;
-&#125;
-//通过事件节流优化的事件回调函数
-const throttle_scroll = throttle(1000,() =&gt; console.log(&#39;页面滚动&#39;));
-//绑定事件
-document.addEventListener(&#39;scroll&#39;,throttle_scroll);
-</code></pre>
-<p>​		事件防抖的实现方式与事件节流类似，只是所响应的触发事件是最后一次事件。具体来说，首先设定一个事件防抖的时间间隔， 当事件触发开始后启动计时器，若在定时器结束计时之前又有相同的事件被触发，则更新计时器但不响应回调函数的执行，只有当计时器完整计时结束后，才去响应执行最后一次事件触发的回调函数。 代码示例如下：</p>
-<pre><code class="js">/**
-* 事件防抖回调函数
-* @params: time事件防抖时间延迟
-* @params: callback事件回调函数
-**/
-function debounce(time,callback)&#123;
-    //设置定时器
-    let timer = null;
-    //事件防抖操作的闭包返回
-    return (params) =&gt; &#123;
-        //每当事件被触发时，清除旧定时器
-        if(timer) clearTimeout(timer);
-        //设置新的定时器
-        timer = setTimeout(() =&gt; callback(params),time);
-    &#125;
-&#125;
-//通过事件防抖优化事件回调函数
-const debounce_scroll = debounce(1000,() =&gt; console.log(&#39;页面滚动&#39;));
-//绑定事件
-document.addEventListener(&#39;scroll&#39;,debounce_scroll);
-</code></pre>
-<p>​		虽然通过上述事件防抖操作，可以有效地避免在规定的时间间隔内频繁地触发事件回调函数，但是由于防抖机制颇具“耐心”，如果用户操作过于频繁，每次在防抖定时器计时结束之前就进行了下一次操作，那么同一事件所要触发的回调函数将会被无限延迟。频繁延迟会让用户操作迟迟得不到响应，同样也会造成页面卡顿的使用体验，这样的优化就属于弄巧成拙。</p>
-<p>​		因此我们需要为事件防抖设置一条 延迟等待的时间底线，即在延迟时间内可以重新生成定时器，但只要延迟时间到了就必须对用户之前的操作做出响应。这样便可结合事件节流的思想提供一个升级版的实现方式，代码示例如下:</p>
-<pre><code class="js">function throttle_pro(time,callback)&#123;
-    let last = 0,timer = null;
-    return (params) =&gt; &#123;
-        //记录本次回调触发的时间
-        let now = Number(new Date());
-        //判断事件触发事件是否超出节流时间间隔
-        if(now - last &lt; time)&#123;
-            //若在设置的延迟时间间隔内，则重新设置防抖定时器
-            clearTimeout(timer);
-            timer = setTimeout(() =&gt; &#123;
-                last = now;
-                callback(params);
-            &#125;,time)
-        &#125;else&#123;
-            //若超出延迟时间，则直接响应用户操作，不用等待
-            last  = now;
-            callback(params);
-        &#125;
-    &#125;
-&#125;
-//结合节流和防抖优化后的事件回调函数
-const scroll_pro = throttle_pro(1000,() =&gt; console.log(&#39;页面滚动&#39;));
-//绑定事件
-document.addEventListener(&#39;scroll&#39;,scroll_pro);
-</code></pre>
-<p>​		事件节流与事件防抖的实质都是以闭包的形式包裹回调函数的，通过自由变量缓存计时器信息，最后用setTimeout控制事件触发的频率来实现。通过在项目中恰当地运用节流与防抖机制，能够带来投入产出比很高的性能提升。</p>
-<h3 id="四、恰当的JavaScript优化"><a href="#四、恰当的JavaScript优化" class="headerlink" title="四、恰当的JavaScript优化"></a>四、恰当的JavaScript优化</h3><p>​		通过优化执行JavaScript能够带来的性能优化，除上述几点之外，通常是有限的。很少能优化出一个函数的执行时间比之前的版本快几百倍的情况，除非是原有代码中存在明显的BUG.即使像计算当前无素的offsetTop值会比执行getBoundingClientRect()方法要快，但每帧对该属性或方 法的调用次数也非常有限。</p>
-<p>​		若花费大量精力进行这类微优化，可能只会带来零点几毫秒的性能提升，当然如果基于游戏或大量计算的前端应用，则另当别论。所以对于渲染层面的JavaScript优化，我们首先应当定位出导致性能问题的瓶颈点，然后有针对性地去优化具体的执行函数，而避免投入产出比过低的微优化。</p>
-<p>那么如何进行JavaScript 脚本执行过程中的性能定位呢?这里推荐使用Chrome浏览器开发者工具中的Performance页签，使用它可让我们逐帧评估JavaScript代码的运行开销，可通过Settings&gt;更多工具&gt;开发者工具&gt;Performance 打开其工具界面，如图所示。</p>
-<p>​		在工具的顶部有控制JavaScript 采样的分析器复选框Disable JavaScriptsamples,由于这种分析方式会产生许多开销，建议仅在发现有较长时间运行的JavaScript脚本时，以及需要深入了解其运行特性时才去使用。除此之外，在可开发者工具的Setting &gt; More tools中单独调出JavaScript 分析器针对每个方法的运行时间及嵌套调用关系进行分析，并可将分析结果导出为.cpuprofile文件保存分享，工具界面如图所示。</p>
-<p><img src="/2023/03/05/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/image-20230305120212053.png"></p>
-<p><img src="/2023/03/05/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/image-20230305120336924.png"></p>
-<p>​		该功能将帮助我们获得更多有关JavaScript 调用执行的相关信息，据此可进一步评估出JavaScript 对应用性能的具体影响，并找出哪些函数的运行时间过长。然后使用优化手段进行精准优化。比如尽量移除或拆分长时间运行的JavaScript 脚本，如果无法拆分或移除，则尝试将其迁移到Web Worker中进行处理，让浏览器的主线程继续执行其他任务。</p>
+      <p class="home-excerpt">本节侧重优化JavaScript 的执行来改善用户在渲染方面的性能体验。</p>
+      <p><a class="article-more-link" href="/2023/03/05/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88JavaScript%E6%89%A7%E8%A1%8C%E4%BC%98%E5%8C%96%EF%BC%89/" aria-label="阅读全文：渲染优化（JavaScript执行优化）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -1592,88 +525,8 @@ document.addEventListener(&#39;scroll&#39;,scroll_pro);
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h1 id="页面渲染性能"><a href="#页面渲染性能" class="headerlink" title="页面渲染性能"></a>页面渲染性能</h1><blockquote>
-<p>​		如果把浏览器呈现页面的整个过程一分为二，前面所讨论的诸如图像资源优化、加载优化，以及构建中如何压缩资源大小等，都可视为浏览器为呈现页面请求所需资源的部分:本篇将主要关注浏览器获取到资源后，进行渲染部分的相关优化内容。在前面前端页面的生命周期中，介绍过关键渲染路径的概念，浏览器通过这个过程对HTML、CSS、JavaScript 等资源文件进行解析，然后组织渲染出最终的页面。本篇将以此为基础，对渲染过程进行更深入的讨论，不仅包括打开一个网站的首次渲染，还有用户与页面进行交互后导致页面更改的渲染，即所谓的重绘与重排。其中除了对渲染过程的充分介绍，更重要的是对提升渲染过程性能的优化手段的探讨。</p>
-<p>​		本节我们需要明白，页面渲染阶段对性能体验的影响与资源加载阶段同样重要，而对于涉及高交互频次的应用来说可能更加重要。为了方便后文对渲染优化进行深入分析，本节稍后会将整个渲染过程划分为五个串行阶段进行概述。其实优化渲染的实质，就是尽量压缩每个阶段的执行时间或跳过某些阶段的执行。</p>
-</blockquote>
-<h3 id="一、流畅的使用体验"><a href="#一、流畅的使用体验" class="headerlink" title="一、流畅的使用体验"></a>一、流畅的使用体验</h3><p>​		随着网站承载的业务种类越来越多，业务复杂性越来越高，用户的使用要求也跟着升高。不但网站页面要快速加载出来，而且运行过程也应更顺畅，在响应用户操作时也要更加及时，比如我们通常使用手机浏览网上商城时，指尖滑动屏幕与页面滚动应很流畅，拒绝卡顿。那么要达到怎样的性能指标，才能满足用户流畅的使用体验呢?</p>
-<p>​		目前大部分设备的屏幕分辨率都在60fps左右，也就是每秒屏幕会刷新60次，所以要满足用户的体验期望，就需要浏览器在渲染页面动画或响应用户操作时，每一帧的生成速率尽量接近屏幕的刷新率。若按照60fps来算，则留给每一帧画面的时间不到17ms再除去浏览器对资源的一些整理工作，帧画面的渲染应尽 量在10ms内完成，如果达不到要求而导致帧率下降，则屏幕上的内容会发生抖动或卡顿。</p>
-<h3 id="二、渲染过程"><a href="#二、渲染过程" class="headerlink" title="二、渲染过程"></a>二、渲染过程</h3><p>​		为了使每一帧页面渲染的开销都能在期望的时间范围内完成，就需要开发者了解谊染过程的每个阶段，以及各阶段中有哪些优化空间是我们力所能及的。经过分析根据开发者对优化渲染过程的控制力度，可以大体将其划分为五个部分: JavaScript 处里计算样式、页面布局、绘制与合成，下面先简要介绍各部分的功能与作用。</p>
-<ul>
-<li>JavaScript处理:	前端项目中经常会需要响应用户操作，通过JavaScript对数据集进行计算、操作DOM元素，并展示动画等视觉效果。当然对于动画的实现，除了JavaScript,也可以考虑使用如CSS Animations、Transitions 等技术。</li>
-<li>计算样式:    在解析CSS文件后，浏览器需要根据各种选择器去匹配所要应用CSS规则的元素节点，然后计算出每个元素的最终样式。</li>
-<li>页面布局:   指的是浏览器在计算完成样式后，会对每个元素尺寸大小和屏幕位置进行计算。由于每个元素都可能会受到其他元素的影响，并且位于DOM树形结构中的子节点元素，总会受到父级元素修改的影响，所以页面布局的计算会经常发生。</li>
-<li>绘制:   在页面布局确定后，接下来便可以绘制元素的可视内容，包括颜色、边框、阴影及文本和图像。</li>
-<li>合成:   通常由于页面中的不同部分可能被绘制在多个图层上，所以在绘制完成后需要将多个图层按照正确的顺序在屏幕上合成，以便最终正确地渲染出来，如图所示。</li>
-</ul>
-<p><img src="/2023/03/01/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%EF%BC%89/image-20230301101322559.png" alt="渲染过程"></p>
-<p>​		这个过程中的每一阶段都有可能产生卡顿，本章后续章节将会对各阶段所涉及的性能优化进行详细介绍。这里值得说明的是，并非对于每一帧画面都会经历这五个部分。比如仅修改与绘制相关的属性(文字颜色、背景图片或边缘阴影等)，而未对页面布局产生任何修改，那么在计算样式阶段完成后，便会跳过页面布局直接执行绘制。如果所更改的属性既不影响页面布局又不需要重新绘制，便可直接跳到合成阶段执行。具体修改哪些属性会触发页面布局、绘制或合成阶段的执行，这与浏览器的内核类型存在一定关系， 如表所示列出了一些常见属性分别在Blink.Gecko和Webkit等不同内核的浏览器上的表现。</p>
-<table>
-<thead>
-<tr>
-<th align="center">属性</th>
-<th align="center">Blink</th>
-<th align="center">Gecko</th>
-<th align="center">Webkit</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">z-index</td>
-<td align="center">绘制&#x2F;合成</td>
-<td align="center">绘制&#x2F;合成</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-<tr>
-<td align="center">transform</td>
-<td align="center">合成</td>
-<td align="center">合成</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-<tr>
-<td align="center">opacity</td>
-<td align="center">绘制&#x2F;合成</td>
-<td align="center">合成</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-<tr>
-<td align="center">min-width</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-<td align="center">布局&#x2F;合成</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-<tr>
-<td align="center">color</td>
-<td align="center">布局&#x2F;绘制</td>
-<td align="center">布局&#x2F;绘制</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-<tr>
-<td align="center">background</td>
-<td align="center">布局&#x2F;绘制</td>
-<td align="center">布局&#x2F;绘制</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-<tr>
-<td align="center">border-radius</td>
-<td align="center">布局&#x2F;绘制</td>
-<td align="center">布局&#x2F;绘制</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-<tr>
-<td align="center">border-style</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-<tr>
-<td align="center">border-width</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-<td align="center">布局&#x2F;绘制&#x2F;合成</td>
-</tr>
-</tbody></table>
-<p>Google的Chrome实验室在网站上列出了更多有关CSS属性的详细表现，如有需要可自行去查看。</p>
+      <p class="home-excerpt">从关键渲染路径出发，讨论浏览器取得资源后，如何优化页面渲染性能。</p>
+      <p><a class="article-more-link" href="/2023/03/01/%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96%EF%BC%88%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%EF%BC%89/" aria-label="阅读全文：渲染优化（页面渲染性能）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -1725,330 +578,8 @@ document.addEventListener(&#39;scroll&#39;,scroll_pro);
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h2 id="一、是什么"><a href="#一、是什么" class="headerlink" title="一、是什么"></a>一、是什么</h2><p>权限是对特定资源的访问许可，所谓权限控制，也就是确保用户只能访问到被分配的资源</p>
-<p>而前端权限归根结底是请求的发起权，请求的发起可能有下面两种形式触发</p>
-<ul>
-<li>页面加载触发</li>
-<li>页面上的按钮点击触发</li>
-</ul>
-<p>总的来说，所有的请求发起都触发自前端路由或视图</p>
-<p>所以我们可以从这两方面入手，对触发权限的源头进行控制，最终要实现的目标是：</p>
-<ul>
-<li>路由方面，用户登录后只能看到自己有权访问的导航菜单，也只能访问自己有权访问的路由地址，否则将跳转 <code>4xx</code> 提示页</li>
-<li>视图方面，用户只能看到自己有权浏览的内容和有权操作的控件</li>
-<li>最后再加上请求控制作为最后一道防线，路由可能配置失误，按钮可能忘了加权限，这种时候请求控制可以用来兜底，越权请求将在前端被拦截</li>
-</ul>
-<h2 id="二、如何做"><a href="#二、如何做" class="headerlink" title="二、如何做"></a>二、如何做</h2><p>前端权限控制可以分为四个方面：</p>
-<ul>
-<li>接口权限</li>
-<li>按钮权限</li>
-<li>菜单权限</li>
-<li>路由权限</li>
-</ul>
-<h3 id="接口权限"><a href="#接口权限" class="headerlink" title="接口权限"></a>接口权限</h3><p>接口权限目前一般采用<code>jwt</code>的形式来验证，没有通过的话一般返回<code>401</code>，跳转到登录页面重新进行登录</p>
-<p>登录完拿到<code>token</code>，将<code>token</code>存起来，通过<code>axios</code>请求拦截器进行拦截，每次请求的时候头部携带<code>token</code></p>
-<pre><code class="js">axios.interceptors.request.use(config =&gt; &#123;
-    config.headers[&#39;token&#39;] = cookie.get(&#39;token&#39;)
-    return config
-&#125;)
-axios.interceptors.response.use(res=&gt;&#123;&#125;,&#123;response&#125;=&gt;&#123;
-    if (response.data.code === 40099 || response.data.code === 40098) &#123; //token过期或者错误
-        router.push(&#39;/login&#39;)
-    &#125;
-&#125;)
-</code></pre>
-<h3 id="路由权限控制"><a href="#路由权限控制" class="headerlink" title="路由权限控制"></a>路由权限控制</h3><p><strong>方案一</strong></p>
-<p>初始化即挂载全部路由，并且在路由上标记相应的权限信息，每次路由跳转前做校验</p>
-<pre><code class="js">const routerMap = [
-  &#123;
-    path: &#39;/permission&#39;,
-    component: Layout,
-    redirect: &#39;/permission/index&#39;,
-    alwaysShow: true, //将始终显示根菜单
-    meta: &#123;
-      title: &#39;permission&#39;,
-      icon: &#39;lock&#39;,
-      roles: [&#39;admin&#39;, &#39;editor&#39;] // 你可以在根导航中设置角色
-    &#125;,
-    children: [&#123;
-      path: &#39;page&#39;,
-      component: () =&gt; import(&#39;@/views/permission/page&#39;),
-      name: &#39;pagePermission&#39;,
-      meta: &#123;
-        title: &#39;pagePermission&#39;,
-        roles: [&#39;admin&#39;] //或者你只能在子导航中设置角色
-      &#125;
-    &#125;, &#123;
-      path: &#39;directive&#39;,
-      component: () =&gt; import(&#39;@/views/permission/directive&#39;),
-      name: &#39;directivePermission&#39;,
-      meta: &#123;
-        title: &#39;directivePermission&#39;
-        // 如果不设置角色，则表示：此页不需要权限
-      &#125;
-    &#125;]
-  &#125;]
-</code></pre>
-<p>这种方式存在以下四种缺点：</p>
-<ul>
-<li>加载所有的路由，如果路由很多，而用户并不是所有的路由都有权限访问，对性能会有影响。</li>
-<li>全局路由守卫里，每次路由跳转都要做权限判断。</li>
-<li>菜单信息写死在前端，要改个显示文字或权限信息，需要重新编译</li>
-<li>菜单跟路由耦合在一起，定义路由的时候还有添加菜单显示标题，图标之类的信息，而且路由不一定作为菜单显示，还要多加字段进行标识</li>
-</ul>
-<p><strong>方案二</strong></p>
-<p>初始化的时候先挂载不需要权限控制的路由，比如登录页，404等错误页。如果用户通过URL进行强制访问，则会直接进入404，相当于从源头上做了控制</p>
-<p>登录后，获取用户的权限信息，然后筛选有权限访问的路由，在全局路由守卫里进行调用<code>addRoutes</code>添加路由</p>
-<pre><code class="js">import router from &#39;./router&#39;
-import store from &#39;./store&#39;
-import &#123; Message &#125; from &#39;element-ui&#39;
-import NProgress from &#39;nprogress&#39; // 进度条
-import &#39;nprogress/nprogress.css&#39;// 进度条样式
-import &#123; getToken &#125; from &#39;@/utils/auth&#39; // 从cookie获取令牌
-
-NProgress.configure(&#123; showSpinner: false &#125;)// NProgress配置
-
-// 许可判断功能
-function hasPermission(roles, permissionRoles) &#123;
-  if (roles.indexOf(&#39;admin&#39;) &gt;= 0) return true //直接传递管理员权限
-  if (!permissionRoles) return true
-  return roles.some(role =&gt; permissionRoles.indexOf(role) &gt;= 0)
-&#125;
-
-const whiteList = [&#39;/login&#39;, &#39;/authredirect&#39;]// 无重定向白名单
-
-router.beforeEach((to, from, next) =&gt; &#123;
-  NProgress.start() // 启动进度条
-  if (getToken()) &#123; // 确定是否有令牌
-    /* has token*/
-    if (to.path === &#39;/login&#39;) &#123;
-      next(&#123; path: &#39;/&#39; &#125;)
-      NProgress.done() // 如果当前页面是仪表板，则在每个钩子之后都不会触发，所以手动处理它
-    &#125; else &#123;
-      if (store.getters.roles.length === 0) &#123; // 判断当前用户是否已拉取完user_info信息
-        store.dispatch(&#39;GetUserInfo&#39;).then(res =&gt; &#123; // 拉取user_info
-          const roles = res.data.roles // 注意：角色必须是数组！ such as: [&#39;editor&#39;,&#39;develop&#39;]
-          store.dispatch(&#39;GenerateRoutes&#39;, &#123; roles &#125;).then(() =&gt; &#123; // 根据roles权限生成可访问的路由表
-            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-            next(&#123; ...to, replace: true &#125;) // hack方法 确保addRoutes已完成 ,将replace:true设置为true，这样导航将不会留下历史记录
-          &#125;)
-        &#125;).catch((err) =&gt; &#123;
-          store.dispatch(&#39;FedLogOut&#39;).then(() =&gt; &#123;
-            Message.error(err || &#39;Verification failed, please login again&#39;)
-            next(&#123; path: &#39;/&#39; &#125;)
-          &#125;)
-        &#125;)
-      &#125; else &#123;
-        // 没有动态改变权限的需求可直接next() 删除下方权限判断 
-        if (hasPermission(store.getters.roles, to.meta.roles)) &#123;
-          next()//
-        &#125; else &#123;
-          next(&#123; path: &#39;/401&#39;, replace: true, query: &#123; noGoBack: true &#125;&#125;)
-        &#125;
-        // 可删 
-      &#125;
-    &#125;
-  &#125; else &#123;
-    /* has no token*/
-    if (whiteList.indexOf(to.path) !== -1) &#123; // 在免登录白名单，直接进入
-      next()
-    &#125; else &#123;
-      next(&#39;/login&#39;) // 否则全部重定向到登录页
-      NProgress.done() // 如果当前页面为“登录”，则在每个钩子之后都不会触发，因此请手动处理
-    &#125;
-  &#125;
-&#125;)
-
-router.afterEach(() =&gt; &#123;
-  NProgress.done() // 完成进度条
-&#125;)
-</code></pre>
-<p>按需挂载，路由就需要知道用户的路由权限，也就是在用户登录进来的时候就要知道当前用户拥有哪些路由权限</p>
-<p>这种方式也存在了以下的缺点：</p>
-<ul>
-<li>全局路由守卫里，每次路由跳转都要做判断</li>
-<li>菜单信息写死在前端，要改个显示文字或权限信息，需要重新编译</li>
-<li>菜单跟路由耦合在一起，定义路由的时候还有添加菜单显示标题，图标之类的信息，而且路由不一定作为菜单显示，还要多加字段进行标识</li>
-</ul>
-<h3 id="菜单权限"><a href="#菜单权限" class="headerlink" title="菜单权限"></a>菜单权限</h3><p>菜单权限可以理解成将页面与理由进行解耦</p>
-<h4 id="方案一"><a href="#方案一" class="headerlink" title="方案一"></a>方案一</h4><p>菜单与路由分离，菜单由后端返回</p>
-<p>前端定义路由信息</p>
-<pre><code class="js">&#123;
-    name: &quot;login&quot;,
-    path: &quot;/login&quot;,
-    component: () =&gt; import(&quot;@/pages/Login.vue&quot;)
-&#125;
-</code></pre>
-<p><code>name</code>字段都不为空，需要根据此字段与后端返回菜单做关联，后端返回的菜单信息中必须要有<code>name</code>对应的字段，并且做唯一性校验</p>
-<p>全局路由守卫里做判断</p>
-<pre><code class="js">function hasPermission(router, accessMenu) &#123;
-  if (whiteList.indexOf(router.path) !== -1) &#123;
-    return true;
-  &#125;
-  let menu = Util.getMenuByName(router.name, accessMenu);
-  if (menu.name) &#123;
-    return true;
-  &#125;
-  return false;
-
-&#125;
-
-Router.beforeEach(async (to, from, next) =&gt; &#123;
-  if (getToken()) &#123;
-    let userInfo = store.state.user.userInfo;
-    if (!userInfo.name) &#123;
-      try &#123;
-        await store.dispatch(&quot;GetUserInfo&quot;)
-        await store.dispatch(&#39;updateAccessMenu&#39;)
-        if (to.path === &#39;/login&#39;) &#123;
-          next(&#123; name: &#39;home_index&#39; &#125;)
-        &#125; else &#123;
-          //Util.toDefaultPage([...routers], to.name, router, next);
-          next(&#123; ...to, replace: true &#125;)//菜单权限更新完成,重新进一次当前路由
-        &#125;
-      &#125;  
-      catch (e) &#123;
-        if (whiteList.indexOf(to.path) !== -1) &#123; // 在免登录白名单，直接进入
-          next()
-        &#125; else &#123;
-          next(&#39;/login&#39;)
-        &#125;
-      &#125;
-    &#125; else &#123;
-      if (to.path === &#39;/login&#39;) &#123;
-        next(&#123; name: &#39;home_index&#39; &#125;)
-      &#125; else &#123;
-        if (hasPermission(to, store.getters.accessMenu)) &#123;
-          Util.toDefaultPage(store.getters.accessMenu,to, routes, next);
-        &#125; else &#123;
-          next(&#123; path: &#39;/403&#39;,replace:true &#125;)
-        &#125;
-      &#125;
-    &#125;
-  &#125; else &#123;
-    if (whiteList.indexOf(to.path) !== -1) &#123; // 在免登录白名单，直接进入
-      next()
-    &#125; else &#123;
-      next(&#39;/login&#39;)
-    &#125;
-  &#125;
-  let menu = Util.getMenuByName(to.name, store.getters.accessMenu);
-  Util.title(menu.title);
-&#125;);
-
-Router.afterEach((to) =&gt; &#123;
-  window.scrollTo(0, 0);
-&#125;);
-</code></pre>
-<p>每次路由跳转的时候都要判断权限，这里的判断也很简单，因为菜单的<code>name</code>与路由的<code>name</code>是一一对应的，而后端返回的菜单就已经是经过权限过滤的</p>
-<p>如果根据路由<code>name</code>找不到对应的菜单，就表示用户有没权限访问</p>
-<p>如果路由很多，可以在应用初始化的时候，只挂载不需要权限控制的路由。取得后端返回的菜单后，根据菜单与路由的对应关系，筛选出可访问的路由，通过<code>addRoutes</code>动态挂载</p>
-<p>这种方式的缺点：</p>
-<ul>
-<li>菜单需要与路由做一一对应，前端添加了新功能，需要通过菜单管理功能添加新的菜单，如果菜单配置的不对会导致应用不能正常使用</li>
-<li>全局路由守卫里，每次路由跳转都要做判断</li>
-</ul>
-<h4 id="方案二"><a href="#方案二" class="headerlink" title="方案二"></a>方案二</h4><p>菜单和路由都由后端返回</p>
-<p>前端统一定义路由组件</p>
-<pre><code class="js">const Home = () =&gt; import(&quot;../pages/Home.vue&quot;);
-const UserInfo = () =&gt; import(&quot;../pages/UserInfo.vue&quot;);
-export default &#123;
-    home: Home,
-    userInfo: UserInfo
-&#125;;
-</code></pre>
-<p>后端路由组件返回以下格式</p>
-<pre><code class="js">[
-    &#123;
-        name: &quot;home&quot;,
-        path: &quot;/&quot;,
-        component: &quot;home&quot;
-    &#125;,
-    &#123;
-        name: &quot;home&quot;,
-        path: &quot;/userinfo&quot;,
-        component: &quot;userInfo&quot;
-    &#125;
-]
-</code></pre>
-<p>在将后端返回路由通过<code>addRoutes</code>动态挂载之间，需要将数据处理一下，将<code>component</code>字段换为真正的组件</p>
-<p>如果有嵌套路由，后端功能设计的时候，要注意添加相应的字段，前端拿到数据也要做相应的处理</p>
-<p>这种方法也会存在缺点：</p>
-<ul>
-<li>全局路由守卫里，每次路由跳转都要做判断</li>
-<li>前后端的配合要求更高</li>
-</ul>
-<h3 id="按钮权限"><a href="#按钮权限" class="headerlink" title="按钮权限"></a>按钮权限</h3><h4 id="方案一-1"><a href="#方案一-1" class="headerlink" title="方案一"></a>方案一</h4><p>按钮权限也可以用<code>v-if</code>判断</p>
-<p>但是如果页面过多，每个页面页面都要获取用户权限<code>role</code>和路由表里的<code>meta.btnPermissions</code>，然后再做判断</p>
-<p>这种方式就不展开举例了</p>
-<h4 id="方案二-1"><a href="#方案二-1" class="headerlink" title="方案二"></a>方案二</h4><p>通过自定义指令进行按钮权限的判断</p>
-<p>首先配置路由</p>
-<pre><code class="js">&#123;
-    path: &#39;/permission&#39;,
-    component: Layout,
-    name: &#39;权限测试&#39;,
-    meta: &#123;
-        btnPermissions: [&#39;admin&#39;, &#39;supper&#39;, &#39;normal&#39;]
-    &#125;,
-    //页面需要的权限
-    children: [&#123;
-        path: &#39;supper&#39;,
-        component: _import(&#39;system/supper&#39;),
-        name: &#39;权限测试页&#39;,
-        meta: &#123;
-            btnPermissions: [&#39;admin&#39;, &#39;supper&#39;]
-        &#125; //页面需要的权限
-    &#125;,
-    &#123;
-        path: &#39;normal&#39;,
-        component: _import(&#39;system/normal&#39;),
-        name: &#39;权限测试页&#39;,
-        meta: &#123;
-            btnPermissions: [&#39;admin&#39;]
-        &#125; //页面需要的权限
-    &#125;]
-&#125;
-</code></pre>
-<p>自定义权限鉴定指令</p>
-<pre><code class="js">import Vue from &#39;vue&#39;
-/**权限指令**/
-const has = Vue.directive(&#39;has&#39;, &#123;
-    bind: function (el, binding, vnode) &#123;
-        // 获取页面按钮权限
-        let btnPermissionsArr = [];
-        if(binding.value)&#123;
-            // 如果指令传值，获取指令参数，根据指令参数和当前登录人按钮权限做比较。
-            btnPermissionsArr = Array.of(binding.value);
-        &#125;else&#123;
-            // 否则获取路由中的参数，根据路由的btnPermissionsArr和当前登录人按钮权限做比较。
-            btnPermissionsArr = vnode.context.$route.meta.btnPermissions;
-        &#125;
-        if (!Vue.prototype.$_has(btnPermissionsArr)) &#123;
-            el.parentNode.removeChild(el);
-        &#125;
-    &#125;
-&#125;);
-// 权限检查方法
-Vue.prototype.$_has = function (value) &#123;
-    let isExist = false;
-    // 获取用户按钮权限
-    let btnPermissionsStr = sessionStorage.getItem(&quot;btnPermissions&quot;);
-    if (btnPermissionsStr == undefined || btnPermissionsStr == null) &#123;
-        return false;
-    &#125;
-    if (value.indexOf(btnPermissionsStr) &gt; -1) &#123;
-        isExist = true;
-    &#125;
-    return isExist;
-&#125;;
-export &#123;has&#125;
-</code></pre>
-<p>在使用的按钮中只需要引用<code>v-has</code>指令</p>
-<pre><code class="js">&lt;el-button @click=&#39;editClick&#39; type=&quot;primary&quot; v-has&gt;编辑&lt;/el-button&gt;
-</code></pre>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>关于权限如何选择哪种合适的方案，可以根据自己项目的方案项目，如考虑路由与菜单是否分离</p>
-<p>权限需要前后端结合，前端尽可能的去控制，更多的需要后台判断</p>
+      <p class="home-excerpt">权限是对特定资源的访问许可，所谓权限控制，也就是确保用户只能访问到被分配的资源</p>
+      <p><a class="article-more-link" href="/2023/02/27/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E5%A4%A7%E5%85%A8%E4%B9%8Bvue%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/" aria-label="阅读全文：前端面试大全之vue权限控制">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -2100,54 +631,8 @@ export &#123;has&#125;
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h2 id="资源优先级"><a href="#资源优先级" class="headerlink" title="资源优先级"></a>资源优先级</h2><blockquote>
-<p>浏览器向网络请求到的所有数据，并非每个字节都具有相同的优先级或重要性。所以浏览器通常都会采取启发式算法，对所要加载的内容先进行推测，将相对重要的信息优先呈现给用户，比如浏览器一般会先加载 CSS文件，然后再去加载JavaScript脚本和图像文件。</p>
-<p>但即便如此，也无法保证启发式算法在任何情况下都是准确有效的，可能会因为获取的信息不完备，而做出错误的判断。本节就来探讨如何影响浏览器对资源加载的优先级。</p>
-</blockquote>
-<h3 id="一、优先级"><a href="#一、优先级" class="headerlink" title="一、优先级"></a>一、优先级</h3><p>​		浏览器基于自身的启发式算法，会对资源的重要性进行判断来划分优先级，通常从低到高分为: Lowest、 Low、 High、Highest 等。</p>
-<p>​		比如，在&lt;head标签中，CSS文件通常具有最高的优先级Highest,其次是 script 标签所请求的脚本文件，但当&lt;script标签带有defer或async的异步属性时，其优元级又会降为Low.我们可以通过Chrome的开发者工具，在network页签下找到浏览器对资源进行的优先级划分，如图所示。</p>
-<p><img src="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/image-20230220113248217.png" alt="浏览器的资源优先级"></p>
-<p>​		我们可以通过该工具，去了解浏览器为不同资源分配的优先级情况，细微的差别都可能导致类似的资源具有不同的优先级，比如首屏渲染中图像的优先级会高于屏幕视窗外的图像的优先级。本书不会详细探讨Chrome 如何为当前资源分配优先级，如有兴趣可通过搜索“浏览器加载优先级”等关键字自行了解。对性能优化实战而言，会更加关注:当发现资源默认被分配的优先级个不是我们想要的情况时，该如何更改优先级。</p>
-<p>​		接下来介绍三种不同的解决方案:首先是前面章节提到过的预加载，当资源对用户来说至关重要却又被分配了过低的优先级时，就可以尝试让其进行预加载或预连接;如果仅需要浏览器处理完一些任务后， 再去提取某些资源，可尝试使用预提取。</p>
-<h3 id="二、预加载"><a href="#二、预加载" class="headerlink" title="二、预加载"></a>二、预加载</h3><p>使用<link rel="preload">标签告诉浏览器当前所指定的资源，应该拥有更高的优先级，例如:</p>
-<pre><code class="html">&lt;link rel=&quot;preload&quot; as=&quot;script&quot; href=&quot; important.js&quot;&gt;
-&lt;link rel=&quot;preload&quot; as=&quot;style&quot; href=&quot;critical.css&quot;&gt;
-</code></pre>
-<p>​		这里通过as属性告知浏览器所要加载的资源类型，该属性值所指定的资源类型应当与要加载的资源相匹配，否则浏览器是不会预加载该资源的。在这里需要注意的是，<link rel="preload">会强制浏览器进行预加载，它与其他对资源的提示不同，浏览器对此是必须执行而非可选的。因此，在使用时应尽量仔细测试，以确保使用该指令时不会提取不需要的内容或重复提取内容。</p>
-<p>​		如果预加载指定的资源在3s内未被当前页面使用，则浏览器会在开发者工具的控制台中进行警告提示，该警告务必要处理。</p>
-<p>​		接下来看两个使用实例，字体的使用和关键路径渲染。通常字体文件都位于页面加载的若干CSS文件的末尾，但考虑为了减少用户等待文本内容的加载时间，以及避免系统字体与偏好字体发生冲突，就必须提前获取字体。因此我们可以使用<link rel="preload">来让浏览器立即获取所需的字体文件:</p>
-<pre><code class="html">&lt;link rel=&quot;preload&quot; as=&quot;font&quot; crossorigin=&quot;crossorigin&quot; type=&quot;font/woff2&quot; href=&quot;myfont.woff2&quot;&gt;
-</code></pre>
-<p>这里的crossorigin属性非常重要，如果缺失该属性，浏览器将不会对指定的字体进行预加载。</p>
-<p>​		在前面讲页面渲染生命周期时，提到过关键渲染路径，其中涉及首次渲染之前必须加载的资源(比如Css和JavaScript等)，这些资源对首屏页面渲染来说是非常重要的。以前通常建议的做法是把这些资源内联到HTML中，但对服务器端渲染或对页面而言，这样做很容易导致带宽浪费，而且若代码更改使内联页面无效，无疑会增加版本控制的难度。</p>
-<p>​		所以使用<link rel="preload">对单个文件进行预加载，除了能很快地请求资源，还能尽量利用缓存。其唯一的缺点是可能会在浏览器和服务器之间发生额外的往返请求，因为浏览器需要加载解析HTML后，才会知道后续的资源请求情况。其解决方式可以利用HTTP 2的推送，即在发送HTML的相同连接请求上附加一些资源请求， 如此便可取消浏览器解析HTML到开始下载资源之间的间歇时间。但对于HTTP2推送的使用需要谨慎，因为控制了带宽使用量，留给浏览器自我决策的空间便会很小，可能不会检索已经缓存了的资源文件。关于HTTP2的更多内容，将会在浏览器缓存详细展开介绍。</p>
-<h3 id="三、预连接"><a href="#三、预连接" class="headerlink" title="三、预连接"></a>三、预连接</h3><p>​		通常在速度较慢的网络环境中建立连接会非常耗时，如果建立安全连接将更加耗时。其原因是整个过程会涉及DNS查询、重定向和与目标服务器之间建立连接的多次握手，所以若能提前完成上述这些功能，则会给用户带来更加流畅的浏览体验，同时由于建立连接的大部分时间消耗是等待而非数据交换，这样也能有效地优化带宽的使用情况。解决方案就是所谓的预连接:</p>
-<pre><code class="html">&lt;link rel=&quot;preconnect&quot; href=&quot;https://example. com&quot;&gt;
-</code></pre>
-<p>​		通过<link rel="preconnect">标签指令，告知浏览器当前页面将与站点建立连接，希望尽快启动该过程。虽然这么做的成本较低，但会消耗宝贵的CPU时间，特别是在建立HTTPS安全连接时。如果建立好连接后的10s内，未能及时使用连接，那么浏览器关闭该连接后，之前为建立连接所消耗的资源就相当于完全被浪费掉了。</p>
-<p>​		另外，还有一种与预连接相关的类型<link rel="dns-prefetch">,也就是常说的DNS预解析，它仅用来处理DNS查询，但由于其受到浏览器的广泛支持，且缩短了DNS的查询时间的效果显著，所以使用场景十分普遍。</p>
-<h3 id="四、预提取"><a href="#四、预提取" class="headerlink" title="四、预提取"></a>四、预提取</h3><p>​		前面介绍的预加载和预连接，都是试图使所需的关键资源或关键操作更快地获取或发生，这里介绍的预提取，则是利用机会让某些非关键操作能够更早发生。</p>
-<p>​		这个过程的实现方式是根据用户已发生的行为来判断其接下来的预期行为，告知浏览器稍后可能需要的某些资源。也就是在当前页面加载完成后，且在带宽可用的情况下，这些资源将以Lowest的优先级进行提起。</p>
-<p>​		显而易见，预提取最适合的场景是为用户下一步可能进行的操作做好必要的准备，如在电商平台的搜索框中查询某商品，可预提取查询结果列表中的首个商品详情页:或者使用搜索查询时，预提取查询结果的分页内容的下一页:</p>
-<pre><code class="html">&lt;1ink rel=&quot;prefetch&quot; href=&quot;page-2.html&quot;&gt;
-</code></pre>
-<p>​		需要注意的是，预提取不能递归使用，比如在搜索查询的首页page-1.html时，可以预提取当前页面的下一页page-2.html的HTML内容，但对其中所包含的任何额外资源不会提前下载，除非有额外明确指定的预提取。</p>
-<p>另外，预提取不会降低现有资源的优先级，比如在如下HTML中:</p>
-<pre><code class="html">&lt;html&gt;
-&lt;head&gt;
-&lt;link rel=&quot;prefetch&quot;href=&quot;style.css&quot;&gt;
-&lt;link rel=&quot;stylesheet&quot;href=&quot;style.css&quot;&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-Hello World!
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<p>​		可能你会觉得对style.css 的预提取声明，会降低接下来<link rel="stylesheet" href="style.css">的优先级，但其真实的情况是，该文件会被提取两次，第二次可能会使用缓存，如图所示。</p>
-<p><img src="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/image-20230220115326792.png"></p>
-<p>​		显然两次提取对用户体验来说非常糟糕，因为这样不但需要等待阻塞渲染的CSS,而且如果第二次提取没有命中缓存，必然会产生带宽的浪费，所以在使用时应充分考虑。</p>
+      <p class="home-excerpt">浏览器向网络请求到的所有数据，并非每个字节都具有相同的优先级或重要性。所以浏览器通常都会采取启发式算法，对所要加载的内容先进行推测，将相对重要的信息优先呈现给用户，比如浏览器一般会先加载 CSS文件，然后再去加载JavaScript脚本和图像文件。</p>
+      <p><a class="article-more-link" href="/2023/02/20/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E8%B5%84%E6%BA%90%E4%BC%98%E5%85%88%E7%BA%A7%EF%BC%89/" aria-label="阅读全文：加载优化（资源优先级）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -2199,89 +684,8 @@ Hello World!
     </div>
       
     <div class="article-entry" itemprop="articleBody">
-       
-  <h2 id="加载注意事项"><a href="#加载注意事项" class="headerlink" title="加载注意事项"></a>加载注意事项</h2><blockquote>
-<p>对图像与视频的延迟加载，从理论上看必然会对性能产生重要的影响，但在实现过程中有许多细节需需要注意，稍有差池都可能就会产生意想不到的结果。因此，总结以下几点注意事项。</p>
-</blockquote>
-<h3 id="一、首屏加载"><a href="#一、首屏加载" class="headerlink" title="一、首屏加载"></a>一、首屏加载</h3><p>​		当我们了解了延迟加载的诸多优点之后，读者是否有使用JavaScript对页面上所有的图像和视频资源都进行延迟加我的冲动?在采取该优化措施前，要想提醒的是，对性能优化工作来说，不存在一蹴而就的解决方案， 而是需要根据具体场景采用恰当的方式。比如对于首屏上的内容就不应当进行延迟加载，而应使用正常加载的方式，这样处理的原因是，延迟加载会将图像或视频等媒体资源延迟到DOM可交互之后，即脚本完成加载并开始执行时才会进行。所以对首屏视窗之外的媒体资源采用延迟加载，而对首屏内的媒体资源采用正常的方式加载，会带来更好的整体性能体验。</p>
-<p>​		由于网站页面所呈现的设备屏幕尺寸多种多样，因此如何判断首屏视窗的边界，就会因设备的不同而有所不同。台式机电脑首屏视窗中的内容，可能换到移动设备上就会位于首屏视窗之外。目前也没有完全行之有效的方法来完美地处理每种设备的情况。</p>
-<p>​		此外，若将首屏视窗边界线作为延迟加载触发的阈值，其实井非最佳的性能考虑。更理想的做法是，在延迟加载的媒体资源到达首屏边界之前设置一个缓冲区，以便媒体资源在进入视窗之前就开始进行加载。</p>
-<p>​		例如在使用lntersection Observer方式实现延迟加载判断时，可以通过配置options对象中的rootMargin属性来建立缓冲区:</p>
-<pre><code class="js">const lazyImageObserver = new IntersectionObserver((entries, observer) =&gt; &#123;
-//此处省略延迟加载的具体处理流程
-  ...&#125;,&#123;
-rootMargin:”0 0 256px 0&quot;
-&#125;:
-</code></pre>
-<p>​		观察可知rootMargin的值与CSS中margin属性值类似，上述代码中 在屏幕视窗下设置了一个宽度为256px的缓冲区，这意味着当媒体元素距离视窗下边界小于256px时，回调函数就会执行开始资源的请求加载。而对于使用滚动事件处理来实现延迟加载的传统实现方式，也只需要更改getBoundingClientRect的设置，包括进入一个缓冲区即可实现类似的效果。</p>
-<h3 id="二、资源占位"><a href="#二、资源占位" class="headerlink" title="二、资源占位"></a>二、资源占位</h3><p>​		当延迟加载的媒体资源未渲染出来之前，应当在页面中使用相同尺寸的占位图像。如果不使用占位符，图像延迟显示出来后，尺寸更改可能会使页面布局出现移位。这种现象不仅会对用户体验带来困感，更严重的还会触发浏览器成本高昂的回流机制，进而增加系统资源开销造成卡顿。而用来占位的图像解决方案也有多种，十分简单的方式是使用一个与目标媒体资源长宽相同的纯色占位符，或者像之前使用的Base64图片，当然也可以采用LQIP或SQIP等方法。</p>
-<p>​		其中LQIP的全称是低质量图片占位符，即使用原图的较低分辨率版本来占位，SQIP则是一种基于 SVG的LIQP技术，我们可以通过对比来感知它们和原图之间的差别，如图所示。</p>
-<p><img src="/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/image-20230216120651723.png" alt="各种LQIP的效果"></p>
-<p>​		其实就是以最小的带宽消耗，告知用户此处将要展示一个媒体资源，可能由于资源尺寸较大还在加载。对于使用&lt;img标记的图像资源，应将用于占位的初始图像指给src属性，直到更新为所需的最终图像为止。而对于使用&lt;video标记的视频资源，则应将占位图像指给poster属性，除此之外，最好可以在&lt;img和&lt;video标签上添加表示宽width和高height的属性，如此便可确保不会在占位符转化为最终媒体资源时，发生元素渲染大小的改变。</p>
-<h3 id="三、内容加载失败"><a href="#三、内容加载失败" class="headerlink" title="三、内容加载失败"></a>三、内容加载失败</h3><p>​		在进行延迟加载过程中，可能会因为某种原因而造成媒体资源加载失败，进而导致错误的情况。比如用户访问某个网站后，保持浏览器该选项卡打开后长时间离开，等再返回继续浏览网页内容时，可能在此过程中网站已经进行了重新部署，原先访问的页面中包含的部分媒体资源由于哈希的版本控制发生更改，或者已被移除。那么用户滚动浏览页面，遇到延迟加载的媒体资源，可能就已经不可使用了。</p>
-<p>​	虽然类似情况发生的概率不高，但考虑网站对用户的可用性，开发者也应当考虑好后备方案，以防止类似延迟加载可能遇到的失败。例如，图像资源可以采取如下方案进行规避:</p>
-<pre><code class="js">const newImage = new Image();
-newImage.src = &quot;photo.jpg&quot;;
-//当发生故障时的处理措施
-newImage.onerror = (err) =&gt; &#123;
-&#125;;
-//图像加载后的回调
-newImage.onload = ()= &gt; &#123;
-&#125;;
-</code></pre>
-<p>​		当图片资源未能按预期成功加载时，所采取的具体处理措施应当依据应用场景而定。比如，当请求的媒体资源无法加载时，可将使用的图像占位符替换为按钮。让用户单击以尝试重新加载所需的媒体资源，或者在占位符区域显示错误的提示信息。总之，在发生任何资源加载故障时，给予用户必要的通知提示，总好过直接让用户无奈地面对故障。</p>
-<h3 id="四、图像解码延迟"><a href="#四、图像解码延迟" class="headerlink" title="四、图像解码延迟"></a>四、图像解码延迟</h3><p>​		在前面章节介绍JPEG图像的编解码时，我们知道渐进式的JPEG会先呈现出个低像素的图像版本，随后会慢慢呈现出原图的样貌。这是因为图像从被浏览器请求获取，再到最终完整呈现在屏幕上，需要经历一个解码的过程，图像的尺寸越大，所需要的解码时间就越长。如果在JavaScript 中请求加载较大的图像文件，并把它直接放入DOM结构中后，那么将有可能占用浏览器的主进程，进而导致解码期间用户界面出现短暂的无响应。</p>
-<p>​		为减少此类卡顿现象，可以采用decode方法进行异步图像解码后，再将其插入DOM结构中。但目前这种方式在跨浏览器场景下并不通用，同时也会复杂化原本对于媒体资源延迟加载的处理逻辑，所以在使用中应进行必要的可用性检查。下面是一个使用Image.decode()函数来实现异步解码的示例:</p>
-<pre><code class="js">&lt;button id=&quot;load-image&quot;&gt;加载图像&lt;/button&gt;
-&lt;div id=&quot;image-container&quot;&gt;&lt;/div&gt;
-//对应的JavaScript事件处理代码如下:
-document.addEventListener(&quot;DOMContentLoaded&quot;, () =&gt; &#123;
-  const loadButton = document.getElementById(&quot;load-image&quot;);
-  const imageContainer = document.getElementById(&quot;image-container&quot;);
-  const newImage = new Image();
-  newImage.src = &quot;https://xx. cdn/very-big-photo.jpg&quot;;
-  loadButton.addEventListener(
-    &quot;click&quot;,
-    function () &#123;
-      if (&quot;decode&quot; in newImage) &#123;
-        //异步解码方式
-        newImage.decode().then(function () &#123;
-          imageContainer.appendChild(newImage);
-        &#125;);
-      &#125; else &#123;
-        //正常图像加载方式
-        imageContainer.appendChild(newImage);
-      &#125;
-    &#125;,
-    &#123;
-      once: true,
-    &#125;
-  );
-&#125;);
-</code></pre>
-<p>​		需要说明的是，如果网站所包含的大部分图像尺寸都很小，那么使用这种方式的帮助并不会很大，同时还会增加代码的复杂性。但可以肯定的是这么做会减少延迟加载大型图像文件所带来的卡顿。</p>
-<h3 id="五、JavaScript-是否可用"><a href="#五、JavaScript-是否可用" class="headerlink" title="五、JavaScript 是否可用"></a>五、JavaScript 是否可用</h3><p>​		在通常情况下，我们都会假定JavaScript始终可用，但在一些异常不可用的物可用的情况下，开发者应当做好适配，不能始终在延迟加载的图像位置上展示占位符。可以考虑使用&lt;noscript标记，在JavaScript不可用时提供图像的真实展示:</p>
-<pre><code class="html">&lt;!-使用延迟加载的图像文件标签--&gt;
-&lt; img class=&quot;lazy&quot; src=&quot;placeholder-image.jpg&quot; data-src=&quot;image-to-lazy-load.jpg&quot; alt=&quot;I&#39;m an image!&quot;&gt;
-&lt;!一当JavaScript不可用时，原生展示目标團像--&gt;
-&lt;noscript&gt;
-&lt; img src=&quot;image-to-lazy-load.jpg&quot; alt=&quot;I&#39;m an image!&quot;&gt;
-&lt;/noscript&gt;
-</code></pre>
-<p>如果上述代码同时存在，当JavaScript不可用时，页面中会同时展示图像占位符和&lt;noscript中包含的图像，为此我们可以给&lt;html标签添加一个 no-js类:</p>
-<pre><code class="html">&lt;html class=&quot;no-js&quot;&gt;
-</code></pre>
-<p>在由&lt;link标签请求CSS文件之前，在&lt;head标签结构中放置一段内联脚本， 当JavaScript可用时，用于移除no-js类:</p>
-<pre><code class="js">&lt;script&gt;
-  document. documentElement.classList. remove (&quot;no-js&quot;);
-&lt;/script&gt;
-</code></pre>
-<p>以及添加必要的CSS样式，使得在JavaScript不可用时屏蔽包含 .lazy类元素的显示:</p>
-<pre><code class="css">.no-js .1azy &#123;
-display: none;
-&#125;
-</code></pre>
-<p>​		当然这样并不会阻止占位符图像的加载，只是让占位符图像在JavaScript不可用时不可见，但其体验效果会比让用户只看到占位符图像和没有意义的图像内容要好许多。</p>
+      <p class="home-excerpt">对图像与视频的延迟加载，从理论上看必然会对性能产生重要的影响，但在实现过程中有许多细节需需要注意，稍有差池都可能就会产生意想不到的结果。因此，总结以下几点注意事项。</p>
+      <p><a class="article-more-link" href="/2023/02/17/%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96%EF%BC%88%E5%8A%A0%E8%BD%BD%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%89/" aria-label="阅读全文：加载优化（加载注意事项）">阅读全文</a></p>
  
       <!-- reward -->
       
@@ -2319,7 +723,7 @@ display: none;
     <ul>
       <li>
         Copyrights &copy;
-        2022-2023
+        2022-2026
         <i class="ri-heart-fill heart_icon"></i> alan_mf
       </li>
     </ul>
@@ -2332,10 +736,10 @@ display: none;
       <li>
         
         
-        <span>
-  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></span>
-  <span class="division">|</span>
-  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+        <span class="site-stats" role="group" aria-label="全站访问统计">
+  <span class="site-stat"><i class="ri-user-3-fill" aria-hidden="true"></i><span class="site-stat-label">全站访客</span><span id="busuanzi_value_site_uv" class="site-stat-value">—</span></span>
+  <span class="site-stat"><i class="ri-eye-fill" aria-hidden="true"></i><span class="site-stat-label">累计浏览</span><span id="busuanzi_value_site_pv" class="site-stat-value">—</span></span>
+  <span class="site-stats-status" role="status">统计加载中…</span>
 </span>
         
       </li>
@@ -2368,7 +772,7 @@ display: none;
 
     </div>
     <aside class="sidebar on">
-      <button class="navbar-toggle"></button>
+      <button class="navbar-toggle" aria-label="切换导航菜单"></button>
 <nav class="navbar">
   
   <div class="logo">
@@ -2419,9 +823,9 @@ display: none;
   <ul class="nav">
     <li class="nav-item">
       
-      <a class="nav-item-link nav-item-search"  title="Search">
-        <i class="ri-search-line"></i>
-      </a>
+      <button type="button" class="nav-item-link nav-item-search" title="搜索文章" aria-label="搜索文章">
+<i class="ri-search-line" aria-hidden="true"></i>
+</button>
       
       
       <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
@@ -2433,7 +837,7 @@ display: none;
 </nav>
 <div class="search-form-wrap">
   <div class="local-search local-search-plugin">
-  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="搜索文章..." aria-label="搜索文章">
   <div id="local-search-result" class="local-search-result"></div>
 </div>
 </div>
@@ -2447,13 +851,13 @@ display: none;
   <div class="reward-box">
     
     <div class="reward-item">
-      <img class="reward-img" src="/images/zfb.jpeg">
+      <img class="reward-img" src="/images/zfb.jpeg" alt="支付宝收款码">
       <span class="reward-type">支付宝</span>
     </div>
     
     
     <div class="reward-item">
-      <img class="reward-img" src="/images/wx.jpeg">
+      <img class="reward-img" src="/images/wx.jpeg" alt="微信收款码">
       <span class="reward-type">微信</span>
     </div>
     
@@ -2673,7 +1077,7 @@ display: none;
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+        title="网易云音乐播放器" loading="lazy" src="https://music.163.com/outchain/player?type=2&id=22707008&auto=0&height=32"></iframe>
 </div>
 
 <style>

@@ -1,79 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>404</title>
-    <meta name="keywords" content="Hexo,Ayer,404,Design" />
-    <meta name="description" content="hexo theme ayer page 404." />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
-    />
-    <style>
-      html,
-      figure {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-      }
-
-      body {
-        margin: 20px;
-        overflow: hidden;
-      }
-
-      h1,
-      h3 {
-        width: 100%;
-        text-align: center;
-        color: #403e3e;
-      }
-
-      h3 a {
-        color: #0681d0;
-      }
-
-      .forrestgump img {
-        width: 52rem;
-        margin-left: 50%;
-        transform: translateX(-50%);
-        border-radius: 5%;
-        opacity: 0.8;
-      }
-
-      @media screen and (max-width: 768px) {
-        .forrestgump img {
-          width: 100%;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="notfound">
-      <a class="notfound-link" href="/">
-        <img
-          width="40"
-          src="data:image/png;base64,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"
-        />
-      </a>
-      <figure class="forrestgump">
-        <figcaption>
-          <h1>404<br />Not Found!</h1>
-          <h3>
-            Please check it, Maybe you should read
-            <a href="https://hexo.io/docs/">Hexo</a> and
-            <a href="https://github.com/Shen-Yu/hexo-theme-ayer">Ayer</a> Docs
-            carefully.
-          </h3>
-          <h3>
-            亲，获取不到该路径的页面呢，请检查一下哦，可能你还需要仔细阅读
-            <a href="https://hexo.io/docs/">Hexo</a> 和
-            <a href="https://shen-yu.gitee.io/2019/ayer/">Ayer</a> 的说明文档~
-          </h3>
-        </figcaption>
-        <img src="https://tvax4.sinaimg.cn/large/9156bd04ly1gzofhomcm4j20zk0p5jrw.jpg" />
-      </figure>
-    </div>
-  </body>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="页面暂时找不到。返回艺术码畜首页，或浏览文章归档。">
+  <title>页面未找到 | 艺术码畜</title>
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: linear-gradient(155deg, #071923, #123f52 70%, #276277); color: #f5fbff; }
+    main { width: min(100% - 48px, 720px); padding: 72px 0; }
+    .home { display: inline-flex; align-items: center; gap: 10px; color: #d4edf7; font-size: 16px; text-decoration: none; }
+    .home:hover, .home:focus-visible { color: #fff; text-decoration: underline; text-underline-offset: 5px; }
+    .mark { width: 24px; height: 24px; }
+    .code { margin: 64px 0 10px; color: #c3eaf2; font-size: clamp(72px, 18vw, 144px); font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+    h1 { margin: 0 0 16px; font-size: clamp(28px, 5vw, 40px); line-height: 1.35; }
+    p { max-width: 40ch; margin: 0; color: #d4e6ed; font-size: 17px; line-height: 1.8; }
+    nav { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 36px; }
+    nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 18px; border: 1px solid #a5dbe8; border-radius: 8px; color: #f5fbff; text-decoration: none; }
+    nav a:hover { background: #e6f6fb; color: #123f52; }
+    a:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+    @media (max-width: 520px) { main { padding: 48px 0; } .code { margin-top: 72px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="home" href="/" aria-label="返回艺术码畜首页">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 15c3.2-5 6.8-5 10 0s5.4 5 8 0M3 20c3.2-5 6.8-5 10 0s5.4 5 8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      艺术码畜
+    </a>
+    <div class="code" aria-hidden="true">404</div>
+    <h1>这篇内容暂时找不到</h1>
+    <p>可能是链接写错了，或文章地址发生变化。你可以回到首页查看最新文章，也可以从归档继续找。</p>
+    <nav aria-label="继续浏览">
+      <a href="/">看最新文章</a>
+      <a href="/archives/">浏览文章归档</a>
+    </nav>
+  </main>
+</body>
 </html>

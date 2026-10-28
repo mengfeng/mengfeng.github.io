@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '30 0 * * *'
   workflow_dispatch:
+    inputs:
+      auth_only:
+        description: Verify Google Cloud authentication without reading GA4
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -11,16 +16,17 @@ permissions:
 
 jobs:
   refresh:
-    if: github.repository == 'mengfeng/mengfeng.github.io' && github.ref == 'refs/heads/master'
+    if: >-
+      github.repository == 'mengfeng/mengfeng.github.io' &&
+      github.ref == 'refs/heads/master' &&
+      vars.GA4_WORKLOAD_IDENTITY_PROVIDER != '' &&
+      (vars.GA4_REFRESH_ENABLED == 'true' ||
+       (github.event_name == 'workflow_dispatch' && inputs.auth_only == true))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Explain missing identity provider
-        if: vars.GA4_WORKLOAD_IDENTITY_PROVIDER == ''
-        run: echo 'GA4 refresh is not active until GA4_WORKLOAD_IDENTITY_PROVIDER is configured.'
       - id: auth
         name: Authenticate to Google Cloud
-        if: vars.GA4_WORKLOAD_IDENTITY_PROVIDER != ''
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GA4_WORKLOAD_IDENTITY_PROVIDER }}
@@ -29,20 +35,27 @@ jobs:
           access_token_scopes: https://www.googleapis.com/auth/analytics.readonly
           access_token_lifetime: 600s
           create_credentials_file: false
+      - name: Confirm short-lived token
+        if: inputs.auth_only == true
+        env:
+          GA4_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        run: |
+          test -n "$GA4_ACCESS_TOKEN"
+          echo 'OIDC authentication succeeded.'
       - uses: actions/setup-python@v6
-        if: vars.GA4_WORKLOAD_IDENTITY_PROVIDER != ''
+        if: inputs.auth_only != true
         with:
           python-version: '3.12'
       - name: Query GA4 and validate the report
-        if: vars.GA4_WORKLOAD_IDENTITY_PROVIDER != ''
+        if: inputs.auth_only != true
         env:
           GA4_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: python scripts/update_ga4_stats.py
       - name: Check the generated site
-        if: vars.GA4_WORKLOAD_IDENTITY_PROVIDER != ''
+        if: inputs.auth_only != true
         run: python scripts/check_site.py
       - name: Commit a changed snapshot
-        if: vars.GA4_WORKLOAD_IDENTITY_PROVIDER != ''
+        if: inputs.auth_only != true
         run: |
           if git diff --quiet -- data/analytics.json; then
             echo 'GA4 snapshot is already current.'

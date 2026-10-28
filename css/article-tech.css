@@ -185,8 +185,8 @@ body.agent-tech.darkmode {
 }
 .agent-tech .article-entry th { background: var(--tech-wash); font-weight: 600; }
 .agent-tech .article-entry tr:nth-child(2n) { background: transparent; }
-.agent-tech .tocbot { color: var(--tech-muted); font-size: 12px; }
-.agent-tech .tocbot .toc-link { line-height: 1.8; }
+.agent-tech .tocbot { color: var(--tech-muted); font-size: 14px; }
+.agent-tech .tocbot .toc-link { line-height: 1.6; overflow-wrap: anywhere; }
 .agent-tech .tocbot .is-active-link { color: var(--tech-accent); }
 .agent-tech .tocbot .toc-link::before { background: var(--tech-line); }
 .agent-tech .tocbot .is-active-link::before { background: var(--tech-accent); }

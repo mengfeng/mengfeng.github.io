@@ -1,0 +1,14 @@
+{
+  "desktopScenarios": 7,
+  "mobileRaceScenario": true,
+  "lateSuccessPreservesCurrent": true,
+  "lateErrorPreservesCurrent": true,
+  "canceledLateResultIgnored": true,
+  "currentInvalidDataRejected": true,
+  "emptyResultSuccess": true,
+  "manualStopHonorsSignal": true,
+  "desktopOverflow": false,
+  "mobileOverflow": false,
+  "errors": [],
+  "externalRequests": []
+}

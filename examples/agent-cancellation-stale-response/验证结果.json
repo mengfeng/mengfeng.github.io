@@ -1,0 +1,15 @@
+{
+  "status": "offline_demo_verified",
+  "checked_at": "2026-10-28T20:11:29.924762+08:00",
+  "typecheck": "passed",
+  "build": "passed",
+  "core_tests": 14,
+  "browser_report": "browser-report.json",
+  "browser_desktop_scenarios": 7,
+  "browser_mobile_scenarios": 1,
+  "external_requests": 0,
+  "real_model_calls": 0,
+  "real_business_calls": 0,
+  "app_sha256": "e22481bef4c6d5cdca0a7a939fa506d157b87b73e44e7cfeef231e05b6dcd2f5",
+  "scope": "Local fixed mock model decisions and timer-based read-only tool only. Browser checks file://; no HTTP or real model validation."
+}

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>停止生成之后还会改页面吗：处理 Agent 取消与过期响应 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3、TypeScript、AbortController 与任务 ID 处理导购查询的取消和迟到响应，保护结果、错误和等待状态；附纯本地模拟演示及源码。" name="description"/><link href="https://mengfeng.github.io/2026/10/28/agent-cancellation-stale-response/" rel="canonical"/><meta content="停止生成之后还会改页面吗：处理 Agent 取消与过期响应" property="og:title"/><meta content="用 Vue 3、TypeScript、AbortController 与任务 ID 处理导购查询的取消和迟到响应，保护结果、错误和等待状态；附纯本地模拟演示及源码。" property="og:description"/><meta content="https://mengfeng.github.io/2026/10/28/agent-cancellation-stale-response/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-cancellation-stale-response/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-10-28-agent-cancellation-stale-response" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">停止生成之后还会改页面吗：处理 Agent 取消与过期响应</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/10/28/agent-cancellation-stale-response/"><time datetime="2026-10-28T12:12:24.531095Z" itemprop="datePublished">2026-10-28</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><p>导购页正在搜索“通勤包”，用户马上改成“运动包”。第二次查询先返回，页面刚显示运动包，第一次查询又姗姗来迟，把卡片换回了通勤包。每个接口都成功了，页面却给出了错误的当前结果。</p>
+<p>Agent 页面还多一个动作：停止生成。用户点击停止后，如果旧工具的回调仍然改动结果、错误提示或加载状态，这个按钮就没有兑现它的交互承诺。</p>
+<p>这一篇用 Vue 3 和 TypeScript 做一个导购搜索演示：<strong>AbortController 尽量中止旧工作，任务 ID 决定谁还有资格更新当前页面。</strong> 两个机制各有职责，要一起使用。</p>
+<blockquote>
+<p>全部商品、模型决策和查询延迟均为本地固定模拟。模型选择工具被简化为固定分支，没有调用真实模型、商城接口或后台任务系统；公开演示不发送查询网络请求，也不执行任何业务写操作。</p>
+</blockquote>
+<figure class="tech-figure"><img alt="机器人只允许当前编号02的商品结果进入页面，将晚到的旧编号01送入回收箱；停止按钮旁仍可能有旧消息抵达。" height="1024" src="/images/agent-cancellation-stale-response/cover.webp" width="1536"/></figure>
+<h2 id="section-1"><a class="headerlink" href="#section-1" title="一、先把“当前搜索”定义清楚"></a><span aria-hidden="true" class="tech-section-number">01</span>先把“当前搜索”定义清楚</h2>
+<p>本例的输入框是待提交条件。修改文字不会自动查询；点击“查询”才创建新任务，并把提交时的条件保存为快照。卡片旁展示实际任务条件，避免把输入草稿误认成结果对应的条件。</p>
+<p>每次提交都分配新的递增 ID，即使条件相同也不复用。页面只接受最新任务的结果，开始时清空上次卡片和错误。点击停止，立即退出等待状态并撤销当前任务的页面更新资格。</p>
+<p>页面状态包括 <code>idle</code>、<code>running</code>、<code>success</code>、<code>canceled</code> 和 <code>error</code>。成功但列表为空表示没有匹配项；停止表示用户终止接收；工具报错才显示查询失败。这些状态对应不同的恢复动作，不能全部塞进一个“网络异常”。</p>
+<p>为了观察竞争条件，演示还提供预设按钮：先启动较慢的通勤查询，再启动较快的运动查询。旧查询特意忽略取消信号，让它真的晚到，检验页面是否仍然守住当前结果。</p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="二、取消信号负责通知，任务编号负责接收"></a><span aria-hidden="true" class="tech-section-number">02</span>取消信号负责通知，任务编号负责接收</h2>
+<p>AbortController 向支持取消的异步操作传递信号。与 <code>fetch</code> 配合时，把 <code>controller.signal</code> 放进请求选项；调用 <code>abort()</code> 可以中止请求、响应体消费或流读取。<a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort">MDN：AbortController.abort</a></p>
+<p>但普通 Promise 没有一个自动停止一切工作的开关。自定义工具如果没有监听信号，计时器仍可能完成，回调仍可能执行。本例故意同时保留“响应取消”和“忽略取消”两类模拟工具。</p>
+<p>因此页面还要维护一个当前任务标记。一次结果返回时，先检查它是否属于当前任务，再检查信号是否已中止。只要任务被替换或停止，就放弃它对结果区域的更新。</p>
+<p>这个 ID 是当前控制器内的临时序号，不是用户身份、授权令牌或业务幂等键。它可以解决当前页面的响应覆盖问题，不能代替服务端权限检查，也不能证明某次订单只执行了一次。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="三、每个异步出口都要核对任务"></a><span aria-hidden="true" class="tech-section-number">03</span>每个异步出口都要核对任务</h2>
+<p>核心实现放在 <code>src/core.ts</code> 的 <code>createSearchController</code>。下面摘出决定结果是否可接受的判断，<code>active</code> 保存当前任务及其控制器，<code>generation</code> 保存递增序号：</p>
+<div class="tech-code"><div class="tech-code-label">typescript</div><pre><code class="language-typescript"><span class="kd">function</span><span class="w"> </span><span class="nx">isCurrent</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="kt">AbortSignal</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="o">!</span><span class="nx">disposed</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">active</span><span class="o">?</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">id</span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">generation</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">signal</span><span class="p">.</span><span class="nx">aborted</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>创建新任务时，先增加序号并替换 <code>active</code>，再中止上一个控制器。这样旧任务在收到取消通知时，已经失去了当前身份。随后发布新任务的等待状态，并用本次条件快照调用工具。</p>
+<p>工具结果按 <code>unknown</code> 接收，检查当前身份后再校验商品数组。源码限制最多三件商品，核对 ID、名称、整数分价格及重复 ID；缺少价格直接进入错误状态。Vue 使用普通文本插值，商品名称不会变成动态模板。</p>
+<p>更容易漏掉的是另外两个出口：错误处理和清理逻辑。旧任务报错不能清空新结果；旧任务结束时，也不能把仍在工作的最新任务改成“不忙了”。源码的结构如下：</p>
+<div class="tech-code"><div class="tech-code-label">typescript</div><pre><code class="language-typescript"><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">raw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">tool</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">signal</span><span class="p">,</span><span class="w"> </span><span class="nx">scenario</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">isCurrent</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">signal</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">products</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">parseProducts</span><span class="p">(</span><span class="nx">raw</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">publish</span><span class="p">({</span><span class="w"> </span><span class="nx">taskId</span><span class="o">:</span><span class="w"> </span><span class="kt">id</span><span class="p">,</span><span class="w"> </span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'success'</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">busy</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span><span class="w"> </span><span class="nx">products</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">'当前任务结果已展示。'</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">isCurrent</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">signal</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// 发布当前任务的错误；产品列表置空。</span>
+<span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isCurrent</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">signal</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">publish</span><span class="p">({</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">busy</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>这段摘录省略了错误文案构造，完整实现以源码包为准。<code>finally</code> 同样受身份约束，不能无条件写 <code>loading = false</code>。如果之后增加分阶段进度、推荐理由或引用，也要在每个异步更新点做同样的核对。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="四、停止时先失效，再发出取消通知"></a><span aria-hidden="true" class="tech-section-number">04</span>停止时先失效，再发出取消通知</h2>
+<p>仅调用 <code>abort()</code> 后等待 Promise 抛错，会让停止按钮的反馈依赖工具实现。忽略取消的工具可能继续等待，页面却还在转圈。</p>
+<p>本例先把当前任务失效，立即发布取消状态，再通知工具：</p>
+<div class="tech-code"><div class="tech-code-label">typescript</div><pre><code class="language-typescript"><span class="kd">const</span><span class="w"> </span><span class="nx">previous</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">active</span><span class="p">;</span>
+<span class="o">++</span><span class="nx">generation</span><span class="p">;</span>
+<span class="nx">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+<span class="nx">publish</span><span class="p">({</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'canceled'</span><span class="p">,</span><span class="w"> </span><span class="nx">busy</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">products</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">'已停止接收本次结果。'</span><span class="w"> </span><span class="p">});</span>
+<span class="nx">previous</span><span class="p">.</span><span class="nx">controller</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span>
+</code></pre></div>
+<p>代码位于确认存在活动任务的分支中。先失效也避免取消监听器同步执行时仍把旧任务认作当前任务。停止后的迟到结果、迟到异常和清理回调都会被身份检查挡住。</p>
+<p>新搜索必须使用新的 AbortController。已中止的 signal 不能重新用于下一次请求；MDN 对这种一次性使用语义有明确说明，自定义可取消 API 还应处理一开始就已中止的信号，并在完成后清理监听器。<a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal">MDN：AbortSignal</a></p>
+<p>模拟工具的正常路径会清理计时器或取消监听器；忽略取消路径只用于复现迟到。它的固定延迟不是实际模型耗时，更不能用来推算生产性能。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="五、接到 Vue 时，把清理入口也接好"></a><span aria-hidden="true" class="tech-section-number">05</span>接到 Vue 时，把清理入口也接好</h2>
+<p>页面通过回调把控制器的状态写入 Vue <code>ref</code>，渲染逻辑只读取状态。点击查询调用 <code>start</code>，停止调用 <code>stop</code>；组件卸载时调用 <code>dispose</code>，使后续回调不能继续发布状态。</p>
+<p>预设演示本身也有一个安排第二次查询的定时器。切换预设、手动查询、停止或卸载时都要清理它，否则用户已经停止，演示脚本却可能又启动一个新任务。这和工具回调过期是两个不同的入口，都需要处理。</p>
+<p>若产品改为条件变化就自动搜索，可以使用 <code>watch</code> 并注册清理。Vue 官方示例用清理回调中止旧请求；<code>onWatcherCleanup</code> 需要 Vue 3.5+，且必须在同步执行期间注册，不能放到 <code>await</code> 后面。<a href="https://vuejs.org/guide/essentials/watchers.html#side-effect-cleanup">Vue：监听器的副作用清理</a></p>
+<p>本例使用明确提交按钮，没有实现输入防抖。防抖可以减少请求次数，但已经发出的旧请求仍然可能晚到，所以不能替代任务身份核对。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="六、用可控的完成顺序验证竞争条件"></a><span aria-hidden="true" class="tech-section-number">06</span>用可控的完成顺序验证竞争条件</h2>
+<p>只测试“点击查询后出现卡片”，无法证明取消逻辑正确。核心测试注入可手动完成的 Promise，明确安排谁先成功、谁先失败，避免依赖机器快慢碰巧制造顺序。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>应满足的页面约束</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正常查询</td>
+<td>显示本次条件对应的演示商品</td>
+</tr>
+<tr>
+<td>旧慢新快</td>
+<td>新结果出现后，旧成功不能覆盖它</td>
+</tr>
+<tr>
+<td>旧任务迟到报错</td>
+<td>当前成功结果和提示保持不变</td>
+</tr>
+<tr>
+<td>旧任务先结束、新任务仍等待</td>
+<td>旧 finally 不能关闭新任务的等待状态</td>
+</tr>
+<tr>
+<td>点击停止，工具忽略取消</td>
+<td>立即取消，旧结果到达后仍无卡片</td>
+</tr>
+<tr>
+<td>当前工具返回缺少价格的数据</td>
+<td>拒绝结果，显示校验错误</td>
+</tr>
+<tr>
+<td>卸载后任务完成</td>
+<td>不再向 Vue 发布任何状态</td>
+</tr>
+</tbody>
+</table>
+<p>测试还要覆盖停止后重新查询，以及同一条件连续提交。身份不能靠比较搜索文字判断，否则相同条件的两轮执行就无法区分。</p>
+<p>这些断言验证的是本地控制器与固定夹具。它们不覆盖真实浏览器到代理、模型服务、业务工具的完整取消链路，也不能证明后端节省了多少资源。</p>
+<h2 id="section-7"><a class="headerlink" href="#section-7" title="七、运行演示，检查停止后的页面"></a><span aria-hidden="true" class="tech-section-number">07</span>运行演示，检查停止后的页面</h2>
+<p><a href="/examples/agent-cancellation-stale-response/index.html">打开取消与过期响应演示</a> · <a href="/examples/agent-cancellation-stale-response/source.zip">下载 Vue / TypeScript 完整源码</a></p>
+<p>解压后可直接打开 <code>index.html</code>。Vue 已打包进本地文件，无需模型密钥或 CDN。也可以在解压目录执行 <code>python3 -m http.server 8080</code>，访问 <code>http://127.0.0.1:8080</code>。这是静态文件预览，查询仍使用浏览器内的模拟工具。</p>
+<p>修改源码时，使用 README 中锁定的依赖和命令：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+</code></pre></div>
+<p>先运行正常查询，再观察“旧慢新快”和“旧任务迟到报错”。最后启动忽略取消的慢任务并点击停止，等待旧任务足够长时间后，确认页面仍显示取消且没有商品。仅在刚点击停止的一瞬间截图，无法证明晚到响应已经被挡住。</p>
+<p>本次类型检查与 14 组核心测试通过，浏览器完成桌面七个场景及手机竞争场景检查，结果随源码附带；电脑与手机视口还分别核对布局、按钮和结果区域。这里的通过指可复现的模拟路径，没有执行真实模型验证。</p>
+<h2 id="section-8"><a class="headerlink" href="#section-8" title="八、真正的业务取消还需要服务端协议"></a><span aria-hidden="true" class="tech-section-number">08</span>真正的业务取消还需要服务端协议</h2>
+<p>把 <code>mockSearchTool</code> 换成真实请求时，应将 signal 传给 <code>fetch</code>，读取响应体后继续核对任务身份，再校验业务数据。若是流式进度，每条更新也必须带着当前执行的上下文经过同一入口。</p>
+<p>浏览器停止等待，不会自动回滚服务端已经发生的写入。查询服务若需要终止后台任务，应设计任务 ID、取消接口与可查询终态，并明确取消能在哪个执行阶段生效。付款、退款和消息发送还需要各自的确认、幂等与结果核对流程，不能照搬本例的本地序号。</p>
+<p>前端在本例能保证的范围很具体：被替换或停止的任务，即使之后返回，也不能再改当前结果、错误或等待状态。把这条约束固定在统一控制器中，才能让“停止”和“重新查询”成为可信的页面动作。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F10%2F28%2Fagent-cancellation-stale-response%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/10/27/agent-tool-progress-sse-ui/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">Agent 正在做什么：把工具调用过程展示成可理解的进度</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

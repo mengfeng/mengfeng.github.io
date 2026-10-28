@@ -1,3 +1,71 @@
+(function () {
+  // This file is included by every generated page before the copy controls.
+  // Keep copying available when the optional ClipboardJS CDN cannot load.
+  if (typeof window.ClipboardJS !== "function") {
+    function copyWithSelection(value) {
+      const textarea = document.createElement("textarea");
+      textarea.value = value;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (error) {
+        copied = false;
+      }
+      textarea.remove();
+      return copied;
+    }
+
+    function ClipboardFallback(selector, options) {
+      const callbacks = {};
+      this.on = function (eventName, callback) {
+        callbacks[eventName] = callback;
+        return this;
+      };
+      document.addEventListener("click", async function (event) {
+        if (!(event.target instanceof Element)) {
+          return;
+        }
+        const trigger = event.target.closest(selector);
+        if (!trigger) {
+          return;
+        }
+        const target = options.target(trigger);
+        const value = target ? target.textContent : "";
+        let copied = false;
+        if (value && navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(value);
+            copied = true;
+          } catch (error) {
+            copied = copyWithSelection(value);
+          }
+        } else if (value) {
+          copied = copyWithSelection(value);
+        }
+        const callback = callbacks[copied ? "success" : "error"];
+        if (callback) {
+          callback({
+            trigger: trigger,
+            clearSelection: function () {
+              window.getSelection()?.removeAllRanges();
+            },
+          });
+        }
+      });
+    }
+    window.ClipboardJS = ClipboardFallback;
+  }
+
+  const canvasEl = document.querySelector(".fireworks");
+  if (typeof window.anime !== "function" || !canvasEl) {
+    return;
+  }
+
 const numberOfParticules = 20;
 
 const minOrbitRadius = 50;
@@ -12,7 +80,6 @@ const maxAnimeDuration = 1500;
 const minDiffuseRadius = 50;
 const maxDiffuseRadius = 100;
 
-let canvasEl = document.querySelector(".fireworks");
 let ctx = canvasEl.getContext("2d");
 let pointerX = 0;
 let pointerY = 0;
@@ -150,3 +217,4 @@ document.addEventListener(
 
 setCanvasSize();
 window.addEventListener("resize", setCanvasSize, false);
+})();

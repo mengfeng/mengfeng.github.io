@@ -31,6 +31,20 @@
   outline: 2px solid #83c9ee;
   outline-offset: -4px;
 }
+.float_btns button.totop,
+.float_btns button.todark {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+.float_btns button.totop:focus-visible,
+.float_btns button.todark:focus-visible {
+  outline: 2px solid #075f9e;
+  outline-offset: 3px;
+  opacity: 1;
+}
 .home-page .cover,
 .home-page .cover-frame {
   height: clamp(320px, 52vh, 520px);
@@ -168,6 +182,16 @@
 body.darkmode .home-intro,
 body.darkmode .home-history {
   border-color: rgba(255, 255, 255, .25);
+}
+body.darkmode .home-intro h2,
+body.darkmode .home-history h2,
+body.darkmode .home-intro p,
+body.darkmode .home-history p {
+  color: #e2edf0;
+}
+body.darkmode .home-intro-links a,
+body.darkmode .home-history a {
+  color: #a8dcfa;
 }
 @media (min-width: 768px) {
   .outer,

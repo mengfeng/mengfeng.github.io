@@ -1,0 +1,13 @@
+{
+  "status": "offline_and_loopback_http_verified",
+  "checked_at": "2026-10-29T20:04:55.462549+08:00",
+  "node": "24.22.1",
+  "typecheck": "passed",
+  "build": "passed",
+  "core_tests": 16,
+  "http_assertions": 12,
+  "real_model_calls": 0,
+  "real_business_calls": 0,
+  "app_sha256": "bf22b01a19a388bb6a03f96f2e93016ff496c82ff8181f455e354329af2cf7ab",
+  "scope": "Fixed model branch and shared in-memory service only. Core tests plus actual loopback HTTP transport. No production or live-model validation."
+}

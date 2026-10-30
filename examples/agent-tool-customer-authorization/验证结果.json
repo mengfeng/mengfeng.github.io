@@ -1,0 +1,13 @@
+{
+  "status": "offline_and_loopback_http_verified",
+  "checked_at": "2026-10-30T20:04:34.559436+08:00",
+  "node": "24.22.1",
+  "typecheck": "passed",
+  "build": "passed",
+  "core_tests": 18,
+  "http_checks": 17,
+  "real_model_calls": 0,
+  "real_business_calls": 0,
+  "app_sha256": "073c7063ab26c2e77cfb27f54d8a3ceb816f22a537c8b15d0d6ec3cb84a720c7",
+  "scope": "Fixed mock model decision and public sample orders only. Shared service rules, actual loopback HTTP cookie session tests. Demo login is arbitrary A/B selection, not production authentication. Offline bundle contains all public fixtures."
+}

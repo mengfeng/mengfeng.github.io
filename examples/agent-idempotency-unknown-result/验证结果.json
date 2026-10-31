@@ -1,0 +1,13 @@
+{
+  "status": "offline_and_loopback_http_verified",
+  "checked_at": "2026-10-31T20:09:31.889670+08:00",
+  "node": "24.22.1",
+  "typecheck": "passed",
+  "build": "passed",
+  "core_tests": 21,
+  "http_checks": 17,
+  "real_model_calls": 0,
+  "real_business_calls": 0,
+  "app_sha256": "efb13754f615df6bb9d7e604f65dd75d1b4faa928cb73e46119c556513418d55",
+  "scope": "Fixed mock suggestion and public fake after-sales application only. Actual loopback HTTP AbortController timeout after in-memory commit; idempotency survives only while this service retains its map. Offline refresh or HTTP restart loses service records. Client storage restore does not submit automatically."
+}

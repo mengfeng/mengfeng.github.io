@@ -1,0 +1,18 @@
+{
+  "scope": "offline deterministic parser + fixed mock model; no real model/API/OCR/business writes",
+  "date": "2026-11-02",
+  "node": "24.22.1",
+  "vue": "3.5.43",
+  "typescript": "5.7.2",
+  "esbuild": "0.28.2",
+  "typecheck": "passed",
+  "core_tests": {
+    "passed": 25,
+    "failed": 0
+  },
+  "build": "passed",
+  "app_js_sha256": "f770fd5f5aa52c60109ed23054b87850bcd2e63e576da2d4a0d4118df1291536",
+  "browser": "root integration verification pending; not claimed by this record",
+  "live_model": "not_run",
+  "business_writes": "not_implemented"
+}

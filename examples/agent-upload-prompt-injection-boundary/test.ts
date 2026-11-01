@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import {createController, extractReceipt, FILE_BYTES_MAX, mockedPlan, runGateway, SAMPLES, validateFile, validateReceipt, validateText, type DocumentData, type Mode, type State} from './src/core';
+let count = 0;
+async function test(name: string, action: () => unknown | Promise<unknown>): Promise<void> {await action();count += 1;console.log(`ok ${count} - ${name}`);}
+const document: DocumentData = {sourceId: 'attachment-test', name: 'demo.txt', text: SAMPLES.normal};
+const model = async (doc: DocumentData, mode: Mode): Promise<unknown> => mockedPlan(doc, mode);
+function stateCollector(modelValue = model) {const states: State[] = [];const controller = createController(state => states.push(state), modelValue);return {states, controller, last: () => states[states.length - 1]};}
+await test('完整材料保留字段值、行号、原文', () => {const r=extractReceipt(SAMPLES.normal);assert.equal(r.fields.length,3);assert.equal(r.fields[0].value,'128.50');assert.equal(r.fields[0].line,2);assert.equal(r.fields[0].quote,'金额: 128.50');assert.deepEqual(r.missing,[]);});
+await test('缺失日期保留缺失标记，不补造', () => {assert.deepEqual(extractReceipt(SAMPLES.missing).missing,['date']);});
+await test('夹带指令只作为未匹配原文', () => {assert.deepEqual(extractReceipt(SAMPLES.injection),extractReceipt(SAMPLES.normal));});
+await test('重复字段拒绝歧义', () => {assert.throws(()=>extractReceipt(SAMPLES.normal+'\n金额: 99.00'),/多次/);});
+await test('小写标签、行内金额不参与固定语法', () => {assert.deepEqual(extractReceipt('备注 金额: 30').missing,['amount','date','purpose']);});
+await test('非法金额和不存在日期拒绝', () => {assert.throws(()=>extractReceipt('金额: -1'),/金额/);assert.throws(()=>extractReceipt('日期: 2026-02-30'),/日期/);});
+await test('空、二进制和超大文本拒绝', () => {assert.throws(()=>validateText(' '));assert.throws(()=>validateText('\0x'));assert.throws(()=>validateText('x'.repeat(8193)));assert.throws(()=>validateText('汉'.repeat(6000)));});
+await test('CRLF标准化后的行号一致', () => {assert.deepEqual(extractReceipt(SAMPLES.normal.replaceAll('\n','\r\n')),extractReceipt(SAMPLES.normal));});
+await test('当前来源的只读工具允许', () => {assert.equal(runGateway(mockedPlan(document,'normal'),document,'normal',()=>{}).fields.length,3);});
+await test('禁止工具在执行前拒绝，无任何日志放行', () => {const log:string[]=[];assert.throws(()=>runGateway(mockedPlan(document,'forbidden'),document,'forbidden',s=>log.push(s)),/未获授权/);assert.deepEqual(log,[]);});
+await test('多次调用超预算拒绝', () => {assert.throws(()=>runGateway(mockedPlan(document,'multiple'),document,'multiple',()=>{}),/一次/);});
+await test('伪造来源与多余参数拒绝', () => {for(const args of [{sourceId:'old'},{sourceId:document.sourceId,text:'evil'}]){assert.throws(()=>runGateway({calls:[{name:'extractReceipt',arguments:args}]},document,'normal',()=>{}),/当前附件/);}});
+await test('工具输出篡改引用拒绝', () => {assert.throws(()=>runGateway(mockedPlan(document,'normal'),document,'tampered',()=>{}),/原文/);});
+await test('工具输出夹带审批拒绝', () => {assert.throws(()=>runGateway(mockedPlan(document,'normal'),document,'malformed',()=>{}),/结构/);});
+await test('字段值伪造、行号伪造、遗漏字段都拒绝', () => {const r=extractReceipt(SAMPLES.normal);assert.throws(()=>validateReceipt({...r,fields:r.fields.map((f,i)=>i===0?{...f,value:'999.00'}:f)},SAMPLES.normal));assert.throws(()=>validateReceipt({...r,fields:r.fields.map((f,i)=>i===0?{...f,line:1}:f)},SAMPLES.normal));assert.throws(()=>validateReceipt({...r,fields:r.fields.slice(1)},SAMPLES.normal));});
+await test('纯文本类型、扩展名、大小边界', () => {const base={name:'x.txt',size:20,type:'text/plain',text:async()=>''};validateFile(base);validateFile({...base,type:''});assert.throws(()=>validateFile({...base,name:'x.pdf'}));assert.throws(()=>validateFile({...base,type:'application/pdf'}));assert.throws(()=>validateFile({...base,size:FILE_BYTES_MAX+1}));});
+await test('超大文件读取前拒绝', async()=> {let read=0;const c=stateCollector();await c.controller.load({name:'x.txt',size:FILE_BYTES_MAX+1,type:'text/plain',text:async()=>{read++;return SAMPLES.normal;}});assert.equal(read,0);assert.equal(c.last().status,'error');});
+await test('文件谎报大小仍在读后校验文本', async()=> {const c=stateCollector();await c.controller.load({name:'x.txt',size:1,type:'text/plain',text:async()=>'x'.repeat(8193)});assert.equal(c.last().status,'error');});
+await test('正常预审只进入人工核对状态', async()=> {const c=stateCollector();c.controller.edit(SAMPLES.normal,'demo');await c.controller.analyze('normal');assert.equal(c.last().status,'awaiting-human');assert.match(c.last().trace.at(-1)??'',/未提交/);});
+await test('切换输入立即清空旧结果和记录', async()=> {const c=stateCollector();c.controller.edit(SAMPLES.normal,'demo');await c.controller.analyze('normal');c.controller.edit(SAMPLES.missing,'new');assert.equal(c.last().result.fields.length,0);assert.deepEqual(c.last().trace,[]);});
+await test('旧模型响应不覆盖新输入', async()=> {let resolve:(value:unknown)=>void=()=>{};const c=stateCollector(async()=>new Promise(r=>{resolve=r;}));c.controller.edit(SAMPLES.normal,'old');const running=c.controller.analyze('normal');c.controller.edit(SAMPLES.missing,'new');resolve(mockedPlan(document,'normal'));await running;assert.equal(c.last().status,'idle');assert.equal(c.last().document.name,'new');});
+await test('旧文件读取不覆盖新输入', async()=> {let resolve:(value:string)=>void=()=>{};const c=stateCollector();const loading=c.controller.load({name:'old.txt',size:30,type:'text/plain',text:async()=>new Promise(r=>{resolve=r;})});c.controller.edit(SAMPLES.missing,'new');resolve(SAMPLES.normal);await loading;assert.equal(c.last().document.name,'new');assert.equal(c.last().document.text,SAMPLES.missing);});
+await test('旧模型错误与销毁后的结果被忽略', async()=> {let reject:(error:Error)=>void=()=>{};const c=stateCollector(async()=>new Promise((_r,j)=>{reject=j;}));c.controller.edit(SAMPLES.normal,'old');const pending=c.controller.analyze('normal');c.controller.edit(SAMPLES.missing,'new');reject(new Error('late'));await pending;assert.equal(c.last().status,'idle');const d=stateCollector();d.controller.edit(SAMPLES.normal,'x');const job=d.controller.analyze('normal');d.controller.dispose();await job;assert.equal(d.last().status,'running');});
+await test('失败不保留旧核对结果', async()=> {const c=stateCollector();c.controller.edit(SAMPLES.normal,'x');await c.controller.analyze('normal');await c.controller.analyze('forbidden');assert.equal(c.last().status,'error');assert.equal(c.last().result.fields.length,0);});
+await test('空输入不调用模拟模型', async()=> {let calls=0;const c=stateCollector(async()=>{calls++;return {};});c.controller.edit('','empty');await c.controller.analyze('normal');assert.equal(calls,0);assert.equal(c.last().status,'error');});
+console.log(`PASS ${count} tests; offline only, no live model or business write`);

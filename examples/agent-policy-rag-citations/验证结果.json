@@ -1,0 +1,15 @@
+{
+  "status": "offline_extractive_demo_verified",
+  "checked_at": "2026-11-01T08:05:09.792877+08:00",
+  "node": "24.22.1",
+  "typecheck": "passed",
+  "build": "passed",
+  "core_tests": 19,
+  "source_documents": 3,
+  "source_chunks": 4,
+  "retrieval_limit": 3,
+  "real_model_calls": 0,
+  "real_business_calls": 0,
+  "app_sha256": "be3d26edae58e994eef249dad63271be3ebb599a2fcbb3bc8322dc4b4f15cbfa",
+  "scope": "Pure offline keyword retrieval and fixed mock selection. Exact extractive quote and current-retrieval membership checks only; not arbitrary-answer entailment, recall completeness, policy validity, HTTP API or live-model validation."
+}

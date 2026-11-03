@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>对话记住了，购物车却变了：处理 Agent 与页面状态不同步 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 为购物车凑单建议绑定快照版本与请求编号，处理计算期间编辑、已展示建议过期和数量改回原值，附完整可运行离线示例。" name="description"/><link href="https://mengfeng.github.io/2026/11/03/agent-cart-state-versioning/" rel="canonical"/><meta content="对话记住了，购物车却变了：处理 Agent 与页面状态不同步" property="og:title"/><meta content="用 Vue 3 和 TypeScript 为购物车凑单建议绑定快照版本与请求编号，处理计算期间编辑、已展示建议过期和数量改回原值，附完整可运行离线示例。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/03/agent-cart-state-versioning/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-cart-state-versioning/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-03-agent-cart-state-versioning" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">对话记住了，购物车却变了：处理 Agent 与页面状态不同步</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/03/agent-cart-state-versioning/"><time datetime="2026-11-03T12:04:19.252405Z" itemprop="datePublished">2026-11-03</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><p>用户问：“还差多少钱包邮？帮我找个合适的凑单商品。”Agent 开始计算时，购物车里是一件商品；等建议出现，用户已经把数量改成了两件。</p>
+<p>回答可能算得完全正确，却已经不适用于眼前的页面。这种问题不能只靠“记住聊天上下文”解决，因为购物车本身也在变化。</p>
+<p>今天做一个 Vue 3 + TypeScript 购物车助手。它读取购物车快照，调用只读凑单工具，给出一个可核对的候选方案。用户修改购物车后，页面立即把旧建议标为过期，要求重新计算。</p>
+<figure class="tech-figure"><img alt="手绘机器人发现购物车已从 V1 更新为 V2，将旧建议标为过期并重新计算" height="1024" src="/images/agent-cart-state-versioning/cover.webp" width="1536"/></figure>
+<p><a href="/examples/agent-cart-state-versioning/">打开在线示例</a> · <a href="/examples/agent-cart-state-versioning/source.zip">下载完整源码 ZIP</a></p>
+<h2 id="section-1"><a class="headerlink" href="#section-1" title="1. 先确定建议依赖哪些状态"></a>1. 先确定建议依赖哪些状态</h2>
+<p>这个例子的业务规则刻意保持简单：固定的演示商品目录、固定包邮门槛、整数数量，不包含优惠券、会员价、税费、运费地区或促销叠加。所有商品、价格和库存都是虚构教学数据。</p>
+<p>建议至少依赖商品 ID、数量、价格、库存和包邮规则。只把“帮我凑单”这句话交给模型，无法说明它基于哪一次购物车计算。</p>
+<p>因此，发起任务时要保存一份独立快照，并为它附上购物车版本。工具使用快照，结果也绑定同一个版本。页面当前状态继续变化，不能反过来悄悄改写快照。</p>
+<p>本例的版本是浏览器内单调递增的整数，生命周期限于当前页面。它用来解释状态关联，不是全局唯一订单版本，也没有实现多设备同步。</p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="2. 用户编辑后，建议立即失效"></a>2. 用户编辑后，建议立即失效</h2>
+<p>页面左边是演示购物车，用户可以增加、减少数量或移除商品；右边显示建议状态和它对应的版本。点击生成后，模拟工具会等待一段时间，方便复现“计算期间编辑”的情况。</p>
+<p>有两个时刻都要处理。计算还没结束时，购物车变化会使任务过期；建议已经显示后，购物车变化同样使它过期。不能只防迟到响应，却让已经出现的旧建议继续作为当前结论。</p>
+<p>过期状态保留原因和版本信息，隐藏原来的有效建议，提供重新生成入口。页面不自动把候选商品加进购物车，也没有支付或下单接口。</p>
+<p>为什么不只让用户停止生成？因为状态变化可能来自页面的其他入口，用户不必先去照顾聊天任务。助手应当追踪其依据是否仍然成立。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="3. 请求编号与购物车版本各管一件事"></a>3. 请求编号与购物车版本各管一件事</h2>
+<p>请求编号回答“这是不是用户最后一次发起的任务”，购物车版本回答“这是不是当前业务状态”。两者不能互相代替。</p>
+<div class="tech-code"><div class="tech-code-label">typescript</div><pre><code class="language-typescript"><span class="c1">// 机制缩写；完整控制器和校验见 src/core.ts</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">requestId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="nx">latestRequestId</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">copyCart</span><span class="p">(</span><span class="nx">currentCart</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">sourceVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">currentCart</span><span class="p">.</span><span class="nx">version</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">queryTopup</span><span class="p">(</span><span class="nx">snapshot</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">requestId</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">latestRequestId</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">sourceVersion</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">currentCart</span><span class="p">.</span><span class="nx">version</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="c1">// 还需要校验 response，再发布为当前建议。</span>
+</code></pre></div>
+<p>同一购物车可能连续生成两次建议：版本没变，较早请求也不能覆盖较晚请求。反过来，用户只生成过一次建议，但随后改了购物车：即使只按发起顺序看它仍是最后一次查询，业务依据却已经过期。</p>
+<p>失败回调也要遵循同样规则。旧任务最后失败时，不能把新建议改成错误，或者把已经明确的过期状态改写成普通失败。新请求开始时清除旧结果，避免加载中还展示上一轮结论。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="4. 数量改回去，也不是旧版本复活"></a>4. 数量改回去，也不是旧版本复活</h2>
+<p>假设数量经过 <code>1 → 2 → 1</code>。最终数量和最初一致，总金额也相同，但中间已经发生过两次编辑。只比较总价，会把旧请求误认为仍然有效。</p>
+<p>本例每次接受真实的购物车变更，都在统一修改入口同步递增版本；数量改回去不会把版本减回去。没有改变内容的操作可以保持版本不变，但所有实际变化必须经过这个入口。</p>
+<p>这一点尤其不适合只靠监听总价解决。Vue 会对某些更新进行批处理，总价也不能表达商品组合；不同商品甚至可以产生相同金额。页面显示总额可以使用纯计算，但业务变更的身份应该在修改动作里记录。</p>
+<p><a href="https://vuejs.org/guide/essentials/computed.html">Vue 的计算属性文档</a>说明了响应式依赖与纯计算的关系。<a href="https://vuejs.org/guide/essentials/watchers.html">侦听器文档</a>也讨论了旧异步响应的问题。清理或取消请求可以减少无用工作，本例则保留结果提交前的版本检查，故意让延迟任务返回以验证隔离是否有效。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="5. 让凑单工具负责数字，模型只提出调用"></a>5. 让凑单工具负责数字，模型只提出调用</h2>
+<p>示例采用固定模拟模型计划，调用一个只读凑单工具。它不理解任意用户对话，也不访问商品服务或真实模型 API。工具执行器限制调用名称、次数与快照参数，页面不接受任意动作。</p>
+<p>默认购物车是笔记本 32 元 × 2，加签字笔 12 元 × 1，小计 76 元；演示门槛是 100 元，差额 24 元。短线 24 元一件、夹子 6 元一件，单 SKU 方案中都能恰好补足差额，并列时先选件数更少的短线。收纳袋虽在目录中，但模拟库存为零，不能参与推荐。</p>
+<p>计算统一使用整数分，避免在业务运算中反复累加带小数的元。先计算当前小计和门槛差额，再遍历固定目录中的可用候选。</p>
+<p>候选范围是“单一 SKU 的若干件”，不是任意多商品组合。每个候选要检查数量上限和演示库存；能覆盖差额的方案按新增金额排序，采用固定规则打破并列，得到可重复的结果。它只能称为这个有限候选集合内的最低新增金额方案。</p>
+<p>这也不代表消费最划算。为了免运费多买商品，可能比直接支付运费花得更多；本例没有计算真实运费、需求价值或退货成本，因此只展示达门槛方案，不宣称它替用户省了钱。</p>
+<p>工具结果需要运行时校验：版本是否属于本轮，商品是否存在，数量是否为允许范围内的整数，价格和小计是否能从可信演示目录重算。不能让模型提供一个未知商品 ID，再把它的名称和优惠文案直接画成卡片。</p>
+<p>当购物车为空、已经达到门槛或没有可行方案时，各自显示明确状态，不为了“必须推荐点什么”而凑出商品。字段缺失、多余字段、伪造版本或计算被篡改，都应拒绝整个结果。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="6. 源码下载后如何运行"></a>6. 源码下载后如何运行</h2>
+<p>源码包包含构建后的 <code>app.js</code>，解压后直接打开 <code>index.html</code> 即可运行。没有 API Key、CDN、登录或后端准备步骤。也可以在解压目录启动静态服务：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8093</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1
+</code></pre></div>
+<p>访问 <code>http://127.0.0.1:8093/</code>。这只是页面资源服务，不是模型或购物车业务 API。要修改 TypeScript，使用 Node.js 22 或更新版本：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+</code></pre></div>
+<p>首次安装需要下载锁定版本的依赖，已构建页面运行时不需要联网。<code>src/core.ts</code> 管理购物车版本、快照、建议计算和异步结果，<code>src/app.ts</code> 负责 Vue 交互，<code>test.ts</code> 保存可重复的离线场景。</p>
+<p>页面状态不持久化，刷新后回到初始演示数据。测试的是本地确定性工具和模拟响应，不是模型推荐质量、生产库存一致性或真实购物转化。</p>
+<h2 id="section-7"><a class="headerlink" href="#section-7" title="7. 测试要覆盖建议出现前后"></a>7. 测试要覆盖建议出现前后</h2>
+<p>最容易遗漏的场景，是建议已经成功显示，随后用户再编辑。这个时候没有“迟到响应”可以拦，但建议仍然要失效。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>应观察到的结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正常生成</td>
+<td>结果绑定当前版本，金额可重算</td>
+</tr>
+<tr>
+<td>生成期间修改数量</td>
+<td>立即过期，旧结果返回后不恢复有效</td>
+</tr>
+<tr>
+<td>已有建议后移除商品</td>
+<td>旧卡片失效，提示重新生成</td>
+</tr>
+<tr>
+<td>数量改成两件再改回一件</td>
+<td>版本继续增长，原请求仍过期</td>
+</tr>
+<tr>
+<td>同版本连续生成两次</td>
+<td>只接受最后一次任务</td>
+</tr>
+<tr>
+<td>旧任务晚到或失败</td>
+<td>不覆盖当前任务状态</td>
+</tr>
+<tr>
+<td>伪造 SKU、数量或金额</td>
+<td>拒绝结果，不显示部分卡片</td>
+</tr>
+<tr>
+<td>空购物车或已达门槛</td>
+<td>显示对应状态，不补造候选</td>
+</tr>
+</tbody>
+</table>
+<p>本次 25 个核心离线用例覆盖计算与状态边界，其中并发用例使用可控制完成顺序的 Promise，直接验证状态；浏览器再操作数量按钮和故障场景，核对用户真正看到的页面。电脑和手机都检查当前版本、过期提示、执行记录和重新生成入口，避免只让控制台断言正确。</p>
+<p>这些验证覆盖示例约定的行为，不能说明所有并发问题都解决了。不同标签页、服务器更新、商品变价和真实模型调用还需要单独测试。</p>
+<h2 id="section-8"><a class="headerlink" href="#section-8" title="8. 真实购物车应把最终核验放在哪里"></a>8. 真实购物车应把最终核验放在哪里</h2>
+<p>接入后端后，购物车版本应由可信服务维护。读到购物车和规则快照后，建议携带它们的版本；准备执行加入购物车等操作时，服务端重新检查身份、版本、价格、库存和业务条件，再决定是否允许写入。</p>
+<p>HTTP 条件请求可以帮助表达这种前提。例如资源使用强 ETag 时，修改请求可携带 <code>If-Match</code>，由服务端在不匹配时拒绝；相关行为见 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-Match">MDN If-Match 说明</a>。这只是后续接入方向，本示例没有实现 HTTP 条件写入。</p>
+<p>购物车之外，价格目录、活动规则和配送地区也可能独立变化。生产环境需要明确一个版本覆盖哪些依赖，或者为不同依赖携带独立版本。不能只检查购物车数量没动，就承诺建议仍然有效。</p>
+<p>对话上下文保留的是用户说过什么；业务版本标记的是结论基于哪一次状态。让建议携带依据，并在依据变化时明确失效，页面才能告诉用户下一步该重新计算什么。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F03%2Fagent-cart-state-versioning%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/02/agent-upload-prompt-injection-boundary/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">用户上传的文字能指挥 Agent 吗：做一个有边界的附件助手</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-03",
+  "scope": "offline deterministic cart tool and fixed mock model plan; no live model/business API/automatic cart action",
+  "node": "24.22.1",
+  "vue": "3.5.43",
+  "typescript": "5.7.2",
+  "esbuild": "0.28.2",
+  "typecheck": "passed",
+  "core_tests": {
+    "passed": 25,
+    "failed": 0
+  },
+  "build": "passed",
+  "app_js_sha256": "f94fc0ae5aff1cf9a7062a5905f8b747a4ebda2a0fb2e3266cbc9b13097a1336",
+  "browser": "root integration verification pending; not claimed here",
+  "live_model": "not_run",
+  "business_writes": "not_implemented",
+  "source_files": 13
+}

@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-04",
+  "prepared_on": "2026-11-03",
+  "publication": "not_attempted",
+  "scope": "pure browser offline deterministic summary + mock conversation and in-memory queue; no actual model/CRM/external messages/human connection",
+  "node": "24.22.1",
+  "vue": "3.5.43",
+  "typescript": "5.7.2",
+  "esbuild": "0.28.2",
+  "typecheck": "passed",
+  "core_tests": {
+    "passed": 32,
+    "failed": 0
+  },
+  "build": "passed",
+  "app_js_sha256": "6b154a3fa77a7e36a2e6725a1b5a3b4954cd3590656e2bf12594045b65d04c8b",
+  "browser": "root integration verification pending; not claimed here",
+  "live_model": "not_run",
+  "business_writes": "not_implemented",
+  "source_files": 13
+}

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Agent 解决不了时怎么办：做一个能接续上下文的人工转接入口 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 实现失败阈值、主动转人工、带来源的可编辑会话摘要、确认入队与失败恢复，区分草稿、演示队列和真人接入；附完整可运行离线示例。" name="description"/><link href="https://mengfeng.github.io/2026/11/04/agent-human-handoff-summary/" rel="canonical"/><meta content="Agent 解决不了时怎么办：做一个能接续上下文的人工转接入口" property="og:title"/><meta content="用 Vue 3 和 TypeScript 实现失败阈值、主动转人工、带来源的可编辑会话摘要、确认入队与失败恢复，区分草稿、演示队列和真人接入；附完整可运行离线示例。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/04/agent-human-handoff-summary/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-human-handoff-summary/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-04-agent-human-handoff-summary" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">Agent 解决不了时怎么办：做一个能接续上下文的人工转接入口</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/04/agent-human-handoff-summary/"><time datetime="2026-11-04T12:07:00.117860Z" itemprop="datePublished">2026-11-04</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><p>客服 Agent 连续两次查询物流失败，用户又把订单号说了一遍。页面如果继续弹出“请重试”，只是让人重复同一件事；如果直接显示“正在为你转人工”，却没有可接续的记录，下一位客服还得从头问起。</p>
+<p>这次做一个 Vue 3 + TypeScript 转接示例：保留当前会话，生成可编辑的问题摘要，用户确认后保存到本页演示队列。失败计数负责提示何时需要帮助，摘要负责带走上下文，回执负责说明事情实际走到了哪一步。</p>
+<figure class="tech-figure"><img alt="手绘机器人把带来源的会话摘要交给人工核对，通过确认关口后进入演示队列" height="1024" src="/images/agent-human-handoff-summary/cover.webp" width="1536"/></figure>
+<p><a href="/examples/agent-human-handoff-summary/">打开在线示例</a> · <a href="/examples/agent-human-handoff-summary/source.zip">下载完整源码 ZIP</a></p>
+<h2 id="section-1"><a class="headerlink" href="#section-1" title="1. 转人工是业务流程，不是一句回复"></a>1. 转人工是业务流程，不是一句回复</h2>
+<p>一个可靠的转接入口至少要回答三个问题：为什么转接、交给下一位处理什么、目前是否真的有人接手。</p>
+<p>本例用虚构订单 <code>DEMO-1001</code> 的物流查询贯穿流程。查询工具和模型响应都是固定模拟值，没有连接订单服务、客服平台或真实模型。用户点击按钮，才能推进对应步骤。</p>
+<p>我们把界面里的事实分开：可以建议转人工，但尚未生成摘要；可以生成摘要，但尚未确认保存；可以保存进演示队列，但仍没有真人接入。本页只实现到最后一种本地状态。</p>
+<p><a href="https://learn.microsoft.com/en-us/azure/bot-service/bot-service-design-pattern-handoff-human?view=azure-bot-service-4.0">Microsoft 的转接协议说明</a>区分了发起转接与后续状态通知，并允许转接携带会话记录。本文借用“发起不等于接管”的状态划分，不集成该 SDK 或任何客服平台。</p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="2. 什么时候建议转接，什么时候直接允许"></a>2. 什么时候建议转接，什么时候直接允许</h2>
+<p>示例记录连续失败次数：一次查询明确失败，计数加一；查询成功，计数归零。连续两次失败时，页面提示可以转人工，但不会自动创建工单。</p>
+<p>“两次”只是为了让演示可复现，不是通用客服策略。真实阈值要根据业务、工具错误类型和处理成本决定。缺少订单号也不一定属于工具失败，应先让用户补充，不能把所有异常都堆进同一个计数器。</p>
+<p>另一个入口是用户主动要求转人工。它不需要先经历两次失败，也不应该被助手的“再试一次”挡住。示例始终保留这个按钮。</p>
+<p>失败记录也不是处理结论。“查询未完成”不能变成“物流已丢失”；“用户希望人工核实”不能变成“已承诺赔付”。这里带走的是问题与尝试，结果仍然未知。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="3. 摘要应当让人继续处理"></a>3. 摘要应当让人继续处理</h2>
+<p>摘要分成三类内容：当前问题、希望人工处理的目标、已经尝试过什么。前两项允许用户修改，尝试记录和消息来源保留为可核对事实。</p>
+<p>初始问题来自实际演示会话中的用户消息，例如“我想查询演示订单 DEMO-1001 的物流进度。”查询失败会追加工具事件，摘要展示对应消息 ID 与原文，下一位处理者可以知道哪些步骤已经做过。</p>
+<p>本例的固定模拟响应按原顺序返回当前会话的全部消息引用，不自由生成赔偿承诺、处理结果或新订单信息。程序校验消息 ID、原文和会话版本，再从可信记录构造摘要。这是可复现的抽取式草稿：问题取首条用户原文，期望使用固定提示，尝试记录保留原始会话，不做语义压缩。用户后续补写的文字标为人工编辑，不再假装它是模型已经核实的事实。</p>
+<div class="tech-code"><div class="tech-code-label">typescript</div><pre><code class="language-typescript"><span class="c1">// 边界示意；完整校验见 src/core.ts</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">copyConversation</span><span class="p">(</span><span class="nx">currentConversation</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">rawSelection</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">selectMessages</span><span class="p">(</span><span class="nx">source</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">checked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">validateSelection</span><span class="p">(</span><span class="nx">rawSelection</span><span class="p">,</span><span class="w"> </span><span class="nx">source</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">draft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">buildEditableSummary</span><span class="p">(</span><span class="nx">checked</span><span class="p">,</span><span class="w"> </span><span class="nx">source</span><span class="p">);</span>
+<span class="c1">// 到这里仅形成草稿，不创建转接记录。</span>
+</code></pre></div>
+<p>来源不存在、引用被改写、同一消息重复引用或字段结构不符时，整份摘要应拒绝。即便来源完全匹配，也只说明内容来自当前记录，不能证明用户说法或工具结果在现实中一定正确。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="4. 会话更新后，旧摘要不能悄悄提交"></a>4. 会话更新后，旧摘要不能悄悄提交</h2>
+<p>摘要生成需要时间。用户可能在等待时追加消息，工具也可能刚好完成查询。此时旧摘要即使最后才返回，也不能覆盖新会话。</p>
+<p>生成任务同时绑定请求序号与会话版本。较早请求不能覆盖较晚请求，旧会话摘要也不能被当成当前摘要。生成成功后，如果会话继续变化，原摘要要失效并要求重新生成。</p>
+<p>这和购物车版本篇中的问题相似：对话文本本身也是会变化的业务依据。不能因为摘要看起来通顺，就忽略它究竟包含了哪些消息。</p>
+<p>用户编辑草稿时，页面始终以当前编辑状态为准。示例使用显式 <code>value</code> 和输入事件同步 Vue 状态；这与<a href="https://vuejs.org/guide/essentials/forms.html">Vue 表单绑定文档</a>描述的输入机制一致。摘要和原文按文字显示，不作为 HTML、模板或操作链接执行。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="5. 确认的是编辑后的那一份"></a>5. 确认的是编辑后的那一份</h2>
+<p>点击确认前，用户能够查看问题、目标、尝试记录和来源。保存时复制当前编辑稿，关联会话版本及本次操作标识；保存期间暂时锁定编辑和会话变更，防止回执对应的内容与用户看到的内容不一致。</p>
+<p>操作标识在重试时复用。同一个确认快照重复到达内存队列，不应该创建两条记录；一旦用户修改草稿，则需要新的确认快照和操作标识。模型本身没有执行保存的入口。</p>
+<p>确认按钮等待保存适配器的回执，并检查回执结构及其与当前快照的对应关系。不能看到一个任意的 <code>success: true</code> 就把页面改为完成。</p>
+<p>如果队列实际写入后回执却被篡改，页面无法确认结果，应显示“结果待核对”，保留原操作标识和确认快照，并继续锁定编辑。核对重试只针对同一个操作；一次后续失败不能把未知结果改称“确定未保存”。示例提供错误回执故障来验证这个边界。</p>
+<p>保存成功后的文案是“已进入本页演示队列，未接通真人”。队列行显示保存时的编辑内容，方便直接核对有没有丢掉用户修改。没有实际客服接管事件，就不出现“客服已接入”。</p>
+<p>本例队列保存在当前页面内存，刷新即清除，不具备服务端可靠性或跨标签页去重。未来接入真实工单服务时，需要在服务端处理权限、持久化和幂等，不能把浏览器按钮防抖当成最终保障。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="6. 保存失败，用户的修改要留下来"></a>6. 保存失败，用户的修改要留下来</h2>
+<p>故障模式模拟“写入前明确失败”：队列不新增记录，页面保留已经编辑的摘要，解除锁定，允许重试。错误文案说明尚未保存，不能同时展示一个容易被误认成转接成功的绿色提示。</p>
+<p>这个演示没有模拟“服务端写成功但响应丢失”。真实接口遇到超时，结果可能未知，应按操作标识查询确认，不能因为没收到响应就断言没有保存。相关机制可以沿用本系列的幂等与未知结果篇。</p>
+<p>另一个恢复入口是复制摘要。只有 <code>navigator.clipboard.writeText()</code> 的 Promise 成功后，才显示已复制；权限不足或浏览器不支持时，保留可选中的完整文本，供用户手动复制。<a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText">MDN 的说明</a>列出了安全上下文与权限限制。</p>
+<p>复制只是把文字交给用户，不会保存工单，也不会对外发送消息。我们不读取用户剪贴板，不自动打开客服软件，也不把复制成功当成转接成功。</p>
+<h2 id="section-7"><a class="headerlink" href="#section-7" title="7. 运行示例并验证关键路径"></a>7. 运行示例并验证关键路径</h2>
+<p>下载源码后，直接打开 <code>index.html</code> 即可运行构建好的 Vue 页面，无需密钥或外部 CDN。也可以在解压目录启动静态服务：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8094</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1
+</code></pre></div>
+<p>访问 <code>http://127.0.0.1:8094/</code>。要修改 TypeScript，使用 Node.js 22 或更新版本，执行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+</code></pre></div>
+<p>首次安装需要下载锁定依赖，已构建页面运行时不调用模型或业务接口。<code>src/core.ts</code> 负责会话、摘要校验与转接控制，<code>src/app.ts</code> 负责 Vue 页面和复制降级，<code>test.ts</code> 保存离线断言。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>应观察到的结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>连续两次查询失败</td>
+<td>建议转人工，尚未自动入队</td>
+</tr>
+<tr>
+<td>失败后查询成功</td>
+<td>连续失败数归零</td>
+</tr>
+<tr>
+<td>用户直接要求人工</td>
+<td>无须等待失败阈值即可准备摘要</td>
+</tr>
+<tr>
+<td>伪造消息 ID 或原文</td>
+<td>拒绝摘要，不提供可确认结果</td>
+</tr>
+<tr>
+<td>生成期间会话变化</td>
+<td>旧摘要不覆盖新状态</td>
+</tr>
+<tr>
+<td>编辑后确认保存</td>
+<td>队列内容与确认快照完全一致</td>
+</tr>
+<tr>
+<td>保存前明确失败</td>
+<td>保留编辑稿，队列不新增</td>
+</tr>
+<tr>
+<td>重复确认同一快照</td>
+<td>不生成重复记录</td>
+</tr>
+<tr>
+<td>复制权限被拒绝</td>
+<td>提供手动复制文本，不声称已保存</td>
+</tr>
+</tbody>
+</table>
+<p>本次 32 个核心离线测试与浏览器检查通过。测试结论限制在固定模拟响应、内存队列和这些状态约束。它没有测量真实模型摘要质量，没有真实工单受理，也没有真人端会话验证。</p>
+<h2 id="section-8"><a class="headerlink" href="#section-8" title="8. 接入真实客服平台还差哪些步骤"></a>8. 接入真实客服平台还差哪些步骤</h2>
+<p>真实转接服务应当根据当前账号和会话权限建立请求，而不是相信模型传来的用户身份。提交时只携带人工处理所需的上下文，明确区分用户陈述、工具结果和人工编辑内容，避免把全部历史和敏感数据不加选择地发送出去。</p>
+<p>服务返回排队标识后，页面可以显示已受理或排队。之后再由可信状态通知区分真人接入、处理结束和转接失败；断线重连需要查询当前状态，不能靠本地计时器宣布“客服已接通”。</p>
+<p>如果用户改变问题或取消排队，还需要与平台约定更新、取消和恢复方式。摘要版本、会话 ID、操作标识与受理记录应能关联起来，才能查清某次转接带走了哪一份内容。</p>
+<p>Agent 无法继续时，好的出口是把问题、已做尝试和下一步意图交代清楚，让用户保有修改和确认的机会。页面显示的状态，则应当始终对应已经获得的证据。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F04%2Fagent-human-handoff-summary%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/03/agent-cart-state-versioning/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">对话记住了，购物车却变了：处理 Agent 与页面状态不同步</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

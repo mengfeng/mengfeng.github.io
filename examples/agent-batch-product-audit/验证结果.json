@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-05",
+  "publication": "not_attempted",
+  "scope": "offline_fixed_agent_plan_read_only_rules_fictional_catalog_no_model_no_network_no_business_write",
+  "typecheck": "passed",
+  "core_tests": {
+    "passed": 37,
+    "failed": 0
+  },
+  "build": "passed",
+  "app_js_sha256": "44f88dde66f3083fa754605d6f28aea186b27bae5787f8cf6741634cd84aa3f3",
+  "browser": "root integration verification pending",
+  "vue": "3.5.43",
+  "typescript": "5.7.2",
+  "esbuild": "0.28.2",
+  "node": "24.22.1",
+  "max_concurrent": 3,
+  "max_attempts_per_product": 2,
+  "max_calls_per_batch": 20,
+  "normal_initial_calls": 10,
+  "normal_after_retry_calls": 12,
+  "real_model_calls": 0,
+  "business_writes": 0
+}

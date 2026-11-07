@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>商品没搜到，Agent 该怎么调整条件：做一个有边界的筛选建议 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 与 TypeScript 演示零结果后的筛选建议、锁定条件、版本校验和确认后只读重查。" name="description"/><link href="https://mengfeng.github.io/2026/11/07/agent-filter-relaxation/" rel="canonical"/><meta content="商品没搜到，Agent 该怎么调整条件：做一个有边界的筛选建议" property="og:title"/><meta content="用 Vue 3 与 TypeScript 演示零结果后的筛选建议、锁定条件、版本校验和确认后只读重查。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/07/agent-filter-relaxation/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-filter-relaxation/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-07-agent-filter-relaxation" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">商品没搜到，Agent 该怎么调整条件：做一个有边界的筛选建议</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/07/agent-filter-relaxation/"><time datetime="2026-11-07T12:33:45.442468Z" itemprop="datePublished">2026-11-07</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="搜不到商品，不代表可以替用户改主意"></a>搜不到商品，不代表可以替用户改主意</h2>
+<p>用户在商城里搜索“蓝色耳机、300 元以内、必须有货”。结果为 0 件。一个看似积极的 Agent 可能直接去掉“蓝色”，再把缺货商品塞进结果，最后说“帮你找到了”。页面确实出现了卡片，用户的要求却被悄悄改写了。</p>
+<p>更可靠的交互是把零结果拆成两步：先确认只读查询确实返回空列表，再让 Agent <strong>提出一项可选条件的调整建议</strong>。页面展示原条件与新条件，用户明确确认后才重新查询。分类、账号权限、是否有货等业务硬条件由应用锁定，模型的建议不能修改。本文用 Vue 3 + TypeScript 实现这个最小流程；数据和“模型响应”全部固定在本地。</p>
+<p>示例起始筛选是“耳机 / 蓝色 / 300 元以内 / 必须有货”。演示目录有一副 399 元的蓝色耳机、一副 269 元的黑色耳机，还有一副 259 元但缺货的蓝色耳机。严格查询为 0 件。安全建议把价格上限改到 400 元，用户确认后才出现第一件；企图取消“必须有货”的建议会被拒绝。</p>
+<figure class="tech-figure"><img alt="手绘机器人把可选条件的调整交给用户确认，锁定条件保持不动" height="1024" src="/images/agent-filter-relaxation/flow.webp" width="1536"/></figure>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="先给每个条件划清权限"></a>先给每个条件划清权限</h2>
+<p>这不是让模型“自由探索更多结果”。筛选条件有不同来源，应用需要先写清楚哪些可以讨论、哪些不能碰：</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>示例值</th>
+<th>处理方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商品分类</td>
+<td>耳机</td>
+<td>锁定；示例只查询耳机目录</td>
+</tr>
+<tr>
+<td>必须有货</td>
+<td>是</td>
+<td>锁定；缺货商品不能作为符合条件的结果</td>
+</tr>
+<tr>
+<td>颜色</td>
+<td>蓝色</td>
+<td>可建议改为不限，但一次只改一项</td>
+</tr>
+<tr>
+<td>价格上限</td>
+<td>300 元</td>
+<td>可建议提高，演示上限为 500 元</td>
+</tr>
+</tbody>
+</table>
+<p>这些只是本例的产品规则。真实商城里，价格上限可能是用户绝不愿放宽的硬条件，运费、品牌或配送时效也可能属于硬条件。不能从“模型觉得可放宽”推断用户愿意放宽。可调整范围应由页面和服务端协议定义，再让模型在范围内提出候选。</p>
+<p>只读查询工具接收当前筛选，返回 <code>found</code>、<code>empty</code> 或 <code>timeout</code>。空列表和超时必须分开：超时表示<strong>不知道有没有结果</strong>，不能触发“放宽后再搜”的流程。示例中的 <code>searchProducts</code> 只过滤一个虚构数组，没有网络请求；<code>toolCalls</code> 只统计页面对这个本地函数的调用次数。它不是生产搜索服务，也没有真实库存。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="模型建议只是一份候选数据"></a>模型建议只是一份候选数据</h2>
+<p>在真实工具调用流程中，模型可以给出工具名和参数，但应用负责执行工具，并处理其结果。<a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI 的 Function Calling 文档</a>把“接收调用、由应用执行、返回结果”分成明确步骤。本例没有调用该 API，只把这条职责边界缩成一个固定的 <code>mockModelProposal</code>：它返回看似由模型生成的对象；应用先校验，绝不直接执行。</p>
+<p>建议对象包含原筛选版本、单项变更和理由。关键校验如下，完整实现见下载源码的 <code>src/core.ts</code>：</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">raw</span><span class="p">.</span><span class="nx">changes</span><span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">keys</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s1">'每次只能调整一项可选条件。'</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">keys</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">raw</span><span class="p">.</span><span class="nx">changes</span><span class="p">.</span><span class="nx">maxPrice</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">reason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">raw</span><span class="p">.</span><span class="nx">reason</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">key</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'maxPrice'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'number'</span>
+<span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">Number</span><span class="p">.</span><span class="nx">isInteger</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nx">current</span><span class="p">.</span><span class="nx">maxPrice</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">500</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">next</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">current</span><span class="p">,</span><span class="w"> </span><span class="nx">maxPrice</span><span class="o">:</span><span class="w"> </span><span class="kt">value</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nx">changed</span><span class="o">:</span><span class="w"> </span><span class="s1">'maxPrice'</span><span class="p">,</span><span class="w"> </span><span class="nx">reason</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s1">'建议试图修改锁定条件或使用未知字段，已拒绝。'</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>实际代码还核对顶层字段集合、理由长度、查询是否确认为零结果、建议版本是否匹配当前筛选。<code>inStock: false</code>、同时修改颜色和价格、把上限提高到 900 元，都会失败。页面不会从失败对象里提取部分字段继续运行，避免“忽略非法字段后照样执行”造成含糊行为。</p>
+<p>这里的 <code>versionOf</code> 是根据固定筛选字段拼出的演示版本串，作用是发现页面状态变化后的过期建议。它不是安全凭证。真实系统如果涉及用户身份、库存或价格，应在服务端依据当前会话和最新数据重新校验，不能信任前端版本串，更不能把模型返回的 <code>inStock</code> 当成授权。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="Vue 页面把“建议”和“执行”分开"></a>Vue 页面把“建议”和“执行”分开</h2>
+<p>页面上有三步：查询演示商品、生成并校验建议、确认调整并重新查询。第二步只展示差异，不更改 <code>filters</code>，也不再次调用搜索。第三步才把校验过的 <code>next</code> 条件作为当前筛选，并执行只读查询。核心状态分别是 <code>filters</code>、<code>lastSearch</code> 和 <code>check</code>，没有把一段模型文案当成页面状态。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">suggest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">lastSearch</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="k">return</span>
+<span class="w">  </span><span class="nx">check</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">validateProposal</span><span class="p">(</span>
+<span class="w">    </span><span class="nx">mockModelProposal</span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">filters</span><span class="p">.</span><span class="nx">value</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">filters</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">lastSearch</span><span class="p">.</span><span class="nx">value</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">confirm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">check</span><span class="p">.</span><span class="nx">value</span><span class="o">?</span><span class="p">.</span><span class="nx">ok</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">lastSearch</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="k">return</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">lastSearch</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">version</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">versionOf</span><span class="p">(</span><span class="nx">filters</span><span class="p">.</span><span class="nx">value</span><span class="p">))</span><span class="w"> </span><span class="k">return</span>
+<span class="w">  </span><span class="nx">filters</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">check</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">next</span>
+<span class="w">  </span><span class="nx">runSearch</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a href="https://vuejs.org/guide/typescript/composition-api">Vue 官方 TypeScript Composition API 指南</a>说明了 <code>ref()</code> 的类型推断；示例据此保存当前筛选和结果。模板用文本插值渲染建议理由，不把建议作为 HTML 插入页面。对页面用户来说，重要的是能看到“价格 ≤ 300 → 价格 ≤ 400”，并且“必须有货”仍带锁定标记。页面布局在手机宽度下改成单列，差异和确认按钮仍在同一建议区域。</p>
+<p>这个设计还有一个容易漏掉的时序问题：假设 Agent 生成建议期间用户改了筛选，旧建议不能继续套用。示例比较 <code>baseVersion</code>、最后一次查询的版本和当前筛选版本；不一致就拒绝，要求重新查询。示例没有真正的并发模型请求，但这条校验同样适用于异步返回晚到的场景。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="把失败路径也放进可运行示例"></a>把失败路径也放进可运行示例</h2>
+<p><a href="/examples/agent-filter-relaxation/">打开在线示例</a>或<a href="/examples/agent-filter-relaxation/source.zip">下载完整源码 ZIP</a>。解压后可直接打开 <code>index.html</code>；构建产物已打包 Vue，不依赖 CDN 或密钥。也可以在解压目录运行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8097</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1
+</code></pre></div>
+<p>随后打开 <code>http://127.0.0.1:8097/</code>。想修改 TypeScript 源码，可用 Node.js 22 或更高版本运行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+</code></pre></div>
+<p>首次 <code>npm ci</code> 需要访问 npm 注册表；已构建的网页运行不需要网络。页面中可按下面四条路径验收：</p>
+<ol>
+<li>初始查询显示 0 件；选“可接受”候选，生成建议后旧筛选不变；点击确认后才显示演示蓝色耳机 A。</li>
+<li>重置后选“危险”候选。它试图把 <code>inStock</code> 改为 <code>false</code>，校验拒绝，页面仍标注“必须有货”，查询次数不增加。</li>
+<li>重置后选“过期”候选。它带旧版筛选标识，页面拒绝应用。</li>
+<li>勾选“模拟只读查询超时”再查询。页面显示结果未知，不能把超时当成零结果生成建议。</li>
+</ol>
+<p>此外，离线断言检查了两项同时修改、价格超过演示上限、旧查询结果被套到新筛选等情况。<strong>这些验证只覆盖固定样本和本地函数</strong>。页面没有真实模型调用、真实商品服务、付款、订单写入或外部消息；测试通过也不意味着生产 Agent 的建议质量已被评估。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="接真实 Agent 时要保留哪些边界"></a>接真实 Agent 时要保留哪些边界</h2>
+<p>可以把模型输出限制为结构化候选，让它只提供 <code>baseVersion</code>、一项 <code>changes</code> 和 <code>reason</code>。但“结构化”解决的是格式约束，不能替代业务授权。<a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI 的 Structured Outputs 文档</a>说明了结构化输出与工具调用各自的用途；应用仍要在执行前检查字段、权限和当前状态。</p>
+<p>真实查询还需要记录筛选来源、库存数据时间、工具超时与失败原因。如果推荐结果依赖第三方库存，页面要说明其时效性；如果用户确认后库存变了，服务端应以新查询结果为准，而不是复用建议生成时的旧卡片。多标签页和连续点击也要纳入真实接入设计：一次确认应只指向生成它的那份建议，而不是“当前页面最后一份建议”。服务端可以给建议分配短期 ID，保存原筛选快照和过期时间；确认时核对登录会话、建议版本和当前筛选，再执行新的只读查询。过期或版本不一致时让用户重新查看条件。本文没有服务端，因此只演示前端的版本比对，不能把它当成跨设备或跨会话的并发控制。</p>
+<p>对于付款、下单等写操作，建议与确认只是前置交互，还需要服务端权限、幂等和结果核对。本文故意停在<strong>只读搜索</strong>：先让“改了什么、谁确认的、依据哪次查询”变得可见，再决定是否扩展到更复杂的业务操作。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F07%2Fagent-filter-relaxation%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%95%86%E5%93%81%E6%90%9C%E7%B4%A2/" rel="tag">商品搜索</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/06/agent-business-replay-evaluation/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">发布之前先回放：给前端业务 Agent 建一套最小评测</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

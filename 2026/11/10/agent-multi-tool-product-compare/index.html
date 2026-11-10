@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>买哪款更合适？让 Agent 用商品、库存和优惠三种证据做比较 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 与 TypeScript 演示多工具商品比较：部分失败保留已知字段，过期与伪造来源拒绝推荐。" name="description"/><link href="https://mengfeng.github.io/2026/11/10/agent-multi-tool-product-compare/" rel="canonical"/><meta content="买哪款更合适？让 Agent 用商品、库存和优惠三种证据做比较" property="og:title"/><meta content="用 Vue 3 与 TypeScript 演示多工具商品比较：部分失败保留已知字段，过期与伪造来源拒绝推荐。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/10/agent-multi-tool-product-compare/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-multi-tool-product-compare/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-10-agent-multi-tool-product-compare" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">买哪款更合适？让 Agent 用商品、库存和优惠三种证据做比较</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/10/agent-multi-tool-product-compare/"><time datetime="2026-11-10T12:23:08.203217Z" itemprop="datePublished">2026-11-10</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="比价问题为什么需要三种工具"></a>比价问题为什么需要三种工具</h2>
+<p>用户在商品详情页勾选两款耳机，问 Agent：“哪款更适合我？”页面很容易把这件事简化成让模型总结商品文案。实际比较至少涉及三种会变化的事实：商品资料、当前库存和可用优惠。资料说 A 续航更长，不代表它现在有货；标价低，也不代表优惠后价格更低。把三份结果混成一段流畅文案，读者很难看出哪句有依据、哪句只是猜测。</p>
+<p>这篇用 Vue 3 + TypeScript 做一个可运行的最小实验：选定两件<strong>虚构商品</strong>，并行读取三个本地只读工具，按字段保留来源，再核对固定的模拟 Agent 回答。默认样本中，A 标价 399 元、续航 32 小时、重 220 克，优惠后 359 元；B 标价 429 元、续航 25 小时、重 185 克，优惠后 329 元。页面可以说“B 在这份演示数据里优惠后更低，A 续航更长”，但不替用户决定“最适合”。</p>
+<p>所有商品、库存、折扣与时间均为演示数据。演示时钟固定在 <strong>2026-11-10 20:00（北京时间）</strong>。示例没有真实模型调用、商品接口、付款或下单操作；<code>mockCandidate()</code> 返回预置对象。后端的账号权限、优惠适用性和最终结算价格也不在这个静态演示里得到验证。</p>
+<figure class="tech-figure"><img alt="手绘机器人把商品资料、库存和优惠的证据线连到比较表" height="1024" src="/images/agent-multi-tool-product-compare/flow.webp" width="1536"/></figure>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="用户交互：先收集，再解释"></a>用户交互：先收集，再解释</h2>
+<p>页面把交互拆成两步。第一步点“查询三个只读工具”，分别显示 <code>catalog</code>、<code>stock</code>、<code>offer</code> 的结果或错误，生成本轮快照。第二步点“验证模拟回答”，只有三项工具都成功、来源仍属于本轮且没有过期，才接受候选句子。查询后若切换商品选择版本，旧快照仍可看，但比较状态变为“证据已过期”，需要重新查询。</p>
+<p>工具返回的不是一串可直接显示的文字，而是有结构的数据：<code>selectionKey</code> 绑定商品选择版本；<code>sourceId</code> 标明本轮工具来源；<code>checkedAt</code> 记录查询时刻；金额以整数分保存。三分钟的新鲜度只用于这个固定样本，不是建议照搬的业务规则。真正的商品系统需要后端按商品、地区、用户资格和活动规则定义有效期。</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>本例提供的字段</th>
+<th>失败后还能说什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>catalog</code></td>
+<td>名称、续航、重量、标价</td>
+<td>没有资料就不生成比较表</td>
+</tr>
+<tr>
+<td><code>stock</code></td>
+<td>两件商品是否有货</td>
+<td>可以保留资料与价格，不说“现货可买”</td>
+</tr>
+<tr>
+<td><code>offer</code></td>
+<td>每件商品的演示优惠额</td>
+<td>可以保留资料与库存，不比较优惠后价格</td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled">MDN 对 <code>Promise.allSettled()</code> 的说明</a>指出，它会等待输入的每个 Promise 完成或失败，再返回各自状态。本例让三个查询同时开始，并在一个工具失败时继续展示其余工具的已知结果。这里的“并行”是浏览器异步任务并发启动，不意味着 CPU 并行，也不意味着生产环境可以无限制发请求。商品比较只有三项固定工具，生产中还应考虑超时、并发上限和服务端限流。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">names</span><span class="o">:</span><span class="w"> </span><span class="kt">readonly</span><span class="w"> </span><span class="nx">ToolName</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s1">'catalog'</span><span class="p">,</span><span class="w"> </span><span class="s1">'stock'</span><span class="p">,</span><span class="w"> </span><span class="s1">'offer'</span><span class="p">]</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">settled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">allSettled</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">names</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">name</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">readTool</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">selection</span><span class="p">,</span><span class="w"> </span><span class="nx">scenario</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">outcomes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">settled</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span><span class="w"> </span><span class="nx">index</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'fulfilled'</span>
+<span class="w">  </span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">tool</span><span class="o">:</span><span class="w"> </span><span class="kt">names</span><span class="p">[</span><span class="nx">index</span><span class="p">],</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'ok'</span><span class="p">,</span><span class="w"> </span><span class="nx">record</span><span class="o">:</span><span class="w"> </span><span class="kt">item.value</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">tool</span><span class="o">:</span><span class="w"> </span><span class="kt">names</span><span class="p">[</span><span class="nx">index</span><span class="p">],</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'error'</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">'查询失败'</span><span class="w"> </span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>这段是核心流程的缩写，完整的错误处理和类型定义见源码包 <code>src/core.ts</code>。如果库存超时，页面仍显示资料和优惠价，却将库存列写成“未知”；如果优惠超时，价格列写成“未知”，不拿标价冒充到手价。<strong>部分成功不是完整推荐。</strong></p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="比较表先于模型文案"></a>比较表先于模型文案</h2>
+<p><code>compare()</code> 是纯函数，只接收工具快照与当前选择。它先检查快照键，再检查每份记录的查询时间和来源键。任何记录过期，整轮比较要求重查；单项工具超时，则标记为“部分证据可用”并保留可验证的单元格。这样把“缺了哪项证据”留在表格里，而不让一句“抱歉，暂时无法回答”吞掉已知信息。</p>
+<p>例如本例的完整路径：A 优惠后 <code>39900 - 4000 = 35900</code> 分；B 优惠后 <code>42900 - 10000 = 32900</code> 分。整数分计算避免金额显示层的浮点误差。比较表还单独保留续航和重量，用户可以按自己的偏好看。示例没有把不同指标揉成一个神秘总分，因为不同用户对价格、续航、重量的权重不同。真实系统还要核对优惠门槛、适用人群、互斥活动和地址库存，不能直接把这个演示折扣当成真实报价。</p>
+<p>候选 Agent 回答仅在 <code>result.status === 'ready'</code> 时进入核验。<code>validateCandidate()</code> 检查候选对象的结构、选择键、<strong>逐项来源 ID</strong> 和允许的事实结论。勾选“模拟回答伪造来源”后，候选会加上不存在的 <code>stock:invented</code>；页面拒绝这句话，仍展示已核实的比较表。Vue 模板用文本插值渲染消息，不把模型输出当 HTML。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'ready'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accepted</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">'比较证据不完整，只展示已核实字段。'</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">key</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">snapshot</span><span class="p">.</span><span class="nx">key</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">snapshot</span><span class="p">.</span><span class="nx">key</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">selectionKey</span><span class="p">(</span><span class="nx">current</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accepted</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">'商品选择或版本已变化。'</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">sourceIds</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">    </span><span class="nx">candidate</span><span class="p">.</span><span class="nx">sourceIds</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">sourceIds</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">||</span>
+<span class="w">    </span><span class="nx">candidate</span><span class="p">.</span><span class="nx">sourceIds</span><span class="p">.</span><span class="nx">some</span><span class="p">((</span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">index</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">sourceIds</span><span class="p">[</span><span class="nx">index</span><span class="p">]))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">accepted</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s1">'模拟回答引用了错误或伪造的来源。'</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>这是一道<strong>前端展示约束</strong>，不是可信的安全边界：用户可以改动浏览器代码，模型也不应该被允许直接指定价格。生产中应由可信后端完成身份授权、取数和最终价格核算；前端只呈现带来源、时间和状态的结果。<a href="https://vuejs.org/guide/typescript/composition-api">Vue 官方 TypeScript Composition API 指南</a>给出了 <code>ref()</code> 和 <code>computed()</code> 的类型用法；示例把快照保存为 <code>ref&lt;Snapshot | null&gt;</code>，将比较结果写成计算属性。表格行使用稳定的商品 ID 作为 <code>v-for</code> 的 <code>key</code>，符合 <a href="https://vuejs.org/guide/essentials/list">Vue 列表渲染指南</a>的建议。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="运行示例并验证边界"></a>运行示例并验证边界</h2>
+<p><a href="/examples/agent-multi-tool-product-compare/">打开静态演示</a>或<a href="/examples/agent-multi-tool-product-compare/source.zip">下载完整源码 ZIP</a>。ZIP 内含构建好的 <code>index.html</code>、<code>app.js</code> 和 <code>style.css</code>。解压进入目录后运行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8100</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1
+</code></pre></div>
+<p>浏览器打开 <code>http://127.0.0.1:8100/</code>。这个页面不需要模型密钥。若要修改 TypeScript 源码，使用 Node.js 22 或更高版本，首次安装依赖需要访问 npm 注册表：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+</code></pre></div>
+<p>默认场景先查询再验证，应接受“B 优惠后更低；A 续航更长”，同时能在表格中找到价格和续航证据。切到“库存查询超时”，库存列必须变成“未知”，候选回答不能被接受；切到“优惠查询超时”，优惠后价必须变成“未知”。切到“工具结果过期”，比较表停止使用旧数据。再勾选“模拟回答伪造来源”，应看到拒绝原因。最后，查询后把商品选择版本从 1 改为 2，旧结果不能继续背书。</p>
+<p>本地测试覆盖了完整比较、两个单工具失败、过期、版本变化、伪造来源、错误结构和错误结论等固定场景。<strong>这些是离线断言和浏览器交互检查，不是模型评测或线上业务验收。</strong> 接入真实服务时，还需要采集每次工具调用的权限、请求 ID、错误码与规则版本，并在购买前由后端再次核对库存和价格。Agent 的价值是把多份证据解释清楚，让用户知道哪里确定、哪里未知；最终购买由用户和业务系统完成。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F10%2Fagent-multi-tool-product-compare%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%95%86%E5%93%81%E6%AF%94%E8%BE%83/" rel="tag">商品比较</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/09/agent-coupon-eligibility-explanation/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">这张券为什么不能用？让 Agent 按购物车和规则解释资格</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

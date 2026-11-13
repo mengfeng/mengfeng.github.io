@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>商品上架了，为什么列表里看不到？让 Agent 核对三道展示关口 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 与 TypeScript 演示只读商品展示排查：分开核对上架记录、展示规则和页面筛选，处理超时、冲突与过期证据。" name="description"/><link href="https://mengfeng.github.io/2026/11/13/agent-product-visibility-diagnosis/" rel="canonical"/><meta content="商品上架了，为什么列表里看不到？让 Agent 核对三道展示关口" property="og:title"/><meta content="用 Vue 3 与 TypeScript 演示只读商品展示排查：分开核对上架记录、展示规则和页面筛选，处理超时、冲突与过期证据。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/13/agent-product-visibility-diagnosis/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-product-visibility-diagnosis/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-13-agent-product-visibility-diagnosis" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">商品上架了，为什么列表里看不到？让 Agent 核对三道展示关口</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/13/agent-product-visibility-diagnosis/"><time datetime="2026-11-13T12:18:01.584452Z" itemprop="datePublished">2026-11-13</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="“已上架”为什么还不能回答“用户看得见”"></a>“已上架”为什么还不能回答“用户看得见”</h2>
+<p>运营同学在后台看到一件商品的状态是“已上架”，但前台列表里没有它，于是问 Agent：“商品去哪了？”如果助手只查商品目录，就很容易回答“已经上架，请刷新页面”。这个回答跳过了至少两道关口：店铺的展示规则是否放行，以及用户当前选的分类是否会把它过滤掉。更进一步，即使这三项条件都满足，搜索索引和缓存也可能尚未同步。<strong>上架是一个证据，可见是另一个结论。</strong></p>
+<p>这篇做一个 Vue 3 + TypeScript 的最小演示：用户选一个故障场景和分类筛选，点击“查询并核对”；页面并列展示商品目录和展示规则的只读结果，Agent 只根据本轮证据给出阶段性解释。虚构商品编号是 <code>MUG-DEMO-17</code>，目录版本为 <code>v4</code>，演示时钟固定为 <strong>2026-11-13 20:00（北京时间）</strong>。所有记录、工具错误和 <code>mockCandidate()</code> 都是预设样本，没有真实模型调用，也不连接商家后台。</p>
+<figure class="tech-figure"><img alt="手绘机器人检查商品上架、展示规则与筛选条件的三道关口" height="1024" src="/images/agent-product-visibility-diagnosis/flow.webp" width="1536"/></figure>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="页面交互：把三道关口放在同一屏"></a>页面交互：把三道关口放在同一屏</h2>
+<p>页面顶部有“商品与规则场景”和“页面分类筛选”两个选择框。默认场景里，目录记录为已上架，展示规则启用，页面选择“全部分类”，因此回答是“满足本轮展示条件”。把分类改成“户外”，同一件杯具会被当前筛选排除。切成“商品仍是草稿”时，只需要目录记录就能解释尚未上架；展示规则结果不作为该结论的引用。</p>
+<p>两个本地只读工具同时启动，再用 <code>Promise.allSettled()</code> 分别收集完成或失败状态。<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled">MDN 文档</a>说明，它等待所有输入 Promise 结束，并按输入顺序返回各自的结果。这样规则查询超时不会抹掉已查到的上架记录；页面仍可说“已上架”，但必须把“展示状态”标为未知。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">catalog</span><span class="p">,</span><span class="w"> </span><span class="nx">rule</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">allSettled</span><span class="p">([</span>
+<span class="w">  </span><span class="nx">readCatalog</span><span class="p">(</span><span class="nx">scenario</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">readRule</span><span class="p">(</span><span class="nx">scenario</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">catalog</span><span class="o">:</span><span class="w"> </span><span class="kt">catalog.status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'fulfilled'</span>
+<span class="w">    </span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">catalog.value</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">reason</span><span class="o">:</span><span class="w"> </span><span class="s1">'not_found'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">rule</span><span class="o">:</span><span class="w"> </span><span class="kt">rule.status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'fulfilled'</span>
+<span class="w">    </span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">rule.value</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">reason</span><span class="o">:</span><span class="w"> </span><span class="s1">'timeout'</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>这里的 <code>not_found</code> 和 <code>timeout</code> 只来自固定演示场景，不能照抄为生产错误映射。真实接口须区分未找到、权限拒绝、服务故障和超时；用户或运营人员的商品访问权限也必须在服务端验证。目录记录查不到时，本例不展示独立返回的展示规则，避免把没有核实归属的规则贴在当前商品上。</p>
+<table>
+<thead>
+<tr>
+<th>证据</th>
+<th>本例能说明</th>
+<th>单独不能说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>catalog.read</code></td>
+<td>商品是否为草稿、目录版本、分类</td>
+<td>展示规则已放行、搜索已收录</td>
+</tr>
+<tr>
+<td><code>visibility.read</code></td>
+<td>演示展示开关、关联目录版本</td>
+<td>用户当前筛选命中、缓存已同步</td>
+</tr>
+<tr>
+<td>页面筛选快照</td>
+<td>当前选择“全部/杯具/户外”</td>
+<td>后端实际搜索结果、其他用户看到的内容</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="核对版本、时间和筛选快照"></a>核对版本、时间和筛选快照</h2>
+<p>结果组合前先比对商品 <code>sku</code> 和目录版本。规则如果关联 <code>v3</code>，而目录已经是 <code>v4</code>，两份记录就不能当成同一轮状态；页面显示“记录版本不一致”，建议重查或人工核对。演示还要求查询时间距固定时钟不超过五分钟。五分钟只是为了把“过期证据”做成可重复测试的样本阈值，不是生产建议。真实系统应按索引刷新、缓存和规则发布的实际契约设置时效。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">rule</span><span class="p">.</span><span class="nx">sku</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">catalog</span><span class="p">.</span><span class="nx">sku</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">rule</span><span class="p">.</span><span class="nx">catalogVersion</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">catalog</span><span class="p">.</span><span class="nx">version</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s1">'conflict'</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">rule</span><span class="p">.</span><span class="nx">enabled</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s1">'rule_block'</span><span class="w"> </span><span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">filter</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'all'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">filter</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">catalog</span><span class="p">.</span><span class="nx">category</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s1">'filter_miss'</span><span class="w"> </span><span class="p">}</span>
+<span class="k">return</span><span class="w"> </span><span class="s1">'visible'</span>
+</code></pre></div>
+<p>“visible”在代码里的含义是<strong>这三项演示条件满足</strong>，并不是浏览器已经向某个真实用户展示了商品。示例根本没有搜索索引、投放、缓存或客户端埋点工具，回答也明确保留这条边界。若用户在查询后改了分类，Vue 页面版本加一，旧回答立即标为失效；重新查询才会按新筛选解释。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="固定模拟回答也必须核验引用"></a>固定模拟回答也必须核验引用</h2>
+<p><code>mockCandidate()</code> 返回固定结论、来源 ID 和一句占位消息，模拟 Agent 生成候选。<code>verify()</code> 不把占位消息直接显示给用户，而是根据工具快照独立计算可接受状态，再检查候选引用是否恰好是本轮允许的来源。若候选插入 <code>publish.write#fake</code>，或把“规则未放行”说成“满足展示条件”，页面拒绝该主张。这个设计演示了<strong>回答与证据分离</strong>：语言层可以提出解释，最终展示必须经过确定性校验。</p>
+<p><a href="https://www.typescriptlang.org/docs/handbook/2/narrowing">TypeScript 官方的类型收窄文档</a>解释了判别联合类型如何让代码在检查字段后收窄分支。本例的工具结果采用 <code>{ ok: true, value } | { ok: false, reason }</code>，访问 <code>value</code> 前必须检查 <code>ok</code>。<a href="https://vuejs.org/guide/typescript/composition-api">Vue 官方 TypeScript Composition API 指南</a>展示了带类型的 <code>ref()</code>；示例分别用 <code>ref&lt;Snapshot | null&gt;</code> 和 <code>ref&lt;Answer | null&gt;</code> 保存证据与回答。模板只进行文本插值，不把候选消息作为 HTML 注入。</p>
+<p>这个校验是教学上的最小层。来源 ID、版本号和筛选快照都存在静态前端里，用户可以改浏览器脚本，因此它们不承担真实授权或审计职责。接入真实业务时，应由服务端核实店铺和商品归属，保存可追踪的请求 ID，并根据实际目录、规则、索引、缓存和投放服务的契约设计排查链路。此处不自动修改任何上架或展示设置。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="下载并跑通成功与失败场景"></a>下载并跑通成功与失败场景</h2>
+<p><a href="/examples/agent-product-visibility-diagnosis/">打开静态演示</a>或<a href="/examples/agent-product-visibility-diagnosis/source.zip">下载完整源码 ZIP</a>。ZIP 包含已构建的 <code>index.html</code>、<code>app.js</code>、<code>style.css</code>；解压后进入目录，运行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8100</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1
+</code></pre></div>
+<p>然后打开 <code>http://127.0.0.1:8100/</code>，无需模型密钥。想修改源码时，使用 Node.js 22 或更新版本执行 <code>npm ci</code>、<code>npm run typecheck</code>、<code>npm test</code>、<code>npm run build</code>；首次安装依赖可能需要访问 npm 注册表。</p>
+<p>先查默认场景，应看到“满足本轮展示条件”，但不承诺真实搜索已同步。接着选择“户外”分类，应得到“被当前筛选条件排除”。“商品仍是草稿”和“展示规则未放行”要指出不同关口；“规则查询超时”只能保留已上架这一部分事实；“版本不一致”“证据过期”“商品记录未找到”都不能给出可见承诺。勾选伪造引用，或查询后改变页面状态，可以观察旧结论被拒绝。</p>
+<p>本地固定夹具通过 <strong>22 项离线断言</strong>，并完成 TypeScript 检查、静态构建和浏览器布局检查。这些结果只证明演示代码对预设样本的处理，不是生产商品排查，也不是模型评测。实际落地还要验证真实权限、索引与缓存、错误码、规则发布延迟和人工处理路径。Agent 在前端的价值，是把已知的每道关口、尚未核实的关口和下一步排查动作讲清楚。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F13%2Fagent-product-visibility-diagnosis%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%95%86%E5%93%81%E8%BF%90%E8%90%A5/" rel="tag">商品运营</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/12/agent-refund-status-explanation/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">退款进度到哪一步？让 Agent 区分申请、审核与到账</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

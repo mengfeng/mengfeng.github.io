@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>退款进度到哪一步？让 Agent 区分申请、审核与到账 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 与 TypeScript 演示退款进度解释：只读核对退款单和渠道状态，处理超时、冲突与过期证据。" name="description"/><link href="https://mengfeng.github.io/2026/11/12/agent-refund-status-explanation/" rel="canonical"/><meta content="退款进度到哪一步？让 Agent 区分申请、审核与到账" property="og:title"/><meta content="用 Vue 3 与 TypeScript 演示退款进度解释：只读核对退款单和渠道状态，处理超时、冲突与过期证据。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/12/agent-refund-status-explanation/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-refund-status-explanation/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-12-agent-refund-status-explanation" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">退款进度到哪一步？让 Agent 区分申请、审核与到账</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/12/agent-refund-status-explanation/"><time datetime="2026-11-13T00:12:56.563355Z" itemprop="datePublished">2026-11-12</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="“退款到哪了”不能只查一个状态"></a>“退款到哪了”不能只查一个状态</h2>
+<p>用户在售后页问 Agent：“退款进度到哪一步了？”这句话可能在问三件不同的事：申请是否提交，商家是否审核通过，支付渠道是否已经处理。用户通常最关心的是钱是否真的回到自己的账户，但商家的退款单和支付渠道的处理记录都不能单独证明这一点。若页面把“审核通过”显示成“已到账”，一句看似省事的回答就会制造误解。</p>
+<p>这篇用 Vue 3 + TypeScript 做一个最小可运行实验：读取<strong>虚构退款单</strong>和<strong>虚构支付渠道记录</strong>，核对两份证据的归属、版本、金额和时间，再生成可展示的阶段说明。示例编号是 <code>RF-DEMO-024</code>，金额 129 元，演示时钟固定为 <strong>2026-11-12 20:00（北京时间）</strong>。所有数据和回答都是预设样本；<code>mockCandidate()</code> 不调用真实模型，两个工具也不连接商城或支付系统。页面不会发起真实退款、付款、短信或邮件。</p>
+<figure class="tech-figure"><img alt="手绘机器人对照退款单与渠道记录，在冲突处停下核对" height="1024" src="/images/agent-refund-status-explanation/flow.webp" width="1536"/></figure>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="页面交互：证据分两列，结论分四步"></a>页面交互：证据分两列，结论分四步</h2>
+<p>用户先选择场景，再点击“查询并核对”。页面左侧列出 <code>refund.read</code> 的申请与审核状态，右侧列出 <code>channel.read</code> 的渠道处理状态；回答区给出本轮可核实的结论。下方始终显示四个阶段：<strong>退款申请 → 商家审核 → 支付渠道处理 → 用户实际到账</strong>。最后一个阶段在本例里始终没有本人账户证据，所以不被标成完成。</p>
+<p>本例的两项只读工具同时启动，并使用 <code>Promise.allSettled()</code> 收集成功或失败结果。<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled">MDN 文档</a>说明，它会等待每个输入 Promise 完成或拒绝，再按输入顺序返回各自状态。这里退款单是解释的前提；若退款单找不到，渠道记录即使有数据也不在页面展示，避免把一个未核对归属的渠道结果贴到当前用户的售后页。渠道查询超时时，则仍可保留已核对的退款单状态，但不能补出渠道结论。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">refund</span><span class="p">,</span><span class="w"> </span><span class="nx">channel</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">allSettled</span><span class="p">([</span>
+<span class="w">  </span><span class="nx">readRefund</span><span class="p">(</span><span class="nx">scenario</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">readChannel</span><span class="p">(</span><span class="nx">scenario</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">refund</span><span class="o">:</span><span class="w"> </span><span class="kt">refund.status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'fulfilled'</span>
+<span class="w">    </span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">refund.value</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">reason</span><span class="o">:</span><span class="w"> </span><span class="s1">'not_found'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">channel</span><span class="o">:</span><span class="w"> </span><span class="kt">channel.status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'fulfilled'</span>
+<span class="w">    </span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">channel.value</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span><span class="w"> </span><span class="nx">reason</span><span class="o">:</span><span class="w"> </span><span class="s1">'timeout'</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>这段是演示夹具的简化流程。完整版本还把页面当前版本放进快照。两个失败原因来自固定场景，而非真实 API 错误码；实际接入不能把任意网络错误一概翻译成“退款单不存在”。后端需要先验证账号和订单归属，再调用渠道查询，并把鉴权失败、未找到、超时、服务故障区分开。静态前端的状态类型无法代替服务端授权。</p>
+<table>
+<thead>
+<tr>
+<th>证据</th>
+<th>本例提供</th>
+<th>不能由它单独推出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>refund.read</code></td>
+<td>申请、审核状态、版本、金额、查询时间</td>
+<td>支付渠道已处理或用户实际到账</td>
+</tr>
+<tr>
+<td><code>channel.read</code></td>
+<td>渠道处理阶段、绑定的退款单与金额</td>
+<td>用户银行账户已经入账</td>
+</tr>
+<tr>
+<td>本人账户账单</td>
+<td>本示例没有</td>
+<td>因而不能作出“实际到账”结论</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="状态机比一句“退款成功”更诚实"></a>状态机比一句“退款成功”更诚实</h2>
+<p><code>ReviewStatus</code> 只有申请已提交、审核中、审核通过、审核未通过；<code>ChannelStatus</code> 只有未开始、处理中、渠道标记完成。正常路径里，“审核中 + 渠道未开始”可以解释成申请已受理、仍待审核；“审核通过 + 渠道处理中”表示商家已同意，渠道尚未标记完成；“审核通过 + 渠道标记完成”也只表示渠道侧记录完成。示例没有用户钱包或银行流水，因此仍提示“请以本人账单核对实际到账”。</p>
+<p>这不是对所有支付机构的通用状态定义。真实业务中，“渠道完成”的语义可能是已受理、已出款、已清算或已退到原路，具体须以机构接口契约和商家业务规则为准。本例只展示一个<strong>明确写在代码里的演示状态机</strong>，不承诺到账时限，也不虚构退款成功率。</p>
+<p>最关键的核对发生在组合两份记录之前：<code>refundId</code>、退款版本和整数分金额必须一致，查询时间距演示时钟不超过五分钟。五分钟仅是固定样本的判定阈值，不建议原样搬到生产。如果退款单仍显示“审核中”，渠道却标记“完成”，页面显示“需人工核对”，不擅自解释成审核已通过，也不触发任何退款写操作。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">channel</span><span class="p">.</span><span class="nx">refundId</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">refund</span><span class="p">.</span><span class="nx">refundId</span><span class="w"> </span><span class="o">||</span>
+<span class="w">    </span><span class="nx">channel</span><span class="p">.</span><span class="nx">refundVersion</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">refund</span><span class="p">.</span><span class="nx">version</span><span class="w"> </span><span class="o">||</span>
+<span class="w">    </span><span class="nx">channel</span><span class="p">.</span><span class="nx">amountCents</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">refund</span><span class="p">.</span><span class="nx">amountCents</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s1">'conflict'</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">refund</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'approved'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">channel</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'processing'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s1">'processing'</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>amountCents</code> 使用整数分，是为了让两份记录的金额比较明确；本例没有金额计算或支付动作。真实退款可能涉及部分退款、运费、积分、手续费和多支付渠道，不能用这里的单金额相等规则替代完整对账。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="模拟 Agent 回答只能引用本轮证据"></a>模拟 Agent 回答只能引用本轮证据</h2>
+<p><code>mockCandidate()</code> 返回固定的阶段标签、来源 ID 和一句占位消息。<code>verify()</code> 不直接把占位消息展示给用户，而是先根据工具快照计算可接受的阶段，再检查候选的引用是否恰好来自本轮可用证据。模拟回答若加入不存在的 <code>refund.write#fake</code>，或宣称 <code>actual_arrival</code>，页面拒绝展示该主张。即使候选引用了真实来源，只要它把“渠道处理中”说成“审核中”，也会被拒绝。</p>
+<p><a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">TypeScript 官方的类型收窄说明</a>介绍了通过联合类型字段区分分支。本例用 <code>{ ok: true, value } | { ok: false, reason }</code> 表示工具结果，让页面必须先判断 <code>ok</code> 才能访问记录。<a href="https://vuejs.org/guide/typescript/composition-api">Vue 官方 TypeScript Composition API 指南</a>展示了带类型的 <code>ref()</code> 用法；示例把本轮快照与核验后的回答分别存入 <code>ref&lt;Snapshot | null&gt;</code> 和 <code>ref&lt;Answer | null&gt;</code>。模板只做文本插值，不把模拟回答当作 HTML 注入。</p>
+<p>如果用户查询后在页面切换了订单版本，原回答马上标记为失效。重新点击查询时，工具夹具仍给旧版本 7，而页面版本已经是 8，核验会要求重新取证。这个演示体现了“旧快照不能背书新页面”的原则；真实环境还需要服务端生成版本或请求 ID，防止浏览器伪造。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="跑一遍成功和失败场景"></a>跑一遍成功和失败场景</h2>
+<p><a href="/examples/agent-refund-status-explanation/">打开静态演示</a>或<a href="/examples/agent-refund-status-explanation/source.zip">下载完整源码 ZIP</a>。ZIP 已包含 <code>index.html</code>、<code>app.js</code> 和 <code>style.css</code>，解压后进入目录运行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8100</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1
+</code></pre></div>
+<p>浏览器打开 <code>http://127.0.0.1:8100/</code>，无需模型密钥。若要修改源码，使用 Node.js 22 或更新版本，依次运行 <code>npm ci</code>、<code>npm run typecheck</code>、<code>npm test</code>、<code>npm run build</code>；首次安装可能需要访问 npm 注册表。</p>
+<p>默认“申请已提交，正在审核”场景应只说明商家审核进度。切换到“渠道处理中”时仍不能说实际到账；“渠道标记完成”要提示核对本人账单。“退款单未找到”不能推断用户从未申请；“支付渠道查询超时”只保留商家侧已知状态；“退款单与渠道状态冲突”要求人工核对；“证据查询时间过期”要求重查。还可以勾选伪造引用，或查询后改变页面版本，验证旧回答被拒绝。</p>
+<p>本地离线测试覆盖 21 项固定断言，并完成 TypeScript 检查、静态构建和浏览器布局检查。<strong>这些只证明演示代码对固定样本的处理，不是生产退款验证，也不是模型评测。</strong> 实际接入还要设计身份授权、渠道状态映射、错误码、对账、人工转接与审计。Agent 在这里做的事是解释证据的边界，让用户清楚知道哪一步已核实，哪一步仍未知。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F12%2Fagent-refund-status-explanation%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%94%AE%E5%90%8E/" rel="tag">售后</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/11/agent-order-tracking-timeline/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">包裹到哪了？让 Agent 把订单状态和物流轨迹说清楚</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

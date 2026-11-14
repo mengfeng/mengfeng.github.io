@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Vue 3 + TypeScript 促销活动预检 Agent 离线演示">
+<title>活动上线前的证据预检</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <main class="shell">
+    <header class="hero">
+      <span class="eyebrow">AGENT / CAMPAIGN PREFLIGHT</span>
+      <h1>活动上线前，先核对三件事</h1>
+      <p>用本地虚构数据检查时间窗、商品资格和优惠券叠加。这里没有真实模型、商城服务或发布操作。</p>
+    </header>
+    <section class="panel" aria-labelledby="controls-title">
+      <h2 id="controls-title">选择演示场景</h2>
+      <div class="control-grid">
+        <label>活动草稿与规则
+          <select v-model="scenario" @change="chooseScenario">
+            <option v-for="item in scenarios" :key="item.value" :value="item.value">{{ item.label }}</option>
+          </select>
+        </label>
+        <div class="control-side">
+          <label class="check"><input type="checkbox" v-model="couponRequested" @change="clear">计划叠加演示优惠券</label>
+          <label class="check"><input type="checkbox" v-model="forged" @change="clear">注入伪造引用</label>
+        </div>
+      </div>
+      <div class="actions">
+        <button @click="query" :disabled="busy">{{ busy ? '核对中…' : '查询并预检' }}</button>
+        <button class="quiet" @click="simulateEdit">模拟修改活动草稿</button>
+      </div>
+      <p class="fine">当前页面草稿版本 r{{ pageRevision }}。改动后，旧结论失效；示例不会替你发布活动。</p>
+    </section>
+
+    <div v-if="snapshot && answer" class="grid">
+      <section class="panel evidence" aria-labelledby="evidence-title">
+        <h2 id="evidence-title">本轮只读证据</h2>
+        <dl>
+          <dt>活动记录</dt>
+          <dd v-if="snapshot.activity.ok">r{{ snapshot.activity.value.revision }} · {{ snapshot.activity.value.startsAt }} → {{ snapshot.activity.value.endsAt }}
+            <small>{{ snapshot.activity.value.sourceId }}</small></dd>
+          <dd v-else>未找到演示活动</dd>
+          <dt>商品资格</dt>
+          <dd v-if="snapshot.activity.ok && snapshot.product.ok">{{ snapshot.product.value.eligible ? '可参加' : '不适用' }}
+            <small>{{ snapshot.product.value.sourceId }}</small></dd>
+          <dd v-else>活动未核对，不展示商品结论</dd>
+          <dt>优惠券规则</dt>
+          <dd v-if="!snapshot.couponRequested">本轮未申请叠加</dd>
+          <dd v-else-if="snapshot.activity.ok && snapshot.coupon.ok">{{ snapshot.coupon.value.stackable ? '允许叠加' : '不可叠加' }} · 关联 r{{ snapshot.coupon.value.activityRevision }}
+            <small>{{ snapshot.coupon.value.sourceId }}</small></dd>
+          <dd v-else-if="snapshot.activity.ok">查询超时</dd>
+          <dd v-else>活动未核对，不展示券结论</dd>
+        </dl>
+        <p class="fine">演示时钟：2026-11-14 20:00 北京时间 · 虚构商品 MUG-DEMO-17</p>
+      </section>
+      <section class="panel answer" aria-labelledby="answer-title">
+        <div class="panel-head">
+          <h2 id="answer-title">Agent 核验后回答</h2>
+          <span class="badge" :class="answer.verdict">{{ verdictLabels[answer.verdict] }}</span>
+        </div>
+        <h3 aria-live="polite">{{ answer.headline }}</h3>
+        <p>{{ answer.detail }}</p>
+        <p class="fine">引用：<span v-if="!answer.sourceIds.length">无</span><code v-for="id in answer.sourceIds" :key="id">{{ id }}</code></p>
+      </section>
+    </div>
+    <section v-if="answer" class="panel checks" aria-labelledby="checks-title">
+      <h2 id="checks-title">三道预检关口</h2>
+      <ol><li v-for="(item,index) in answer.checks" :key="item"><span class="step-number">{{ index + 1 }}</span>{{ item }}</li></ol>
+      <p class="fine">即使本轮通过，真实发布仍要由授权人员在服务端核对权限、最终规则与变更记录。</p>
+    </section>
+    <footer>离线教学示例 · 固定模拟候选 · 无真实活动发布、付款或对外消息</footer>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>差评回复别急着发：Agent 先核对订单事实，再写可审阅草稿 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 与 TypeScript 演示差评回复 Agent：读取虚构评价、订单和售后规则，核对引用与版本，只展示待人工审阅的回复草稿。" name="description"/><link href="https://mengfeng.github.io/2026/11/15/agent-review-reply-evidence-draft/" rel="canonical"/><meta content="差评回复别急着发：Agent 先核对订单事实，再写可审阅草稿" property="og:title"/><meta content="用 Vue 3 与 TypeScript 演示差评回复 Agent：读取虚构评价、订单和售后规则，核对引用与版本，只展示待人工审阅的回复草稿。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/15/agent-review-reply-evidence-draft/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-review-reply-evidence-draft/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-15-agent-review-reply-evidence-draft" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">差评回复别急着发：Agent 先核对订单事实，再写可审阅草稿</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/15/agent-review-reply-evidence-draft/"><time datetime="2026-11-16T01:20:59.594253Z" itemprop="datePublished">2026-11-15</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="一条差评，不能直接变成一条承诺"></a>一条差评，不能直接变成一条承诺</h2>
+<p>假设店铺收到一条一星评价：“包裹到手时外盒破损，商品也有划痕，怎么处理？”运营想让 Agent 帮忙起草回复。一个看似顺畅的模型可能立即写出“已为您退款”，但评价本身既不能证明订单状态，也不能证明售后规则，更不能证明退款已获批。</p>
+<p>这篇做一个<strong>只生成待审阅草稿</strong>的前端演示：Vue 3 页面读取三份独立证据，固定模拟的模型候选提出可说的事实，确定性校验器再决定哪些句子能显示。所有评价、订单和规则都是虚构内存数据；没有真实模型调用、商家接口、客户隐私、退款或对外消息。<a href="/examples/agent-review-reply-evidence-draft/">打开静态演示</a>可以直接切换六种情况；<a href="/examples/agent-review-reply-evidence-draft/source.zip">下载完整 Vue 3 + TypeScript 源码</a>可在本地运行。</p>
+<figure class="tech-figure"><img alt="手绘机器人核对评价、订单与政策，再把回复留在信封外" height="1024" src="/images/agent-review-reply-evidence-draft/flow.webp" width="1536"/></figure>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="三份证据各管一件事"></a>三份证据各管一件事</h2>
+<p>这条虚构评价编号为 <code>REV-DEMO-08</code>，关联演示订单 <code>ORD-DEMO-17</code>。评价提供客户说了什么；订单记录提供当前送达状态；售后规则只提供“可引导发起售后申请”的路径。规则并没有批准退款。界面展示每项来源 ID，方便审阅者回到原始记录核对。</p>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>可支持的回复内容</th>
+<th>不能推出的结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>review.read</code></td>
+<td>致歉并承认客户反馈的问题</td>
+<td>订单确实送达、商品一定有质量问题</td>
+</tr>
+<tr>
+<td><code>order.read</code></td>
+<td>这笔演示订单记录为已送达</td>
+<td>退款获批、客户已经收到补偿</td>
+</tr>
+<tr>
+<td><code>policy.read</code></td>
+<td>可建议在订单页发起售后申请</td>
+<td>退款必定成功或到账时间</td>
+</tr>
+</tbody>
+</table>
+<p>三项读取彼此独立。示例用 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled"><code>Promise.allSettled()</code></a>保留每个读取的成功或失败结果；订单查不到时，评价和规则仍能显示。结果顺序与传入任务一致，所以映射到“评价、订单、规则”时不会错位。失败结果会显式标成“记录未找到”或“读取超时”，不会悄悄补一份假数据。</p>
+<p>界面把每份证据单独列成一行：名称、读取状态、来源 ID 和最少量的业务字段。这个布局让审阅者不用从一段流畅回复里反推 Agent 究竟查过什么。来源 ID 只是演示中的索引，不是可公开访问的真实订单链接；真实产品应按客服角色的权限提供可追溯详情，并限制敏感字段在页面和日志里的展示范围。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">allSettled</span><span class="p">([</span>
+<span class="w">  </span><span class="nx">readReview</span><span class="p">(),</span><span class="w"> </span><span class="nx">readOrder</span><span class="p">(),</span><span class="w"> </span><span class="nx">readPolicy</span><span class="p">()</span>
+<span class="p">]</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kd">const</span><span class="p">)</span>
+</code></pre></div>
+<p>演示的 <code>collect()</code> 用 <code>Promise.resolve()</code> 和 <code>Promise.reject()</code> 制造这几种结果，<strong>不是实际网络请求</strong>。接入真实业务时，还应分清无权限、资源不存在、限流和服务故障；这里的两种错误只是最小教学样本。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="先检查关联关系，再生成有限草稿"></a>先检查关联关系，再生成有限草稿</h2>
+<p>读取成功也不能直接拼接。评价的 <code>orderId</code> 必须与订单记录的 <code>id</code> 一致；不一致时，界面停止生成草稿，不能把别人的订单状态写进这条回复。读取评价时还保存修订号。页面模拟评价更新后，会立即清空旧证据；如果一次生成仍拿着旧修订号，状态转为“stale”，要求重读。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">order</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">review</span><span class="p">.</span><span class="nx">orderId</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">blocked</span><span class="p">(</span><span class="s1">'订单与评价不匹配'</span><span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">review</span><span class="p">.</span><span class="nx">revision</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">currentRevision</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">stale</span><span class="p">(</span><span class="s1">'评价已经更新'</span><span class="p">)</span>
+</code></pre></div>
+<p>这种状态由明确字段驱动，而不是靠候选文字里一句“我已经核实”。示例把工具结果写成带 <code>kind</code> 的联合类型：<code>ok</code> 才有 <code>value</code>，<code>missing</code> 和 <code>timeout</code> 只有错误描述。TypeScript 的<a href="https://www.typescriptlang.org/docs/handbook/2/narrowing">类型收窄文档</a>说明了如何根据判别字段安全地访问对应分支。真实系统还应按来源契约定义读取时间、可见范围和版本一致性；本例只演示修订号与订单关联。</p>
+<p>在订单缺失时，草稿不会说“已送达”；在规则超时时，草稿不会建议一个尚未核实的售后路径。页面依然可以给出一段有限的致歉文字，并明确标成“证据不全”。这是一个产品决策：允许客服先看见安全的起点，但不把未知项写成已确认事实。若订单与评价不匹配，则连有限草稿也停下，避免错误关联。</p>
+<p>还要注意异步回包顺序。客服切换场景后，上一轮读取可能才完成。示例给每次请求分配序号；一旦用户改变场景或模拟评价更新，旧序号立即失效，迟到的结果不能覆盖新页面。Vue 的 <a href="https://vuejs.org/guide/typescript/composition-api"><code>ref()</code> 类型用法</a>让证据与评估结果分别保持 <code>Evidence | null</code>、<code>Assessment | null</code>，清空旧状态时界面会同步回到“尚未生成”。这只是前端避免错屏的一层保护；真实服务仍要在写入前核对最新订单与评价版本。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="模拟候选也必须过引用关"></a>模拟候选也必须过引用关</h2>
+<p><code>mockCandidate()</code> 固定返回主张代码与来源 ID，例如“承认反馈”对应评价来源，“订单已送达”对应订单来源。它只是<strong>模拟模型响应</strong>，没有调用任何 AI 服务。<code>verify()</code> 根据本轮证据独立算出允许的主张与来源，并要求候选的修订号、主张数组、引用数组完全一致。缺一条引用、换一个假来源、擅自加上 <code>refund_approved</code>，都会被拒绝，页面不渲染候选回复。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">revision</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">currentRevision</span><span class="w"> </span><span class="o">||</span>
+<span class="w">    </span><span class="o">!</span><span class="nx">same</span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">claims</span><span class="p">,</span><span class="w"> </span><span class="nx">allowedClaims</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">    </span><span class="o">!</span><span class="nx">same</span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">sourceIds</span><span class="p">,</span><span class="w"> </span><span class="nx">allowedSources</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">rejected</span><span class="p">(</span><span class="s1">'候选未通过证据核验'</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>核验通过后，页面从受控句子表合成中文回复，候选的自由文本不直接进入 DOM。Vue 模板以文本插值显示草稿与来源 ID；若以后改为手动操作 DOM，使用 <code>textContent</code> 设置纯文本比把未经处理的模型输出交给 <code>innerHTML</code> 更合适，具体行为见 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent">MDN 的 <code>textContent</code> 文档</a>。生产场景还需要防止来源 ID 被替换、证据权限越界，并由服务端再次验证，不能只相信浏览器里的校验。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="在页面上把失败路径走一遍"></a>在页面上把失败路径走一遍</h2>
+<p>默认选择“三份证据齐全”，点击“读取证据并生成草稿”。页面展示三项来源和“等待人工审阅”的回复。再切换“订单未找到”：只剩有限草稿，不再出现送达主张。切到“政策读取超时”：仍可说已送达，但不会建议售后路径。“订单与评价不匹配”和“评价版本变化”没有可展示草稿。选择“候选擅自承诺退款”，校验器会给出 <code>rejected</code>，无依据的承诺不会显示。</p>
+<p>“模拟评价更新”按钮会增加修订号并清除旧结果；“人工已审阅”复选框只改浏览器本地状态。页面<strong>没有发送按钮</strong>。因此审阅动作并不会给客户发消息，也不会创建退款。若真实业务需要发送，应该另外设计人工确认、服务端授权、幂等写入和事后追踪，不能把这个演示的本地勾选当成上线能力。</p>
+<p>这六个场景也对应六种客服下一步：证据齐全时人工检查措辞和事实；订单缺失时先找订单；规则超时则等待规则恢复；关联冲突要排查标识；版本变化要重新读取；候选越权承诺则直接退回。前端状态文字要帮助人做这个判断，不能只用“生成失败”抹平不同原因。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="本地运行与验证边界"></a>本地运行与验证边界</h2>
+<p>下载源码包后，使用 Node.js 22 或更新版本执行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8765</span>
+</code></pre></div>
+<p>在浏览器打开 <code>http://127.0.0.1:8765/</code>。<code>npm test</code> 覆盖完整证据、订单缺失、规则超时、订单不匹配、旧版评价、无依据退款承诺、伪造引用和不完整候选。测试验证的是<strong>固定数据和离线校验逻辑</strong>，不是模型质量、真实客服政策、生产接口或发送流程。真实接入时，应以企业实际政策和权限为准重新设计证据契约，并让人工审阅者能看到原始记录；这里没有声称生产收益或实际客服经验。</p>
+<p>这条链路的重点是让前端把“看到了什么”和“准备说什么”并排呈现。Agent 可以帮助写得快，但对外承诺必须由可核对的事实和授权流程决定。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F15%2Fagent-review-reply-evidence-draft%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%A2%E6%9C%8D%E8%BF%90%E8%90%A5/" rel="tag">客服运营</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/14/agent-promotion-preflight-check/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">活动要上线了，Agent 先核对时间、商品与优惠叠加</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

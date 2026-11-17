@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>开发票前别急着提交：Agent 核对订单、抬头和剩余金额 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 与 TypeScript 演示发票申请预检 Agent：并行读取虚构订单、开票资料和政策，按分计算可开金额，核对候选来源与版本，只生成待人工确认的草稿。" name="description"/><link href="https://mengfeng.github.io/2026/11/17/agent-invoice-request-preflight/" rel="canonical"/><meta content="开发票前别急着提交：Agent 核对订单、抬头和剩余金额" property="og:title"/><meta content="用 Vue 3 与 TypeScript 演示发票申请预检 Agent：并行读取虚构订单、开票资料和政策，按分计算可开金额，核对候选来源与版本，只生成待人工确认的草稿。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/17/agent-invoice-request-preflight/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-invoice-request-preflight/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-17-agent-invoice-request-preflight" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">开发票前别急着提交：Agent 核对订单、抬头和剩余金额</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/17/agent-invoice-request-preflight/"><time datetime="2026-11-17T13:09:47.752816Z" itemprop="datePublished">2026-11-17</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="开票按钮前，先停在一张可核对的草稿上"></a>开票按钮前，先停在一张可核对的草稿上</h2>
+<p>用户说“帮我给这笔订单开发票”，页面如果只把这句话交给 Agent，容易漏掉三个变化中的事实：订单是否仍有可开金额、开票抬头是否与当前账户资料一致、演示规则是否允许把运费或退款算进去。候选看起来完整，也可能引用了旧订单，或把已经开过的金额再算一次。</p>
+<p>这篇用 Vue 3 + TypeScript 做一张<strong>发票申请资料预检页</strong>。它并行读取三份本地只读夹具，展示金额计算和来源，再检查一个固定的模拟 Agent 候选。即使全部通过，页面也只出现待人工确认的草稿：<a href="/examples/agent-invoice-request-preflight/">打开交互示例</a>可切换十种场景，<a href="/examples/agent-invoice-request-preflight/source.zip">下载完整源码</a>可复现离线断言。所有订单、企业名称、演示税号和规则都是虚构数据，示例没有真实模型、订单系统、开票、邮件或付款调用。</p>
+<figure class="tech-figure"><img alt="手绘机器人把订单和抬头资料汇入待人工确认的发票草稿，并挡住超额金额" height="1024" src="/images/agent-invoice-request-preflight/flow.webp" width="1536"/></figure>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="页面把候选和证据分开"></a>页面把候选和证据分开</h2>
+<p>左侧是 <code>order.read</code>、<code>profile.read</code>、<code>policy.read</code> 的本轮结果。订单夹具 <code>ORD-DEMO-72</code> 的实付是 <code>¥259.00</code>，运费 <code>¥12.00</code>，已退款 <code>¥30.00</code>，已开 <code>¥50.00</code>。演示政策规定按“实付减运费、已退款和已开金额”计算，于是本轮剩余为 <code>¥167.00</code>。这是<strong>人为设定的教学规则</strong>，并非任何真实平台或地区的开票政策；运费、折扣、税额和票种在真实业务里要由实际规则决定。</p>
+<p>抬头夹具只存“演示科技有限公司”和 <code>DEMO-TAX-ID</code>。这个字符串不是有效税号，避免把真实企业资料放进公开示例。右侧显示模拟候选的结构化 JSON，以及通过核验后由已读证据拼成的草稿。候选自己报告的来源 ID 只是待核对输入，页面从本轮工具结果另算一份预期来源，不把“我引用了政策”这句话当证据。</p>
+<p>这个交互还刻意不让候选自由填写最终抬头名称。候选只给出一个抬头标识，草稿上的名称来自已读取的账户资料。若用户想换抬头，应该先在有权限的资料流程中修改或选择，再重新取得证据；把一句“发给另一家公司”当作已验证抬头，会让页面出现看似合理但无法追溯的字段。演示中的账户资料也没有任何真实身份校验能力，不能直接照搬到业务接口。</p>
+<p>三项只读任务互不依赖，示例用 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled"><code>Promise.allSettled()</code></a>收集各自结果。MDN 明确返回数组保留输入顺序，即使完成顺序不同也不会把抬头与政策结果对调。页面把失败的项单独标出；任何一项没读到，状态是 <code>blocked</code>，不是把缺失证据解释成“允许开票”。这里的超时由本地 <code>Promise.reject()</code> 固定制造，不代表实测网络行为。</p>
+<table>
+<thead>
+<tr>
+<th>只读来源</th>
+<th>本轮作用</th>
+<th>缺失或过期时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>order.read#72@r3</code></td>
+<td>实付、运费、退款、已开金额</td>
+<td>不计算可提交金额</td>
+</tr>
+<tr>
+<td><code>profile.read#demo@r2</code></td>
+<td>当前账户的演示抬头</td>
+<td>不采纳候选自填抬头</td>
+</tr>
+<tr>
+<td><code>policy.read#invoice@r4</code></td>
+<td>本文专用演示公式</td>
+<td>不套用猜测的规则</td>
+</tr>
+</tbody>
+</table>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="金额用“分”计算，再拦住超额候选"></a>金额用“分”计算，再拦住超额候选</h2>
+<p><code>availableCents()</code> 只接受非负安全整数，计算结果也必须是安全整数。这能避开在业务判断里直接比较 <code>167.00</code> 这类浮点金额，仍不等于一套完整的财务金额库。<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger">MDN 的 <code>Number.isSafeInteger()</code> 文档</a>说明它用于判断整数是否能安全表示；示例只处理范围很小的人民币分。真实系统还要有统一的金额类型、舍入规则、币种和服务端核算。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">parts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nx">order</span><span class="p">.</span><span class="nx">paidCents</span><span class="p">,</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">shippingCents</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">order</span><span class="p">.</span><span class="nx">refundedCents</span><span class="p">,</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">issuedCents</span><span class="p">]</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">parts</span><span class="p">.</span><span class="nx">some</span><span class="p">(</span><span class="nx">value</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span>
+<span class="p">}</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">paidCents</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">shippingCents</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">refundedCents</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">issuedCents</span>
+<span class="k">return</span><span class="w"> </span><span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nx">remaining</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">remaining</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span>
+</code></pre></div>
+<p>候选默认请求 <code>16700</code> 分。切换“候选金额超额”，它改为 <code>18700</code> 分，页面拒绝草稿。切换“新增退款”，订单读取结果把已退款改为 <code>13000</code> 分，剩余额度降至 <code>6700</code> 分；即便候选金额仍是昨天看起来合理的 <code>16700</code> 分，也会拒绝。这比只验证“候选是个数字”更接近用户真正关心的事：本次申请不能超过<strong>此刻的</strong>可用范围。</p>
+<p>金额瀑布要让用户能倒推，而不是只写一个绿色的“可开”。页面同时列出实付、运费、已退款、已开与剩余额度；若任一字段是负数、超过安全整数范围，或相减后得到负数，就不展示可确认金额。<code>¥167.00</code> 也不一定等于用户想开的票面金额：示例允许小于等于剩余额度的部分金额，但真实平台可能限制部分开票、要求按商品行拆分，或把折扣分摊到不同税率。那些规则要由正式政策和后端计算，不能靠 Agent 自行补齐。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="来源、版本和字段都要由校验器核对"></a>来源、版本和字段都要由校验器核对</h2>
+<p>模拟候选被当作 <code>unknown</code> 输入，先由 <code>parseCandidate()</code> 检查订单号、版本、币种、正整数金额和恰好三个来源 ID。只有结构有效，<code>verify()</code> 才继续比较本轮订单、抬头、规则和候选。TypeScript 的<a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions">判别联合与类型收窄文档</a>说明了按 <code>kind</code> 区分成功与错误结果的方式；类型检查帮助写对分支，但运行时的候选仍须实际验证。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">order</span><span class="p">.</span><span class="nx">revision</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">currentRevision</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">assessment</span><span class="p">(</span><span class="s1">'stale'</span><span class="p">,</span><span class="w"> </span><span class="s1">'订单已更新；旧快照不能用于本轮申请。'</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">sourceIds</span><span class="p">.</span><span class="nx">some</span><span class="p">((</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">index</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">expectedSources</span><span class="p">[</span><span class="nx">index</span><span class="p">]))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">assessment</span><span class="p">(</span><span class="s1">'rejected'</span><span class="p">,</span><span class="w"> </span><span class="s1">'候选引用与本轮工具结果不匹配。'</span><span class="p">,</span><span class="w"> </span><span class="nx">available</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">orderId</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">candidate</span><span class="p">.</span><span class="nx">taxId</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">profile</span><span class="p">.</span><span class="nx">taxId</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">candidate</span><span class="p">.</span><span class="nx">currency</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">currency</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">assessment</span><span class="p">(</span><span class="s1">'rejected'</span><span class="p">,</span><span class="w"> </span><span class="s1">'订单、抬头或币种与已读取资料不一致。'</span><span class="p">,</span><span class="w"> </span><span class="nx">available</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>“订单版本已变化”让工具返回旧修订号，状态是 <code>stale</code>；“候选引用伪造”“候选抬头不符”和“字段类型错误”都得到 <code>rejected</code>。页面另有“模拟订单更新”按钮：它增加当前修订号并清空上一轮草稿，迟到的旧任务通过请求序号丢弃。Vue 官方的 <a href="https://vuejs.org/guide/typescript/composition-api#typing-ref"><code>ref()</code> 类型说明</a>适用于这里的 <code>Collected | null</code> 与 <code>Assessment | null</code>：未读到和未生成是明确状态，不能继续显示上一次的成功结果。</p>
+<p>这两种“过期”要分开看。若工具在本轮返回的是旧订单修订号，应该重读订单；若页面在等待三个工具时切换了场景或更新了订单，旧请求即使晚到，也不能覆盖新页面的证据和草稿。示例的请求序号只解决浏览器内结果覆盖问题，并不能撤销已经在服务端发生的操作；所以真实写入必须在服务端再次核对版本和权限。本文没有写入工具，正是为了让读者先把只读预检与真正申请分成两个清楚的步骤。</p>
+<table>
+<thead>
+<tr>
+<th>页面状态</th>
+<th>触发示例</th>
+<th>下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ready</code></td>
+<td>三份证据和候选字段一致</td>
+<td>人工审阅草稿，仍未提交</td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td>任一只读工具超时</td>
+<td>恢复查询，不猜测缺失值</td>
+</tr>
+<tr>
+<td><code>stale</code></td>
+<td>订单修订号不同</td>
+<td>重读订单并重新生成</td>
+</tr>
+<tr>
+<td><code>rejected</code></td>
+<td>金额超额、抬头不符或引用错误</td>
+<td>修正输入与来源，不展示草稿</td>
+</tr>
+</tbody>
+</table>
+<p>本地来源 ID 和版本号只是一组可重复的教学值。真实接入时，服务端必须核对当前用户是否有权访问订单和抬头，把引用、规则版本、金额快照和申请草稿绑定到同一任务；前端显示的校验结果不能替代服务端复算。候选 JSON 是固定模拟响应，离线断言也没有证明模型会正确选择工具或理解真实税务政策。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="运行、失败验证与人工边界"></a>运行、失败验证与人工边界</h2>
+<p>使用 Node.js 22 或更新版本，解压源码包后运行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8765</span>
+</code></pre></div>
+<p>打开 <code>http://127.0.0.1:8765/</code>，在顶部依次试“证据齐全”“新增退款”“抬头不符”“订单查询超时”和“订单版本已变化”。<code>npm test</code> 用固定夹具覆盖成功、金额超额、来源伪造、结构错误、三项读取失败与版本过期。测试只证明这些离线条件成立；它不是端到端开票验收，更不代表真实模型质量。想接入实际业务，应先取得正式规则、字段契约和权限边界，再用服务端幂等申请、人工确认与最终状态查询完成闭环。</p>
+<p>“人工已核对”复选框只改浏览器内状态。这个示例没有提交按钮，<strong>不会开票或发送邮件</strong>。Agent 在这里的作用，是把分散的订单、抬头和规则变成一份有来源、有金额计算、能被人审阅的申请草稿；是否真的具备开票资格，仍由真实业务系统与负责人判断。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F17%2Fagent-invoice-request-preflight%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%91%E7%A5%A8%E7%94%B3%E8%AF%B7/" rel="tag">发票申请</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/16/agent-cross-border-reply-translation/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">跨境客服回复怎么翻：Agent 先锁住订单号、金额和售后承诺</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

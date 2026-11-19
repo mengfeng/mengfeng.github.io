@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>两张客服工单是一件事吗？让 Agent 先找证据，再给合并建议 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 与 TypeScript 演示重复客服工单 Agent：先在只读工具内核对归属，再验证订单、问题、状态、版本和引用，只生成待人工审阅的合并建议。" name="description"/><link href="https://mengfeng.github.io/2026/11/18/agent-duplicate-ticket-review/" rel="canonical"/><meta content="两张客服工单是一件事吗？让 Agent 先找证据，再给合并建议" property="og:title"/><meta content="用 Vue 3 与 TypeScript 演示重复客服工单 Agent：先在只读工具内核对归属，再验证订单、问题、状态、版本和引用，只生成待人工审阅的合并建议。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/18/agent-duplicate-ticket-review/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-duplicate-ticket-review/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-18-agent-duplicate-ticket-review" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">两张客服工单是一件事吗？让 Agent 先找证据，再给合并建议</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/18/agent-duplicate-ticket-review/"><time datetime="2026-11-19T00:02:27.206607Z" itemprop="datePublished">2026-11-18</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="两条相似消息，未必是同一张工单"></a>两条相似消息，未必是同一张工单</h2>
+<p>客服工作台里出现两张工单：<code>T-DEMO-41</code> 说“物流停在分拨中心，询问预计送达时间”，<code>T-DEMO-42</code> 说“同一订单的物流进度仍没有更新”。Agent 很容易给出“重复，合并吧”。但页面若直接执行合并，可能把另一位客户的工单串进来，也可能把不同订单、不同问题或已经关闭的记录当成同一件事。合并会影响客服后续处理轨迹，不能只凭两段文字相似。</p>
+<p>这篇用 Vue 3 + TypeScript 做一个<strong>只生成待人工审阅合并建议</strong>的前端示例：<a href="/examples/agent-duplicate-ticket-review/">打开交互示例</a>可切换 12 种固定情况，<a href="/examples/agent-duplicate-ticket-review/source.zip">下载完整源码</a>可运行离线断言。工单、账户、规则和 Agent 候选都是虚构夹具。示例没有调用真实模型、客服系统、合并接口、关闭接口或对外消息接口，也没有声称实际减少了多少工单。</p>
+<figure class="tech-figure"><img alt="手绘机器人核对两张工单与账户证据，在人工确认前挡下跨账户合并" height="1024" src="/images/agent-duplicate-ticket-review/flow.webp" width="1536"/></figure>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="先把“能否读取”放在工具边界"></a>先把“能否读取”放在工具边界</h2>
+<p>页面并行取得三份只读证据：<code>tickets.readPair</code> 返回当前演示账户可见的两张工单；<code>account.read</code> 返回账户与允许访问的工单编号；<code>policy.read</code> 返回这篇教学示例的合并建议规则。<code>Promise.allSettled()</code> 让页面分别显示每项读取的成败；<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled">MDN 文档</a>说明，结果按传入 Promise 的顺序排列，即使各任务完成顺序不同，也不会把工单证据当成政策证据。</p>
+<p>最重要的一步在读取工具内部：示例的 <code>readTickets()</code> 先检查两张工单是否属于当前演示账户，再返回内容。“另一账户的工单”场景会让这个工具拒绝，页面只显示通用失败信息，<strong>不展示第二张工单的摘要</strong>。这是为了演示鉴权应发生在读取数据之前。<a href="https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html">OWASP 关于 IDOR 的说明</a>明确把支持工单列为需逐对象检查权限的例子；仅使用不易猜的编号，不能代替对象级访问控制。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="c1">// readTickets() 构造固定虚构夹具后、返回数据前：</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">first</span><span class="p">.</span><span class="nx">accountId</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">sessionAccountId</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">second</span><span class="p">.</span><span class="nx">accountId</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">sessionAccountId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s1">'not authorized'</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="k">return</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">({</span><span class="w"> </span><span class="nx">first</span><span class="p">,</span><span class="w"> </span><span class="nx">second</span><span class="p">,</span><span class="w"> </span><span class="nx">sourceId</span><span class="o">:</span><span class="w"> </span><span class="sb">`tickets.read#pair@r</span><span class="si">${</span><span class="nx">actualRevision</span><span class="si">}</span><span class="sb">`</span><span class="w"> </span><span class="p">})</span>
+</code></pre></div>
+<p>这段代码只是本地夹具的边界示意。真实服务端不能信任浏览器传来的 <code>sessionAccountId</code>；它应从已验证会话识别用户，并对每张工单执行授权查询。前端即使再次比较账户 ID，也不能补救服务端已经把越权内容发到浏览器的问题。页面中的 <code>account.read</code> 结果则是第二道演示性核对，不是权限的唯一来源。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="候选只提建议，字段要重新核对"></a>候选只提建议，字段要重新核对</h2>
+<p>本例的 Agent 候选是一段固定模拟 JSON：<code>decision: suggest_merge</code>、主次工单 ID、两张工单的修订号、三项来源 ID。它没有自由文本理由，也没有“执行合并”的动作。<code>parseCandidate(unknown)</code> 先在运行时验证字段类型、长度、编号格式与修订号；TypeScript 的类型声明无法让真实模型输出自动变成可信数据。<a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">TypeScript 的类型收窄文档</a>解释了如何用运行时检查区分不同形状的数据，本例进一步把结构错误直接标为 <code>rejected</code>。</p>
+<p>结构通过之后，<code>verify()</code> 从<strong>本轮已读取证据</strong>重新计算预期来源，而不是相信候选自报。候选把 <code>policy.read#merge@r2</code> 换成看似类似的 <code>policy.read#other@r2</code>，结果是 <code>rejected</code>；主次工单颠倒也一样。页面生成的理由由已核对字段拼成，不采纳候选的主观描述。这让客服能看见“建议关联哪两张工单”和“依据来自哪里”，而不是只看一句没有出处的结论。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">expectedSources</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nx">sourceId</span><span class="p">,</span><span class="w"> </span><span class="nx">ownership</span><span class="p">.</span><span class="nx">sourceId</span><span class="p">,</span><span class="w"> </span><span class="nx">policy</span><span class="p">.</span><span class="nx">sourceId</span>
+<span class="p">]</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">candidate</span><span class="p">.</span><span class="nx">sourceIds</span><span class="p">.</span><span class="nx">some</span><span class="p">((</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">index</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">expectedSources</span><span class="p">[</span><span class="nx">index</span><span class="p">]))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">(</span><span class="s1">'rejected'</span><span class="p">,</span><span class="w"> </span><span class="s1">'候选引用与本轮证据不一致。'</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>来源 ID 是固定夹具标识，并非真实系统的可验证引用链接。生产环境还要把来源、权限、工单版本和被引用的片段放在服务端审计记录中。即便三项来源一致，也只能说明“候选引用了当前记录”，不能证明两位客服对客户诉求的理解一定相同。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="用状态告诉客服为什么不能合并"></a>用状态告诉客服为什么不能合并</h2>
+<p>示例规则很保守：两张工单必须属于同一账户、同一订单、同一问题类型，并且都处于 <code>open</code>。默认情况得到 <code>ready</code>，但标题仍叫“合并建议草稿”，人工复选框只改变本地界面。换成不同订单、不同问题或已关闭工单，状态是 <code>rejected</code>，页面保留两张独立记录；任一只读工具超时则是 <code>blocked</code>，不把“没查到”解释为“允许”；工单修订号变化则是 <code>stale</code>，提示重新读取。</p>
+<p>这些状态不是一套通用工单合并政策。现实里，同一订单也可能同时有“延迟送达”和“商品破损”两件独立问题；反过来，同一问题也可能跨多个订单。问题代码相同只是可核对线索。真正的合并决策还需客服阅读完整会话、检查是否已有不同处理人和 SLA，并确认不会丢失消息、附件或责任归属。本例故意停在人工审阅前，没有提交按钮。</p>
+<table>
+<thead>
+<tr>
+<th>页面状态</th>
+<th>触发例子</th>
+<th>客服下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ready</code></td>
+<td>本轮三项证据和候选一致</td>
+<td>人工审阅两段诉求，仍未合并</td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td>越权读取或某项工具失败</td>
+<td>先恢复授权或查询，不查看受限内容</td>
+</tr>
+<tr>
+<td><code>stale</code></td>
+<td>工单或候选修订号落后</td>
+<td>重新读取并核对最新内容</td>
+</tr>
+<tr>
+<td><code>rejected</code></td>
+<td>订单不同、已关闭或引用伪造</td>
+<td>分开处理或修正候选</td>
+</tr>
+</tbody>
+</table>
+<p>这个状态表也给前端一个清晰的渲染约束：只有 <code>ready</code> 才展示完整的建议卡片；其他状态只显示原因和下一步。错误态不应把上一轮已经勾选的“人工已审阅”保留下来，也不应在工具超时后悄悄使用本地缓存的旧来源。否则界面虽然写着“失败”，旁边还留着绿色建议，很容易让人误以为可以继续操作。</p>
+<p>Vue 侧用 <code>ref&lt;Collected | null&gt;</code> 与 <code>ref&lt;Assessment | null&gt;</code> 表示尚未取得证据和尚未形成结论。<a href="https://vuejs.org/guide/typescript/composition-api#typing-ref">Vue 官方 TypeScript 文档</a>说明了 <code>ref()</code> 的显式类型写法。切换场景或点击“模拟工单更新”会清空旧证据、旧建议和人工复选框；请求序号阻止迟到的旧读取结果覆盖新页面。它只保护当前浏览器视图，<strong>不能撤销服务器上的写操作</strong>，所以真实合并仍必须由服务端在提交时重新检查权限、版本和幂等结果。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="运行示例与离线验收"></a>运行示例与离线验收</h2>
+<p>解压源码包后使用 Node.js 22 或更新版本运行：</p>
+<div class="tech-code"><div class="tech-code-label">Bash</div><pre><code class="language-bash">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8765</span>
+</code></pre></div>
+<p>打开 <code>http://127.0.0.1:8765/</code>。先试“同一问题，证据齐全”，核对两张虚构工单与三项来源；再试“另一账户的工单被拒绝读取”“问题类型不同”“工单版本已变化”和“候选伪造规则来源”。<code>npm test</code> 使用固定数据检查成功、跨账户隐藏、订单与问题冲突、关闭状态、工具超时、版本过期、候选结构错误及来源伪造等分支。测试结果仅是离线断言，<strong>不是</strong>真实模型的工具选择能力、客服语义判断或生产权限测试。</p>
+<p>如果未来接入真实模型，可以保留“候选只建议、证据独立读取、服务端再核验”的分层：先让模型挑出可能重复的工单，再由有权限的只读服务返回相关证据；人工确认后，后端按当前版本执行可审计的合并，并查询最终状态。那是后续工程设计，不是本文已经实现的功能。本文能展示的最小成果，是在前端把建议与证据、失败原因和人工决定放在同一屏，让错误的候选有明确的停止位置。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F18%2Fagent-duplicate-ticket-review%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%A2%E6%9C%8D%E5%B7%A5%E5%8D%95/" rel="tag">客服工单</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/17/agent-invoice-request-preflight/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">开发票前别急着提交：Agent 核对订单、抬头和剩余金额</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

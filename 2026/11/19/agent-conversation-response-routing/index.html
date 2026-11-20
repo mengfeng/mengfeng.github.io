@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>切换客户时，Agent 的旧回答该放哪？ | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 演示客服工作台如何按客户、会话和任务 ID 保存 Agent 草稿，并验证后台回复、重试和工作区重置。" name="description"/><link href="https://mengfeng.github.io/2026/11/19/agent-conversation-response-routing/" rel="canonical"/><meta content="切换客户时，Agent 的旧回答该放哪？" property="og:title"/><meta content="用 Vue 3 和 TypeScript 演示客服工作台如何按客户、会话和任务 ID 保存 Agent 草稿，并验证后台回复、重试和工作区重置。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/19/agent-conversation-response-routing/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-conversation-response-routing/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-19-agent-conversation-response-routing" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">切换客户时，Agent 的旧回答该放哪？</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/19/agent-conversation-response-routing/"><time datetime="2026-11-20T00:11:39.103177Z" itemprop="datePublished">2026-11-19</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="客服切换到下一位客户时，上一条任务还在跑"></a>客服切换到下一位客户时，上一条任务还在跑</h2>
+<p>客服先在客户 A 的配送会话查询物流，等工具返回期间切到客户 B 的退货会话。几秒后，A 的物流结果到了。如果两个会话共用一个 <code>draft</code> 字段，A 的答复就可能显示在 B 的工单旁。这个错误在单会话里很难复现，客服却可能在高峰期同时等多笔查询，把出现在眼前的草稿当成当前客户的答案。</p>
+<p>今天的工作台允许客服在后台等结果。A 的查询返回时，结果进入 A 的配送会话，B 的草稿区继续显示 B 的状态。客服切回 A 才会看到 A 的草稿。若 A 已在配送会话发起第二次查询，系统只采纳较新的任务；若工作区已重置，原工作区的任务返回后直接失效。</p>
+<p><a href="/examples/agent-conversation-response-routing/">打开交互示例</a>或<a href="/examples/agent-conversation-response-routing/source.zip">下载源码</a>，可以手动决定每个结果的到达顺序。三个会话、回复内容和工具失败都来自本地固定样本，示例只生成本地草稿。真实模型调用、客服数据读取与消息发送均未接入。</p>
+<figure class="tech-figure"><img alt="手绘机器人把迟到的信件从当前客户文件夹旁引到单独的托盘" height="1024" src="/images/agent-conversation-response-routing/flow.webp" width="1536"/></figure>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="比较三种身份"></a>比较三种身份</h2>
+<p>第一种身份是<strong>当前可见的会话</strong>。它只决定右侧草稿区读哪条记录。第二种身份是<strong>任务创建时的会话</strong>。启动时同时记录客户和会话编号，后续响应按这组字段定位原记录。第三种身份是<strong>会话内最新任务</strong>。在同一会话连续发起查询时，已经被覆盖的任务失去写入资格，即使返回内容本身是有效的。</p>
+<table>
+<thead>
+<tr>
+<th>演示会话</th>
+<th>客户</th>
+<th>会话编号</th>
+<th>草稿示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户 A · 配送</td>
+<td>A</td>
+<td>1</td>
+<td>包裹正在中转</td>
+</tr>
+<tr>
+<td>客户 A · 发票</td>
+<td>A</td>
+<td>2</td>
+<td>发票状态待人工核对</td>
+</tr>
+<tr>
+<td>客户 B · 退货</td>
+<td>B</td>
+<td>1</td>
+<td>申请已收到，等待审核</td>
+</tr>
+</tbody>
+</table>
+<p>两个客户都可能拥有编号为 1 的会话，而同一个客户也可能同时处理配送和发票。要把草稿独立保存，最小示例用 <code>JSON.stringify([customer, conversation])</code> 生成字符串键，再放进 <code>Map</code>。这也避免用对象本身当键时遇到的问题：两个字段值完全相同的新对象，在 <code>Map</code> 里仍是两个不同的引用。参见 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#key_equality">MDN 对 Map 键相等性的说明</a>。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="结果总是先找到原来的任务"></a>结果总是先找到原来的任务</h2>
+<p>点击“启动任务”时，程序保存一份任务记录，包含 <code>scope</code>、<code>workspaceVersion</code> 和递增的 <code>id</code>。待投递列表里的每一项都持有这份记录。实现真正的工具调用时，这份记录可以由发起请求的闭包持有，也可以由前端通过服务端分配的任务 ID 找回来。关键是收到回复时能找到自己的任务记录，避免拿页面当前选中的客户去补填结果。</p>
+<p>处理结果分三步。先核对任务属于当前工作区版本，再查它对应的原会话，确认该会话最新状态仍在等这项任务。最后把响应当作 <code>unknown</code>，检查客户、会话、任务编号和内容字段。传入结果的身份只能和本地任务记录比对，不能决定目标会话。若某个结果声称属于另一个客户，当前任务以“返回结构或归属不符”结束，另一个客户的草稿保持自己的状态。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">function</span><span class="w"> </span><span class="nx">finish</span><span class="p">(</span><span class="nx">run</span><span class="o">:</span><span class="w"> </span><span class="kt">Run</span><span class="p">,</span><span class="w"> </span><span class="nx">raw</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Delivery</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">run</span><span class="p">.</span><span class="nx">workspaceVersion</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">workspaceVersion</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s1">'expired_workspace'</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">scopeKey</span><span class="p">(</span><span class="nx">run</span><span class="p">.</span><span class="nx">scope</span><span class="p">)</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">entry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">entries</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">entry</span><span class="o">?</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'pending'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">entry</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">run</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s1">'superseded'</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">reply</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">parseReply</span><span class="p">(</span><span class="nx">run</span><span class="p">,</span><span class="w"> </span><span class="nx">raw</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">reply</span><span class="o">?</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'ok'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">entries</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'ready'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">run.id</span><span class="p">,</span><span class="w"> </span><span class="nx">draft</span><span class="o">:</span><span class="w"> </span><span class="kt">reply.draft</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s1">'ready'</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">reason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">reply</span><span class="o">?</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'tool_error'</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'tool_error'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'invalid_response'</span>
+<span class="w">  </span><span class="nx">entries</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'error'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">run.id</span><span class="p">,</span><span class="w"> </span><span class="nx">reason</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">reason</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>Entry</code> 以 <code>status</code> 区分等待、草稿可见和失败。Vue 模板只在结果可用时取 <code>draft</code>，只在错误状态读 <code>reason</code>。TypeScript 会按照字面量字段收窄联合类型，运行时的 <code>parseReply()</code> 再负责识别真实接口可能返回的空字符串、字段类型变化和不匹配的身份。参见 <a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions">TypeScript Handbook 的判别联合</a>。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="后台结果只更新它自己的会话"></a>后台结果只更新它自己的会话</h2>
+<p>界面先更新数据，再从当前会话读取要展示的内容。<code>computed()</code> 用选中的索引取得当前会话；切换会话、启动任务、收到结果或重置后，<code>syncVisibleEntry()</code> 都会从 <code>Map</code> 重新取当前记录。这里的 <code>Map</code> 由纯 TypeScript 逻辑管理，Vue 只维护当前可见记录的 <code>ref</code>。这样离线测试可以直接调用 <code>finish()</code> 检验数据归属，再到浏览器验证页面实际显示。参见 <a href="https://vuejs.org/api/reactivity-core.html#computed">Vue 响应式 API 中的 computed</a>。</p>
+<p>同一次配送查询有时会因为重连收到两次完成通知。第一次把记录移到 <code>ready</code>，第二次找不到对应的 <code>pending</code> 状态，会被记录为已完成或已替代。更常见的是客服点击重试，新的任务先返回。按会话核对最新编号后，旧成功和旧失败都无法覆盖新结果。与此同时，A 的下一次配送查询也不会覆盖 A 的发票会话。</p>
+<p>当客服退出工作区或会话范围改变，真实产品需要按权限刷新可见记录。演示把这一动作简化成“重置工作区”，增加工作区版本并清空草稿存储。待投递列表还留着匿名旧任务按钮，让读者可以模拟中断后仍有回调到达。按下按钮只会产生“工作区已重置”的记录，旧回复内容和会话标签不会重新出现在页面。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="投递顺序可以手动控制"></a>投递顺序可以手动控制</h2>
+<p>解压源码后运行以下命令，再打开 <code>http://127.0.0.1:8765/</code>。源码包也带有已构建的 <code>app.js</code>，可以直接在浏览器里打开 <code>index.html</code>。</p>
+<div class="tech-code"><div class="tech-code-label">sh</div><pre><code class="language-sh">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8765</span>
+</code></pre></div>
+<p>先在 A 的配送会话启动任务 #1，切到 B 的退货会话启动 #2。留在 B，投递 #1，右侧仍显示“等待任务 #2 返回”。投递 #2 后可看到 B 的退货草稿，切回 A 则会看到刚刚保存的配送草稿。还可以在 A 的发票会话跑一遍，观察它使用自己的记录。</p>
+<p>然后回到同一个会话连续启动两个任务，先交付新的，再交付旧的，右侧会保留新的草稿。下拉菜单可以模拟工具失败、响应归属不符、字段类型错误。重置工作区后再投递旧任务，可以检查它不会恢复已清除的草稿。<code>npm test</code> 使用固定结果核对这些边界，包括重复投递、重试后的旧失败和重置后的旧回调。测试衡量的是状态处理逻辑，生产环境中的传输、权限和模型判断需要各自验证。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="接到真实客服系统时"></a>接到真实客服系统时</h2>
+<p>后台是否继续执行取决于客服流程。纯查询可以允许后台完成，客服切回来时继续阅读；当用户关闭工具或任务代价较高，可以在请求层增加取消通知。Vue 的 watcher 支持为失效请求注册清理回调，浏览器 <code>AbortController.abort()</code> 可以终止支持该信号的 fetch、响应体读取和流。后台服务是否已经受理任务，需要由它自己的取消协议或状态查询来确认。参见 <a href="https://vuejs.org/guide/essentials/watchers.html#side-effect-cleanup">Vue watcher 清理文档</a>与 <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort">MDN 的 AbortController 文档</a>。</p>
+<p>服务端应从已验证的会话识别客服账号，对目标客户、会话和工具资源分别做授权，并分配可查询的任务标识。前端的归属检查用来正确展示已获准读取的数据。对于持续输出的接口，进度、增量内容、最终结果和错误都可以走同样的归属检查；日志只保留诊断所需的任务标识和结果类型。发送给客户前，客服还应在当前会话内审阅草稿并确认收件对象。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F19%2Fagent-conversation-response-routing%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%A2%E6%9C%8D%E4%BC%9A%E8%AF%9D/" rel="tag">客服会话</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/18/agent-duplicate-ticket-review/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">两张客服工单是一件事吗？让 Agent 先找证据，再给合并建议</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>转化率降了，还是分母变了？让 Agent 先核对统计口径 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 演示结账转化率周报，按指标版本、分母、时区与结算状态核对周环比，并验证 Agent 建议的来源和数值。" name="description"/><link href="https://mengfeng.github.io/2026/11/20/agent-conversion-rate-comparability/" rel="canonical"/><meta content="转化率降了，还是分母变了？让 Agent 先核对统计口径" property="og:title"/><meta content="用 Vue 3 和 TypeScript 演示结账转化率周报，按指标版本、分母、时区与结算状态核对周环比，并验证 Agent 建议的来源和数值。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/20/agent-conversion-rate-comparability/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-conversion-rate-comparability/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-20-agent-conversion-rate-comparability" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">转化率降了，还是分母变了？让 Agent 先核对统计口径</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/20/agent-conversion-rate-comparability/"><time datetime="2026-11-21T00:26:03.088545Z" itemprop="datePublished">2026-11-20</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="周报里的一个下降箭头"></a>周报里的一个下降箭头</h2>
+<p>周一早上，运营在看板里问 Agent：“上周和本周的结账转化率差了多少？” 上周有 10,000 个进入结账的会话，其中 800 个完成付款。本周有 12,000 个进入结账的会话，其中 864 个完成付款。两期使用同一套定义，转化率分别是 8.00% 和 7.20%。付款会话数增加了，结账转化率下降了 0.80 个百分点，这两件事可以同时发生。</p>
+<p>如果本周报表的 18,000 来自全部访问会话，拿它作分母会得到 4.80%。这个算式可以成立，但已经换了指标。把 4.80% 与上周的 8.00% 并排，再让 Agent 输出“结账转化率骤降”，会误导阅读周报的人。页面需要在展示结论前核对数字是怎么算出来的。</p>
+<p>本例把这段流程拆成两次检查。看板先判断两份快照是否可比并复算差值，再审核 Agent 建议是否引用了这两份快照、给出的差值是否一致。读者可以切换八个场景，查看原始计数和每种结果。数据工具、模型候选和周报内容都使用虚构样本，代码运行在浏览器本地。<a href="/examples/agent-conversion-rate-comparability/">打开交互示例</a> · <a href="/examples/agent-conversion-rate-comparability/source.zip">下载源码</a></p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="先讲清楚一个会话被算了几次"></a>先讲清楚一个会话被算了几次</h2>
+<p>示例的指标定义是“付款的结账会话数 ÷ 进入结账的会话数”。数据工具应按会话去重，分子从同一批结账会话中计算。一个会话里触发多次付款事件，在本例口径下仍然只计一个。这样分子才是分母的子集，分子大于分母时也就有明确的异常含义。这个约束只适用于本例的会话指标。真实系统即使叫“购买次数”，也可能按事件、订单或商品件数汇总，各有用途。Google 的电商指标文档举例说明了一次购买三件商品如何分别记为一次购买事件和三件商品。<a href="https://support.google.com/analytics/answer/13428834?hl=en">Google Analytics 电商指标文档</a></p>
+<p>数据工具返回的每期快照除了计数，还有快照 ID、统计区间、口径和结算状态。版本用于追踪口径变更，分母单位、时区、渠道和覆盖天数让页面与排查者看得出具体有什么变化。下表中两周是演示工具预先选定的连续七天，边界由工具提供。只检查天数相同无法证明两个任意日期区间也适合做周环比。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>本例如何使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>绑定某周的计数快照，便于核对候选引用</td>
+</tr>
+<tr>
+<td><code>definition</code></td>
+<td>核对分母、版本、时区、渠道和覆盖天数</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td>两期都已结算才生成差值</td>
+</tr>
+<tr>
+<td><code>sessions</code> 与 <code>paidSessions</code></td>
+<td>检查计数后复算变化</td>
+</tr>
+</tbody>
+</table>
+<p>生产接口中，一个版本还应对应明确的归因规则。比如某会话周日晚上进入结账、周一才付款，到底计入哪一周，需要由数据方确定。若把订单时间按 UTC 聚合、会话时间按北京时间聚合，即使字段名一样，分子和分母也可能跨到不同日期。示例由固定工具提供每个时间窗口的聚合，重点是核对返回结果的定义和状态。实际分析平台的数据在处理期间可能变化，业务方可在工具契约里约定何时标记为已结算。<a href="https://support.google.com/analytics/answer/11198161?hl=en">Google Analytics 数据新鲜度文档</a></p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="缺数据、零分母和零付款是三种情况"></a>缺数据、零分母和零付款是三种情况</h2>
+<p>页面先看本周快照是否存在，然后检查计数是否为非负安全整数且分子不超过分母。接着核对是否结算、定义是否相同，最后检查分母是否为零。阻断时仍显示已返回的计数和快照状态，旁边给出重新查询、等待结算或按统一口径重算的提示。</p>
+<ul>
+<li>快照没返回时，页面显示“快照未返回”。这是工具查询状态，需要重新取数据。</li>
+<li>结账会话数和付款会话数都为零时，转化率未定义。界面不显示趋势数字。</li>
+<li>结账会话数大于零，付款会话数为零时，转化率为 0.00%。这是一条有效结果，可以参与比较。</li>
+</ul>
+<p>用一个 <code>value || 0</code> 兜住所有空值会丢掉这些差异。周报看起来总能产出数字，排查时却不知道是工具没返回、渠道没有流量，还是确实没有付款。本例用 <code>Comparison</code> 的 <code>kind</code> 与 <code>reason</code> 表达比较状态，Vue 模板只在可比状态渲染百分比和差值。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="百分点由页面复算，再检查候选"></a>百分点由页面复算，再检查候选</h2>
+<p>页面除法用未四舍五入的原始比率。将后一期比率减去前一期，再乘以 10,000 并四舍五入为整数基点。一个基点是 0.01 个百分点，所以 <code>-80</code> 对应 −0.80 个百分点。本例保留两位小数给周报阅读，计算链路不依赖展现在屏幕上的字符串。若业务选择报告相对变化，则公式还需要除以前期比率，分母为零时应另行处理。本例报告两期比率的直接差。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">earlierRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">earlier</span><span class="p">.</span><span class="nx">paidSessions</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">earlier</span><span class="p">.</span><span class="nx">sessions</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">laterRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">later</span><span class="p">.</span><span class="nx">paidSessions</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">later</span><span class="p">.</span><span class="nx">sessions</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">difference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">laterRate</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">earlierRate</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">deltaBp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">difference</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">10</span><span class="nx">_000</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="nx">difference</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="mf">0</span>
+</code></pre></div>
+<p>模拟 Agent 只返回一条结构化提议，带上两个快照 ID 和整数基点差值。收到提议时，代码从 <code>unknown</code> 开始检查，确认当前可以比较，核对快照 ID，再对整数差值做严格比较。代入过时的快照 ID，即使差值相同也不会通过。若候选报的是 −800 基点，页面仍可展示独立复算的 −80 基点，同时阻断该候选进入周报草稿。通过检查只代表“引用和数值一致”。描述下降的原因仍需额外证据，整体比例下降本身无法诊断支付故障或某个渠道质量变化。</p>
+<p>显示绝对比率时，<code>Intl.NumberFormat</code> 的百分比格式接受小数比率，输入 <code>0.072</code> 得到 <code>7.20%</code>。显示差值时，将基点除以 100，再添加“个百分点”标签。Vue 的 <code>computed()</code> 把当前场景的快照、比较结果和候选审核状态串起来，切换场景后模板使用同一份派生结果。实际请求数据或调用模型应由独立动作触发，计算属性只处理已有数据。<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat">MDN 百分比格式</a> · <a href="https://vuejs.org/guide/essentials/computed.html">Vue 计算属性</a></p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="运行与验证"></a>运行与验证</h2>
+<p>解压源码包后，可以直接在浏览器打开 <code>index.html</code>。要核对源码或改动后重建，在解压目录运行下面的命令，然后访问 <code>http://127.0.0.1:8765/</code>。</p>
+<div class="tech-code"><div class="tech-code-label">sh</div><pre><code class="language-sh">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8765</span>
+</code></pre></div>
+<p>先选“两周口径一致”，核对 800 ÷ 10,000 和 864 ÷ 12,000。切到“本周改用全站会话作分母”，检查页面停止展示变化。依次尝试“本周无结账会话”和“有结账会话，付款数为零”，确认两个零值的处理不同。最后模拟错差值或旧快照，观察独立复算结果仍在，模拟候选无法通过。</p>
+<p>离线测试覆盖这些分支、异常计数、时区不一致和字段类型错误。接到真实数据服务后，还要校验外部响应字段、账户和渠道权限，以及服务端选取的时间窗口。真实周报可以保留快照 ID 供复查，并在用户审阅后再执行发布动作。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F20%2Fagent-conversion-rate-comparability%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF/" rel="tag">运营看板</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/19/agent-conversation-response-routing/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">切换客户时，Agent 的旧回答该放哪？</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>客服工单快超时了吗？让 Agent 按服务时段算首响 | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 把跨夜、午休和重叠班次算成可复核的服务分钟，再核对 Agent 给出的响应时限结论。" name="description"/><link href="https://mengfeng.github.io/2026/11/23/agent-support-business-clock/" rel="canonical"/><meta content="客服工单快超时了吗？让 Agent 按服务时段算首响" property="og:title"/><meta content="用 Vue 3 和 TypeScript 把跨夜、午休和重叠班次算成可复核的服务分钟，再核对 Agent 给出的响应时限结论。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/23/agent-support-business-clock/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-support-business-clock/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-23-agent-support-business-clock" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">客服工单快超时了吗？让 Agent 按服务时段算首响</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/23/agent-support-business-clock/"><time datetime="2026-11-24T00:31:35.036775Z" itemprop="datePublished">2026-11-23</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="这张跨夜工单，用掉了多少响应时间？"></a>这张跨夜工单，用掉了多少响应时间？</h2>
+<p>一张客服工单在 17:40 建立，第二天 09:20 仍等待首次回复。从创建到统计时点经过了 940 个自然分钟。演示团队每天 09:00 上班、18:00 下班，中午还有一小时休息。按这个团队的服务时段，前一天只计 17:40–18:00，第二天只计 09:00–09:20，合计 40 分钟。首响额度是 60 个服务分钟，页面应当显示「时限内」。</p>
+<p>运营要能回答客户为什么看起来等了一晚，工单却还没超时。仅给一个分钟数，客服需要再翻排班表。这个示例会把两段实际计入的时间一起展示。遇到午休、临时加班覆盖原班次、排班拉取不全等情况，也可以切换样本，检查数字从哪里来。工单、排班和 Agent 候选全是固定演示数据，页面可离线运行。<a href="/examples/agent-support-business-clock/">打开 Vue 交互示例</a> · <a href="/examples/agent-support-business-clock/source.zip">下载源码</a></p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="在工具契约里写清楚「覆盖到哪儿」"></a>在工具契约里写清楚「覆盖到哪儿」</h2>
+<p>假设只读工具 <code>readFirstReplyClock(ticketId)</code> 返回一个快照，其中包含工单创建时间、服务端统计时点、时限和生效排班。示例把工单限定为等待首次回复的状态，计时区域为 <code>[openedAt, asOf)</code>。业务系统里，一旦收到符合规则的首响事件，就应该用已确认的事件时刻截住计时。是否算首响，需要团队定义自动回执、人工回复等事件的口径。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>谁负责</th>
+<th>页面如何使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ticketId</code>、<code>id</code></td>
+<td>只读工具</td>
+<td>将候选绑定到工单及本次快照</td>
+</tr>
+<tr>
+<td><code>openedAt</code>、<code>asOf</code></td>
+<td>只读工具</td>
+<td>裁剪计时跨度，展示结论对应的时点</td>
+</tr>
+<tr>
+<td><code>budgetMinutes</code>、<code>calendarId</code></td>
+<td>只读工具</td>
+<td>明确首响额度及排班版本</td>
+</tr>
+<tr>
+<td><code>coverage</code>、<code>shifts</code></td>
+<td>只读工具</td>
+<td>确认排班完整范围，并提供实际服务时段</td>
+</tr>
+<tr>
+<td><code>snapshotId</code>、<code>ticketId</code>、<code>elapsedMinutes</code>、<code>state</code></td>
+<td>Agent 候选</td>
+<td>与程序独立算出的结果逐项核对</td>
+</tr>
+</tbody>
+</table>
+<p><code>coverage</code> 表示工具能够保证排班完整的一段时间，涵盖区间里的休息段。它和 <code>shifts</code> 需要来自同一版本。如果覆盖跨夜时段，工具列出的两条班次之间有空档，空档可认定为停止计时。若排班只返回到午夜，第二天就没有足够证据。此时页面显示「排班范围不足」，隐藏分钟数和是否超时的判断。完整覆盖下的零分钟有自己的展示文案，客服可以看到「本次等待区间内没有服务时段」。</p>
+<p>演示数据在构造时使用带 <code>+08:00</code> 的标准日期时间字符串，再用整数毫秒参与计算。浏览器格式化时显式指定 <code>Asia/Shanghai</code>，团队换电脑也会看到同一套业务时刻。真实排班服务需要按团队时区展开班次，并处理节假日、临时班和夏令时。页面拿到已解析的绝对时间区间后，按同一单位计算。<a href="https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-date-time-string-format">ECMAScript 日期时间字符串格式</a> · <a href="https://tc39.es/ecma402/#sec-intl.datetimeformat">ECMA-402 DateTimeFormat 构造方法</a></p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="先裁剪到工单区间，再合并班次"></a>先裁剪到工单区间，再合并班次</h2>
+<p>把每条班次和等待区间取交集。先取两个起点中较晚的一项，再取两个终点中较早的一项。起点不早于终点时没有可计入的时长。午休例子在 11:50 建单、13:15 读取快照，交集是 11:50–12:00 和 13:00–13:15，合计 25 分钟。</p>
+<p>工具可能把普通班次和临时协作班一起返回。比如在第二天 09:00–12:00 之外，还返回 09:05–11:30。后者和普通班次的交集会在裁剪后重叠。直接累加会把 09:05–09:20 多算 15 分钟，把 40 分钟变成 55 分钟。按起点排序，再把交叠或相邻的区间合并，最后累计每个区间的长度。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">clipped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">shifts</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">shift</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span>
+<span class="w">    </span><span class="nx">start</span><span class="o">:</span><span class="w"> </span><span class="kt">Math.max</span><span class="p">(</span><span class="nx">shift</span><span class="p">.</span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nx">openedAt</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">end</span><span class="o">:</span><span class="w"> </span><span class="kt">Math.min</span><span class="p">(</span><span class="nx">shift</span><span class="p">.</span><span class="nx">end</span><span class="p">,</span><span class="w"> </span><span class="nx">asOf</span><span class="p">),</span>
+<span class="w">  </span><span class="p">}))</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">segment</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">segment</span><span class="p">.</span><span class="nx">start</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">segment</span><span class="p">.</span><span class="nx">end</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">sort</span><span class="p">((</span><span class="nx">left</span><span class="p">,</span><span class="w"> </span><span class="nx">right</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">left</span><span class="p">.</span><span class="nx">start</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">right</span><span class="p">.</span><span class="nx">start</span><span class="p">)</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">segments</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">start</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">end</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">current</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">clipped</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">segments</span><span class="p">.</span><span class="nx">at</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">last</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">current</span><span class="p">.</span><span class="nx">start</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nx">last</span><span class="p">.</span><span class="nx">end</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">last</span><span class="p">.</span><span class="nx">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">last</span><span class="p">.</span><span class="nx">end</span><span class="p">,</span><span class="w"> </span><span class="nx">current</span><span class="p">.</span><span class="nx">end</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">segments</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">current</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>排序和合并只改处理时新建的区间，界面仍能展开查看原始排班。演示按整分钟处理样本，且保留三种状态。40 分钟是「时限内」，60 分钟是「已达时限」，75 分钟是「已超时」。如果团队规则将到达时限本身计为违约，阈值归类需要跟业务服务保持一致。实际系统若记录到秒，最好以秒做比较，在标题和明细里按统一规则展示分钟，避免四舍五入改变状态。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="候选错了，计时证据仍然可用"></a>候选错了，计时证据仍然可用</h2>
+<p>读取工具的数据与 Agent 候选分别进入页面。候选按 <code>unknown</code> 接收。程序先检查有没有完整可计算的区间，再比较候选中的工单 ID、快照 ID、分钟数和状态。旧快照可能碰巧也得出 40 分钟，仍要核对来源。模型若错用自然时间返回 940 分钟，页面保留独立复算的 40 分钟，并标记候选未通过。排班覆盖不足时，程序无法复算，页面展示排班缺口。</p>
+<p>Vue 用 <code>computed()</code> 从当前快照推导计时结果，从快照、候选和结果推导核验状态。切换场景会更新两项派生结果，并收起上一场景的详情。进度条只显示额度消耗比例，数字仍保留 75 分钟这样的超时结果。定时刷新可以在组件的请求逻辑里取新快照，再更新页面所依赖的数据。<a href="https://vuejs.org/guide/essentials/computed.html#best-practices">Vue 计算属性的使用约定</a></p>
+<p>真实客服系统中，工单详情和服务窗口应该由服务端基于操作者权限和工单所属队列返回。这时 Agent 适合把结构化结果讲给客服听，比如指出工单跨过了下班与恢复服务的边界。系统对外沟通、升级或者写入审计结果时，仍需读取当前工单状态并按业务权限执行。此示例只有页面读取和展示，没有发送消息或修改工单的功能。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="本地运行与验收"></a>本地运行与验收</h2>
+<p>解压后打开 <code>index.html</code> 即可体验。若需修改源码，在含 <code>package.json</code> 的目录执行以下命令，再打开 <code>http://127.0.0.1:8077/</code>。</p>
+<div class="tech-code"><div class="tech-code-label">sh</div><pre><code class="language-sh">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8077</span>
+</code></pre></div>
+<ol>
+<li>在「跨夜工单」核对两段各 20 分钟。切到「午休暂停计时」应只看到 10 分钟和 15 分钟。</li>
+<li>切到「两份班次相互重叠」，展开原始排班核对多出的班次，确认结果仍为 40 分钟。</li>
+<li>分别查看「刚好用完时限」和「已超过时限」，核对标题及数字。再对照「排班覆盖不足」和「整段时间都在休息」，确认后者显示 0 分钟。</li>
+<li>切换旧快照和错用自然分钟的候选，两次都应标明候选未通过，并继续显示正确的 40 分钟。</li>
+</ol>
+<p>离线测试还覆盖相邻班次、恰好发生在下班时刻的工单、非法时间和跨工单候选。它测试的是固定样本上的计算与界面分支。接入真实模型后，可以另做一组可复算的样本，统计它有没有引用当前快照，以及解释是否和实际计入的时段一致。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F23%2Fagent-support-business-clock%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%A2%E6%9C%8D%E5%B7%A5%E5%8D%95/" rel="tag">客服工单</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/21/agent-review-sample-evidence/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">Agent 归纳商品评价，怎么把每个主题追到原文？</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+:root {
+  color: #162946;
+  background: #f3f4fa;
+  font: 16px/1.6 "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { width: min(100%, 62rem); margin: auto; padding: 2.8rem 1.25rem; }
+h1 { margin: 0; letter-spacing: -.04em; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.2; }
+h2 { margin: 0; font-size: 1.2rem; }
+p { margin: .4rem 0; }
+.muted, dt { color: #485773; }
+.toolbar { margin: 1.55rem 0 1rem; display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+label { font-weight: 700; }
+select {
+  max-width: 100%;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #7788a6;
+  padding: .5rem .65rem;
+  border-radius: .3rem;
+  min-height: 2.65rem;
+  font: inherit;
+}
+.workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 1rem; }
+section { align-self: start; background: #fff; border: 1px solid #c2ccdf; border-radius: .4rem; padding: 1.2rem; min-width: 0; }
+.result { border-top: .35rem solid #354e9d; }
+.result[data-result="uncovered"], .result:has([data-meter-state="over-limit"]) { border-top-color: #a9512b; }
+.number { font-size: clamp(1.55rem, 5vw, 2.8rem); font-weight: 750; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.number small { font-size: .95rem; }
+progress { width: 100%; accent-color: #354e9d; }
+.candidate { font-size: .9rem; color: #3d4d6d; }
+.rejected { color: #963615; }
+dl { margin: 1rem 0 0; font-size: .9rem; }
+dl div, .segment { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; padding: .5rem 0; }
+dl div { border-top: 1px solid #dce2ee; }
+dd { margin: 0; }
+ol { margin: .65rem 0; list-style: none; padding: 0; }
+.segment { padding-left: .55rem; border-left: .25rem solid #a6b5e9; font-variant-numeric: tabular-nums; }
+.segment span { overflow-wrap: anywhere; }
+.segment b { flex: 0 0 auto; }
+summary { cursor: pointer; padding: .4rem 0; }
+pre { max-width: 100%; overflow: auto; padding: .8rem; background: #f1f4fc; font-size: .85rem; }
+:focus-visible { outline: 3px solid #a9512b; outline-offset: 3px; }
+@media (max-width: 40rem) {
+  main { padding: 1.45rem .85rem; }
+  section { padding: .9rem; }
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+}
+.raw { margin: .4rem 0; padding-left: 1.25rem; color: #485773; font-size: .9rem; }

@@ -1,0 +1,41 @@
+:root {
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  color: #1d342e;
+  background: #f2f6f1;
+  line-height: 1.55;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 62rem; margin: 0 auto; padding: 3.25rem 1.5rem; }
+h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.04em; }
+h2 { margin: 0; font-size: 1.2rem; }
+p { margin: .45rem 0; }
+.muted, small, dt { color: #475d54; }
+.toolbar { margin: 1.9rem 0 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+.toolbar label { font-weight: 650; }
+select, button { font: inherit; padding: .55rem .75rem; min-height: 2.75rem; border-radius: .25rem; }
+select { max-width: 100%; border: 1px solid #7b9185; color: inherit; background: #fff; }
+.workspace { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 1rem; }
+section { background: #fff; border: 1px solid #bfcfc2; border-radius: .35rem; padding: 1.25rem; min-width: 0; }
+.evidence ul { list-style: none; padding: 0; margin: .75rem 0; }
+.evidence li { display: flex; justify-content: space-between; gap: .55rem; padding: .65rem 0; border-bottom: 1px solid #dce7df; }
+small { display: block; overflow-wrap: anywhere; }
+.reading { text-align: right; flex: 0 0 auto; }
+.reading b, dd { font-variant-numeric: tabular-nums; }
+summary { cursor: pointer; padding: .4rem 0; }
+pre { background: #edf4ef; padding: .8rem; overflow: auto; font-size: .85rem; }
+.decision { align-self: start; border-top: 4px solid #80613a; }
+.decision[data-result="ready"] { border-top-color: #2b7354; }
+.decision[data-result="conflict"] h2 { color: #8f351e; }
+dl { margin: 1.15rem 0; }
+dl div { display: flex; justify-content: space-between; align-items: baseline; gap: .65rem; padding: .55rem 0; border-top: 1px solid #dce7df; }
+dd { margin: 0; font-weight: 700; }
+button { border: 1px solid #175637; background: #175637; color: #fff; cursor: pointer; }
+:focus-visible { outline: 3px solid #a8542e; outline-offset: 3px; }
+@media (max-width: 42rem) {
+  main { padding: 1.5rem .9rem; }
+  section { padding: 1rem; }
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .decision { grid-row: 1; }
+}

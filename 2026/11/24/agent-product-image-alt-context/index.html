@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>同一张商品图，Agent 为什么要写三种 alt？ | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 按图片位置核对替代文本，分别生成详情图描述、装饰空值和图片链接名称。" name="description"/><link href="https://mengfeng.github.io/2026/11/24/agent-product-image-alt-context/" rel="canonical"/><meta content="同一张商品图，Agent 为什么要写三种 alt？" property="og:title"/><meta content="用 Vue 3 和 TypeScript 按图片位置核对替代文本，分别生成详情图描述、装饰空值和图片链接名称。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/24/agent-product-image-alt-context/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-product-image-alt-context/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-24-agent-product-image-alt-context" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">同一张商品图，Agent 为什么要写三种 alt？</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/24/agent-product-image-alt-context/"><time datetime="2026-11-25T01:25:38.573539Z" itemprop="datePublished">2026-11-24</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="同一张马克杯照片，为什么要写三种 alt？"></a>同一张马克杯照片，为什么要写三种 alt？</h2>
+<p>运营在商品编辑器里上传了一张钴蓝色马克杯照片。第一次把它放在商品详情里，照片能补充杯柄形状和内壁颜色。第二次用它装饰一段已经写清外观的文字，图片里的信息都在旁边。第三次把它作为进入「马克杯规格」的唯一链接内容，用户需要知道的是可以点它看规格。</p>
+<p>如果系统在素材库只存一个 Agent 生成的 <code>alt</code>，每次插入都直接复制，第二个位置会让用户重复听到外观，第三个位置会让链接只读出杯子长什么样。示例让运营切换同一张照片的三种页面位置，在真正的 HTML 上下文中查看结果。商品照片为生成的演示素材，商品信息和模型候选都是固定样本。<a href="/examples/agent-product-image-alt-context/">打开 Vue 交互示例</a> · <a href="/examples/agent-product-image-alt-context/source.zip">下载源码</a></p>
+<table>
+<thead>
+<tr>
+<th>图片在页面上的用途</th>
+<th>示例结果</th>
+<th>页面为什么这样做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>详情图补充外观</td>
+<td>钴蓝色马克杯，右侧有圆形杯柄，杯内为白色</td>
+<td>用短句传达在这里有用的视觉信息</td>
+</tr>
+<tr>
+<td>图片紧挨着等价的文字</td>
+<td><code>alt=""</code></td>
+<td>让辅助技术略过图片，保留旁边的描述</td>
+</tr>
+<tr>
+<td>图片是链接的唯一内容</td>
+<td>查看马克杯规格</td>
+<td>让链接有能说明去向的可访问名称</td>
+</tr>
+</tbody>
+</table>
+<p>依据 W3C WAI 的判断树，要先检查图片在当前页面中的作用。如果它是链接里唯一能说明用途的内容，就用替代文本描述去向或操作。如果链接里已经有等价的文字，旁边只是配图，空值可能更合适。真正遗漏 <code>alt</code> 时，部分屏幕阅读器可能朗读文件名。装饰分支应显式渲染空字符串，并保留页面上那段等价文字。<a href="https://www.w3.org/WAI/tutorials/images/decision-tree/">W3C 图片替代文本判断树</a> · <a href="https://www.w3.org/WAI/tutorials/images/decorative/">装饰图片</a> · <a href="https://www.w3.org/WAI/tutorials/images/functional/">功能图片</a></p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="把页面用途和素材版本交给读取工具"></a>把页面用途和素材版本交给读取工具</h2>
+<p>示例假设编辑器有个只读工具 <code>readImagePlacement(placementId)</code>。它能读到当前位置的用途、图片版本和经内容编辑确认的可见细节。详情图快照登记了一张图的两个细节，分别用 <code>handle</code> 和 <code>interior</code> 标记。图片链接所做的动作来自页面配置，页面提前声明「查看马克杯规格」。装饰位置则在渲染过程中实际提供含等价信息的文字。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>由谁提供</th>
+<th>用来检查什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>placement.id</code>、<code>imageRevision</code></td>
+<td>编辑器及素材库</td>
+<td>候选属于当前插槽和当前图片</td>
+</tr>
+<tr>
+<td><code>role</code>、<code>actionLabel</code></td>
+<td>页面配置</td>
+<td>图片用途，以及图片链接的动作名称</td>
+</tr>
+<tr>
+<td><code>subject</code>、<code>details</code></td>
+<td>已确认的素材信息</td>
+<td>允许组成替代文本的可见内容</td>
+</tr>
+<tr>
+<td><code>placementId</code>、<code>imageRevision</code>、<code>role</code>、<code>detailIds</code></td>
+<td>Agent 候选</td>
+<td>Agent 建议当前用途及要强调哪些细节</td>
+</tr>
+</tbody>
+</table>
+<p>版本绑定要覆盖位置变化。运营可能保留一张图，只把详情图移进图片链接。图没有换，链接名称的要求却变了。示例校验位置、图片版本和用途。正式接入时还可以把相邻文案或链接目的的修改绑定到一次新的位置快照，避免员工改完按钮目标后，旧候选还能通过。若一种位置由模板固定，Agent 只需提出相关细节，页面可以直接提供该位置的用途。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="让 Agent 选已确认的细节"></a>让 Agent 选已确认的细节</h2>
+<p>候选从接口进入程序时按 <code>unknown</code> 接收。先核对结构、位置、版本和用途，之后再处理引用。详情图允许从当前快照选一到两条已登记的细节。程序检查每个 ID 都有效且只出现一次，最后按配置中的顺序拼接短句。模型如果引用了「可用洗碗机」这样的词，当前列表里找不到该 ID，页面就要求人工复核。安全的显示值都来自编辑器已确认的信息。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">known</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Set</span><span class="p">(</span><span class="nx">placement</span><span class="p">.</span><span class="nx">details</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">detail</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">detail</span><span class="p">.</span><span class="nx">id</span><span class="p">))</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">ids</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">known</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">id</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Set</span><span class="p">(</span><span class="nx">ids</span><span class="p">).</span><span class="nx">size</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">ids</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s1">'review'</span><span class="p">,</span><span class="w"> </span><span class="nx">reason</span><span class="o">:</span><span class="w"> </span><span class="s1">'facts'</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">details</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">placement</span><span class="p">.</span><span class="nx">details</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">detail</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ids</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">detail</span><span class="p">.</span><span class="nx">id</span><span class="p">))</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">detail</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">detail</span><span class="p">.</span><span class="nx">phrase</span><span class="p">)</span>
+
+<span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s1">'ready'</span><span class="p">,</span><span class="w"> </span><span class="nx">alt</span><span class="o">:</span><span class="w"> </span><span class="kt">placement.subject</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'，'</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">details</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">'，'</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>这种拼接只适合本例的简单陈列照片。它依赖内容审核正确标注了当前素材、且登记细节能够独立连成一句话。如果照片是尺码表、带字活动海报或一张复杂图表，要先保留图中文字或完整说明。W3C 判断树也将复杂图与简单照片分开处理。示例的程序可以检查引用是否属于当前上下文，文字是否真正传达这张图的作用还需要人在页面中阅读。<a href="https://www.w3.org/WAI/tutorials/images/decision-tree/">W3C 图片替代文本判断树</a></p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="在 Vue 里预览真实标签，再让运营判断"></a>在 Vue 里预览真实标签，再让运营判断</h2>
+<p>程序返回 <code>ready</code> 时预览使用真实的 <code>&lt;img :alt="result.alt"&gt;</code>。装饰图仍绑定一个空字符串，图片链接则在 <code>&lt;a&gt;</code> 里仅放一张图。链接导航到当前示例下方的规格区，因此读者能直接按 Tab 找到它，再用 Enter 验证目标。HTML 标准要求，在只有图片内容的链接或按钮中，图片的替代文本合起来要能说清链接或按钮的目的。Vue 绑定接收计算后的字符串，预览的结果区也同时显示属性值。<a href="https://html.spec.whatwg.org/multipage/images.html#a-link-or-button-containing-nothing-but-the-image">HTML 标准的图片链接规则</a> · <a href="https://vuejs.org/guide/essentials/template-syntax.html#attribute-bindings">Vue 属性绑定</a></p>
+<p>模型候选不适用于当前位置时，编辑器预览显示「需要人工复核」，并提示是旧图、位置不符或引用错误。它隐藏这次未通过的预览，不去修改对外页面。接到正式编辑器后，可以保留已经审核的旧稿，让运营定位图片并准备新草稿。最终保存时服务器应再次核对当前版本和操作权限。示例从头到尾只操作浏览器里的本地预览。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="本地运行与验收"></a>本地运行与验收</h2>
+<p>源码包含已打包的页面。解压后可以直接打开 <code>index.html</code>。如果要修改与重建，在解压目录执行以下命令，再打开 <code>http://127.0.0.1:8077/</code>。</p>
+<div class="tech-code"><div class="tech-code-label">sh</div><pre><code class="language-sh">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8077</span>
+</code></pre></div>
+<ol>
+<li>开始于「商品详情图」，核对照片、外观文字和 <code>alt</code> 显示。切到「图旁已完整描述」，页面仍能看到图片，但元素上应有显式的 <code>alt=""</code>。</li>
+<li>选择「独立图片链接」，用键盘进入链接，再前往规格区。开发者工具的无障碍面板中应看到「查看马克杯规格」作为链接名称。</li>
+<li>试一次误把链接当装饰，再分别切换到未经登记的卖点、过期图片和错误位置。四种候选均应进入复核，并且不会把旧场景里的可点击图片留在页面上。</li>
+</ol>
+<p>离线测试覆盖用途中对空值的不同处理、重复细节和异常结构。浏览器检查可以验证真实标签、链接名称和键盘操作。正式发布前，还应在真实模板和目标辅助技术中检验文字是否准确、是否重复。这里未调用真实 Agent，也未评估模型识图或实际无障碍合规。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F24%2Fagent-product-image-alt-context%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%97%A0%E9%9A%9C%E7%A2%8D/" rel="tag">无障碍</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/22/agent-spec-source-conflict/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">商品规格对不上时，Agent 该让运营核对什么？</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

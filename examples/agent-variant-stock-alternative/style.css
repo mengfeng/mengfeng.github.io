@@ -1,0 +1,42 @@
+:root {
+  color: #173630;
+  background: #eef4ef;
+  font: 16px/1.6 "PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 62rem; margin: 0 auto; padding: 2.8rem 1.3rem; }
+h1 { margin: 0; font-size: clamp(2rem,5vw,3rem); line-height: 1.23; letter-spacing: -.04em; }
+h2 { margin: 0; font-size: 1.22rem; }
+p { margin: .4rem 0; }
+header p, caption { color: #496157; }
+.scenario { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem; margin: 1.6rem 0 1rem; }
+.scenario label { font-weight: 700; }
+select, button { min-height: 2.68rem; font: inherit; padding: .38rem .58rem; border: 1px solid #849a8e; border-radius: .3rem; }
+select { color: inherit; background: white; max-width: 100%; }
+button { border-color: #205d49; background: #205d49; color: #fff; cursor: pointer; text-align: left; }
+.workspace { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.2fr); gap: 1rem; align-items: start; }
+section { padding: 1.16rem; border: 1px solid #b7cdbf; border-radius: .4rem; background: #fff; min-width: 0; }
+.selection { border-top: .32rem solid #35705b; }
+.fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem; margin: .7rem 0; }
+.fields select { display: block; width: 100%; margin-top: .2rem; }
+.permission { display: flex; gap: .4rem; align-items: start; font-size: .91rem; }
+.permission input { margin-top: .35rem; accent-color: #205d49; }
+.status { padding: .62rem .7rem; margin-top: .8rem; background: #f1f5f1; display: grid; gap: .15rem; }
+.status[data-stock="sold-out"] strong, [data-stock="sold-out"], .notice { color: #963b22; }
+.status[data-stock="available"] strong, [data-stock="available"] { color: #226348; }
+.proposal { margin-top: .8rem; border-left: .24rem solid #72a28d; padding-left: .7rem; }
+.proposal p:nth-child(2) { font-size: .9rem; }
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-top: .6rem; font-size: .9rem; }
+caption { text-align: left; padding-bottom: .4rem; }
+th, td { padding: .48rem .25rem; border-bottom: 1px solid #d7e3da; text-align: left; overflow-wrap: anywhere; }
+th:first-child { width: 23%; }
+summary { cursor: pointer; padding: .4rem 0; margin-top: .6rem; }
+pre { max-width: 100%; overflow: auto; padding: .8rem; background: #eff5f0; font-size: .84rem; }
+:focus-visible { outline: 3px solid #9a4a30; outline-offset: 3px; }
+@media (max-width: 41rem) {
+  main { padding: 1.45rem .85rem; }
+  .workspace { grid-template-columns: minmax(0,1fr); }
+  section { padding: .95rem; }
+}

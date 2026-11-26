@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>颜色有货，尺码也有货，Agent 为什么还要核对 SKU？ | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 核对颜色和尺码的组合库存，区分未配置、未知与售罄，并让顾客决定是否换色。" name="description"/><link href="https://mengfeng.github.io/2026/11/25/agent-variant-stock-alternative/" rel="canonical"/><meta content="颜色有货，尺码也有货，Agent 为什么还要核对 SKU？" property="og:title"/><meta content="用 Vue 3 和 TypeScript 核对颜色和尺码的组合库存，区分未配置、未知与售罄，并让顾客决定是否换色。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/25/agent-variant-stock-alternative/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-variant-stock-alternative/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-25-agent-variant-stock-alternative" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">颜色有货，尺码也有货，Agent 为什么还要核对 SKU？</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/25/agent-variant-stock-alternative/"><time datetime="2026-11-26T00:39:24.571025Z" itemprop="datePublished">2026-11-25</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="燕麦色有货，S 码也有货，为什么燕麦色 S 码买不到？"></a>燕麦色有货，S 码也有货，为什么燕麦色 S 码买不到？</h2>
+<p>顾客在导购窗口里说「我想买燕麦色，S 码」。工具返回的清单里，燕麦色 M 码有货，炭灰色 S 码也有货，但燕麦色 S 码已经售罄。如果 Agent 分别读「有货颜色」和「有货尺码」两个列表，就可能把来自不同 SKU 的条件拼到一起，告诉顾客所选组合有货。</p>
+<p>页面应当先把颜色和尺码当成一个组合，查出对应 SKU 的状态。若原组合确实售罄、顾客允许换颜色，再找同尺码的备选。即便备选有货，也先让顾客看见具体变化，点击后才改变选择。演示只使用虚构衬衫、固定库存和模拟 Agent 响应。采用备选只更新本地页面，不产生订单或库存写入。<a href="/examples/agent-variant-stock-alternative/">打开 Vue 交互示例</a> · <a href="/examples/agent-variant-stock-alternative/source.zip">下载源码</a></p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="把父商品和当前组合分开读取"></a>把父商品和当前组合分开读取</h2>
+<p>假设只读工具是 <code>readVariantSnapshot(groupId, stockScope)</code>。每条记录关联一个颜色、一个尺码和一个 SKU，工具同时提供清单是否完整与当前快照 ID。Google Search Central 的商品结构化数据文档也用 <code>ProductGroup</code> 表示商品组，用 <code>variesBy</code> 声明颜色、尺码等区分维度，用 <code>hasVariant</code> 连接实际变体。这里借用的是同样的父子商品建模方式，库存判断由业务数据完成。<a href="https://developers.google.com/search/docs/appearance/structured-data/product-variants">Google 商品变体文档</a> · <a href="https://schema.org/ProductGroup">Schema.org ProductGroup</a></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>由谁提供</th>
+<th>前端用在哪里</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>groupId</code>、<code>snapshot.id</code></td>
+<td>只读工具</td>
+<td>限定当前商品和具体库存快照</td>
+</tr>
+<tr>
+<td><code>complete</code></td>
+<td>规格读取工具</td>
+<td>区分未配置的组合和尚未拿到的记录</td>
+</tr>
+<tr>
+<td><code>variantId</code>、颜色、尺码、库存状态</td>
+<td>规格与库存工具</td>
+<td>渲染该组合的当前状态</td>
+</tr>
+<tr>
+<td>选中的颜色、尺码、是否允许换色</td>
+<td>用户交互</td>
+<td>限定建议范围，保留尺码要求</td>
+</tr>
+<tr>
+<td>商品组、快照 ID、原选择、备选 SKU ID</td>
+<td>模拟 Agent 候选</td>
+<td>定位建议，供程序查找和复核</td>
+</tr>
+</tbody>
+</table>
+<p>正式接口中，快照还需绑定库存范围，例如渠道、发货地或提货门店。调换门店可能让同一个 SKU 得到不同答案。快照 ID 应唯一指向本次数据及其生效条件，切换范围后按新快照重查。当前示例把这些条件固定在单个演示范围里，没有引入跨仓判断。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="清单里找不到一行，先看清单是否完整"></a>清单里找不到一行，先看清单是否完整</h2>
+<p>前端按两项选中值匹配。恰好一行时读该行库存；多行时标记数据冲突；缺行时检查完整性。完整清单缺了燕麦色 S 码，说明该组合未配置。清单还在分页、部分请求失败或尚未返回完整时，缺行只表示此刻无法判断。另有一种情况是规格存在而库存读取失败，工具会返回 <code>unknown</code>，页面仍提示重新查询。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">matches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">snapshot</span><span class="p">.</span><span class="nx">variants</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">row</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">  </span><span class="nx">row</span><span class="p">.</span><span class="nx">color</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">selected</span><span class="p">.</span><span class="nx">color</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">row</span><span class="p">.</span><span class="nx">size</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">selected</span><span class="p">.</span><span class="nx">size</span>
+<span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">matches</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s1">'conflict'</span><span class="w"> </span><span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">matches</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="kt">matches</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">stock</span><span class="w"> </span><span class="p">}</span>
+<span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="kt">snapshot.complete</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'not-offered'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'unknown'</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>不同状态对应不同的下一步。售罄是已查到当前记录但没货，可以在顾客允许时给同尺码备选。未配置时，可以从已经查到且有货的组合里提出备选。未知和冲突需要先刷新数据或核对目录，以免因为一次查询不全就让顾客改掉原本买得到的颜色。演示让所有颜色和尺码选项保持可切换，并在旁边展示交叉库存表，方便顾客比较自己尝试过的组合。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="Agent 提出备选 SKU，程序核对三个条件"></a>Agent 提出备选 SKU，程序核对三个条件</h2>
+<p>候选只给结构化字段，库存和颜色名由应用读取。第一步检查用户是否勾选允许换色，以及原组合是否确定不可用。第二步核对候选绑定的商品组、快照、原颜色和原尺码。顾客改选或库存更新时，旧候选需要重新核对。第三步查找候选 ID，确保它唯一存在、颜色确实发生了变化、尺码沿用原值，且新组合在当前快照有货。两个 SKU ID 都指向同一组颜色与尺码时，也会触发冲突判断。</p>
+<p>例如 Agent 给出炭灰色 M 码，库存确实有货，但顾客只授权换颜色。页面会保留燕麦色 S 码，并提示当前备选未通过核对。若 Agent 声称来自最新快照，但候选 ID 实际已经找不到，同样处理。示例把这些问题合成一条给顾客的提示，开发侧可按数据失配、库存变化和约束不符分别记录原因，以便排查工具质量。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="让用户看到变化，再决定采用"></a>让用户看到变化，再决定采用</h2>
+<p>Vue 用 <code>v-model</code> 绑定颜色、尺码与换色选项。当前库存与备选建议由 <code>computed()</code> 随快照和条件重新计算。切换演示场景会清空之前的换色授权，手动改选后旧候选也不再跟随。顾客点击「切换到 炭灰色 / S」时，事件处理器才更新选择。按钮随即消失，焦点移到新状态上，让键盘用户能够继续核对结果。<a href="https://vuejs.org/guide/essentials/forms.html#select">Vue 表单绑定</a> · <a href="https://vuejs.org/guide/essentials/computed.html#best-practices">Vue 计算属性</a></p>
+<p>库存展示的是某个快照的结论。有货不代表已锁定，也不保证下一次提交还会有货。接入真实购物车后，服务端仍需核对最新 SKU 状态、价格、限购和权限。若商品在确认前失效，应保留最新选择，清除过期库存结果，并提示重新查看。本文的交互示例停在选择环节。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="本地运行和验收"></a>本地运行和验收</h2>
+<p>源码包附带打包后的页面，解压后打开 <code>index.html</code> 即可离线体验。若需修改和重新构建，在包内运行以下命令，再访问 <code>http://127.0.0.1:8077/</code>。</p>
+<div class="tech-code"><div class="tech-code-label">sh</div><pre><code class="language-sh">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8077</span>
+</code></pre></div>
+<ol>
+<li>默认燕麦色 S 码显示售罄，但同色 M 码和炭灰色 S 码均有货。先勾选允许换色，再核对候选与初始选择，点击后才切换到炭灰色 S 码。</li>
+<li>对照两种缺行场景。完整清单缺行显示「未配置这个组合」，部分清单缺行显示「库存待确认」。库存读失败也要显示待确认。</li>
+<li>分别切换尺码不符、旧快照和备选售罄三类情况。重新勾选换色后，页面保留原选择，并说明备选未通过核对。</li>
+<li>改选已有货的燕麦色 M 码，即使开着换色选项，旧的 S 码候选也不会再显示。</li>
+</ol>
+<p>离线测试加上浏览器检查，验证的是固定输入与页面状态能否对应。正式接入模型时，还需要验证它能否识别顾客给出的硬性条件、找到合适的现货 SKU，以及是否能在没有符合条件的备选时答得准确。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F25%2Fagent-variant-stock-alternative%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%95%86%E5%93%81%E5%BA%93%E5%AD%98/" rel="tag">商品库存</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/24/agent-product-image-alt-context/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">同一张商品图，Agent 为什么要写三种 alt？</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

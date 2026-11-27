@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>同一句活动标题，Agent 为什么要按渠道重新计数？ | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 对照字素簇与 UTF-8 字节，在渠道规则下复核文案长度，并阻止采用过期或超限的改写。" name="description"/><link href="https://mengfeng.github.io/2026/11/26/agent-channel-copy-length/" rel="canonical"/><meta content="同一句活动标题，Agent 为什么要按渠道重新计数？" property="og:title"/><meta content="用 Vue 3 和 TypeScript 对照字素簇与 UTF-8 字节，在渠道规则下复核文案长度，并阻止采用过期或超限的改写。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/26/agent-channel-copy-length/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-channel-copy-length/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-26-agent-channel-copy-length" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">同一句活动标题，Agent 为什么要按渠道重新计数？</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/26/agent-channel-copy-length/"><time datetime="2026-11-27T01:13:28.752549Z" itemprop="datePublished">2026-11-26</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="同一句活动标题，为什么换个渠道就超限？"></a>同一句活动标题，为什么换个渠道就超限？</h2>
+<p>运营写了「春季轻盈新色今日到店」，想同时放进站内推荐卡和合作渠道的短标题。推荐卡按最多 12 个字素簇验收，这一句用掉 10 个。合作渠道按最多 24 个 UTF-8 字节验收，同一句话占 30 字节。两边都写着「长度」，但使用的单位不一样。</p>
+<p>编辑器应该在选中渠道后马上给出当前用量，并保留原文供用户编辑。Agent 可以提出精简版本「新色今日到店」。程序需要自己确认新文案只占 18 字节，还要确保候选基于当前原文和生效规则。通过这些检查后，运营仍然可以手动对照，再决定是否替换。本例使用虚构渠道、规则和固定的模型候选，页面可以离线运行。<a href="/examples/agent-channel-copy-length/">打开 Vue 交互示例</a> · <a href="/examples/agent-channel-copy-length/source.zip">下载源码</a></p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="先拿到明确的渠道规则"></a>先拿到明确的渠道规则</h2>
+<p>假设只读工具 <code>readTitleRule(channel)</code> 返回当前渠道的字段规则。这个示例只校验一个标题字段。规则版本、计数单位和最大用量由工具提供。Agent 拿到规则后只返回建议文案与绑定信息，前端根据当前规则重新验算。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>来源</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule.id</code></td>
+<td>渠道配置工具</td>
+<td>唯一标记渠道、规则版本和字段</td>
+</tr>
+<tr>
+<td><code>unit</code>、<code>limit</code></td>
+<td>渠道配置工具</td>
+<td>确定哪种用量参与判断</td>
+</tr>
+<tr>
+<td>原标题、当前选择的渠道</td>
+<td>编辑器</td>
+<td>展示、编辑和判断旧候选是否还能用</td>
+</tr>
+<tr>
+<td><code>ruleId</code>、<code>source</code>、<code>text</code></td>
+<td>模拟 Agent 候选</td>
+<td>标记所依据的原文和规则，并提出改写</td>
+</tr>
+</tbody>
+</table>
+<p>线上如果同一渠道还区分站点、语言或广告位，工具需要把这些维度带进规则身份。比如推荐卡和详情页的标题限制可能不同，哪怕两个位置当前碰巧使用相同的数字。演示直接比较原字符串。对于多字段编辑器，可以使用服务端分配的草稿版本或内容摘要来匹配候选，避免把整段原文再次带进响应。</p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="用规则对应的单位计数"></a>用规则对应的单位计数</h2>
+<p>JavaScript 的 <code>text.length</code> 统计 UTF-16 代码单元。<code>👩‍💻</code> 由多个代码点连接而成，字符串长度为 5，按字素簇计数是 1，UTF-8 长度则是 11 字节。如果按任意一个单元截取，可能让连接序列中途断开。Unicode 文本分段标准提供了默认字素簇边界，<code>Intl.Segmenter</code> 可以按字素簇迭代，<code>TextEncoder</code> 则会把该字符串编码成 UTF-8。对于一个标题字段按哪种单位验收，最终以渠道给出的规则为准。<a href="https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries">Unicode UAX #29 文本分段</a> · <a href="https://tc39.es/ecma402/#sec-intl.segmenter.prototype.segment">ECMA-402 Intl.Segmenter</a> · <a href="https://encoding.spec.whatwg.org/#interface-textencoder">WHATWG TextEncoder</a></p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">segmenter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Intl</span><span class="p">.</span><span class="nx">Segmenter</span><span class="p">(</span><span class="s1">'zh-CN'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">granularity</span><span class="o">:</span><span class="w"> </span><span class="s1">'grapheme'</span><span class="w"> </span><span class="p">})</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">encoder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">TextEncoder</span><span class="p">()</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="nx">graphemes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">segment</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">segmenter</span><span class="p">.</span><span class="nx">segment</span><span class="p">(</span><span class="nx">text</span><span class="p">))</span><span class="w"> </span><span class="nx">graphemes</span><span class="o">++</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">utf8Bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">encoder</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span><span class="nx">text</span><span class="p">).</span><span class="nx">length</span>
+</code></pre></div>
+<p>完整示例先探测当前环境是否支持对应计数器。某个计数器缺失时，页面显示「不可用」。如果恰好是当前渠道使用的单位，本次长度检查就会停在无法确认。使用 <code>length</code> 顶替会给出另一种单位的结果，容易把本该超限的内容当成合格。</p>
+<p>页面同时呈现两种数值，便于运营理解渠道变化。比如「春季轻盈新色到店」刚好 24 字节，加上一个 ASCII 的 <code>A</code> 后是 25 字节。组合重音也能说明差别。预组的 <code>é</code> 和由 <code>e</code> 加组合重音组成的版本各占一个字素簇，UTF-8 长度却分别是 2 和 3 字节。如果渠道规定提交前要统一 NFC，应先在约定边界执行规范化，然后计数和发送同一份文本。本例直接计算输入值保留的字符。空格和换行参与计数，纯空白另判为无标题。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="候选符合长度，还要核对它基于哪一版"></a>候选符合长度，还要核对它基于哪一版</h2>
+<p>前端把模型返回当作 <code>unknown</code>。当当前草稿已超限时，再读取候选的规则 ID、原文和改写文本。示例使用 <code>ruleId + source</code> 检查来源。如果运营改了一处标点，或者渠道规则从 <code>partner:v2</code> 更新到 <code>partner:v3</code>，旧候选就不会显示可用的替换按钮。通过绑定检查后，程序按同一个渠道计数器重新检查改写。候选为空、类型不符或改写后仍超限，都给出具体提示，编辑区保留当前文案。</p>
+<p>长度合规可以用程序验证。文案有没有删掉日期或把「到店」改成「立即购买」，还需要运营阅读后确认。如果业务要求短标题包含型号或活动日期，可以在生成时提交这些必留字段，并独立核对改写有没有遗漏。本例集中演示计数和候选绑定，展示建议时把它放在原文旁边，便于对照。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="把实时反馈和用户操作留在编辑器"></a>把实时反馈和用户操作留在编辑器</h2>
+<p>Vue 用 <code>v-model</code> 绑定标题与当前渠道。输入变化时，<code>computed()</code> 重新计算两个数值和当前规则的检查结果。示例保留超长原文，运营可以知道具体超了多少，也可以手动修改。候选通过检查时才显示「替换当前文案」。按钮只在用户主动点击后改本地输入，焦点回到标题。实际提交渠道之前，服务端仍需采用该渠道当时生效的规则再次校验。<a href="https://vuejs.org/guide/essentials/forms.html#multiline-text">Vue 表单输入绑定</a> · <a href="https://vuejs.org/guide/essentials/computed.html#best-practices">Vue 计算属性</a></p>
+<p>若把前端和后端分到不同运行环境，还应拿同一组中文、重音、emoji、换行和临界输入做对照，尤其关注 Unicode 分段版本或提交时的转换。前端的实时提示可以尽早发现问题，最终判定仍由接收渠道的规则和实际提交内容决定。本例没有连接任何广告或投放接口。</p>
+<h2 id="section-6"><a class="headerlink" href="#section-6" title="在本地复现"></a>在本地复现</h2>
+<p>解压源码包后可直接打开 <code>index.html</code>。要改代码和运行离线测试，在包里执行以下命令，再访问 <code>http://127.0.0.1:8077/</code>。</p>
+<div class="tech-code"><div class="tech-code-label">sh</div><pre><code class="language-sh">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8077</span>
+</code></pre></div>
+<ol>
+<li>默认标题应显示 10 个字素簇和 30 个字节。切到合作渠道后应显示 30 / 24 并给出建议。点击前编辑框保持原文，点击后应显示「新色今日到店」和 18 / 24。</li>
+<li>切到组合字符样本，确认 <code>Café 👩‍💻</code> 的计数为 6 个字素簇和 18 字节。刚好 24 字节的样本应通过，再输入一个 ASCII 字符就会超限。</li>
+<li>在超限状态下修改原文，确认旧建议失效。再切换旧规则、改写仍超限、没有建议和空白标题，查看各自提示。</li>
+</ol>
+<p>这些检查验证了固定规则和演示输入之间的关系。真实模型能否保留原意、以及合作渠道是否使用同样的计数口径，需要接入后分别验证。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F26%2Fagent-channel-copy-length%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%90%E8%90%A5%E7%BC%96%E8%BE%91%E5%99%A8/" rel="tag">运营编辑器</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/25/agent-variant-stock-alternative/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">颜色有货，尺码也有货，Agent 为什么还要核对 SKU？</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>

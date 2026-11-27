@@ -1,0 +1,40 @@
+:root {
+  color: #222f49;
+  background: #f2f4f8;
+  font: 16px/1.65 "PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 62rem; margin-inline: auto; padding: 2.7rem 1.25rem; }
+h1 { margin: 0; font-size: clamp(2rem,5vw,3rem); line-height: 1.2; letter-spacing: -.035em; }
+h2 { margin: 0; font-size: 1.18rem; }
+h3 { margin: 0; font-size: 1.04rem; }
+p { margin: .4rem 0; }
+header p, dt { color: #4e5c76; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; margin: 1.45rem 0 1rem; }
+label { font-weight: 650; }
+select, button, textarea { font: inherit; color: inherit; padding: .42rem .65rem; border: 1px solid #8190aa; border-radius: .32rem; background: #fff; }
+select, button { min-height: 2.75rem; max-width: 100%; }
+textarea { width: 100%; min-width: 0; min-height: 5rem; resize: vertical; }
+button { background: #324e96; border-color: #324e96; color: #fff; cursor: pointer; }
+.workspace { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 1rem; align-items: start; }
+section { padding: 1.1rem 1.2rem; border: 1px solid #c6d0e2; border-radius: .45rem; background: #fff; min-width: 0; }
+.editor { border-top: .34rem solid #3b53a0; }
+.fields { display: grid; align-items: start; gap: .42rem; margin: .65rem 0 .8rem; }
+.fields select { justify-self: start; margin-bottom: .2rem; }
+.status { background: #edf1fc; padding: .56rem .7rem; }
+.status[data-assessment="over-limit"], .notice { color: #963b24; background: #fff1e9; }
+.status p { margin: .1rem 0 0; font-variant-numeric: tabular-nums; }
+.comparison { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .8rem; margin: .8rem 0; }
+.comparison div { border-block-end: 1px solid #d1dbea; padding-bottom: .5rem; }
+.comparison dd { margin: 0; font-weight: 700; font-size: 1.65rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.proposal { padding: .7rem 0 0; }
+.suggestion { white-space: pre-wrap; overflow-wrap: anywhere; font-weight: 650; }
+.notice { padding: .55rem .65rem; }
+:focus-visible { outline: 3px solid #a85932; outline-offset: 3px; }
+@media (max-width: 40rem) {
+  main { padding: 1.5rem .85rem; }
+  .workspace { grid-template-columns: minmax(0,1fr); }
+  section { padding: .95rem; }
+}

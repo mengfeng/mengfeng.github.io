@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>运营改到一半，Agent 的文案建议回来了，怎么合并？ | 艺术码畜</title>
+<meta content="hexo-theme-ayer" name="generator"/>
+<link href="/favicon.ico" rel="shortcut icon"/>
+<link href="/dist/main.css" rel="stylesheet"/>
+<link href="/css/fonts/remixicon.css" rel="stylesheet"/>
+<link href="/css/custom.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G16F14RTRN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G16F14RTRN');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?f5e6c5b5d28b6bff1c9eb1fcf7f6862b";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- mermaid -->
+<link href="/atom.xml" rel="alternate" title="艺术码畜" type="application/atom+xml"/>
+<meta content="用 Vue 3 和 TypeScript 比较原版、当前草稿和 Agent 建议，保留人工修改，逐字段处理冲突。" name="description"/><link href="https://mengfeng.github.io/2026/11/27/agent-product-copy-three-way/" rel="canonical"/><meta content="运营改到一半，Agent 的文案建议回来了，怎么合并？" property="og:title"/><meta content="用 Vue 3 和 TypeScript 比较原版、当前草稿和 Agent 建议，保留人工修改，逐字段处理冲突。" property="og:description"/><meta content="https://mengfeng.github.io/2026/11/27/agent-product-copy-three-way/" property="og:url"/><link href="/css/article-tech.css" rel="stylesheet"/><meta content="https://mengfeng.github.io/images/agent-product-copy-three-way/cover.webp" property="og:image"/></head>
+<body class="agent-tech">
+<div id="app">
+<canvas class="fireworks"></canvas>
+<style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+<main class="content on">
+<section class="outer">
+<article class="article article-type-post" data-scroll-reveal="" id="post-2026-11-27-agent-product-copy-three-way" itemprop="blogPost" itemscope="">
+<div class="article-inner">
+<header class="article-header">
+<h1 class="article-title sea-center" itemprop="name" style="border-left:0">运营改到一半，Agent 的文案建议回来了，怎么合并？</h1>
+</header>
+<div class="article-meta"><a class="article-date" href="/2026/11/27/agent-product-copy-three-way/"><time datetime="2026-11-28T01:38:25.394264Z" itemprop="datePublished">2026-11-27</time></a><div class="article-category"><a class="article-category-link" href="/categories/AI-Agent/">AI Agent</a></div></div>
+<div class="tocbot"></div>
+<div class="article-entry" itemprop="articleBody"><h2 id="section-1"><a class="headerlink" href="#section-1" title="Agent 回来的时候，运营已经手动改过了"></a>Agent 回来的时候，运营已经手动改过了</h2>
+<p>商品编辑器打开的是「午后马克杯」。运营让 Agent 润色卖点说明，继续把标题改成「海盐蓝马克杯」。几秒后，Agent 返回「握柄宽大，适合日常热饮」。这句建议可以合入说明，运营刚改的标题应该留在草稿里。</p>
+<p>如果 Agent 也给了新标题「海边午后马克杯」，标题就出现了两种修改。这时用整份结果覆盖会丢掉人工选择，直接放弃建议也会失去可以合入的说明。编辑器可以逐字段比较三份内容，在同一行展示原版、当前草稿和 Agent 建议，再让运营决定冲突字段保留哪一版。<a href="/examples/agent-product-copy-three-way/">打开 Vue 交互示例</a> · <a href="/examples/agent-product-copy-three-way/source.zip">下载源码</a></p>
+<p>演示商品和候选都使用固定样本。点击应用只更新当前页面内存中的草稿，不会写入商品后台。</p>
+<h2 id="section-2"><a class="headerlink" href="#section-2" title="生成建议时记下它是基于哪一版"></a>生成建议时记下它是基于哪一版</h2>
+<p>接入时，可以让只读工具 <code>readProductCopy(productId)</code> 返回当前三项可编辑字段和版本号。发起改写时冻结这份 <code>base</code>，之后的人工编辑写入 <code>local</code>。Agent 响应里带回商品 ID、原始版本和它建议更新的 <code>patch</code>。本例只有标题、卖点说明、角标三个字段，前端先检查候选的实际形状，只接受这些已开放字段。</p>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>由谁提供</th>
+<th>为什么保留</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base</code></td>
+<td>发起生成时的快照</td>
+<td>知道双方是在什么基础上改的</td>
+</tr>
+<tr>
+<td><code>local</code></td>
+<td>编辑器当前输入</td>
+<td>保留生成期间的人工修改</td>
+</tr>
+<tr>
+<td><code>patch</code></td>
+<td>Agent 候选</td>
+<td>只表达模型主动提出的字段修改</td>
+</tr>
+<tr>
+<td>字段取舍</td>
+<td>用户</td>
+<td>决定有冲突时采用哪个值</td>
+</tr>
+</tbody>
+</table>
+<p>合并前先对照候选的商品和基础版本。只要候选属于旧版本或另一个商品，页面就不展示合入入口。这里用 <code>unknown</code> 接收响应，确认对象及各字段类型之后才进入计算。比如带回普通文案之外的价格字段，整份候选会进入异常提示。<a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">TypeScript 类型收窄</a></p>
+<h2 id="section-3"><a class="headerlink" href="#section-3" title="三方比较要知道谁修改了字段"></a>三方比较要知道谁修改了字段</h2>
+<p>可以把这个问题理解成字段级的三方合并。Git 的 <code>merge-file</code> 会拿当前文件、共同基础版本和另一份改动做比较，双方改到同一段时需要处理冲突。这里借用共同基础版本的思路。示例把整个字段作为比较单位，标题里的两个词即便分别被改过，也会把整条标题交给运营检查。<a href="https://git-scm.com/docs/git-merge-file">Git 三方合并说明</a></p>
+<table>
+<thead>
+<tr>
+<th>当前值与建议相对原版的变化</th>
+<th>页面结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>双方都没改</td>
+<td>保留当前值</td>
+</tr>
+<tr>
+<td>只有运营改了</td>
+<td>保留人工修改</td>
+</tr>
+<tr>
+<td>只有 Agent 改了</td>
+<td>放入合并预览</td>
+</tr>
+<tr>
+<td>双方写成了同一个值</td>
+<td>现有草稿已经包含结果</td>
+</tr>
+<tr>
+<td>双方改了，而且值不同</td>
+<td>展示冲突并要求选择</td>
+</tr>
+</tbody>
+</table>
+<p>还要区分「字段没出现」与「明确清空」。候选没有提到角标时，建议值回落到原版，运营手动改过的角标会继续保留。候选给出 <code>badge: ''</code> 时，空字符串就是建议删除角标。解析阶段允许角标为空，同时检查候选标题和说明包含内容。</p>
+<div class="tech-code"><div class="tech-code-label">ts</div><pre><code class="language-ts"><span class="kd">const</span><span class="w"> </span><span class="nx">original</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">base</span><span class="p">.</span><span class="nx">copy</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">local</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">suggested</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">patch</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">field</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">original</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">suggested</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">original</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">keep</span><span class="p">(</span><span class="nx">current</span><span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">current</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">suggested</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">keep</span><span class="p">(</span><span class="nx">current</span><span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">current</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">original</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">use</span><span class="p">(</span><span class="nx">suggested</span><span class="p">)</span>
+<span class="k">return</span><span class="w"> </span><span class="nx">requireDecision</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span><span class="w"> </span><span class="nx">current</span><span class="p">,</span><span class="w"> </span><span class="nx">suggested</span><span class="p">)</span>
+</code></pre></div>
+<p>这段代码用简化的函数名说明分支。源码还会记录每个字段的状态、选择与最终值，并在存在待处理的冲突时暂不返回可应用的草稿。新文本按原字符串比较。接入富文本时，编辑器需要先约定哪些格式差异属于真实修改，以及要以字段、段落还是结构节点为单位合并。</p>
+<h2 id="section-4"><a class="headerlink" href="#section-4" title="选过一边后，继续编辑要让旧决定失效"></a>选过一边后，继续编辑要让旧决定失效</h2>
+<p>选择「采用 Agent 建议」是针对当时屏幕上那组标题做的决定。如果运营随后又重写人工标题，原来的决定不再充分，页面需要让这个冲突重新确认。示例在字段输入时清除该字段的选择，并在计算时再次核对选择对应的人工值。若线上有新一批候选替换旧候选，取舍还应绑定候选 ID 或建议值。</p>
+<p>Vue 的 <code>computed()</code> 只根据当前草稿与候选生成预览。文本框编辑、冲突单选和应用动作通过组件事件修改数据。只有不存在待选冲突且确有修改时，才显示「应用到本地草稿」。应用后消化这次候选并把焦点移到确认信息，表单仍可继续编辑。<a href="https://vuejs.org/guide/essentials/forms.html">Vue 表单输入绑定</a> · <a href="https://vuejs.org/guide/essentials/computed.html#best-practices">Vue 计算属性</a></p>
+<p>这个示例集中处理同一编辑器里出现的改动。若还有其他同事在后台更新同一个商品，真正提交时应由服务端再核对商品及版本。版本变了就取新快照、重做比较并请运营确认。把确认后的草稿和原版一并留作记录，也便于日后说明是哪一处人工选择影响了结果。这里没有商家接口，也没有执行任何对外写操作。</p>
+<h2 id="section-5"><a class="headerlink" href="#section-5" title="本地运行和验收"></a>本地运行和验收</h2>
+<p>源码包带有已打包页面，解压后打开 <code>index.html</code> 便可使用。若要改源码并重新构建，在包内运行下列命令，再访问 <code>http://127.0.0.1:8077/</code>。</p>
+<div class="tech-code"><div class="tech-code-label">sh</div><pre><code class="language-sh">npm<span class="w"> </span>ci
+npm<span class="w"> </span>run<span class="w"> </span>typecheck
+npm<span class="w"> </span><span class="nb">test</span>
+npm<span class="w"> </span>run<span class="w"> </span>build
+python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8077</span>
+</code></pre></div>
+<ol>
+<li>预览双方修改不同字段。确认人工标题保留，应用后只有卖点说明发生变化。</li>
+<li>切到标题冲突场景。确认未选择时不能应用，选择后继续编辑标题，观察原取舍失效。重新选择一边，再应用到草稿。</li>
+<li>查看双方写成同样标题和建议清空角标，检查前者无需重复合入，后者可以明确把角标改成空值。</li>
+<li>切到版本过期或未开放字段，确认原文保留，页面提示重新生成或处理异常结果。</li>
+</ol>
+<p>离线测试覆盖字段级决策和候选验证。它验证的是固定场景下的合并行为。接入真实模型后，还需要单独测试生成内容是否符合品牌语气和页面要求。</p>
+</div>
+<!-- copyright -->
+<div class="declare">
+<ul class="post-copyright">
+<li>
+<i class="ri-copyright-line"></i>
+<strong>Copyright： </strong>
+
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+
+        </li>
+</ul>
+</div>
+<footer class="article-footer">
+<div class="share-btn">
+<span class="share-sns share-outer">
+<i class="ri-share-forward-line"></i>
+        分享
+      </span>
+<div class="share-wrap">
+<i class="arrow"></i>
+<div class="share-icons">
+<a class="weibo share-sns" data-type="weibo" href="javascript:;">
+<i class="ri-weibo-fill"></i>
+</a>
+<a class="weixin share-sns wxFab" data-type="weixin" href="javascript:;">
+<i class="ri-wechat-fill"></i>
+</a>
+<a class="qq share-sns" data-type="qq" href="javascript:;">
+<i class="ri-qq-fill"></i>
+</a>
+<a class="douban share-sns" data-type="douban" href="javascript:;">
+<i class="ri-douban-line"></i>
+</a>
+<!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+<a class="facebook share-sns" data-type="facebook" href="javascript:;">
+<i class="ri-facebook-circle-fill"></i>
+</a>
+<a class="twitter share-sns" data-type="twitter" href="javascript:;">
+<i class="ri-twitter-fill"></i>
+</a>
+<a class="google share-sns" data-type="google" href="javascript:;">
+<i class="ri-google-fill"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="wx-share-modal">
+<a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+<p>扫一扫，分享到微信</p>
+<div class="wx-qrcode">
+<img alt="微信分享二维码" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=https%3A%2F%2Fmengfeng.github.io%2F2026%2F11%2F27%2Fagent-product-copy-three-way%2F"/>
+</div>
+</div>
+<div id="share-mask"></div>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Agent/" rel="tag">Agent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E4%B8%9A%E5%8A%A1/" rel="tag">前端业务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%90%E8%90%A5%E7%BC%96%E8%BE%91%E5%99%A8/" rel="tag">运营编辑器</a></li></ul>
+</footer>
+</div>
+<nav class="article-nav">
+<a class="article-nav-link" href="/2026/11/26/agent-channel-copy-length/">
+<strong class="article-nav-caption">下一篇</strong>
+<div class="article-nav-title">同一句活动标题，Agent 为什么要按渠道重新计数？</div>
+</a>
+</nav>
+<link href="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/gitalk/1.7.2/gitalk.min.js"></script>
+<script src="https://cdn.staticfile.org/blueimp-md5/2.19.0/js/md5.min.js"></script>
+</article>
+</section>
+<footer class="footer">
+<div class="outer">
+<ul>
+<li>
+        Copyrights ©
+        2022-2026
+        <i class="ri-heart-fill heart_icon"></i> alan_mf
+      </li>
+</ul>
+<ul>
+<li>
+</li>
+</ul>
+<ul>
+<li>
+<span aria-label="全站访问统计" class="site-stats" role="group">
+<span class="site-stat"><i aria-hidden="true" class="ri-user-3-fill"></i><span class="site-stat-label">全站访客</span><span class="site-stat-value" id="busuanzi_value_site_uv">—</span></span>
+<span class="site-stat"><i aria-hidden="true" class="ri-eye-fill"></i><span class="site-stat-label">累计浏览</span><span class="site-stat-value" id="busuanzi_value_site_pv">—</span></span>
+<span class="site-stats-status" role="status">统计加载中…</span>
+</span>
+</li>
+</ul>
+<ul>
+</ul>
+<ul>
+</ul>
+<ul>
+<li>
+<!-- cnzz统计 -->
+<script src="https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914" type="text/javascript"></script>
+</li>
+</ul>
+</div>
+</footer>
+</main>
+<div class="float_btns">
+<div class="totop" id="totop">
+<i class="ri-arrow-up-line"></i>
+</div>
+<div class="todark" id="todark">
+<i class="ri-moon-line"></i>
+</div>
+</div>
+<aside class="sidebar on">
+<button aria-label="切换导航菜单" class="navbar-toggle"></button>
+<nav class="navbar">
+<div class="logo">
+<a href="/"><img alt="艺术码畜" src="/images/ayer-side.svg"/></a>
+</div>
+<ul class="nav nav-main">
+<li class="nav-item">
+<a class="nav-item-link" href="/">主页</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/archives">归档</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/categories">分类</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags">标签</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="https://www.zcool.com.cn/u/21686563" rel="noopener" target="_blank">摄影</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/friends">友链</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/about">关于我</a>
+</li>
+<li class="nav-item">
+<a class="nav-item-link" href="/player">播放器</a>
+</li>
+</ul>
+</nav>
+<nav class="navbar navbar-bottom">
+<ul class="nav">
+<li class="nav-item">
+<button aria-label="搜索文章" class="nav-item-link nav-item-search" title="搜索文章" type="button">
+<i aria-hidden="true" class="ri-search-line"></i>
+</button>
+<a class="nav-item-link" href="/atom.xml" target="_blank" title="RSS Feed">
+<i class="ri-rss-line"></i>
+</a>
+</li>
+</ul>
+</nav>
+<div class="search-form-wrap">
+<div class="local-search local-search-plugin">
+<input aria-label="搜索文章" class="local-search-input" id="local-search-input" placeholder="搜索文章..." type="search"/>
+<div class="local-search-result" id="local-search-result"></div>
+</div>
+</div>
+</aside>
+<div id="mask"></div>
+<!-- #reward -->
+<div id="reward">
+<span class="close"><i class="ri-close-line"></i></span>
+<p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+<div class="reward-box">
+<div class="reward-item">
+<img alt="支付宝收款码" class="reward-img" src="/images/zfb.jpeg"/>
+<span class="reward-type">支付宝</span>
+</div>
+<div class="reward-item">
+<img alt="微信收款码" class="reward-img" src="/images/wx.jpeg"/>
+<span class="reward-type">微信</span>
+</div>
+</div>
+</div>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+<!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+<div class="pswp__bg"></div>
+<!-- Slides wrapper with overflow:hidden. -->
+<div class="pswp__scroll-wrap">
+<!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<!--  Controls are self-explanatory. Order can be changed. -->
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+<!-- element will get class pswp__preloader--active when preloader is running -->
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css" rel="stylesheet"/>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+<!-- MathJax -->
+<!-- Katex -->
+<!-- busuanzi  -->
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+<!-- ClickLove -->
+<!-- ClickBoom1 -->
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/clickBoom1.js"></script>
+<!-- ClickBoom2 -->
+<!-- CodeCopy -->
+<link href="/css/clipboard.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+<!-- CanvasBackground -->
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+</link></div>
+</body>
+</html>
